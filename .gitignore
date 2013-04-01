@@ -1,0 +1,17 @@
+./Data
+./Log
+*.eps
+*.pdf
+*.bib
+*.aux
+*.bbl
+*.blg
+*.aux
+*.out
+*.png
+./Results
+./Results2
+./ThesisFiles
+./TwinsReferences
+*.dta
+

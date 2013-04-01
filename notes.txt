@@ -1,0 +1,12 @@
+COMMENTS FOR TWIN PREDICT REGRESSIONS
+
+2012/11/03
+	- Added tables for twin predict using DHS and Chilean (ELPI) data
+	- Added table for terminated pregnancy (any) on observable characteristics
+	using DHS data.  One point to keep in mind here is that the question is not
+	explicit about pregnancies terminated in case of abortions, versus those
+	terminated by miscarriage
+		> Also included do files to set-up and run regressions for the previous
+		three results (twin predict DHS, twin predict Chile, terminated pregnancy
+		predict DHS)
+
