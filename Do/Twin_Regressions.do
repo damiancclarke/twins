@@ -24,12 +24,16 @@ global Results ~/investigacion/Activa/Twins/ResultsNEW
 log using "$Base/Log/Twin_Regressions.log", text replace
 
 *Regression controls
+global sumstats bord fert agemay educf educ attendance poor1 height bmi
+
+global twinpredict agemay magesq educf_1_4 educf_5_6 educf_7_10 educf_11plus /*
+*/ height bmi poor1 i.child_yob i._cou agefirstbirth
+
 global basecont malec agemay magesq agefirstbirth i._cou i.year_birth i.age /*i.bord*/
+global basecont2 malec agemay magesq agefirstbirth i.year_birth i.age /*i.bord*/
 global baseout malec agemay magesq agefirstbirth
 global morecont height bmi educf_1_4 educf_5_6 educf_7_10 educf_11pl poor1
 global moreout height bmi educf_1_4 educf_5_6 educf_7_10 educf_11pl poor1
-
-global sumstats bord fert agemay educf educ attendance poor1 height bmi
 
 *SWITCHES
 local sumstats no
@@ -38,10 +42,16 @@ local pooled no
 	local bind no
 	local final no
 	local after no
-local bord yes
+local bord no
 	local bordfinal no
-	local bordafter yes
+	local bordafter no
+	local bordall no
 local ols no
+local bordpretwin no
+	local bordafter_pre no
+	local bordall_pre no
+local gend yes
+local income yes
 
 * FOLDERS
 cap mkdir "$Results/Outreg"
@@ -52,32 +62,41 @@ local twinfinal FinalTwins
 local twinbord TwinBord_Final
 local twinafter TwinAfter_bord
 local twinbordafter TwinBord_After
+local twinbordall TwinBord_All
+local twinbordafter_pre TwinBord_After_pre
+local twinbordall_pre TwinBord_All_pre
+local gend_twinbordall TwinBordAll_gender
+local gend_twinbordafter TwinBordAfter_gender
+local inc_twinbordall TwinBordAll_income
+local inc_twinbordafter TwinBordAfter_income
+
+
 *******************************************************************************
-*** (1) Setup (+ discretionary choices)
+*** (0) Setup (+ discretionary choices)
 *******************************************************************************
 use "$Data/DHS_twins"
 ***THIS IS NEW AND GETS RID OF ALL TWIN FAMILIES FROM CONTROL
-foreach treat in Final Bind {
-	replace T_`treat'=. if T_`treat'==0&nummultiple!=0
-	cap drop T_`treat'Xtwin
-	gen T_`treat'Xtwin=T_`treat'*twind
-}
+*foreach treat in Final Bind {
+*	replace T_`treat'=. if T_`treat'==0&nummultiple!=0
+*	cap drop T_`treat'Xtwin
+*	gen T_`treat'Xtwin=T_`treat'*twind
+*}
 
 replace bmi=. if bmi>42
 replace height=. if height>240
 replace height=. if height<80
 replace educ=. if age<6
-drop if nummultiple>2&nummultiple<5
+*drop if nummultiple>2&nummultiple<5
 
 * Check if user written ados are installed.  If not this requires internet
 cap which byhist
-if _rc!=0 ssc install byhist
+if _rc!=0 cap ssc install byhist
 
+keep if _merge==3	
 *******************************************************************************
-*** (2) Summary Stats
+*** (1) Summary Stats
 *******************************************************************************
 if `"`sumstats'"'=="yes" {
-	
 	***************************************************************************
 	*** (2a) Graphical
 	***************************************************************************
@@ -138,16 +157,29 @@ if `"`sumstats'"'=="yes" {
 	sum twind
 	sum $sumstats if twin==0
 	sum $sumstats if twin>0&twin!=.
-	foreach income in LOWINCOME LOWERMIDDLE UPPERMIDDLE {
+	foreach income in low mid {
 	dis in yellow "`income'"
-	sum twind if inc=="`income'"
-	sum $sumstats if twin==0 & inc=="`income'"
-	sum $sumstats if twin>0&twin!=. & inc=="`income'"
+	sum twind if income=="`income'"
+	sum $sumstats if twin==0 & income=="`income'"
+	sum $sumstats if twin>0&twin!=. & income=="`income'"
 	}	
 }
 
 ********************************************************************************
-**** (3) Reduced Form Regressions on twin
+**** (2) Twin predict regressions
+********************************************************************************
+if `"`twin'"'=="yes" {
+	reg twind100 bord $twinpredict [pw=sweight], cluster(_cou)
+
+	foreach inc in low mid {
+		reg twind100 bord $twinpredict [pw=sweigh] if income=="`inc'", cluster(_cou)
+	}
+
+}
+********************************************************************************
+**** (3) Reduced Form Regressions on twin (this is for all children together,
+**** not explicitly separating by size so that we aren't comparing families of
+**** size q with families of size q+1 (due to twins)
 ********************************************************************************
 if `"`pooled'"'=="yes" {
 	local cond agefirstbirth>=14&age<22
@@ -228,7 +260,9 @@ if `"`pooled'"'=="yes" {
 }
 
 ********************************************************************************
-**** (3) Reduced Form Regressions on twin by birth order
+**** (4) Reduced Form Regressions on twin by birth order (this is by birth order
+**** so that we are comparing families of size q with families of size q+1 due
+**** to twins).
 ********************************************************************************
 if `"`bord'"'=="yes" {
 	if `"`bordfinal'"' == "yes" {
@@ -268,12 +302,147 @@ if `"`bord'"'=="yes" {
 				reg `outcome' T_After $basecont $morecont [pw=sweight] if `cond'&`cond2'
 				outreg2 T_After $baseout $moreout using `out', excel append
 
+
 				reg `outcome' T_After $basecont [pw=sweight] if `cond'&`cond2'&e(sample)
 				outreg2 T_After $baseout using `out', excel append
 
 			}
 		}
 	}
+
+	if `"`bordall'"' == "yes" {
+		local cond agefirstbirth>=14&age<22
+		cap rm "$Results/Outreg/`twinbordall'.xls"
+		cap rm "$Results/Outreg/`twinbordall'.txt"
+
+		local out "$Results/Outreg/`twinbordall'.xls"
+		foreach birth of numlist 2(1)8 {
+			dis in yellow "We are on birth number `birth' of 8"	
+			local cond2 (T_Twin==1&fert==`birth'+1)|(T_Twin==0&fert==`birth')
+
+			foreach outcome of varlist school_zscore educ attendance highschool {
+				reg `outcome' T_Twin $basecont $morecont [pw=sweight] if `cond'&`cond2'
+				outreg2 T_Twin $baseout $moreout using `out', excel append
+
+
+				reg `outcome' T_Twin $basecont [pw=sweight] if `cond'&`cond2'&e(sample)
+				outreg2 T_Twin $baseout using `out', excel append
+			}
+		}
+	}	
+}
+
+********************************************************************************
+**** (4a) Reduced Form Regressions on twin by birth order (by gender)
+********************************************************************************
+if `"`gend'"' == "yes" {	
+	** remove outreg files
+	foreach x in M {
+		cap rm "$Results/Outreg/`gend_twinbordafter'_`x'.xls"
+		cap rm "$Results/Outreg/`gend_twinbordafter'_`x'.txt"
+		cap rm "$Results/Outreg/`gend_twinbordall'_`x'.xls"
+		cap rm "$Results/Outreg/`gend_twinbordall'_`x'.txt"
+
+		local cond agefirstbirth>=14&age<22&gender=="`x'"
+		local loop 1
+		foreach cond2 in cond_aft cond_all {
+			if `loop'==1 local out "$Results/Outreg/`gend_twinbordafter'_`x'.xls"
+			else if `loop'==2 local out "$Results/Outreg/`gend_twinbordall'_`x'.xls"		
+
+			foreach y of varlist school_zscore attendance highschool {
+				foreach birth of numlist 2(1)8 {
+
+					local cond_aft (T_After==1&fert==`birth'+1)|(T_After==0&fert==`birth')
+					local cond_all (T_Twin==1&fert==`birth'+1)|(T_Twin==0&fert==`birth')
+
+					reg `y' T_After $basecont $morecont [pw=sweight] if `cond'&``cond2''
+					outreg2 T_After $baseout $moreout using `out', excel append
+				}
+			}
+		local ++loop
+		}
+	}
+}
+
+********************************************************************************
+**** (4b) Reduced Form Regressions on twin by birth order (by income)
+********************************************************************************
+if `"`income'"' == "yes" {
+	** remove outreg files
+	foreach x in low mid {
+		local cond agefirstbirth>=14&age<22&income=="`x'"
+
+		cap rm "$Results/Outreg/`inc_twinbordafter'_`x'.xls"
+		cap rm "$Results/Outreg/`inc_twinbordafter'_`x'.txt"
+		cap rm "$Results/Outreg/`inc_twinbordall'_`x'.xls"
+		cap rm "$Results/Outreg/`inc_twinbordall'_`x'.txt"
+
+		local loop 1
+		foreach cond2 in cond_aft cond_all {
+
+			if `loop'==1 local out "$Results/Outreg/`inc_twinbordafter'_`x'.xls"
+			else if `loop'==2 local out "$Results/Outreg/`inc_twinbordall'_`x'.xls"		
+
+			foreach y of varlist school_zscore attendance highschool {
+				foreach birth of numlist 2(1)8 {
+
+					local cond_aft (T_After==1&fert==`birth'+1)|(T_After==0&fert==`birth')
+					local cond_all (T_Twin==1&fert==`birth'+1)|(T_Twin==0&fert==`birth')
+
+					reg `y' T_After $basecont $morecont [pw=sweight] if `cond'&``cond2''
+					outreg2 T_After $baseout $moreout using `out', excel append
+				}
+			}
+		local ++loop
+		}
+	}
 }
 
 
+********************************************************************************
+**** (5) Reduced Form Regressions on pre-twins by birth order
+********************************************************************************
+if `"`bordpretwin'"'=="yes" {
+	if `"`bordafter_pre'"' == "yes" {
+		local cond agefirstbirth>=14&age<22&pretwinafter==1
+		cap rm "$Results/Outreg/`twinbordafter_pre'.xls"
+		cap rm "$Results/Outreg/`twinbordafter_pre'.txt"
+
+		local out "$Results/Outreg/`twinbordafter_pre'.xls"
+		foreach birth of numlist 2(1)8 {
+			dis in yellow "We are on birth number `birth' of 8"	
+			local cond2 (T_After==1&fert==`birth'+1)|(T_After==0&fert==`birth')
+
+			foreach outcome of varlist school_zscore educ attendance highschool {
+				reg `outcome' T_After $basecont $morecont [pw=sweight] if `cond'&`cond2'
+				outreg2 T_After $baseout $moreout using `out', excel append
+
+
+				reg `outcome' T_After $basecont [pw=sweight] if `cond'&`cond2'&e(sample)
+				outreg2 T_After $baseout using `out', excel append
+
+			}
+		}
+	}
+
+	if `"`bordall_pre'"' == "yes" {
+		local cond agefirstbirth>=14&age<22&pretwin==1
+		cap rm "$Results/Outreg/`twinbordall_pre'.xls"
+		cap rm "$Results/Outreg/`twinbordall_pre'.txt"
+
+		local out "$Results/Outreg/`twinbordall_pre'.xls"
+		foreach birth of numlist 2(1)8 {
+			dis in yellow "We are on birth number `birth' of 8"	
+			local cond2 (T_Twin==1&fert==`birth'+1)|(T_Twin==0&fert==`birth')
+
+			foreach outcome of varlist school_zscore educ attendance highschool {
+				reg `outcome' T_Twin $basecont $morecont [pw=sweight] if `cond'&`cond2'
+				outreg2 T_Twin $baseout $moreout using `out', excel append
+
+
+				reg `outcome' T_Twin $basecont [pw=sweight] if `cond'&`cond2'&e(sample)
+				outreg2 T_Twin $baseout using `out', excel append
+			}
+		}
+	}	
+}
