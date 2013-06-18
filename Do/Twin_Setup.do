@@ -135,7 +135,9 @@ save $PATH/Data/DHS_twins, replace
 *** (3) Setup Variables which are used in TwinRegression
 ********************************************************************************
 use $PATH/Data/DHS_twins, clear
-*** Generate sibling size subgroups (1+, 2+, 3+, 4+,...)  As per Angrist et al.
+********************************************************************************
+*** (3A) Generate sibling size subgroups (1+, 2+, 3+,...)  As per Angrist et al.
+********************************************************************************
 local max 1
 local fert 2
 //For a more extensive version of this loop see TwinSetup.do
@@ -148,11 +150,13 @@ foreach num in one two three four five six {
 	local ++fert
 }
 
-*** "Quality" variables
+********************************************************************************
+*** (3B) "Quality" variables
+********************************************************************************
 *** Attendance
 gen attendance=0 if attend_year==0
-replace attendance=1 if attend_year==2
-replace attendance=2 if attend_year==1
+replace attendance=1 if attend_year==2|attend_year==1
+*replace attendance=2 if attend_year==1
 replace attendance=. if age<6
 
 *** Schooling gap
@@ -170,10 +174,19 @@ replace school_zscore=. if age<6
 gen highschool=1 if (educlevel==2|educlevel==3)&age>11
 replace highschool=0 if (educlevel==0|educlevel==1)&age>11
 
+*** Health
+gen childsurvive=child_alive
+gen childageatdeath=b7/12
+gen infantmortality=childageatdeath<=1
+gen childmortality=childageatdeath<=5
+
 *** Control variables
 tab v701, gen(educmale)
 tab bord, gen(borddummy)
 tab age, gen(age)
+
+gen gender="F" if sex==2
+replace gender="M" if sex==1
 
 gen educfyrs_sq=educf*educf
 gen educf_0=educf==0
@@ -272,6 +285,8 @@ gen wantedbirth=bord<=idealnumkids
 gen idealfam=0 if idealnumkids==fert
 replace idealfam=1 if idealnumkids<fert
 replace idealfam=-1 if idealnumkids>fert
+
+gen exceeddum=idealfam==1
 
 gen quant_exceed=fert-idealnumkids
 
@@ -379,6 +394,12 @@ gen T_After=twinafterfamily
 gen T_AfterXpretwin=T_After*pretwinafter
 gen T_AfterXposttwin=T_After*posttwinafter
 
+*(4) Twins born in family
+gen T_Twin=twinfamily
+gen T_TwinXpretwin=T_Twin*pretwin
+gen posttwin=bord>twin_bord_fam&twind==0
+gen T_TwinXposttwin=T_Twin*posttwin
+
 ** Labels
 lab var twind "Binary indicator for multiple birth"
 lab var twin_birth "First born in twin birth (gives bord of twins)"
@@ -408,13 +429,24 @@ lab val idealfam ideal
 lab def birth 1 "Not last birth" 2 "Last birth" 3 "Last birth, exceeds ideal"
 lab val twintype singletype birth
 
+
+replace age=age+100 if age<0
 ********************************************************************************
 *** (3) Create country income levels and weight variables
 ********************************************************************************
+replace country="CAR" if v000=="CF3" & _cou==.
+replace _cou=10 if v000=="CF3" & _cou==.
+replace country="Zimbabwe" if v000=="ZW6" & _cou==.
+replace _cou=69 if v000=="ZW6" & _cou==.
+
 do $PATH/Do/countrynaming
 
-bys _cou _year: egen totalweight=sum(sweight)
-gen cweight=(sweight/totalweight)*1000000
+gen income="low" if income_status=="LOWINCOME"
+replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
+
+
+*bys _cou _year: egen totalweight=sum(sweight)
+*gen cweight=(sweight/totalweight)*1000000
 
 ********************************************************************************
 *** (4) Save data as working directory
