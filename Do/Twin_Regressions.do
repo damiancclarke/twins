@@ -40,7 +40,7 @@ global twinout agemay magesq educf_1_4 educf_5_6 educf_7_10 educf_11plus /*
 global S educf_1_4 educf_5_6 educf_7_10 educf_11pl
 global SH height bmi educf_1_4 educf_5_6 educf_7_10 educf_11pl
 
-global basecont malec agemay magesq agefirstbirth i._cou i.year_birth i.age /*i.bord*/
+global basecont malec agemay magesq agefirstbirth i._cou i.year_birth i.age
 global basecont2 malec agemay magesq agefirstbirth i.year_birth i.age /*i.bord*/
 global baseout malec agemay magesq agefirstbirth
 global morecont height bmi educf_1_4 educf_5_6 educf_7_10 educf_11pl
@@ -55,13 +55,13 @@ local pooled no
 	local bind no
 	local final no
 	local after no
-local bord yes
+local bord no
 	local bordfinal no
 	local bordafter yes
 	local bordall yes
 local gend no
 local income no
-local bordpretwin yes
+local bordpretwin no
 	local bordafter_pre yes
 	local bordall_pre yes
 local IV no
@@ -78,16 +78,20 @@ local twinbind BindTwins
 local twinfinal FinalTwins
 local twinbord TwinBord_Final
 local twinafter TwinAfter_bord
-local twinbordafter TwinBord_After_zscoreonly
-local twinbordall TwinBord_All_zscoreonly
-local twinbordafter_pre TwinBord_After_pre_only_lowinc
-local twinbordall_pre TwinBord_All_pre_only_lowinc
+local twinbordafter TwinBord_After
+local twinbordall TwinBord_All
+local twinbordafter_pre TwinBord_After_pre
+local twinbordall_pre TwinBord_All_pre
 local gend_twinbordall TwinBordAll_gender_zscoreonly
 local gend_twinbordafter TwinBordAfter_gender_zscoreonly
 local inc_twinbordall TwinBordAll_income_zscoreonly
 local inc_twinbordafter TwinBordAfter_income_zscoreonly
 local IVtwinbordall TwinBordAll_IV
 local IVtwinbordafter TwinBordAfter_IV
+local IVplusgroups IVplusgroups
+local IVplusgroups_first IVplusgroups_first
+local IVplusgroups_after IVplusgroups_after
+local IVplusgroups_after_first IVplusgroups_after_first
 
 *******************************************************************************
 *** (0) Setup (+ discretionary choices)
@@ -178,11 +182,15 @@ if `"`sumstats'"'=="yes" {
 	graph export "$Results/twinbybord.eps", as(eps) replace
 	restore
 
+	local note1 "Total sample of families is 1,416,924."
+	local note2 " Ideal size 10 refers to >=10.  2.61% of families report 'up"
+	local note3 " to god', and 4.39% provide a non-numeric response"
+	
 	preserve
 	collapse idealnumkids v613, by(id)
 	gen idealnum=v613 if v613<=10
 	replace idealnum=10 if v613>10&v613<98
-	hist idealnum, note("Total sample of families is 1,416,924.  Ideal size 10 refers to >=10.  2.61% of families report ’up to god’ and 4.39% provide a non−numeric response") ///
+	hist idealnum, note("`note1' `note2' `note3'") ///
 	bcolor(navy) graphregion(color(white)) bgcolor(white)) ///	
 	frac xtitle("Ideal Family Size")
 	graph save "$Results/idealfamsize", replace
@@ -398,8 +406,8 @@ if `"`bord'"'=="yes" {
 		cap rm "$Results/Outreg/`twinbordafter'.txt"
 
 		local out "$Results/Outreg/`twinbordafter'.xls"
-		foreach birth of numlist 2(1)8 {
-			dis in yellow "We are on birth number `birth' of 8"	
+		foreach birth of numlist 2(1)7 {
+			dis in yellow "We are on birth number `birth' of 7"	
 			local cond2 (T_After==1&fert==`birth'+1)|(T_After==0&fert==`birth')
 
 			foreach outcome of varlist school_zscore highschool childmort infantmort {
@@ -419,8 +427,8 @@ if `"`bord'"'=="yes" {
 		cap rm "$Results/Outreg/`twinbordall'.txt"
 
 		local out "$Results/Outreg/`twinbordall'.xls"
-		foreach birth of numlist 2(1)8 {
-			dis in yellow "We are on birth number `birth' of 8"	
+		foreach birth of numlist 2(1)7 {
+			dis in yellow "We are on birth number `birth' of 7"	
 			local cond2 (T_Twin==1&fert==`birth'+1)|(T_Twin==0&fert==`birth')
 
 			foreach outcome of varlist school_zscore highschool childmort infantmort {
@@ -519,21 +527,21 @@ if `"`income'"' == "yes" {
 **** (6) Reduced Form Regressions on pre-twins by birth order
 ********************************************************************************
 if `"`bordpretwin'"'=="yes" {
-	keep if income=="low"
-	if `"`bordafter_pre'"' == "yes" {		
+	*keep if income=="low"
+	if `"`bordafter_pre'"' == "yes" {
 		local cond agefirstbirth>=14&age<22
 		cap rm "$Results/Outreg/`twinbordafter_pre'.xls"
 		cap rm "$Results/Outreg/`twinbordafter_pre'.txt"
 
 		local out "$Results/Outreg/`twinbordafter_pre'.xls"
-		foreach birth of numlist 2(1)7 {
-			dis in yellow "We are on birth number `birth' of 7"	
-			local cond2 (T_After==1&fert==`birth'+1&pretwinafter==1)|(T_After==0&fert==`birth')
+		foreach birth of numlist 2(1)8 {
+			dis in yellow "We are on birth number `birth' of 8"	
+			local cond2 (T_After==1&fert==`birth'+1&pretwinafter==1)|/*
+			*/(T_After==0&fert==`birth')
 
 			foreach outcome of varlist school_zscore highschool childmort infantmort {
 				reg `outcome' T_After $basecont $morecont [pw=sweight] if `cond'&`cond2'
 				outreg2 T_After $baseout $moreout using `out', excel append
-
 
 				reg `outcome' T_After $basecont [pw=sweight] if `cond'&`cond2'&e(sample)
 				outreg2 T_After $baseout using `out', excel append
@@ -548,14 +556,14 @@ if `"`bordpretwin'"'=="yes" {
 		cap rm "$Results/Outreg/`twinbordall_pre'.txt"
 
 		local out "$Results/Outreg/`twinbordall_pre'.xls"
-		foreach birth of numlist 2(1)7 {
-			dis in yellow "We are on birth number `birth' of 7"	
-			local cond2 (T_Twin==1&fert==`birth'+1&pretwin==1)|(T_Twin==0&fert==`birth')
+		foreach birth of numlist 2(1)8 {
+			dis in yellow "We are on birth number `birth' of 8"	
+			local cond2 (T_Twin==1&fert==`birth'+1&pretwin==1)|/*
+			*/(T_Twin==0&fert==`birth')
 
 			foreach outcome of varlist school_zscore highschool childmort infantmort {
 				reg `outcome' T_Twin $basecont $morecont [pw=sweight] if `cond'&`cond2'
 				outreg2 T_Twin $baseout $moreout using `out', excel append
-
 
 				reg `outcome' T_Twin $basecont [pw=sweight] if `cond'&`cond2'&e(sample)
 				outreg2 T_Twin $baseout using `out', excel append
@@ -612,10 +620,53 @@ if `"`IV'"'=="yes" {
 ********************************************************************************
 **** (7) Instrument as per Angrist et al using "+ groups"
 ********************************************************************************
-**** Here the idea is to form 
-****
-****
+**** Here the idea is to use groups 2+, 3+ etc., where the 2+ groups refers to 
+**** all first born children in families of size two or more, the 3+ group ref-
+**** ers to all first and second born 
 ********************************************************************************
 if `"`plusgroups'"'=="yes" {
+	local cond agefirstbirth>=14&age<22
+	local cond2 agefirstbirth>=14&age<22&fert>desiredfert_region
+	
+	foreach file in IVplusgroups IVplusgroups_first IVplusgroups_after /*
+	*/ IVplusgroups_after_first {
+	cap rm "$Results/Outreg/``file''.xls"
+	cap rm "$Results/Outreg/``file''.txt"
+	}
+	
+	local out "$Results/Outreg/`IVplusgroups'.xls"
+	local outfirst "$Results/Outreg/`IVplusgroups_first'.xls"	
+	local out2 "$Results/Outreg/`IVplusgroups_after'.xls"
+	local out2first "$Results/Outreg/`IVplusgroups_after_first'.xls"
+	
+	foreach num in two three four five six seven {
+		foreach y of varlist school_zscore highschool childmort infantmort {
+			*ALL TWINS
+			xi: ivreg2 `y' (fert=twin_`num'_fam) $basecont $morecont if /*
+			*/ `cond'&`num'_plus==1, savefirst
+			outreg2 fert $baseout $moreout using `out', excel append
+			est restore _ivreg2_fert
+			outreg2 twin_`num'_fam $baseout $moreout using `outfirst', excel append
+			
+			xi: ivreg2 `y' (fert=twin_`num'_fam) $basecont if `cond'&`num'_plus==1& /*
+			*/e(sample), savefirst
+			outreg2 fert $baseout using `out', excel append
+			est restore _ivreg2_fert
+			outreg2 twin_`num'_fam $baseout using `outfirst', excel append
 
+			
+			*TWINS AFTER DESIRED ONLY
+			xi: ivreg2 `y' (fert=twin_`num'_fam) $basecont $morecont if  /*
+			*/`cond2'&`num'_plus==1, savefirst
+			outreg2 fert $baseout $moreout using `out2', excel append
+			est restore _ivreg2_fert
+			outreg2 twin_`num'_fam $baseout $moreout using `out2first', excel append
+				
+			xi: ivreg2 `y' (fert=twin_`num'_fam) $basecont if `cond2'&`num'_plus==1&/*
+			*/e(sample), savefirst
+			outreg2 fert $baseout using `out2', excel append
+			est restore _ivreg2_fert
+			outreg2 twin_`num'_fam $baseout using `out2first', excel append
+		}
+	}
 }

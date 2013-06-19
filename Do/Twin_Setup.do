@@ -141,11 +141,11 @@ use $PATH/Data/DHS_twins, clear
 local max 1
 local fert 2
 //For a more extensive version of this loop see TwinSetup.do
-foreach num in one two three four five six {
+foreach num in two three four five six seven {
 	gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'  
 	replace `num'_plus=0 if twin!=0
 	gen twin`num'=(twin==1 & bord==`fert')
-	bys id: egen twin_`num'_fam=max(twin`num') 
+	bys id: egen twin_`num'_fam=max(twin`num')
 	local ++max
 	local ++fert
 }
@@ -180,7 +180,9 @@ gen childageatdeath=b7/12
 gen infantmortality=childageatdeath<=1
 gen childmortality=childageatdeath<=5
 
-*** Control variables
+********************************************************************************
+*** (3C) Control variables
+********************************************************************************
 tab v701, gen(educmale)
 tab bord, gen(borddummy)
 tab age, gen(age)
@@ -229,7 +231,7 @@ drop id
 egen id=concat(_cou mid _year mid v001 mid v002 mid v150 mid caseid)
 
 ********************************************************************************
-*** (3a) Twin variables
+*** (3D) Twin variables
 ********************************************************************************
 replace twind=0 if twin==0
 gen twin_birth=twind
@@ -269,7 +271,9 @@ replace finaltwin=0 if finaltwin==.
 bys id: egen finaltwinfamily=max(finaltwin)
 replace finaltwinfamily=0 if finaltwinfamily==.
 
-*FERTILITY VARS
+********************************************************************************
+*** (3E) Fertility variables
+********************************************************************************
 gen idealnumkids=v613 if v613<11
 replace idealnumkids=11 if v613>=11&v613<50
 replace idealnumkids=11 if v613==94|v613==95|v613==96
@@ -294,6 +298,10 @@ gen exceeder=1 if bord-idealnumkids==1
 
 gen twinexceeder=exceeder==1&twin==2|twin==3|twin==4
 bys id: egen twinexceedfamily=max(twinexceeder)
+
+***Generate sub-region (and ethnicity) specific desired fertility
+bys _cou v101: egen desiredfert_region=mean(idealnumkids)
+bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
 
 *Twins born on final birth causing parents to exceed desired family size
 gen twinexceed=finaltwin==1&idealfam==1
@@ -382,15 +390,25 @@ gen T_BindXpretwin=T_Bind*pretwin
 *(3) treatment is twin born after family's ideal number (control nontwin famili-
 *es with births greater or equal to ideal)
 gen twinafter=1 if twin_bord>=idealnumkids&twind==1
+gen twinafter_region=1 if twin_bord>=desiredfert_region&twind==1
+gen twinafter_ethnic=1 if twin_bord>=desiredfert_ethnic&twind==1
 bys id: egen twinafterfamily=max(twinafter)
+bys id: egen twinafterfamily_region=max(twinafter_region)
+bys id: egen twinafterfamily_ethnic=max(twinafter_ethnic)
 replace twinafterfamily=0 if idealfam==0&twinafterfamily==.
 replace twinafterfamily=0 if idealfam==1&twinafterfamily==.
+replace twinafterfamily_region=0 if idealnumkids<=desiredfert_region
+replace twinafterfamily_ethnic=0 if idealnumkids<=desiredfert_ethnic
+
 gen posttwinafter=1 if twinafterfamily==1&bord>twin_bord_fam&twind==0
 replace posttwinafter=0 if twinafterfamily!=.&posttwinafter==. 
 gen pretwinafter=1 if twinafterfamily==1&bord<twin_bord_fam&twind==0
 replace pretwinafter=0 if twinafterfamily!=.&pretwinafter==. 
 gen testtwinafter=1 if twinafterfamily==1&bord==twin_bord_fam
 gen T_After=twinafterfamily
+gen T_After_region=twinafterfamily_region
+gen T_After_ethnic=twinafterfamily_ethnic
+
 gen T_AfterXpretwin=T_After*pretwinafter
 gen T_AfterXposttwin=T_After*posttwinafter
 
@@ -400,7 +418,9 @@ gen T_TwinXpretwin=T_Twin*pretwin
 gen posttwin=bord>twin_bord_fam&twind==0
 gen T_TwinXposttwin=T_Twin*posttwin
 
-** Labels
+********************************************************************************
+*** (4) Labels
+********************************************************************************
 lab var twind "Binary indicator for multiple birth"
 lab var twin_birth "First born in twin birth (gives bord of twins)"
 lab var id "Unique family identifier"
@@ -423,6 +443,8 @@ lab var T_FinalXpretwin "Child born before twins in 'Final' treatment"
 lab var T_BindXpretwin "Child born before twins in 'Bind' treatment"
 lab var T_FinalXtwin "Twins in family in 'Final' treatment"
 lab var T_BindXtwin "Twin in family in 'Bind' treatment"
+lab var desiredfert_region "Average desired family size by region"
+lab var desiredfert_ethnic "Average desired family size by etchnicity"
 
 lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
 lab val idealfam ideal
@@ -432,7 +454,7 @@ lab val twintype singletype birth
 
 replace age=age+100 if age<0
 ********************************************************************************
-*** (3) Create country income levels and weight variables
+*** (5) Create country income levels and weight variables
 ********************************************************************************
 replace country="CAR" if v000=="CF3" & _cou==.
 replace _cou=10 if v000=="CF3" & _cou==.
@@ -449,6 +471,6 @@ replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
 *gen cweight=(sweight/totalweight)*1000000
 
 ********************************************************************************
-*** (4) Save data as working directory
+*** (6) Save data as working directory
 ********************************************************************************
 save $PATH/Data/DHS_twins, replace
