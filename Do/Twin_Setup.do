@@ -138,11 +138,17 @@ use $PATH/Data/DHS_twins, clear
 ********************************************************************************
 *** (3A) Generate sibling size subgroups (1+, 2+, 3+,...)  As per Angrist et al.
 ********************************************************************************
+*ID
+gen mid="a"
+drop id
+egen id=concat(_cou mid _year mid v001 mid v002 mid v150 mid caseid)
+
 local max 1
 local fert 2
 //For a more extensive version of this loop see TwinSetup.do
 foreach num in two three four five six seven {
 	gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'  
+	gen `num'_plus_withtwin=`num'_plus
 	replace `num'_plus=0 if twin!=0
 	gen twin`num'=(twin==1 & bord==`fert')
 	bys id: egen twin_`num'_fam=max(twin`num')
@@ -224,11 +230,6 @@ foreach year of varlist child_yob year_birth {
 replace child_yob=child_yob+1900 if child_yob<100&child_yob>2
 replace child_yob=child_yob+2000 if child_yob<=2
 replace year_birth=year_birth+1900 if year_birth<100
-
-*ID
-gen mid="a"
-drop id
-egen id=concat(_cou mid _year mid v001 mid v002 mid v150 mid caseid)
 
 ********************************************************************************
 *** (3D) Twin variables
@@ -466,11 +467,7 @@ do $PATH/Do/countrynaming
 gen income="low" if income_status=="LOWINCOME"
 replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
 
-
-*bys _cou _year: egen totalweight=sum(sweight)
-*gen cweight=(sweight/totalweight)*1000000
-
 ********************************************************************************
 *** (6) Save data as working directory
 ********************************************************************************
-save $PATH/Data/DHS_twins, replace
+save $PATH/Data/DHS_twins_new, replace
