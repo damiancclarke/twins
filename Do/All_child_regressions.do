@@ -20,7 +20,7 @@ set mem 2000m
 *******************************************************************************
 global Base "~/investigacion/Activa/Twins"
 global Data "$Base/Data"
-global Results "~/investigacion/Activa/Twins/Results"
+global Results "~/investigacion/Activa/Twins/ResultsNEW2"
 log using $Base/Log/All_child_regressions.log, text replace
 
 *Q-Q CONTROLS
@@ -38,118 +38,14 @@ local pooled yes
 local ols no
 
 *******************************************************************************
-*** (1) Setup
+*** (1) Setup (+ discretionary choices)
 *******************************************************************************
-use $Data/DHS_twins
-drop if height<800|height>2200
-replace height=height/10
-replace bmi=bmi/100
-*drop if agefirstbirth<15
-drop if _cou==45&(_year==2001|_year==2006|_year==2011)
-replace year_birth=year_birth+1900 if year_birth<1900
+use $Data/DHS_twins_twinsonly
 
-*ID
-gen mid="a"
-drop id
-egen id=concat(_cou mid _year mid v001 mid v002 mid v150 mid caseid)
+replace bmi=. if bmi>42
+replace height=. if height>240
+replace height=. if height<80
 
-*TWIN VARS
-replace twind=0 if twin==0
-gen twin_birth=1 if twin==1
-replace twin_birth=0 if twin==0
-bys id: egen twinfamily=max(twind)
-replace twinfamily=0 if twinfamily==.
-
-gen twin_bord=bord if twin==1
-replace twin_bord=bord-1 if twin==2
-replace twin_bord=bord-2 if twin==3
-replace twin_bord=bord-3 if twin==4
-
-bys id: egen twin_bord_fam=max(twin_bord)
-
-/*There are two ways to generate the twin binding variable.  One is to look at all
-twins that occur on the final birth where the family exceeds their ideal number
-(no matter what the number).  This is twintype==3.
-
-The second way is to look at twins which are born and which make the family exceed
-their ideal number exactly (eg twins birth at bord=2 where family only wanted 2.
-Then if the family stops after the twin we have the most rigid possible definition.
-*/
-
-*Twins born on final birth
-gen finaltwin=1 if twin==2&fert==bord
-replace finaltwin=1 if twin==1&(fert-1)==bord
-replace finaltwin=0 if finaltwin==.
-bys id: egen finaltwinfamily=max(finaltwin)
-replace finaltwinfamily=0 if finaltwinfamily==.
-
-*FERTILITY VARS
-gen idealnumkids=v613 if v613<9
-replace idealnumkids=9 if v613>=9&v613<21
-lab def idealnumkids 1 "1" 2 "2" 3 "3" 4 "4" 5 "5" 6 "6" 7 "7" 8 "8" 9 "9+"
-lab val idealnumkids numkids
-
-gen lastbirth=fert==bord
-replace lastbirth=1 if twin==1&bord==fert-1
-gen wantedbirth=bord<=idealnumkids
-gen idealfam=0 if idealnumkids==fert
-replace idealfam=1 if idealnumkids<fert
-replace idealfam=-1 if idealnumkids>fert
-
-gen quant_exceed=fert-idealnumkids
-
-gen exceeder=1 if bord-idealnumkids==1
-gen twinexceeder=exceeder==1&twin==2
-bys id: egen twinexceedfamily=max(twinexceeder)
-bys id: egen twinbordfamily=max(twin_bord)
-
-*Twins born on final birth causing parents to exceed desired family size
-gen twinexceed=finaltwin==1&idealfam==1
-gen singlexceed=finaltwin==0&idealfam==1
-gen twinattain=finaltwin==1&idealfam==0
-
-gen twintype=1 if twind==1&lastbirth==0
-replace twintype=2 if twind==1&lastbirth==1&idealfam!=1
-replace twintype=3 if twind==1&lastbirth==1&idealfam==1
-
-gen singletype=1 if twind==0&lastbirth==0
-replace singletype=2 if twind==0&lastbirth==1&idealfam!=1
-replace singletype=3 if twind==0&lastbirth==1&idealfam==1
-
-gen twinbinds=(twin==1&bord==idealnumkids)|(twin==2&bord==idealnumkids+1)
-gen twinbindsfinal=(twin==1&bord==idealnumkids&bord==fert-1)|(twin==2&bord==idealnumkids+1&fert==bord)
-
-bys id: egen FAMtwinbindsfinal=max(twinbindsfinal)
-bys id: egen FAMtwinbinds=max(twinbinds)
-
-*COVARIATES
-gen poor1=wealth==1
-gen agesq=age*age
-gen magesq=agemay*agemay
-gen highschool=educlevel==2|educlevel==3
-
-
-lab var twind "Binary indicator for multiple birth"
-lab var twin_birth "First born in twin birth (gives bord of twins)"
-lab var id "Unique family identifier"
-lab var poor1 "In lowest asset quintile"
-lab var idealnumkids "Ideal number of children reported"
-lab var lastbirth "Family's last birth (singleton or both twins)"
-lab var twinfamily "At least one twin birth in family"
-lab var wantedbirth "Birth occurs before optimal target"
-lab var idealfam "Has family obtained ideal size? (negative implies < ideal)"
-lab var twinexceed "Twin birth causes parents to exceed optimal size"
-lab var singlexceed "Single birth causes parents to exceed optimal size"
-lab var twintype "Twin isn't last bith/is last birth/is last birth and exceeds"
-lab var singletype "Single isn't last bith/is last birth/is last birth+exceeds"
-lab var quant_exceed "Difference between total births and desired births"
-lab var exceeder "1 if child causes family to exceed optimal size"
-lab var twinexceeder "1 if child is (2nd) twin and causes parents to exceed"
-
-lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
-lab val idealfam ideal
-lab def birth 1 "Not last birth" 2 "Last birth" 3 "Last birth, exceeds ideal"
-lab val twintype singletype birth
 
 
 *******************************************************************************
@@ -167,7 +63,7 @@ if `"`sumstats'"'=="yes" {
 	*twoway kdensity bord if twin_birth==1 || kdensity bord if twin_birth==0, ///
 	*legend(label(1 "Twin Birth") label(2 "Single Birth")) ///
 	*title("Birth type by birth order")
-	twoway kdensity fert if twin_birth==1, bw(2) || kdensity fert if twin_birth==0,///
+	twoway kdensity fert if twin_birth==1, bw(2) || kdensity fert if twin_birth==0, ///
 	bw(2) legend(label(1 "Twin Family") label(2 "Singleton Family")) ytitle("Density") ///
 	title("Total births by Family Type") xtitle("total children ever born") 
 
@@ -484,7 +380,7 @@ if `"`pooled'"'=="yes" {
 			}
 			else {
 				local condition if age>6&age<19
-			} 
+			}
 			reg `outcome' finaltwinfamily `basecontrols' [pw=sweight] `condition'&`inc', cluster(_cou)
 			outreg2 finaltwinfamily `baseoutregvars' using $Base/Results/AltSpec/`folder'/POOLfinal_twinfamily.xls, excel append
 			reg `outcome' finaltwinfamily `basecontrols' `morecontrols' [pw=sweight] `condition'&`inc', cluster(_cou)

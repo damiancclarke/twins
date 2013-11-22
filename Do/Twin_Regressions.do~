@@ -35,13 +35,12 @@ global Base "BASEFILE WHERE EVERYTHING IS"
 global Data "FILE WHERE DATA IS (CAN BE SAME AS BASE)"
 global Results "FILE WHERE RESULTS SHOULD BE EXPORTED"
 */
-if c(username)=="Damian.Clarke" {
-	global Base "\\tsclient\E\"
-	global Data "\\tsclient\E\Data"
-	global Results "\\tsclient\E\Results\NEUDC"
-	global Tables "$Results/Outreg"
+if c(os)=="Windows" {
+	global Base "H:/TwinTransfer"
+	global Data "H:/TwinTransfer"
+	global Results "H:/TwinTransfer/Results"
 }
-else if c(os)=="Unix" & c(username)=="damiancc" {
+else if c(os)=="Unix" {
 	global Base "~/investigacion/Activa/Twins"
 	global Data "~/investigacion/Activa/Twins/Data"
 	global Results "~/investigacion/Activa/Twins/Results/NEUDC"
@@ -51,7 +50,7 @@ else if c(os)=="Unix" & c(username)=="damiancc" {
 log using "$Base/Log/Twin_Regressions.log", text replace
 
 *OUTCOME VARIABLES
-global outcomes school_zscore noeduc /*highschoo*/ childmortal infantmortal
+global outcomes school_zscore noschool /*highschoo*/ childmortal infantmortal
 
 *REGRESSION CONTROLS
 global sumstats bord fert idealnumkids agemay educf height bmi educ /*
@@ -765,7 +764,7 @@ if `"`RF_plus'"'=="yes" {
 			cap rm "$Results/Outreg/`Plus_RF'_`t'.xls"
 			cap rm "$Results/Outreg/`Plus_RF'_`t'.txt"
 	
-			foreach num in two three four five six seven {
+			foreach num in two /*three*/ four /*five*/ six /*seven*/ {
 				foreach y of varlist $outcomes fert {
 					local cond agefirstbirth>=14&age<19
 					reg `y' twin_`num'_fam $cont $S $H `w' if `cond'&`num'_plus`c'==1
@@ -784,7 +783,7 @@ if `"`RF_plus'"'=="yes" {
 			cap rm "$Results/Outreg/`Plus_RF_after'_`t'.xls"
 			cap rm "$Results/Outreg/`Plus_RF_after'_`t'.txt"
 		
-			foreach num in  two three four five six seven {
+			foreach num in  two /*three*/ four /*five*/ six /*seven*/ {
 				foreach y of varlist $outcomes fert {
 					local cond agefirstbirth>=14&age<19&twin_bord_fam>idealnumkids
 					reg `y' twin_`num'_fam $cont $S $H `w' if `cond'&`num'_plus`c'==1
