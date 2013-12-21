@@ -438,7 +438,7 @@ if `income'==1 {
 			local c  `cond'&`n'_plus==1&income=="`inc'"
 			local ce `cond'&`n'_plus==1&income=="`inc'"&e(sample)
 			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c',/*
 				*/ `se' savefirst savefp(f`n3')
 				eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' `ce', /*
 				*/ `se' savefirst savefp(f`n2')

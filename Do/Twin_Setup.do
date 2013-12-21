@@ -1,6 +1,16 @@
-* Twin_Setup 1.00                damiancclarke   	 		  yyyy-mm-dd:2012-07-25    
+* Twin_Setup 2.00                damiancclarke   	 		  yyyy-mm-dd:2013-11-22    
 *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 *
+/* This is has been a pretty major refactorisation of the previous twin setup
+file.  To rollback to the previous one, return to the git commit made on Nov 11
+2013.  Here we are redefining to only look at reduced form and IV with treament
+as described in Black et al, Angrist et al, and also to interact with desired
+family size.  Our principal specification for desired is:
+
+quality_{ij}=\beta_0+\beta_1*fert_{j}+\beta_2*fert*desired_{j}+X'\beta+u_{ij}
+
+
+*/
 
 clear all
 version 11.2
@@ -13,22 +23,12 @@ set maxvar 20000
 ********************************************************************************
 ****(1) Globals and locals
 ********************************************************************************
-if c(username) = "Damian.Clarke" {
-	global PATH "\\tsclient\E\"
-	global DATA "~/database/DHS/DHS_Data"
-	global LOG "$PATH/Log"
-	global TEMP "$PATH/Temp"
-}
-
-else if c(username) = "damiancc" {
-	global PATH "~/investigacion/Activa/Twins"
-	global DATA "~/database/DHS/DHS_Data"
-	global LOG "$PATH/Log"
-	global TEMP "$PATH/Temp"
-}
+global PATH "~/investigacion/Activa/Twins"
+global DATA "~/database/DHS/DHS_Data"
+global LOG "$PATH/Log"
+global TEMP "$PATH/Temp"
 
 cap mkdir $PATH/Temp
-
 
 log using "$LOG/Twins_DHS.txt", text replace
 ********************************************************************************
@@ -54,12 +54,11 @@ foreach num of numlist 1(1)7 {
 	cap rename v133 educf
 	cap rename v137 kids_under5
 	cap rename v140 rural
-	*cap rename v150 relation_hhh
 	cap rename v190 wealth
 	cap rename v201 fert
 	cap rename v212 agefirstbirth
 	cap rename v228 terminated_preg
-	cap rename v437 weight
+	cap rename v437 weightk
 	cap rename v438 height
 	cap rename v445 bmi
 	cap rename v367 wanted_last_child
@@ -138,6 +137,20 @@ replace _cou="Zimbabwe" if hv000=="ZW6" &_cou==""
 replace _year="2004" if hv000=="CF3" &_year==""
 replace _year="2010" if hv000=="ZW6" &_year==""
 
+***Year of birth for Nepal (convert from Vikram Samvat to Gregorian calendar)
+foreach year of varlist child_yob year_birth {
+	replace `year'=`year'+2000 if _cou=="Nepal" & `year'<100
+	replace `year'=`year'-57 if _cou=="Nepal"
+}
+***Year of birth for Ethiopia (convert from Ge'ez to Gregorian calendar)
+foreach year of varlist child_yob year_birth {
+	replace `year'=`year'+8 if _cou=="Ethiopia"
+}
+
+replace child_yob=child_yob+1900 if child_yob<100&child_yob>2
+replace child_yob=child_yob+2000 if child_yob<=2
+replace year_birth=year_birth+1900 if year_birth<100
+
 save $PATH/Data/DHS_twins, replace
 
 ********************************************************************************
@@ -156,32 +169,31 @@ drop mid
 local max 1
 local fert 2
 
-foreach num in two three four five six seven {
+gen twin_bord=bord-twin+1 if twin>0
+
+foreach num in two three four five {
 	gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'  
-	gen `num'_plus_withtwin=`num'_plus
+	gen `num'_plus_withtwin=(`num'_plus==1|twin_bord==`fert')
 	replace `num'_plus=0 if twin!=0
-	gen twin`num'=(twin==1 & bord==`fert')
+	gen twin`num'=(twin==1 & bord==`fert')|(twin==2 & bord==`fert'+1)
 	bys id: egen twin_`num'_fam=max(twin`num')
+	drop twin`num'
 	local ++max
 	local ++fert
 }
 
+
 ********************************************************************************
 *** (3B) "Quality" variables
 ********************************************************************************
-*** Attendance
+*** Attendance (attend_year==2 is sometimes)
 gen attendance=0 if attend_year==0
-replace attendance=1 if attend_year==2|attend_year==1
-*replace attendance=2 if attend_year==1
+replace attendance=1 if attend_year==2
+replace attendance=2 if attend_year==1
 replace attendance=. if age<6
 
-*** Schooling gap
-gen gap=age-educ-6 if age>6 & age<17
-replace gap=. if gap<-2
-
-replace educ=. if educ>25 // come back and check what this means to sample
-
 *** Z-Score
+replace educ=. if educ>25 // come back here when compiling summary stats.
 bys _cou age: egen sd_educ=sd(educ)
 bys _cou age: egen mean_educ=mean(educ)
 gen school_zscore=(educ-mean_educ)/sd_educ
@@ -206,10 +218,6 @@ replace childmortality=. if age<5
 ********************************************************************************
 *** (3C) Control variables
 ********************************************************************************
-tab v701, gen(educmale)
-tab bord, gen(borddummy)
-tab age, gen(age)
-
 gen gender="F" if sex==2
 replace gender="M" if sex==1
 
@@ -220,10 +228,12 @@ gen educf_5_6=educf>4&educf<7
 gen educf_7_10=educf>6&educf<11
 gen educf_11plus=educf>10
 gen twind=1 if twin>=1&twin!=.
+replace twind=0 if twin==0
 gen twind100=twin*100
-gen malec=(sex==1)
+gen malec=(gender=="M")
 
 replace height=height/10
+replace weight=weight/10
 replace bmi=bmi/100
 
 gen poor1=wealth==1
@@ -235,70 +245,21 @@ rename _cou country
 rename v005 sweight
 encode country, gen(_cou)
 
-***Year of birth for Nepal (convert from Vikram Samvat to Gregorian calendar)
-foreach year of varlist child_yob year_birth {
-	replace `year'=`year'+2000 if country=="Nepal" & `year'<100
-	replace `year'=`year'-57 if country=="Nepal"
-}
-***Year of birth for Ethipia (convert from Ge'ez to Gregorian calendar)
-foreach year of varlist child_yob year_birth {
-	replace `year'=`year'+8 if country=="Ethiopia"
-}
-replace child_yob=child_yob+1900 if child_yob<100&child_yob>2
-replace child_yob=child_yob+2000 if child_yob<=2
-replace year_birth=year_birth+1900 if year_birth<100
-
 ********************************************************************************
 *** (3D) Twin variables
 ********************************************************************************
-replace twind=0 if twin==0
-gen twin_birth=twind
 bys id: egen twinfamily=max(twin)
-
-gen twin_bord=bord if twin==1
-replace twin_bord=bord-1 if twin==2
-replace twin_bord=bord-2 if twin==3
-replace twin_bord=bord-3 if twin==4
-
 bys id: egen twin_bord_fam=max(twin_bord)
-
-/*There are two ways to generate the twin binding variable.  One is to look at 
-all twins that occur on the final birth where the family exceeds their ideal 
-number (no matter what the number).  This is twintype==3.
-
-The second way is to look at twins which are born and which make the family 
-exceed their ideal number exactly (eg twins birth at bord=2 where family only 
-wanted 2. Then if the family stops after the twin we have the most rigid 
-possible definition.
-*/
-
-*Twins born on final birth (not nice, but effective at finding final twin bord.)
-bys id: egen nummultiple=max(twin)  // is family singleton, twin, triplet,...
-gen finaltwin=1 if (twin==2&fert==bord)&nummultiple<=2
-replace finaltwin=1 if (twin==1&(fert-1)==bord)&nummultiple<=2
-replace finaltwin=1 if (twin==3&fert==bord)&nummultiple==3
-replace finaltwin=1 if (twin==2&(fert-1)==bord)&nummultiple==3
-replace finaltwin=1 if (twin==1&(fert-2)==bord)&nummultiple==3
-replace finaltwin=1 if (twin==4&fert==bord)&nummultiple==4
-replace finaltwin=1 if (twin==3&(fert-1)==bord)&nummultiple==4
-replace finaltwin=1 if (twin==2&(fert-2)==bord)&nummultiple==4
-replace finaltwin=1 if (twin==2&(fert-3)==bord)&nummultiple==4
-replace finaltwin=0 if finaltwin==.
-
-
+bys id: egen nummultiple=max(twin)
+gen finaltwin=(fert==bord)&twind==1
 bys id: egen finaltwinfamily=max(finaltwin)
 replace finaltwinfamily=0 if finaltwinfamily==.
+
 
 ********************************************************************************
 *** (3E) Fertility variables
 ********************************************************************************
 gen idealnumkids=v613 if v613<25
-**replace idealnumkids=11 if v613>=11&v613<50
-**replace idealnumkids=11 if v613==94|v613==95|v613==96
-**lab def idealnumkids 1 "1" 2 "2" 3 "3" 4 "4" 5 "5" 6 "6" 7 "7" 8 "8" 9 "9"/*
-***/ 10 "10" 11 "11+"
-**lab val idealnumkids numkids
-
 gen lastbirth=fert==bord&twin==0
 replace lastbirth=1 if (twin_bord==(fert-1))&nummultiple==2
 replace lastbirth=1 if (twin_bord==(fert-2))&nummultiple==3
@@ -309,167 +270,98 @@ gen idealfam=0 if idealnumkids==fert
 replace idealfam=1 if idealnumkids<fert
 replace idealfam=-1 if idealnumkids>fert
 
-gen exceeddum=idealfam==1
-
 gen quant_exceed=fert-idealnumkids
-
 gen exceeder=1 if bord-idealnumkids==1
-
-gen twinexceeder=exceeder==1&twin==2|twin==3|twin==4
+gen twinexceeder=exceeder==1&(twin==2|twin==3|twin==4)
 bys id: egen twinexceedfamily=max(twinexceeder)
+gen tu=twin_bord>=idealnumkids
+gen td=twin_bord>=idealnumkids
+bys id: egen twin_undesired=max(tu)
+bys id: egen twin_desired=max(td)
+drop td tu
 
-***Generate sub-region (and ethnicity) specific desired fertility
+*Twins born on final birth causing parents to exceed desired family size
+gen twinexceed=finaltwinfamily==1&idealfam==1
+gen singlexceed=finaltwinfamily==0&idealfam==1
+gen twinattain=finaltwinfamily==1&idealfam==0
+
+**Generate sub-region (and ethnicity) specific desired fertility
 bys _cou v101: egen desiredfert_region=mean(idealnumkids)
 bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
 
-*Twins born on final birth causing parents to exceed desired family size
-gen twinexceed=finaltwin==1&idealfam==1
-gen singlexceed=finaltwin==0&idealfam==1
-gen twinattain=finaltwin==1&idealfam==0
-
-gen twintype=1 if twind==1&lastbirth==0
-replace twintype=2 if twind==1&lastbirth==1&idealfam!=1
-replace twintype=3 if twind==1&lastbirth==1&idealfam==1
-
-gen singletype=1 if twind==0&lastbirth==0
-replace singletype=2 if twind==0&lastbirth==1&idealfam!=1
-replace singletype=3 if twind==0&lastbirth==1&idealfam==1
-
-/*twinbinds takes the value of 1 for all twins who cause parents 
-to precisely exceed their desired number of children.  For twin
-pairs this is twins who are first born at desired fertility, or
-twins who are born second at desired fertility plus 1.  For triplets
-this is the triplet who is born first at desired fertility or desired
-fertility minus one, or the second or third birth at desired or 
-desired+1 and desired or desired+2 respectively.  A similar definition 
-exists for 4 multiple births
-*/
-gen twinbinds=1 if nummultiple<=2&((twin==1&bord==idealnumkids) /*
-*/|(twin==2&bord==idealnumkids+1))
-replace twinbinds=1 if nummultiple==3&((twin==1&bord==idealnumkids) /*
-*/|(twin==1&bord==idealnumkids-1)|(twin==2&bord==idealnumkids+1) /*
-*/|(twin==2&bord==idealnumkids)|(twin==3&bord==idealnumkids+1) /*
-*/|(twin==3&bord==idealnumkids+2))
-replace twinbinds=1 if nummultiple==4&((twin==1&bord==idealnumkids)| /*
-*/(twin==1&bord==idealnumkids-1)|(twin==1&bord==idealnumkids-2)| /*
-*/(twin==2&bord==idealnumkids-1)|(twin==2&bord==idealnumkids)| /*
-*/(twin==2&bord==idealnumkids+1)|(twin==3&bord==idealnumkids)| /*
-*/(twin==3&bord==idealnumkids+1)|(twin==3&bord==idealnumkids+2)| /*
-*/(twin==4&bord==idealnumkids+1)|(twin==4&bord==idealnumkids+2)| /*
-*/(twin==4&bord==idealnumkids+3))
-replace twinbinds=0 if twinbinds!=1
-
-/*twinbindsfinal takes the value of 1 for all twins who cause parents 
-to precisely exceed their desired number of children, and who aren't
-followed by other children.
-*/
-
-gen twinbindsfinal=1 if nummultiple<=2& /*
-*/((twin==1&bord==idealnumkids&bord==fert-1)| /*
-*/(twin==2&bord==idealnumkids+1&bord==fert))
-replace twinbindsfinal=1 if nummultiple==3& /*
-*/((twin==1&bord==idealnumkids&bord==fert-2)| /*
-*/(twin==1&bord==idealnumkids-1&bord==fert-2)| /*
-*/(twin==2&bord==idealnumkids+1&bord==fert-1)| /*
-*/(twin==2&bord==idealnumkids&bord==fert-1)| /*
-*/(twin==3&bord==idealnumkids+1&bord==fert)| /*
-*/(twin==3&bord==idealnumkids+2&bord==fert-1))
-replace twinbindsfinal=1 if nummultiple==4& /*
-*/((twin==1&bord==idealnumkids&bord==fert-3)| /*
-*/(twin==1&bord==idealnumkids-1&bord==fert-3)| /*
-*/(twin==1&bord==idealnumkids-2&bord==fert-3)| /*
-*/(twin==2&bord==idealnumkids-1&bord==fert-2)| /*
-*/(twin==2&bord==idealnumkids&bord==fert-2)| /*
-*/(twin==2&bord==idealnumkids+1&bord==fert-2)| /*
-*/(twin==3&bord==idealnumkids&bord==fert-1)| /*
-*/(twin==3&bord==idealnumkids+1&bord==fert-1)| /*
-*/(twin==3&bord==idealnumkids+2&bord==fert-1)| /*
-*/(twin==4&bord==idealnumkids+1&bord==fert)| /*
-*/(twin==4&bord==idealnumkids+2&bord==fert)| /*
-*/(twin==4&bord==idealnumkids+3&bord==fert))
-replace twinbindsfinal=0 if twinbindsfinal!=1 
-
-bys id: egen FAMtwinbindsfinal=max(twinbindsfinal)
-bys id: egen FAMtwinbinds=max(twinbinds)
-
-** Create treatment variables
-*(1) treatment is twin born on final birth
-gen T_Final=finaltwinfamily
-gen T_FinalXtwin=T_Final*twind
-gen pretwin=bord<twin_bord_fam if twinfam==1
-replace pretwin=1 if twinfam==0
-gen T_FinalXpretwin=T_Final*pretwin
-
-*(2) treatment is twin born on final birth pushing family over desired number
-gen T_Bind=FAMtwinbindsfinal if (fert==idealnumkids&FAMtwinbindsfinal==0)|/*
-*/(fert==idealnumkids+1&FAMtwinbindsfinal==1)
-gen T_BindXtwin=T_Bind*twind
-gen T_BindXpretwin=T_Bind*pretwin
-
-*(3) treatment is twin born after family's ideal number (control nontwin famili-
-*es with births greater or equal to ideal)
-gen twinafter=1 if twin_bord>=idealnumkids&twind==1
-gen twinafter_region=1 if twin_bord>=desiredfert_region&twind==1
-gen twinafter_ethnic=1 if twin_bord>=desiredfert_ethnic&twind==1
-bys id: egen twinafterfamily=max(twinafter)
-bys id: egen twinafterfamily_region=max(twinafter_region)
-bys id: egen twinafterfamily_ethnic=max(twinafter_ethnic)
-replace twinafterfamily=0 if idealfam==0&twinafterfamily==.
-replace twinafterfamily=0 if idealfam==1&twinafterfamily==.
-replace twinafterfamily_region=0 if idealnumkids<=desiredfert_region
-replace twinafterfamily_ethnic=0 if idealnumkids<=desiredfert_ethnic
-
-gen posttwinafter=1 if twinafterfamily==1&bord>twin_bord_fam&twind==0
-replace posttwinafter=0 if twinafterfamily!=.&posttwinafter==. 
-gen pretwinafter=1 if twinafterfamily==1&bord<twin_bord_fam&twind==0
-replace pretwinafter=0 if twinafterfamily!=.&pretwinafter==. 
-gen testtwinafter=1 if twinafterfamily==1&bord==twin_bord_fam
-gen T_After=twinafterfamily
-gen T_After_region=twinafterfamily_region
-gen T_After_ethnic=twinafterfamily_ethnic
-
-gen T_AfterXpretwin=T_After*pretwinafter
-gen T_AfterXposttwin=T_After*posttwinafter
-
-*(4) Twins born in family
-gen T_Twin=twinfamily
-gen T_TwinXpretwin=T_Twin*pretwin
-gen posttwin=bord>twin_bord_fam&twind==0
-gen T_TwinXposttwin=T_Twin*posttwin
 
 ********************************************************************************
 *** (4) Labels
 ********************************************************************************
-lab var twind "Binary indicator for multiple birth"
-lab var twin_birth "First born in twin birth (gives bord of twins)"
+lab var year_birth "Mother's year of birth"
+lab var religion "Reported religion"
+lab var fert "Total number of children in the family"
+lab var bord "Child's birth order"
+lab var agefirstbirth "Mother's age at first birth"
+lab var child_yob "Child's year of birth"
+lab var two_plus "First born child in families with at least two births"
+lab var three_plus "1,2 born children in families with at least 3 births"
+lab var four_plus "1,2,3 born children in families with at least 4 births"
+lab var five_plus "1,2,3,4 born children in families with at least 5 births"
+lab var twin_two_fam "Twin birth at second birth"
+lab var twin_three_fam "twin birth at third birth"
+lab var twin_four_fam "twin birth at fourth birth"
+lab var twin_five_fam "twin birth at fifth birth"
 lab var id "Unique family identifier"
+lab var attendance "child attends school (1=sometimes, 2=always)"
+lab var educ "Years of education (child)"
+lab var school_zscore "Standardised educ attainment compared to country cohort"
+lab var highschool "Attends or attended highschool (>=12 years)"
+lab var noeduc "No education (>7 years)"
+lab var infantmortality "child died before 1 year of age"
+lab var childmortality "child died before 5 years of age"
+lab var gender "string variable: F or M"
+lab var educf "Mother's years of education"
+lab var educfyrs_sq "Mother's years of education squared"
+lab var educf_0 "Mother has 0 years of education (binary)"
+lab var educf_1_4 "Mother has 1-4 years of education (binary)"
+lab var educf_5_6 "Mother has 5-6 years of education (binary)"
+lab var educf_7_10 "Mother has 7-10 years of education (binary)"
+lab var educf_11plus "Mother has 11+ years of education (binary)"
+lab var twind "Child is a twin (binary)"
+lab var twin "Child is a twin (0-4) for no, twin, triplet, ... "
+lab var twind100 "Child is twin (binary*100)"
+lab var malec "Child is a boy"
+lab var height "height in centimetres"
+lab var weightk "Weight in kilograms"
+lab var bmi "Body Mass Index (weight in kilos squared/height in cm)"
 lab var poor1 "In lowest asset quintile"
-lab var idealnumkids "Ideal number of children reported"
-lab var lastbirth "Family's last birth (singleton or both twins)"
+lab var age "Child's age in years"
+lab var agemay "Mother's age in years"
+lab var agesq "Child's age squared"
+lab var magesq "Mother's age squared"
+lab var sweight "Sample weight (from DHS)"
+lab var country "Coutry name"
+lab var _cou "country (numeric code)"
 lab var twinfamily "At least one twin birth in family"
+lab var twin_bord "Birth order when twins occur (for twins only)"
+lab var twin_bord_fam "Birth order when twins occur (for whole family)"
+lab var nummultiple "0 if singleton family, 1 if twins, 2 if triplets, ..."
+lab var finaltwinfamily "The family had twins at their final birth"
+lab var idealnumkids "Ideal number of children reported (truncate at 25)"
+lab var lastbirth "Child is family's last birth (singleton or both twins)"
 lab var wantedbirth "Birth occurs before optimal target"
 lab var idealfam "Has family obtained ideal size? (negative implies < ideal)"
-lab var twinexceed "Twin birth causes parents to exceed optimal size"
-lab var singlexceed "Single birth causes parents to exceed optimal size"
-lab var twintype "Twin isn't last bith/is last birth/is last birth and exceeds"
-lab var singletype "Single isn't last bith/is last birth/is last birth+exceeds"
 lab var quant_exceed "Difference between total births and desired births"
 lab var exceeder "1 if child causes family to exceed optimal size"
-lab var twinexceeder "1 if child is (2nd) twin and causes parents to exceed"
-lab var T_Final "1 if twin born on last birth in family"
-lab var T_Bind "1 if twin born last causes parents to exceed ideal family size"
-lab var T_FinalXpretwin "Child born before twins in 'Final' treatment"
-lab var T_BindXpretwin "Child born before twins in 'Bind' treatment"
-lab var T_FinalXtwin "Twins in family in 'Final' treatment"
-lab var T_BindXtwin "Twin in family in 'Bind' treatment"
-lab var desiredfert_region "Average desired family size by region"
-lab var desiredfert_ethnic "Average desired family size by etchnicity"
+lab var twinexceeder "Twin birth causes parents to exceed optimal size"
+lab var twinexceedfamily "Family exceeds desired N and twin caused exceed"
+lab var twin_undesired "Family has had twins, and twins were >desired births"
+lab var twin_desired "Family has had twins, and twins were <=desired births"
+lab var twinexceed "Twin birth causes parents to exceed optimal size"
+lab var singlexceed "Single birth causes parents to exceed optimal size"
+lab var twinattain "Twin birth causes parents to attain optimal size"
+lab var desiredfert_region "Average desired family size by (subcountry) region"
+lab var desiredfert_ethnic "Average desired family size by ethnicity"
+
 
 lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
 lab val idealfam ideal
-lab def birth 1 "Not last birth" 2 "Last birth" 3 "Last birth, exceeds ideal"
-lab val twintype singletype birth
-
 
 replace age=age+100 if age<0
 ********************************************************************************
@@ -486,6 +378,18 @@ gen income="low" if income_status=="LOWINCOME"
 replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
 
 ********************************************************************************
-*** (6) Save data as working directory
+*** (6) Keep required variables.  Save data as working file.
 ********************************************************************************
+keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /*
+*/ four_plus five_plus twin_two_fam twin_three_fam twin_four_fam twin_five_fam /*
+*/ id attendance educ school_zscore highschool noeduc infantmortality          /*
+*/ childmortality gender educf educfyrs_sq educf_0 educf_1_4 educf_5_6         /*
+*/ educf_7_10 educf_11plus twind twin twind100 malec height weightk bmi poor1  /*
+*/ age agemay agesq magesq sweight country _cou _year twinfamily twin_bord     /*
+*/ twin_bord_fam nummultiple finaltwinfamily idealnumkids lastbirth wantedbirth/*
+*/ idealfam quant_exceed exceeder twinexceeder twinexceedfamily twin_undesired /*
+*/ twin_desired twinexceed singlexceed twinattain desiredfert_region           /*
+*/ desiredfert_ethnic income _merge
+ 
+
 save $PATH/Data/DHS_twins, replace
