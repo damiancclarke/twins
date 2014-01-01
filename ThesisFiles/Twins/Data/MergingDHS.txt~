@@ -1,0 +1,48 @@
+MERGING DHS SURVEYS:
+(1) first I check which countries and years have observations in both the child dataset (CHILD) and the education dataset (EDUC)
+(2) I drop observations in both datasets where the countries do not line up 
+	> of the 8,231,924 observations in EDUC 5,321,136 are from countries where surveys are available in CHILD
+	> of the 4,232,399 observations in CHILD 2,989,332 are from countries where surveys are available in EDUC
+(3) CHILD has observations of various individuals in a household (90% of households have 10 or less individuals).  These individuals
+are between the ages of 0-39 (85% are less than 19 years old).  However, within each household individuals are not necessarily siblings.
+As far as I can tell, each observation must be a child of somebody in the household.  I have information about the child's mother's
+relationship to the household head (eg wife, daughter).  If the for example the child's mother is the daughter of the household head,
+this suggests that the child is the granddaughter of the household head.  This detail is important as in the EDUC database I have each
+member's relationship to the household head. Then, by determining the child's relationship to the head in CHILD (via the mothers relationship)
+this is one part of the merge I use to merge with EDUC.
+
+The mother's total fertility (reported by the fertility variable) perfectly matches up to data on each child (but top-coded at 20).  Obviously 
+the mother is asked to provide details on all children, and then from this list fertility is calculated (I think I remember seeing a list
+format on the questionnaire).  In this way, information in the child database is avaialable on each child of mothers in the household.
+
+(4) EDUC has observations of various individuals in a household (once again 90% have less than 10).  Age ranges from 0 to 97+.  There are
+also details regarding the relationship to the household head.
+
+(5) In order to merge, I merge on country, year, household id, relationship to head, sex and age (in this order).  In theory, all children
+of the same age and sex with the same relationshop to the household head will be matched across the two datasets.  There are two drawbacks
+here.  The first, I can't match all household head relationships as approximately 5% are unknown/ other.  The second, all children of the
+same age and same sex (such as twins of the same gender) merge twice.  Fortunately this is not such a hassle as I exclude twins from the
+regressions anyway.  The important thing to know is that a household has a twin (a variable that is already available) and at what birth
+order this occurred. 
+
+This allows me to match 1,698,362 of the 2,989,332 observations from the CHILD set.  Of these 15,480 are matched twice,  Of those who are matched
+twice, the vast majority have the same education figures (75%), with approx 85% having a one year difference between the two matches. The
+1,240,891 who aren't matched from the CHILD dataset have the following relationships to household head:
+
+relationship|      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |  1,107,064       89.22       89.22 (head, wife or co-spouse)
+          5 |     90,417        7.29       96.50 (daughter, daughter-in-law, adopted child)
+          8 |     16,775        1.35       97.85 (mother, mother-in-law)
+         10 |     26,635        2.15      100.00 (sister)
+------------+-----------------------------------
+      Total |  1,240,891      100.00
+
+Note that these are the mother of the child's relation to the household head, so the 1,107,064 are the children of the household head.
+
+
+
+
+damian.clarke@balliol.ox.ac.uk
+
+

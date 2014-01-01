@@ -1,0 +1,1576 @@
+----------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\ExtendedEssay\Twins\log\20120219_EPSintro.log
+  log type:  text
+ opened on:  19 Feb 2012, 16:49:34
+
+. clear all
+
+. set more off
+
+. set mem 20m
+
+. 
+. global Data H:\ExtendedEssay\Twins\Data\EPS\base_2009_Stata
+
+. 
+. use "$Data/hogar"
+
+. keep if a5==3
+(48243 observations deleted)
+
+. keep folio orden a8 a9 a11 a12c a12n
+
+. rename a8 sex
+
+. rename a9 age
+
+. rename a11 educ
+
+. rename a12c curso
+
+. rename a12n nivel
+
+. 
+. 
+. reshape wide sex age educ curso nivel, i(folio) j(orden)
+(note: j = 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                    25804   ->   11913
+Number of variables                   7   ->      91
+j variable (18 values)            orden   ->   (dropped)
+xij variables:
+                                    sex   ->   sex1 sex2 ... sex18
+                                    age   ->   age1 age2 ... age18
+                                   educ   ->   educ1 educ2 ... educ18
+                                  curso   ->   curso1 curso2 ... curso18
+                                  nivel   ->   nivel1 nivel2 ... nivel18
+-----------------------------------------------------------------------------
+
+. 
+. foreach x of numlist 1(1)18{
+  2. foreach num of numlist 1(1)18{
+  3. gen age`x'_`num'=age`x'-age`num'
+  4. }
+  5. }
+(10090 missing values generated)
+(11775 missing values generated)
+(11553 missing values generated)
+(11160 missing values generated)
+(11453 missing values generated)
+(11697 missing values generated)
+(11795 missing values generated)
+(11858 missing values generated)
+(11876 missing values generated)
+(11891 missing values generated)
+(11904 missing values generated)
+(11907 missing values generated)
+(11909 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11775 missing values generated)
+(10081 missing values generated)
+(10978 missing values generated)
+(11403 missing values generated)
+(11665 missing values generated)
+(11776 missing values generated)
+(11839 missing values generated)
+(11883 missing values generated)
+(11892 missing values generated)
+(11902 missing values generated)
+(11908 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11912 missing values generated)
+(11553 missing values generated)
+(10978 missing values generated)
+(3595 missing values generated)
+(6402 missing values generated)
+(9242 missing values generated)
+(10983 missing values generated)
+(11511 missing values generated)
+(11742 missing values generated)
+(11834 missing values generated)
+(11862 missing values generated)
+(11893 missing values generated)
+(11893 missing values generated)
+(11910 missing values generated)
+(11907 missing values generated)
+(11911 missing values generated)
+(11910 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11160 missing values generated)
+(11403 missing values generated)
+(6402 missing values generated)
+(5120 missing values generated)
+(8839 missing values generated)
+(10856 missing values generated)
+(11487 missing values generated)
+(11741 missing values generated)
+(11842 missing values generated)
+(11868 missing values generated)
+(11900 missing values generated)
+(11903 missing values generated)
+(11908 missing values generated)
+(11908 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11453 missing values generated)
+(11665 missing values generated)
+(9242 missing values generated)
+(8839 missing values generated)
+(8237 missing values generated)
+(10779 missing values generated)
+(11500 missing values generated)
+(11754 missing values generated)
+(11844 missing values generated)
+(11869 missing values generated)
+(11899 missing values generated)
+(11903 missing values generated)
+(11909 missing values generated)
+(11908 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11697 missing values generated)
+(11776 missing values generated)
+(10983 missing values generated)
+(10856 missing values generated)
+(10779 missing values generated)
+(10313 missing values generated)
+(11442 missing values generated)
+(11749 missing values generated)
+(11843 missing values generated)
+(11886 missing values generated)
+(11902 missing values generated)
+(11906 missing values generated)
+(11910 missing values generated)
+(11909 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11795 missing values generated)
+(11839 missing values generated)
+(11511 missing values generated)
+(11487 missing values generated)
+(11500 missing values generated)
+(11442 missing values generated)
+(11080 missing values generated)
+(11700 missing values generated)
+(11840 missing values generated)
+(11892 missing values generated)
+(11905 missing values generated)
+(11904 missing values generated)
+(11909 missing values generated)
+(11909 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11858 missing values generated)
+(11883 missing values generated)
+(11742 missing values generated)
+(11741 missing values generated)
+(11754 missing values generated)
+(11749 missing values generated)
+(11700 missing values generated)
+(11491 missing values generated)
+(11814 missing values generated)
+(11884 missing values generated)
+(11902 missing values generated)
+(11902 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11910 missing values generated)
+(11912 missing values generated)
+(11912 missing values generated)
+(11876 missing values generated)
+(11892 missing values generated)
+(11834 missing values generated)
+(11842 missing values generated)
+(11844 missing values generated)
+(11843 missing values generated)
+(11840 missing values generated)
+(11814 missing values generated)
+(11689 missing values generated)
+(11877 missing values generated)
+(11900 missing values generated)
+(11905 missing values generated)
+(11911 missing values generated)
+(11912 missing values generated)
+(11911 missing values generated)
+(11910 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11891 missing values generated)
+(11902 missing values generated)
+(11862 missing values generated)
+(11868 missing values generated)
+(11869 missing values generated)
+(11886 missing values generated)
+(11892 missing values generated)
+(11884 missing values generated)
+(11877 missing values generated)
+(11798 missing values generated)
+(11893 missing values generated)
+(11906 missing values generated)
+(11910 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11904 missing values generated)
+(11908 missing values generated)
+(11893 missing values generated)
+(11900 missing values generated)
+(11899 missing values generated)
+(11902 missing values generated)
+(11905 missing values generated)
+(11902 missing values generated)
+(11900 missing values generated)
+(11893 missing values generated)
+(11850 missing values generated)
+(11897 missing values generated)
+(11909 missing values generated)
+(11910 missing values generated)
+(11912 missing values generated)
+(11911 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11907 missing values generated)
+(11911 missing values generated)
+(11893 missing values generated)
+(11903 missing values generated)
+(11903 missing values generated)
+(11906 missing values generated)
+(11904 missing values generated)
+(11902 missing values generated)
+(11905 missing values generated)
+(11906 missing values generated)
+(11897 missing values generated)
+(11862 missing values generated)
+(11904 missing values generated)
+(11905 missing values generated)
+(11910 missing values generated)
+(11910 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11909 missing values generated)
+(11913 missing values generated)
+(11910 missing values generated)
+(11908 missing values generated)
+(11909 missing values generated)
+(11910 missing values generated)
+(11909 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11910 missing values generated)
+(11909 missing values generated)
+(11904 missing values generated)
+(11900 missing values generated)
+(11906 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11907 missing values generated)
+(11908 missing values generated)
+(11908 missing values generated)
+(11909 missing values generated)
+(11909 missing values generated)
+(11911 missing values generated)
+(11912 missing values generated)
+(11911 missing values generated)
+(11910 missing values generated)
+(11905 missing values generated)
+(11906 missing values generated)
+(11896 missing values generated)
+(11910 missing values generated)
+(11909 missing values generated)
+(11912 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11912 missing values generated)
+(11910 missing values generated)
+(11911 missing values generated)
+(11910 missing values generated)
+(11904 missing values generated)
+(11911 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11910 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11910 missing values generated)
+(11910 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11910 missing values generated)
+(11911 missing values generated)
+(11909 missing values generated)
+(11911 missing values generated)
+(11903 missing values generated)
+(11911 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11912 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11912 missing values generated)
+(11912 missing values generated)
+(11912 missing values generated)
+(11912 missing values generated)
+(11912 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11912 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11911 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11913 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11912 missing values generated)
+(11913 missing values generated)
+(11910 missing values generated)
+
+. *drop age1_1 age2_2 age3_3 age4_4 age5_5 age6_6 age7_7 age8_8 age9_9 age10_10
+. *drop age11_11 age12_12 age13_13 age14_14 age15_15 age16_16 age17_17 age18_18
+. replace age1_1=.
+(1823 real changes made, 1823 to missing)
+
+. replace age2_2=.
+(1832 real changes made, 1832 to missing)
+
+. replace age3_3=.
+(8318 real changes made, 8318 to missing)
+
+. replace age4_4=.
+(6793 real changes made, 6793 to missing)
+
+. replace age5_5=.
+(3676 real changes made, 3676 to missing)
+
+. replace age6_6=.
+(1600 real changes made, 1600 to missing)
+
+. replace age7_7=.
+(833 real changes made, 833 to missing)
+
+. replace age8_8=.
+(422 real changes made, 422 to missing)
+
+. replace age9_9=.
+(224 real changes made, 224 to missing)
+
+. replace age10_10=.
+(115 real changes made, 115 to missing)
+
+. replace age11_11=.
+(63 real changes made, 63 to missing)
+
+. replace age12_12=.
+(51 real changes made, 51 to missing)
+
+. replace age13_13=.
+(13 real changes made, 13 to missing)
+
+. replace age14_14=.
+(17 real changes made, 17 to missing)
+
+. replace age15_15=.
+(9 real changes made, 9 to missing)
+
+. replace age16_16=.
+(10 real changes made, 10 to missing)
+
+. replace age17_17=.
+(2 real changes made, 2 to missing)
+
+. replace age18_18=.
+(3 real changes made, 3 to missing)
+
+. 
+. gen twinfam=.
+(11913 missing values generated)
+
+. foreach x of numlist 1(1)18{
+  2. foreach num of numlist 1(1)18{
+  3. replace twinfam=1 if age`x'_`num'==0
+  4. }
+  5. }
+(0 real changes made)
+(1 real change made)
+(1 real change made)
+(13 real changes made)
+(4 real changes made)
+(4 real changes made)
+(2 real changes made)
+(2 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(15 real changes made)
+(1 real change made)
+(3 real changes made)
+(2 real changes made)
+(0 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(62 real changes made)
+(10 real changes made)
+(5 real changes made)
+(1 real change made)
+(1 real change made)
+(0 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(50 real changes made)
+(3 real changes made)
+(4 real changes made)
+(4 real changes made)
+(1 real change made)
+(1 real change made)
+(0 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(29 real changes made)
+(2 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(10 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(7 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(3 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(1 real change made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+
+. 
+. keep folio twinfam
+
+. 
+. merge 1:m folio using "$Data/hogar"
+(label a8 already defined)
+(label a9 already defined)
+(label a11 already defined)
+(label a12c already defined)
+(label a12n already defined)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         8,525
+        from master                         0  (_merge==1)
+        from using                      8,525  (_merge==2)
+
+    matched                            65,522  (_merge==3)
+    -----------------------------------------
+
+. keep if a4==3
+(51121 observations deleted)
+
+. sort twinfam folio a9
+
+. egen twincalc=concat(folio a9)
+
+. gen twincalc1=real(twincalc)
+
+. replace twincalc1=twincalc1/10000
+(22926 real changes made)
+
+. gen twincalc2=twincalc1[_n]-twincalc1[_n-1]
+(1 missing value generated)
+
+. gen twin=1 if twincalc2==0
+(17658 missing values generated)
+
+. gen twincalc3=twincalc1[_n]-twincalc1[_n+1]
+(1 missing value generated)
+
+. replace twin=1 if twincalc3==0
+(3996 real changes made)
+
+. 
+end of do-file
+
+. browse
+
+. do "C:\Users\TEMPMA~1.011\AppData\Local\Temp\STD00000000.tmp"
+
+. gen twincalc12=long(twincalc)
+unknown function long()
+r(133);
+
+end of do-file
+
+r(133);
+
+. browse
+
+. gen a=_n by(folio)
+invalid 'by' 
+r(198);
+
+. clear all
+
+. ls
+  <dir>   2/10/12 12:00  .                 
+  <dir>   2/10/12 12:00  ..                
+  <dir>   2/19/12 15:02  Data              
+  <dir>   2/19/12 15:17  Do                
+  <dir>   2/19/12 15:22  log               
+  <dir>   2/10/12 11:56  Papers            
+
+. cd Data
+H:\ExtendedEssay\Twins\Data
+
+. ls
+  <dir>   2/19/12 15:02  .                 
+  <dir>   2/19/12 15:02  ..                
+  95.9M   2/10/12 11:54  Birthdatabase19902008v4.dta
+  <dir>   2/19/12 15:29  EPS               
+
+. cd EPS
+H:\ExtendedEssay\Twins\Data\EPS
+
+. ls
+  <dir>   2/19/12 15:29  .                 
+  <dir>   2/19/12 15:29  ..                
+  <dir>   2/19/12 15:05  base_2009_Stata   
+3852.2k   2/19/12 15:01  base_2009_Stata.rar
+1182.4k   2/19/12 15:29  data2009_Manual_Publico_Final_EPS_2009_Final.pdf
+
+. cd base_2009_Stata
+H:\ExtendedEssay\Twins\Data\EPS\base_2009_Stata
+
+. ls
+  <dir>   2/19/12 15:05  .                 
+  <dir>   2/19/12 15:05  ..                
+  20.8k   6/23/10 14:52  carreras.dta      
+1426.0k   6/23/10 20:00  cursos.dta        
+  20.5M   6/23/10 11:04  entrevistado.dta  
+ 110.3k   6/22/10 17:55  entrevistado_fallecido.dta
+ 227.3k   6/23/10 11:07  factor_EPS09.dta  
+  14.4k   6/23/10 18:26  hijos.dta         
+ 546.7k   6/23/10 14:58  hindividual.dta   
+1859.6k   6/23/10 14:19  hlaboral.dta      
+  55.6k   6/22/10 18:22  hlaboral_fallecido.dta
+  26.8M   6/23/10 23:42  hogar.dta         
+ 983.6k   6/22/10 18:22  hogar_fallecido.dta
+6742.8k   6/22/10 17:36  salud.dta         
+
+. use entrevistado
+
+. browse
+
+. clear all
+
+. ls
+  <dir>   2/19/12 15:05  .                 
+  <dir>   2/19/12 15:05  ..                
+  20.8k   6/23/10 14:52  carreras.dta      
+1426.0k   6/23/10 20:00  cursos.dta        
+  20.5M   6/23/10 11:04  entrevistado.dta  
+ 110.3k   6/22/10 17:55  entrevistado_fallecido.dta
+ 227.3k   6/23/10 11:07  factor_EPS09.dta  
+  14.4k   6/23/10 18:26  hijos.dta         
+ 546.7k   6/23/10 14:58  hindividual.dta   
+1859.6k   6/23/10 14:19  hlaboral.dta      
+  55.6k   6/22/10 18:22  hlaboral_fallecido.dta
+  26.8M   6/23/10 23:42  hogar.dta         
+ 983.6k   6/22/10 18:22  hogar_fallecido.dta
+6742.8k   6/22/10 17:36  salud.dta         
+
+. cd ..
+H:\ExtendedEssay\Twins\Data\EPS
+
+. cd ..
+H:\ExtendedEssay\Twins\Data
+
+. cd ..
+H:\ExtendedEssay\Twins
+
+. cd ..
+H:\ExtendedEssay
+
+. cd ..
+H:\
+
+. ls
+  <dir>   2/14/12 12:52  .                 
+  <dir>   2/14/12 12:52  ..                
+   9.4k   2/10/12 11:01  .RData            
+   1.3k   2/10/12 11:01  .Rhistory         
+   2.7k  10/21/11 20:32  A.txt             
+  <dir>   1/16/12 20:22  Applications      
+   0.1k  10/14/11  8:58  desktop.ini       
+  <dir>   2/17/12 10:51  Downloads         
+ 473.1k   1/27/12 10:43  ECOEDU_11-243.pdf 
+  <dir>   2/10/12 11:55  ExtendedEssay     
+  <dir>   1/20/12 11:30  Hilary            
+  39.5k  10/21/11 16:35  IglesiasSOPv2.doc 
+  <dir>  11/04/11 12:57  Macro             
+   6.0k   2/10/12 10:11  macro3.csv        
+5978.6k  11/25/11 11:25  Mandelbrot.gif    
+  <dir>  10/29/11 16:25  Micro             
+  <dir>   2/14/12 12:53  My Music          
+  <dir>  10/14/11  8:58  My Pictures       
+  <dir>   2/14/12 12:53  My Videos         
+  <dir>   2/17/12  9:16  QM                
+  <dir>   2/17/12 10:52  R                 
+  <dir>   2/12/12 13:13  RA                
+  <dir>  10/21/11 14:52  RECYCLER          
+ 171.5k   2/07/12 17:55  Thumbs.db         
+  <dir>   2/19/12 10:27  Various           
+  <dir>  10/21/11 17:38  WINDOWS           
+
+. cd RA
+H:\RA
+
+. ls
+  <dir>   2/12/12 13:13  .                 
+  <dir>   2/12/12 13:13  ..                
+  <dir>   1/29/12 19:58  7-ZipPortable     
+  <dir>   2/19/12 10:58  ProfBhalotra      
+ 132.2k   2/12/12 13:13  revisecensus.do   
+  <dir>   2/08/12 20:46  Stata11           
+  16.1M   2/08/12 20:44  Stata11.rar       
+
+. cd ProfBhalotra
+H:\RA\ProfBhalotra
+
+. ;s
+unrecognized command:  ; invalid command name
+r(199);
+
+. ls
+  <dir>   2/19/12 10:58  .                 
+  <dir>   2/19/12 10:58  ..                
+ 105.3M   2/07/12 17:50  19301940census.dta
+  80.0M   2/08/12  9:30  1940census.dta    
+ 124.7M   2/07/12 18:27  1950censusdata.dta
+   0.3k   2/07/12 18:32  20120129_CollapseCensus.do
+ 103.2k   1/29/12 21:14  20120129_ImportUSCensus.do
+ 109.0k   2/01/12 13:04  20120201_ImportUSCensus2.do
+ 109.2k   2/04/12 20:13  20120204_ImportUSCensus3.do
+ 131.7k   2/08/12 20:52  20120205_censusimport1950.do
+ 132.2k   2/08/12 20:52  20120207_censusimport1940.do
+   1.1k   2/08/12  9:30  20120207_CollapseCensus40_50.do
+   0.4k   2/12/12 11:23  20120212_DAMIANREVIEW.do
+  66.7k   2/13/12 13:59  20120212_race2.do 
+  10.2k   2/11/12 20:26  blackwhiteratios_1940men.dta
+  10.6k   2/11/12 20:29  blackwhiteratios_1940men_v2.dta
+1894.0k   2/04/12 20:01  Bleakley_Malaria_August2007.pdf
+  80.0M   2/08/12 20:50  census1940_s11.dta
+ 124.7M   2/08/12 20:50  census1950_s11.dta
+2242.5M   2/01/12 10:41  censusdata.dta    
+6791.1k   2/04/12 21:22  censusdata_state.dta
+4703.1k   2/04/12 20:02  censusdata_state1.dta
+  13.4k   2/08/12  9:30  censusdata_state1940.dta
+  13.1k   2/11/12 19:31  censusdata_state1940v11.dta
+  22.8k   2/08/12  9:30  censusdata_state1950.dta
+  22.4k   2/11/12 19:31  censusdata_state1950v11.dta
+4703.2k   2/02/12 13:52  censusdata_state2.dta
+ 124.5k   2/07/12 18:13  censusimport1950.do
+  <dir>   2/19/12 17:14  Classes           
+  <dir>   2/19/12 13:10  Feb11             
+  <dir>   2/04/12 20:29  longdiff          
+  <dir>   2/04/12 20:29  panel             
+   0.8k   2/07/12 18:11  ProfBhalotra - Shortcut.lnk
+  30.5k   2/12/12 12:26  Thumbs.db         
+  <dir>   2/05/12 11:39  Timesheet         
+  25.0k   2/12/12 13:06  USAGENOTES_USACensus.doc
+  16.0k   2/12/12 13:02  USAGENOTES_USACensus.docx
+  25.0k   2/12/12 13:03  USAGENOTES_USACensus.dot
+  <dir>   2/11/12 13:14  __MACOSX          
+
+. cd Feb11
+H:\RA\ProfBhalotra\Feb11
+
+. ls
+  <dir>   2/19/12 13:10  .                 
+  <dir>   2/19/12 13:10  ..                
+  30.2k   2/14/12  8:48  20120211_educquality.do
+   0.5k   2/12/12 14:54  20120212_pontentialprogram.do
+  63.0k   2/12/12 11:49  20120212_race2withschoolqualityratio.do
+  66.6k   2/13/12 20:02  20120212_race_v2.do
+   5.2k   2/12/12 14:54  20120212_ttest.do 
+  66.8k   2/14/12 10:11  20120213_race_v3.do
+  77.6k   2/19/12 13:10  20120214_race_v4.do
+  33.5k   2/12/12 16:06  BasicRegressionResults.xls
+   0.2k   2/12/12 14:45  comparew.ado      
+  <dir>   2/19/12 13:06  Main data files   
+  27.0k   2/14/12 11:45  Mean_table.xls    
+  <dir>   2/19/12 12:45  Newchart          
+  12.8k   2/11/12 13:14  Original paper main do file.do
+ 165.5k   2/11/12 13:14  pneumonia_series_convergence_southgraphs.docx
+  37.7k   2/11/12 14:39  qual.dat          
+  57.9k   2/13/12 19:52  race.do           
+   0.1k   2/11/12 14:39  readme            
+  67.5k   2/13/12 20:36  Results_blackmen.xls
+  73.5k   2/14/12 23:04  Results_blackwhitemen.xls
+  52.0k   2/14/12 23:28  Results_blackwhitemen_selectedoutcomes_highlights2.xls
+  43.0k   2/14/12 11:38  Results_malefemale.xls
+   5.8k   2/11/12 14:39  sources.txt       
+   6.7k   2/11/12 13:14  SouthernStates.log
+  61.5k   2/19/12 12:28  Table6.xls        
+  11.0k   2/11/12 13:14  Thumbs.db         
+
+. cd "Main data files"
+H:\RA\ProfBhalotra\Feb11\Main data files
+
+. ;s
+unrecognized command:  ; invalid command name
+r(199);
+
+. l
+
+. sls
+unrecognized command:  sls
+r(199);
+
+. ls
+  <dir>   2/19/12 13:06  .                 
+  <dir>   2/19/12 13:06  ..                
+   5.5k   2/11/12 13:14  aggregated_census_panel.do
+3450.1k   2/11/12 13:14  aggregated_census_panel_19101950cohorts.dta
+9289.4k   2/19/12 13:00  base.dta          
+9174.1k   2/19/12 12:03  base1.dta         
+   3.9k   2/11/12 13:14  baserate_data_bystateXrace.do
+  61.9k   2/11/12 13:14  baserate_data_bystateXrace.dta
+   4.5k   2/11/12 13:14  blackwhiteratios_1940men.dta
+   7.0k   2/19/12 12:26  blackwhiteratios_1940men_v2.dta
+ 136.4k   2/19/12 11:27  bweducratio_allmen.txt
+1807.2k   2/19/12 11:27  bweducratio_allmen.xml
+ 109.9k   2/19/12 11:36  bweducratio_blackmen.txt
+1479.9k   2/19/12 11:36  bweducratio_blackmen.xml
+ 118.7k   2/19/12 11:29  bweducratio_whitemen.txt
+1441.5k   2/19/12 11:29  bweducratio_whitemen.xml
+ 134.7k   2/13/12 22:15  bwincratio_allmen.txt
+ 109.1k   2/13/12 22:18  bwincratio_blackmen.txt
+ 117.4k   2/13/12 22:16  bwincratio_whitemen.txt
+ 136.2k   2/14/12 10:57  bwRORratio_allmen.txt
+1783.4k   2/14/12 10:57  bwRORratio_allmen.xml
+ 100.9k   2/14/12 11:00  bwRORratio_blackmen.txt
+1376.6k   2/14/12 11:00  bwRORratio_blackmen.xml
+ 121.7k   2/14/12 10:58  bwRORratio_whitemen.txt
+1474.0k   2/14/12 10:58  bwRORratio_whitemen.xml
+ 121.4k   2/19/12 12:48  bwunempratio_allmen.txt
+1633.0k   2/19/12 12:48  bwunempratio_allmen.xml
+ 101.0k   2/19/12 12:59  bwunempratio_blackmen.txt
+1364.9k   2/19/12 12:59  bwunempratio_blackmen.xml
+1249.4k   2/19/12 12:49  bwunempratio_whitemen.xml
+   4.0k   2/11/12 13:14  censuspanel_1980-2000_currstate.do
+  <dir>   2/12/12  0:30  Do                
+5693.4k   2/12/12 12:46  DONECHECK.dta     
+   0.6k   2/11/12 13:14  fiptocensusregion.dta
+  <dir>   2/19/12 12:25  Log               
+ 100.8k   2/19/12 12:25  logschoolqualitydata.dta
+   3.9k   2/11/12 13:14  malefemaleratios_1940.dta
+   5.8k   2/19/12 13:00  malefemaleratios_1940_v2.dta
+ 139.5k   2/14/12 11:13  menRORratio.txt   
+1833.9k   2/14/12 11:13  menRORratio.xml   
+ 140.5k   2/13/12 22:32  mfeducratio_men.txt
+ 143.7k   2/13/12 22:29  mfeducratio_MF.txt
+ 140.9k   2/13/12 22:31  mfeducratio_women.txt
+ 141.6k   2/13/12 22:27  mfincratio_men.txt
+ 144.9k   2/13/12 22:24  mfincratio_MF.txt 
+ 141.7k   2/13/12 22:26  mfincratio_women.txt
+ 141.4k   2/13/12 20:56  north_south_allmen.txt
+ 113.0k   2/13/12 20:58  north_south_blackmen.txt
+ 123.0k   2/13/12 20:57  north_south_whitemen.txt
+2612.4k   2/11/12 13:14  occupationdata_state.dta
+  <dir>   2/12/12 15:45  outreg            
+  <dir>   2/14/12  8:49  Outreg3           
+ 510.4k   2/13/12 21:59  quality_allmen.txt
+  59.4k   2/13/12 22:00  quality_blackmen.txt
+ 395.9k   2/13/12 22:04  quality_whitemen.txt
+ 100.8k   2/11/12 13:14  schoolqualitydata.dta
+  19.9k   2/19/12 12:26  schoolqualitydata_ratios.dta
+   4.0k   2/11/12 16:42  schqual_log.smcl  
+ 122.7k   2/13/12 22:06  slave_allmen.txt  
+  96.7k   2/13/12 22:09  slave_blackmen.txt
+ 107.2k   2/13/12 22:07  slave_whitemen.txt
+   2.4k   2/11/12 13:14  SouthernStates.log
+6791.1k   2/11/12 13:14  state_census_data_occupation.dta
+ 569.3k   2/11/12 13:14  state_level_characteristics_april2011.dta
+  12.8M   2/19/12 12:25  sulfadata.dta     
+   5.3k   2/11/12 13:18  sulfa_master_do_file.do
+  <dir>   2/13/12 20:07  UPDATEOUTREG      
+6913.1k   2/15/12  0:02  USblackwhite.dta  
+9798.8k   2/19/12 13:06  USblackwhite10.dta
+  11.6k   2/11/12 13:14  Web_America_state_slavery_and_inequality_1860.dta
+ 139.4k   2/14/12 11:10  womenRORratio.txt 
+1833.8k   2/14/12 11:10  womenRORratio.xml 
+
+. ise USblackwhite10
+unrecognized command:  ise
+r(199);
+
+. use USblackwhite10
+
+. sum south
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+       south |      7321    .2983199    .4575519          0          1
+
+. sort south race
+
+. by south: sum slave_total_ratio1860
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+slave_t~1860 |      3693    .0511161    .1221608          0   .4685382
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+slave_t~1860 |      2016    .3173096     .180571   .0160227   .5718366
+
+
+. by south: sum slave_total_ratio1860 if race==2
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+slave_t~1860 |      1593    .0592475    .1297009          0   .4685382
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+slave_t~1860 |      1008    .3173096    .1806158   .0160227   .5718366
+
+
+. browse
+
+. by south: sum slave_total_ratio1860 if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+slave_t~1860 |      2100    .0449479    .1157661          0   .4685382
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+slave_t~1860 |      1008    .3173096    .1806158   .0160227   .5718366
+
+
+. by south: sum quality_scr if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ quality_scr |       420    .5317489    .1908577  -.0679159   .8031107
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ quality_scr |      1092    .5085562    .2261243  -.0414629   1.016056
+
+
+. by south: sum quality_scr if race==2
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ quality_scr |       420      .21918    .4902438  -.9662845   .8001496
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ quality_scr |      1092    .2257332    .4769513  -1.484541   .9089382
+
+
+. browse quality_scr
+
+. by south: term_length if race==2
+unrecognized command:  term_length
+r(199);
+
+. by south: sum term_length if race==2
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ term_length |       420    171.4456    12.49665   140.9792   191.8786
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ term_length |      1092    171.7491     12.3235   123.0316   186.2243
+
+
+. by south: sum term_length if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ term_length |       420    175.8753    4.167427   162.9355   181.2898
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ term_length |      1092    175.3245    5.698555   159.4274   186.0625
+
+
+. by south: sum pupil_teacher if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+pupil_teac~r |       420    27.39886    1.627591   25.67899   32.78717
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+pupil_teac~r |      1092    27.94924    1.971352   21.75307   32.87917
+
+
+. by south: sum pupil_teacher if race==2
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+pupil_teac~r |       420    32.07339    5.342693    23.8407   43.04006
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+pupil_teac~r |      1092    32.15721     4.52509   24.87481   46.59338
+
+
+. by south: sum teacher_wage if race==2
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+teacher_wage |       420    7.404511    .5502361   6.029386   8.379375
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+teacher_wage |      1092    7.363047    .6541426   5.588424   8.512519
+
+
+. by south: sum teacher_wage if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+teacher_wage |       420    7.618227    .3859902   6.663264   8.384686
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+teacher_wage |      1092    7.636177    .4210332   6.816048   8.555067
+
+
+. browse
+
+. by south: sum educ_bwratio_men if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+educ_bwrat~n |      1386    .8597392    .3210087   .4168141   1.843581
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+educ_bwrat~n |       546    .5392133    .1193642   .3757667   .7732183
+
+
+. by south: sum educ_bwratio_men if race==2
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+educ_bwrat~n |       945    .7332612    .1765539   .4168141   1.843581
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+educ_bwrat~n |       546    .5392133    .1193642   .3757667   .7732183
+
+
+. gen n=1
+
+. by south sum n
+: required
+r(100);
+
+. by south: sum n
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+           n |      5137           1           0          1          1
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+           n |      2184           1           0          1          1
+
+
+. by south: sum n if race==2
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+           n |      1947           1           0          1          1
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+           n |      1092           1           0          1          1
+
+
+. by south: sum n if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+           n |      3190           1           0          1          1
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+           n |      1092           1           0          1          1
+
+
+. do "C:\Users\TEMPMA~1.011\AppData\Local\Temp\STD00000000.tmp"
+
+. clear all
+
+. use ..\..\census1940_s11
+
+. 
+. keep if age<=40 & age>=25
+(1018873 observations deleted)
+
+. *line 452
+. tab race if incwage==999999
+
+          Race [general version] |      Freq.     Percent        Cum.
+---------------------------------+-----------------------------------
+                           White |      2,582       79.45       79.45
+                     Black/Negro |        651       20.03       99.48
+American Indian or Alaska Native |         10        0.31       99.78
+                         Chinese |          1        0.03       99.82
+                        Japanese |          2        0.06       99.88
+ Other Asian or Pacific Islander |          4        0.12      100.00
+---------------------------------+-----------------------------------
+                           Total |      3,250      100.00
+
+. tab race
+
+          Race [general version] |      Freq.     Percent        Cum.
+---------------------------------+-----------------------------------
+                           White |    296,539       89.09       89.09
+                     Black/Negro |     34,962       10.50       99.59
+American Indian or Alaska Native |        709        0.21       99.81
+                         Chinese |        225        0.07       99.87
+                        Japanese |        191        0.06       99.93
+ Other Asian or Pacific Islander |        231        0.07      100.00
+                 Other race, nec |          2        0.00      100.00
+---------------------------------+-----------------------------------
+                           Total |    332,859      100.00
+
+. replace incwage=. if incwage==999999
+(3250 real changes made, 3250 to missing)
+
+. gen logincwage=log(incwage)
+(157242 missing values generated)
+
+. 
+end of do-file
+
+. keep if race<3
+(1358 observations deleted)
+
+. keep if sex==1
+(168558 observations deleted)
+
+. browse
+
+. browse
+
+. gen emp=1 if empstat==1
+(18725 missing values generated)
+
+. collapse emp logincwage higrade [fw=perwt], by(race sex statefip)
+
+. joinby birth_state sex using "blackwhiteratios_1940men_v2.dta", unmatched(master) _merge(_me
+> rgeDAMO)
+variable birth_state not found
+r(111);
+
+. rename statefip birth_state
+
+. joinby birth_state sex using "blackwhiteratios_1940men_v2.dta", unmatched(master) _merge(_me
+> rgeDAMO)
+
+. drop _mergeDAMO- sei_bwratio_men
+
+. save dcc
+file dcc.dta saved
+
+. do "C:\Users\TEMPMA~1.011\AppData\Local\Temp\STD00000000.tmp"
+
+. use base
+
+. 
+end of do-file
+
+. joinby birth_state sex using "dcc.dta", unmatched(master) _merge(_mergeDAMO)
+
+. sort south
+
+. by south: sum emp if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+         emp |      2856           1           0          1          1
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+         emp |      1092           1           0          1          1
+
+
+. by south: sum logincwage if race==1
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+  logincwage |      2856     6.60114    .3518157    5.48837   7.192182
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+  logincwage |      1092    6.339273    .4476379   5.499597   7.264977
+
+
+. by south: sum logincwage if race==2
+
+----------------------------------------------------------------------------------------------
+-> south = 0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+  logincwage |      1892     6.56095    .3760754    5.48837   7.192182
+
+----------------------------------------------------------------------------------------------
+-> south = 1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+  logincwage |      1092    6.339273    .4476379   5.499597   7.264977
+
+
+. do "C:\Users\TEMPMA~1.011\AppData\Local\Temp\STD00000000.tmp"
+
+. 
+. clear all
+
+. cap log close

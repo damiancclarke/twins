@@ -1,0 +1,113 @@
+This is pdfTeX, Version 3.1415926-1.40.11 (MiKTeX 2.9) (preloaded format=pdftex 2012.5.15)  15 MAY 2012 12:55
+entering extended mode
+**H:/ExtendedEssay/Docs/BiBBase.bib
+(H:/ExtendedEssay/Docs/BiBBase.bib
+Overfull \hbox (2.97762pt too wide) in paragraph at lines 49--60
+\tenrm year=1980, vol-ume=48, num-ber=1, pages=227-40, month=January, keys=Quan
+tity-Quality trade off; Twins;|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm y
+.\kern-0.27779
+.\tenrm e
+.\tenrm a
+.\tenrm r
+.etc.
+
+
+Overfull \hbox (17.77393pt too wide) in paragraph at lines 109--120
+\tenrm ing, jour-nal=Economics of Ed-u-ca-tion Re-view, year=1999, vol-ume=18, 
+num-ber=2, pages=143-148, month=April,|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm i
+.\tenrm n
+.\tenrm g
+.\tenrm ,
+.\glue 3.33333 plus 2.08331 minus 0.88889
+.etc.
+
+
+Overfull \hbox (3.05162pt too wide) in paragraph at lines 145--156
+\tenrm ment in Child Qual-ity, jour-nal=Journal of Hu-man Re-sources, year=2006
+, vol-ume=41, num-ber=4, pages=738--|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm m
+.\tenrm e
+.\tenrm n
+.\kern-0.27779
+.\tenrm t
+.etc.
+
+
+Overfull \hbox (39.02403pt too wide) in paragraph at lines 157--168
+\tenrm Qual-ity, jour-nal=Journal of Po-lit-i-cal Econ-omy, year=1992, vol-ume=
+100, num-ber=1, pages=84-117, month=February,|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm Q
+.\tenrm u
+.\tenrm a
+.\tenrm l
+.\discretionary
+..\tenrm -
+.etc.
+
+[1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ™ in font cmr10!
+
+Overfull \hbox (4.02388pt too wide) in paragraph at lines 214--224
+\tenrm Only-Child Dis-ad-van-tage in School En-roll-ment in Ru-ral China, year=
+2009, month=May, in-sti-tu-tion=National|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm O
+.\tenrm n
+.\tenrm l
+.\tenrm y
+.\tenrm -
+.etc.
+
+
+Overfull \hbox (27.57939pt too wide) in paragraph at lines 225--234
+\tenrm lec-tive Ac-tion in Sierra Leone, year=2008, month=December, in-sti-tu-t
+ion=Berkeley, type=Mimeo, keys=Altonjietal|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm l
+.\tenrm e
+.\tenrm c
+.\discretionary
+..\tenrm -
+.\tenrm t
+.etc.
+
+
+Overfull \hbox (39.02403pt too wide) in paragraph at lines 328--339
+\tenrm Qual-ity, jour-nal=Journal of Po-lit-i-cal Econ-omy, year=1992, vol-ume=
+100, num-ber=1, pages=84-117, month=February,|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm Q
+.\tenrm u
+.\tenrm a
+.\tenrm l
+.\discretionary
+..\tenrm -
+.etc.
+
+[2]
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no “ in font cmr10!
+)
+*
+! Emergency stop.
+<*> H:/ExtendedEssay/Docs/BiBBase.bib
+                                     
+End of file on the terminal!
+
+!  ==> Fatal error occurred, no output PDF file produced!

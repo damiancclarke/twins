@@ -1,0 +1,855 @@
+
+. 
+. *______________________________________________________________________________*
+. *                                                                                                                                                      *
+. *CHECK WHICH SURVEYS COINCIDE
+. use $Data\world_childsmall.dta
+
+. bys country yearint: gen num=_N
+
+. collapse yearint num, by(id2 country)
+
+. 
+. *MUST CORRECT AS yearint IN CHILD DATA NOT ALWAYS THE SAME AS YEAR (CAN BE +/-1)
+. *NOTE: THIS ONLY CORRECTS FOR YEARS WHICH ALSO APPEAR IN EDUCATION SURVEY DATA
+. 
+. do $Base\Do\20120402_countrynaming
+
+. cap gen year=yearint
+
+. replace year=1993 if id2=="bd3"
+(1 real change made)
+
+. replace year=1996 if id2=="bd1"
+(1 real change made)
+
+. replace year=1994 if id2=="bo3"
+(1 real change made)
+
+. replace year=2003 if id2=="bo4"
+(1 real change made)
+
+. replace year=1992 if id2=="bf1"
+(1 real change made)
+
+. replace year=1998 if id2=="bf2"
+(1 real change made)
+
+. replace year=1996 if id2=="td1"
+(1 real change made)
+
+. replace year=2005 if id2=="co5"
+(1 real change made)
+
+. replace year=1998 if id2=="ci1"
+(1 real change made)
+
+. replace year=1992 if id2=="eg2"
+(1 real change made)
+
+. replace year=1995 if id2=="eg3"
+(1 real change made)
+
+. replace year=1993 if id2=="gh3"
+(1 real change made)
+
+. replace year=1998 if id2=="gh4"
+(1 real change made)
+
+. replace year=1994 if id2=="ht1"
+(1 real change made)
+
+. replace year=2005 if id2=="hn1"
+(1 real change made)
+
+. replace year=1999 if id2=="ia2"
+(1 real change made)
+
+. replace year=2004 if id2=="ls1"
+(1 real change made)
+
+. replace year=2004 if id2=="md3"
+(1 real change made)
+
+. replace year=2004 if id2=="mw1"
+(1 real change made)
+
+. replace year=1995 if id2=="ml2"
+(1 real change made)
+
+. replace year=2003 if id2=="ma3"
+(1 real change made)
+
+. replace year=2003 if id2=="mz2"
+(1 real change made)
+
+. replace year=1997 if id2=="nc1"
+(1 real change made)
+
+. replace year=1991 if id2=="pk1"
+(1 real change made)
+
+. replace year=1992 if id2=="sn3"
+(1 real change made)
+
+. replace year=1992 if id2=="tz3"
+(1 real change made)
+
+. replace year=2004 if id2=="tz2"
+(1 real change made)
+
+. replace year=2000 if id2=="ug3"
+(1 real change made)
+
+. replace year=1996 if id2=="zm2"
+(1 real change made)
+
+. replace year=2001 if id2=="zm3"
+(1 real change made)
+
+.         
+. replace country="CongoBr" if id2=="cg1"
+(1 real change made)
+
+. replace country="Cote D Ivoire" if id2=="ci1"
+(1 real change made)
+
+. replace country="Cote D Ivoire" if id2=="ci2"
+(1 real change made)
+
+. replace country="DominicanRepublic" if id2=="dr1"
+(1 real change made)
+
+. replace country="DominicanRepublic" if id2=="dr2"
+(1 real change made)
+
+. replace country="DominicanRepublic" if id2=="dr3"
+(1 real change made)
+
+. replace country="DominicanRepublic" if id2=="dr4"
+(1 real change made)
+
+. 
+. 
+. *THIS IS NOT NECESSARY FOR THE MERGE.  THIS WAS FOR A SEPERATE VARIABLE.
+. gen income_status=      "LOWERMIDDLE"   if country=="Armenia"
+(141 missing values generated)
+
+. replace income_status=  "LOWINCOME"     if country=="Bangladesh"
+(4 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Benin"
+(2 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
+(4 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Burkina Faso"
+(3 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Cambodia"
+(1 real change made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
+(3 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Chad"
+(2 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
+(5 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Comoros"
+(1 real change made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="CongoBr"
+(1 real change made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Cote D Ivoire"
+(2 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="DominicanRepublic"
+(4 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
+(5 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
+(4 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Guinea"
+(2 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Haiti"
+(2 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
+(1 real change made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="India"
+(2 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
+(5 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
+(2 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Kenya"
+(4 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
+(1 real change made)
+
+. replace income_status=  "LOWINCOME"     if country=="Madagascar"
+(3 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Malawi"
+(3 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Mali"
+(3 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
+(3 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Mozambique"
+(2 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
+(2 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Nepal"
+(2 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
+(2 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Niger"
+(2 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
+(3 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
+(1 real change made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Peru"
+(3 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
+(3 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Rwanda"
+(3 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
+(4 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="South Africa"
+(1 real change made)
+
+. replace income_status=  "LOWINCOME"     if country=="Tanzania"
+(3 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Togo"
+(2 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
+(2 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Uganda"
+(3 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
+(2 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
+(3 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
+(3 real changes made)
+
+. 
+. *THIS COMES FROM WORLD BANK ATLAS METHOD (http://data.worldbank.org/about/country-classifications)
+. *ACTUAL CLASSIFICATION IS HERE: (http://data.worldbank.org/about/country-classifications/country-and-lending-groups#Low_income)
+. 
+. 
+end of do-file
+
+. label var year "year of interview"
+
+. drop yearint
+
+. save $Data\DHSyears_childdata, replace
+file H:\ExtendedEssay\DHS\DHSyears_childdata.dta saved
+
+. 
+. use $Data\dhs_educBASE, clear
+
+. bys country year: gen num_educ=_N
+
+. collapse num_educ, by(country year)
+
+. save $Data\DHSyears_educdata, replace
+file H:\ExtendedEssay\DHS\DHSyears_educdata.dta saved
+
+. 
+. merge m:m country year using $Data\DHSyears_childdata
+year was int now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                            85
+        from master                        41  (_merge==1)
+        from using                         44  (_merge==2)
+
+    matched                                99  (_merge==3)
+    -----------------------------------------
+
+. *THIS GIVES 99 MATCHES (country-year surveys)
+. *ALL MATCHES OCCUR BETWEEN 1990-2005
+. keep if _merge==3
+(85 observations deleted)
+
+. drop _merge
+
+. save $Data\MatchedSurveys, replace
+file H:\ExtendedEssay\DHS\MatchedSurveys.dta saved
+
+. 
+. *______________________________________________________________________________*
+. *                                                                                                                                                       
+>    *
+. *KEEP ALL EDUCATIONAL DATA FOR COUNTRIES ALSO WITH HOUSEHOLD DATA
+. use $Data\dhs_educBASE
+
+. merge m:m country year using $Data\MatchedSurveys
+year was int now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     2,910,788
+        from master                 2,910,788  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                         5,321,136  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge==3
+(2910788 observations deleted)
+
+. drop _merge
+
+. *drop if relationship==1|relationship==2|relationship==6
+. 
+. *FINALLY, ADJUST hhid FOR CONSISTENCY:
+. split hhid, destring
+variables born as string: 
+hhid1  hhid2  hhid3  hhid4  hhid5
+hhid1 has all characters numeric; replaced as double
+hhid2 has all characters numeric; replaced as long
+(1472757 missing values generated)
+hhid3 has all characters numeric; replaced as long
+(4097809 missing values generated)
+hhid4 has all characters numeric; replaced as int
+(5103128 missing values generated)
+hhid5 has all characters numeric; replaced as byte
+(5313918 missing values generated)
+
+. gen hhii=1 if hhid5==. & hhid4==.  & hhid3==.  & hhid2==. & hhid1!=.
+(3848379 missing values generated)
+
+. replace hhii=2 if hhid5==. & hhid4==.  & hhid3==.  & hhid2!=. & hhid1!=.
+(2625052 real changes made)
+
+. replace hhii=3 if hhid5==. & hhid4==.  & hhid3!=.  & hhid2!=. & hhid1!=.
+(1005319 real changes made)
+
+. replace hhii=4 if hhid5==. & hhid4!=.  & hhid3!=.  & hhid2!=. & hhid1!=.
+(210790 real changes made)
+
+. replace hhii=5 if hhid5!=. & hhid4!=.  & hhid3!=.  & hhid2!=. & hhid1!=.
+(7218 real changes made)
+
+. drop hhid1-hhid5
+
+. split hhid
+variables created as string: 
+hhid1  hhid2  hhid3  hhid4  hhid5
+
+. gen space=" "
+
+. gen hhid_m=hhid1 if hhii==1
+(3848379 missing values generated)
+
+. egen hh=concat(hhid1 space hhid2) if hhii==2
+(2696084 missing values generated)
+
+. replace hhid_m=hh if hhii==2
+(2625052 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhid1 space hhid2 space hhid3) if hhii==3
+(4315817 missing values generated)
+
+. replace hhid_m=hh if hhii==3
+(1005319 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhid1 space hhid2 space hhid3 space hhid4) if hhii==4
+(5110346 missing values generated)
+
+. replace hhid_m=hh if hhii==4
+(210790 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhid1 space hhid2 space hhid3 space hhid4 space hhid5) if hhii==5
+(5313918 missing values generated)
+
+. replace hhid_m=hh if hhii==5
+(7218 real changes made)
+
+. drop hh hhii hhid1-hhid5 space
+
+. save $Data\dhs_educBASEavail, replace
+file H:\ExtendedEssay\DHS\dhs_educBASEavail.dta saved
+
+. 
+. use $Data\world_child
+
+. do $Base\Do\20120402_countrynaming
+
+. cap gen year=yearint
+
+. replace year=1993 if id2=="bd3"
+(19082 real changes made)
+
+. replace year=1996 if id2=="bd1"
+(14007 real changes made)
+
+. replace year=1994 if id2=="bo3"
+(3795 real changes made)
+
+. replace year=2003 if id2=="bo4"
+(5921 real changes made)
+
+. replace year=1992 if id2=="bf1"
+(16243 real changes made)
+
+. replace year=1998 if id2=="bf2"
+(15046 real changes made)
+
+. replace year=1996 if id2=="td1"
+(22378 real changes made)
+
+. replace year=2005 if id2=="co5"
+(17368 real changes made)
+
+. replace year=1998 if id2=="ci1"
+(3563 real changes made)
+
+. replace year=1992 if id2=="eg2"
+(1099 real changes made)
+
+. replace year=1995 if id2=="eg3"
+(1520 real changes made)
+
+. replace year=1993 if id2=="gh3"
+(533 real changes made)
+
+. replace year=1998 if id2=="gh4"
+(6100 real changes made)
+
+. replace year=1994 if id2=="ht1"
+(1442 real changes made)
+
+. replace year=2005 if id2=="hn1"
+(38752 real changes made)
+
+. replace year=1999 if id2=="ia2"
+(41714 real changes made)
+
+. replace year=2004 if id2=="ls1"
+(1090 real changes made)
+
+. replace year=2004 if id2=="md3"
+(6929 real changes made)
+
+. replace year=2004 if id2=="mw1"
+(8616 real changes made)
+
+. replace year=1995 if id2=="ml2"
+(25070 real changes made)
+
+. replace year=2003 if id2=="ma3"
+(8718 real changes made)
+
+. replace year=2003 if id2=="mz2"
+(330 real changes made)
+
+. replace year=1997 if id2=="nc1"
+(28776 real changes made)
+
+. replace year=1991 if id2=="pk1"
+(5138 real changes made)
+
+. replace year=1992 if id2=="sn3"
+(13726 real changes made)
+
+. replace year=1992 if id2=="tz3"
+(15897 real changes made)
+
+. replace year=2004 if id2=="tz2"
+(9091 real changes made)
+
+. replace year=2000 if id2=="ug3"
+(11775 real changes made)
+
+. replace year=1996 if id2=="zm2"
+(168 real changes made)
+
+. replace year=2001 if id2=="zm3"
+(18309 real changes made)
+
+.         
+. replace country="CongoBr" if id2=="cg1"
+(15942 real changes made)
+
+. replace country="Cote D Ivoire" if id2=="ci1"
+(7055 real changes made)
+
+. replace country="Cote D Ivoire" if id2=="ci2"
+(23476 real changes made)
+
+. replace country="DominicanRepublic" if id2=="dr1"
+(19598 real changes made)
+
+. replace country="DominicanRepublic" if id2=="dr2"
+(52560 real changes made)
+
+. replace country="DominicanRepublic" if id2=="dr3"
+(16649 real changes made)
+
+. replace country="DominicanRepublic" if id2=="dr4"
+(19312 real changes made)
+
+. 
+. 
+. *THIS IS NOT NECESSARY FOR THE MERGE.  THIS WAS FOR A SEPERATE VARIABLE.
+. gen income_status=      "LOWERMIDDLE"   if country=="Armenia"
+(4210985 missing values generated)
+
+. replace income_status=  "LOWINCOME"     if country=="Bangladesh"
+(122721 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Benin"
+(37891 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
+(119534 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Burkina Faso"
+(82732 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Cambodia"
+(40895 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
+(53819 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Chad"
+(46224 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
+(141457 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Comoros"
+(7861 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="CongoBr"
+(15942 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Cote D Ivoire"
+(30531 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="DominicanRepublic"
+(108119 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
+(240372 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
+(55043 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Guinea"
+(49109 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Haiti"
+(38418 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
+(49449 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="India"
+(522975 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
+(369552 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
+(14563 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Kenya"
+(92380 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
+(14403 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Madagascar"
+(60191 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Malawi"
+(90954 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Mali"
+(97032 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
+(79442 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Mozambique"
+(61906 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
+(26999 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Nepal"
+(56430 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
+(70191 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Niger"
+(51696 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
+(73737 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
+(27065 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Peru"
+(173530 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
+(97701 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Rwanda"
+(76308 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
+(99169 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="South Africa"
+(22629 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Tanzania"
+(81241 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Togo"
+(36018 real changes made)
+
+. replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
+(35751 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Uganda"
+(60149 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
+(29837 real changes made)
+
+. replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
+(68339 real changes made)
+
+. replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
+(41153 real changes made)
+
+. 
+. *THIS COMES FROM WORLD BANK ATLAS METHOD (http://data.worldbank.org/about/country-classifications)
+. *ACTUAL CLASSIFICATION IS HERE: (http://data.worldbank.org/about/country-classifications/country-and-lending-groups#Low_income)
+. 
+. 
+end of do-file
+
+. *NOTE, NEPAL SURVEY np2 HAS NO CHILD BIRTHYEAR INFO.  CAN BE CALCULATED FROM AGE
+. *AND SURVEY DATE:
+. replace yearc=year-agec+v006/12-monthc/12 if id2=="np2"
+yearc was int now float
+(23729 real changes made)
+
+. replace yearc=floor(yearc) if id2=="np2"
+(21855 real changes made)
+
+. 
+. 
+. label var year "year of interview"
+
+. merge m:m country year using $Data\MatchedSurveys
+country was str19 now str46
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     1,243,067
+        from master                 1,243,067  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                         2,989,332  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge==3
+(1243067 observations deleted)
+
+. drop _merge
+
+. 
+. 
+. *______________________________________________________________________________*
+. *                                                                                                                                                       
+>    *
+. *IN ORDER TO MERGE IT WILL BE NECESSARY TO CALCULATE EACH OBSERVATION'S RELATION
+. *TO HH HEAD.  AS THIS IS NOT AVAILABLE, THIS WILL BE CALCULATED INDIRECTLY. 
+. *WE HAVE THE CHILD'S MOTHER'S RELATION TO HH HEAD, THIS ALLOWS ME TO CALCULATE
+. *CHILD RELATION (NECESSARY TO MERGE WITH EDUC DATASET)
+. gen relationship=3 if v150==1|v150==2|v150==9
+(376516 missing values generated)
+
+. replace relationship=5 if v150==3|v150==4|v150==11
+(259580 real changes made)
+
+. replace relationship=8 if v150==6|v150==7
+(22639 real changes made)
+
+. replace relationship=10 if v150==8|v150==8|v150==12
+(36123 real changes made)
+
+. gen sex=1 if malec==1
+(1461754 missing values generated)
+
+. replace sex=2 if malec==0
+(1461754 real changes made)
+
+. rename agec age
+
+. 
+. *WILL ALSO NEED TO CALCULATE hhid IN WORLD_CHILD DATA SET:
+. gen hhi=caseid
+
+. split hhi, destring
+variables born as string: 
+hhi1  hhi2  hhi3  hhi4  hhi5  hhi6
+hhi1 has all characters numeric; replaced as double
+hhi2 has all characters numeric; replaced as long
+(3 missing values generated)
+hhi3 has all characters numeric; replaced as long
+(823923 missing values generated)
+hhi4 has all characters numeric; replaced as int
+(2288181 missing values generated)
+hhi5 has all characters numeric; replaced as byte
+(2856785 missing values generated)
+hhi6 has all characters numeric; replaced as byte
+(2984544 missing values generated)
+
+. gen hhii=1 if hhi6==. & hhi5==. & hhi4==.  & hhi3==.  & hhi2==. & hhi1!=.
+(2989329 missing values generated)
+
+. replace hhii=2 if hhi6==. & hhi5==. & hhi4==.  & hhi3==.  & hhi2!=. & hhi1!=.
+(823920 real changes made)
+
+. replace hhii=3 if hhi6==. & hhi5==. & hhi4==.  & hhi3!=.  & hhi2!=. & hhi1!=.
+(1464258 real changes made)
+
+. replace hhii=4 if hhi6==. & hhi5==. & hhi4!=.  & hhi3!=.  & hhi2!=. & hhi1!=.
+(568604 real changes made)
+
+. replace hhii=5 if hhi6==. & hhi5!=. & hhi4!=.  & hhi3!=.  & hhi2!=. & hhi1!=.
+(127759 real changes made)
+
+. replace hhii=6 if hhi6!=. & hhi5!=. & hhi4!=.  & hhi3!=.  & hhi2!=. & hhi1!=.
+(4788 real changes made)
+
+. 
+. drop hhi1-hhi6
+
+. split hhi
+variables created as string: 
+hhi1  hhi2  hhi3  hhi4  hhi5  hhi6
+
+. gen space=" "
+
+. gen hhid_m=hhi1 if hhii==1|hhii==2
+(2165409 missing values generated)
+
+. egen hh=concat(hhi1 space hhi2) if hhii==3
+(1525074 missing values generated)
+
+. replace hhid_m=hh if hhii==3
+(1464258 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhi1 space hhi2 space hhi3) if hhii==4
+(2420728 missing values generated)
+
+. replace hhid_m=hh if hhii==4
+(568604 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhi1 space hhi2 space hhi3 space hhi4) if hhii==5
+(2861573 missing values generated)
+
+. replace hhid_m=hh if hhii==5
+(127759 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhi1 space hhi2 space hhi3 space hhi4 space hhi5) if hhii==6
+(2984544 missing values generated)
+
+. replace hhid_m=hh if hhii==6
+(4788 real changes made)
+
+. drop hh hhii hhi1-hhi5 space
+
+. 
+. bys caseid2: gen kidcount2=_N
+
+. *scatter kidcount2 fert
+. 
+. save $Data\world_childavail, replace
+file H:\ExtendedEssay\DHS\world_childavail.dta saved
+
+. 
+. merge m:m country year hhid_m relationship sex age using $Data\dhs_educBASEavail
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     4,926,494
+        from master                 1,299,051  (_merge==1)
+        from using                  3,627,443  (_merge==2)
+
+    matched                         1,698,362  (_merge==3)
+    -----------------------------------------
+
+. save $Data\DHS_MergedBase, replace
+file H:\ExtendedEssay\DHS\DHS_MergedBase.dta saved
+
+. 
+end of do-file
+
+. br
+

@@ -1,0 +1,66 @@
+
+\begin{table}[htpb!]
+\caption{Ability to Obtain Ideal Family Size}
+\label{tab:desiredsum}
+\begin{center}
+\includegraphics[scale=0.7]{./tables/desiredsum.png} 
+\end{center}
+\end{table}
+
+\begin{table}[htpb!]
+\caption{Summary Statistics}
+\label{tab:sumstats}
+\begin{center}
+\includegraphics[scale=1]{./tables/sumstats.png} 
+\end{center}
+\end{table}
+
+\begin{table}[htpb!]
+\caption{Subsamples for Different Outcome Variables}
+\label{tab:outcomesum}
+\begin{center}
+\includegraphics[scale=0.75]{./tables/outcomesum.png} 
+\end{center}
+\end{table}
+
+\begin{table}[htpb!]
+\caption{Probability of Giving Birth to Multiple Children}
+\label{tab:twinreg1}
+\begin{center}
+\includegraphics[scale=0.75]{./tables/twinreg1.png} 
+\end{center}
+\end{table}
+
+\begin{landscape}
+\begin{table}[htpb!]
+\caption{OLS Estimates of the Q-Q Tradeoff}
+\label{tab:OLS}
+\begin{center}
+\includegraphics[scale=0.65]{./tables/ols.png} 
+\end{center}
+\end{table}
+\end{landscape}
+
+\begin{table}[htpb!]
+\caption{Estimates of the Q-Q Tradeoff using Twin Births}
+\label{tab:QQAll}
+\begin{center}
+\includegraphics[scale=0.8]{./tables/QQ_All.png} 
+\end{center}
+\end{table}
+
+\begin{table}[htpb!]
+\caption{Estimates of the Q-Q Tradeoff using Twin Births -- Pre-twins only}
+\label{tab:QQPretwin}
+\begin{center}
+\includegraphics[scale=0.8]{./tables/QQ_Pretwin.png} 
+\end{center}
+\end{table}
+
+\begin{table}[htpb!]
+\caption{QQ Tradeoff by Subgroup}
+\label{tab:Heterog}
+\begin{center}
+\includegraphics[scale=0.8]{./tables/Heterog.png} 
+\end{center}
+\end{table}

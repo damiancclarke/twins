@@ -1,0 +1,30 @@
+Has family obtained ideal size? (negative implies < ideal)	No.	%
+< ideal number	1,057,586.0	35.1
+Ideal number	730,610.0	24.2
+> than ideal number	1,225,858.0	40.7
+Total	3,014,054.0	100.0
+
+Has family obtained ideal size? (negative implies < ideal)	No.	%
+< ideal number	825,953.0	45.3
+Ideal number	462,647.0	25.4
+> than ideal number	534,999.0	29.3
+Total	1,823,599.0	100.0
+
+Has family obtained ideal size? (negative implies < ideal)	No.	%
+< ideal number	231,633.0	19.5
+Ideal number	267,963.0	22.5
+> than ideal number	690,859.0	58.0
+Total	1,190,455.0	100.0
+
+Has family obtained ideal size? (negative implies < ideal)	No.	%
+< ideal number	463,120.0	44.4
+Ideal number	195,437.0	18.7
+> than ideal number	384,645.0	36.9
+Total	1,043,202.0	100.0
+
+Has family obtained ideal size? (negative implies < ideal)	No.	%
+< ideal number	590,089.0	30.0
+Ideal number	534,517.0	27.2
+> than ideal number	840,344.0	42.8
+Total	1,964,950.0	100.0
+

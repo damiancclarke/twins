@@ -1,0 +1,17 @@
+TO DO EXTENDED ESSAY
+(1) Read +3 papers and consider what this offers
+
+
+
+(2) Check carefully the merge
+(3) Consider ATE
+(4) Rewrite - esp introduction
+
+Development economists and (presumably) policy makers are interested in determining whether a larger family size causes lower `quality' off-spring.
+Whilst this has been examined reasonably comprehensively using data from developed countries, work in developing countries is scarcer. Testing
+of this hypothesis in the developing world is particularly important.  Where family budget constraints are more tightly binding and where public
+support programs for young children are less widely available, the conditions for quality-quantity trade-off are particulary plausible.
+
+(5) Simulation - save residual, check whether correlated with twin 
+
+(6) run analysis for rich and poor countries, see how this affects the results.

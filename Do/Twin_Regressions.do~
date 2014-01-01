@@ -89,6 +89,10 @@ local varlab varlabels(malec "Male Child" agemay "Mother's age" magesq /*
 */ "Mother's Age Squared" agefirstbirth "Age First Birth" educf /*
 */ "Mother's Education" educfyrs_sq "Mother's Education Squared" height /*
 */ "Height" bmi "BMI")
+local sep "&"
+local lineend "\\"
+local linedraw "\hline"
+local prenote "\begin{table}[htpb!]\caption{`cap'}\label{`label'}\begin{center}"
 
 
 *SWITCHES (1 if run, else not run)
@@ -96,10 +100,10 @@ local sumstats 0
   local graphs 0
 local twin 0
 local ols done
-local IV 1
+local IV 0
 local IVtwin 0
-local income 1
-local desire 0
+local income 0
+local desire 1
 
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
@@ -118,7 +122,7 @@ drop if twinfamily==3|twinfamily==4
 keep if _merge==3
 
 
-foreach ado in ivreg2 outreg2 {
+foreach ado in ivreg2 outreg2 estout ranktest {
 	cap which `ado'
 	if _rc!=0 ssc install `ado'
 }
@@ -236,7 +240,9 @@ if `sumstats'==1 {
 	replace cat="Mid Inc, Twin" if twind==1 & income=="mid"
 	encode cat, gen(catnum)
 	
-	local nums "Number of Children"
+	local numkids "Number of Children `sep'"
+	local nummothers "Number of Mothers `sep'"
+	local numcountry "Number of Countries `sep'"
 	foreach num of numlist 1(1)4 {
 		cap drop count
 		gen count = 1
@@ -245,7 +251,17 @@ if `sumstats'==1 {
 			replace count=. if `var'==.
 		}
 		count if count==1
-		local nums "`nums' `r(N)'        "
+		local numkids "`numkids' `r(N)'`sep'"
+
+		bys id: gen n=_n
+		count if count==1&n==1
+		local nummothers "`nummothers' `r(N)'`sep'"
+		drop n
+
+		bys _cou: gen n=_n
+		count if count==1&n==1
+		local numcountry "`numcountry' `r(N)'`sep'"
+		drop n
 	}
 
 	sum twind if income=="low"
@@ -256,42 +272,51 @@ if `sumstats'==1 {
 	scalar ms = `r(sd)'
 	local twinlow "`=scalar(lt)' (`=scalar(ls)')"
 	local twinmid "`=scalar(mt)' (`=scalar(ms)')"
+
+	local cap "Summary Statistics"
+	local label "TWINtab:sumstats"
 	
 	estpost tabstat $sumstats, by(cat) statistics(mean sd) listwise ///
 	 columns(statistics)
-	estout using "$Tables/Summary/`Sum'.xls", unstack cells(mean sd(par)) ///
-	  delimit(";") varlabels(bord "Birth Order" fert "Fertility" idealnumkids ///
-	  "Ideal family size" agemay "Age" educf "Education" height "Height" bmi ///
-	  "BMI" educ "Education (Years)" school_zscore "Education (Z-Score)" ///
-	  noeduc "No Education (%)" infantmortality "Infant Mortality" ///
-	  childmortality "Child Mortality") replace ///
-	  note("`nums'" ///
-	 "Fraction twin low income: `twinlow', middle income: `twinmid'" ///
+	estout using "$Tables/Summary/`Sum'.tex", unstack ///
+	  cells("mean(fmt(3)) sd(par fmt(3))") prehead("`prenote'") ///
+	  posthead(\begin{tabular}{lccccc}\toprule&\multicolumn{2}{c}{Low Income} ///
+		& \multicolumn{2}{c}{Middle Income} & Total \\ \cmidrule(r){2-3}       ///
+		\cmidrule(r){4-5} \cmidrule(r){6} & Single & Twins & Single & Twins \\ ///
+		\midrule) /*delimit(";")*/                                             ///
+	   varlabels(bord "Birth Order" fert "Fertility" idealnumkids             ///
+	  "Ideal family size" agemay "Age" educf "Education" height "Height" bmi  ///
+	  "BMI" educ "Education (Years)" school_zscore "Education (Z-Score)"      ///
+	  noeduc "No Education (Percent)" infantmortality "Infant Mortality"      ///
+	  childmortality "Child Mortality") style(tex) replace                    ///
+	  prefoot(\multcolumn{6}{p{10cm}}{Fraction twin low income: `twinlow',    ///
+	  "middle income: `twinmid' `lineend' `linedraw' `numcountry' `lineend' " ///
+	 "`nummothers' `lineend' `numkids' `lineend' `linedraw'"                  ///
 	 "Notes: Education is reported as total years attained, attendance is a " ///
 	 "binary variable indicating current attendance status. Infant mortality" ///
 	 " refers to the proportion of children who die before 1 year of age, "   ///
 	 "while child mortality refers to the proportion who die before 5 years " ///
 	 "years.  Maternal height is reported in cm.  For a full list of country" ///
-	 "and years of survey see appendix table REF.")
-
+	  "and years of survey see appendix table REF."})                         ///
+	 postfoot("\bottomrule\end{tabular}\end{center}\end{table}")
 
 	*(B) By birthorder
-	foreach num of numlist 1(1)10 {
-	   estpost sum $sumstats if bord==`num'&age<19
-	   estout using "$Tables/`SumBord'.xls", append `opts' title("Birth order=`num'")
-	   *(C) Country-year observations
-	   tabout _cou _year using "$Tables/country_year.xls", replace
-	}
-	*(C) Desired versus actual family size
-	local cond1 age<19&agefirstbirth>14&idealnumkids!=.
-	local out "$Tables/`idealsum'.txt"
-	cap rm `out'
+*	foreach num of numlist 1(1)10 {
+*	   estpost sum $sumstats if bord==`num'&age<19
+*	   estout using "$Tables/`SumBord'.xls", append `opts' title("Birth order=`num'")
+*	   *(C) Country-year observations
+*	   tabout _cou _year using "$Tables/country_year.xls", replace
+*	}
+*	*(C) Desired versus actual family size
+*	local cond1 age<19&agefirstbirth>14&idealnumkids!=.
+*	local out "$Tables/`idealsum'.txt"
+*	cap rm `out'
 
-	tabout idealfam if `cond' using `out' , c(freq col)
-	tabout idealfam if `cond'&agemay<=35 using `out', c(freq col) append
-	tabout idealfam if `cond'&agemay>35 using `out', c(freq col) append
-	tabout idealfam if `cond'&income=="low" using `out', c(freq col) append
-	tabout idealfam if `cond'&income=="mid" using `out', c(freq col) append
+*	tabout idealfam if `cond' using `out' , c(freq col)
+*	tabout idealfam if `cond'&agemay<=35 using `out', c(freq col) append
+*	tabout idealfam if `cond'&agemay>35 using `out', c(freq col) append
+*	tabout idealfam if `cond'&income=="low" using `out', c(freq col) append
+*	tabout idealfam if `cond'&income=="mid" using `out', c(freq col) append
 }
 
 ********************************************************************************
@@ -438,7 +463,7 @@ if `income'==1 {
 			local c  `cond'&`n'_plus==1&income=="`inc'"
 			local ce `cond'&`n'_plus==1&income=="`inc'"&e(sample)
 			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c',/*
 				*/ `se' savefirst savefp(f`n3')
 				eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' `ce', /*
 				*/ `se' savefirst savefp(f`n2')
@@ -465,7 +490,7 @@ if `income'==1 {
 }
 
 ********************************************************************************
-**** (8) IV with > desired fertility
+**** (8) IV with twin threshold
 ********************************************************************************
 if `desire'==1 {
 	tab _cou, gen(_country)
@@ -474,9 +499,9 @@ if `desire'==1 {
 	local base malec _country* _yb* _age*
 	local endog fert fertXthreshold
 
-	foreach inc in all low mid {
+	foreach inc in all /*low mid*/ {
 		if "`inc'"=="all" local cex
-		else if "`inc'"=="low"|"`inc'"=="mid" local cex income=="`inc'"
+		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
 
 		local n1=1
 		local n2=2
@@ -486,12 +511,13 @@ if `desire'==1 {
 
 		local t=2
 		foreach n in two three four five {
-			local c  `cond'&`n'_plus==1&`cex'
-			local ce `cond'&`n'_plus==1&e(sample)&`cex'
+			local c  `cond'&`n'_plus==1 `cex'
+			local ce `cond'&`n'_plus==1&e(sample) `cex'
 
-			gen threshold=(twin_`n'_fam==1 & idealnumkids<=`t')
+			gen threshold=(twin_`n'_fam==1 & idealnumkids==`t')
 			gen fertXthreshold=fert*threshold
-			gen twin`n'Xthreshold = twin_`n'_fam*threshold
+			
+			cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
 			local insts twin_`n'_fam twin`n'Xthreshold
 
 			foreach y of varlist $outcomes {
@@ -514,10 +540,10 @@ if `desire'==1 {
 		}
 
 		estout `estimates' using "$Tables/IV/`IVdes'_`inc'.xls", replace ///
-		  keep(fert fertXthreshold malec $age $S $H) `estopt' `varlab'
+		 keep(fert fertXthreshold malec $age $S $H) `estopt' `varlab'
 
 		estout `firststage' using "$Tables/IV/`IVdes1'_`inc'.xls", replace ///
-		  keep(twin* malec $age $S $H) `estopt' `varlab'
+		 keep(twin* malec $age $S $H) `estopt' `varlab'
 	
 		estimates clear
 	}

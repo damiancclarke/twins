@@ -1,0 +1,155 @@
+@Article{BoundSolon1999,
+  author={Bound, John and Solon, Gary},
+  title={Double trouble: on the value of twins-based estimation of the return to schooling},
+  journal={Economics of Education Review},
+  year=1999,
+  volume={18},
+  number={2},
+  pages={169-182},
+  month={April},
+  keys={}
+}
+
+@Article{Griliches1979,
+  author={Griliches, Zvi},
+  title={Sibling Models and Data in Economics: Beginnings of a Survey},
+  journal={Journal of Political Economy},
+  year=1979,
+  volume={87},
+  number={5},
+  pages={S37-64},
+  month={October},
+  keys={Classics; Twins}
+}
+
+@Article{AshenfelterKrueger1994,
+  author={Ashenfelter, Orley and Krueger, Alan B},
+  title={Estimates of the Economic Returns to Schooling from a New Sample of Twins},
+  journal={American Economic Review},
+  year=1994,
+  volume={84},
+  number={5},
+  pages={1157-73},
+  month={December},
+  keyws={Twins; Education; Returns to Schooling}
+}
+
+@Article{RosenzweigWolpin1980,
+  author={Rosenzweig, Mark R and Wolpin, Kenneth I},
+  title={Testing the Quantity-Quality Fertility Model: The Use of Twins as a Natural Experiment},
+  journal={Econometrica},
+  year=1980,
+  volume={48},
+  number={1},
+  pages={227-40},
+  month={January},
+  keys={Quantity-Quality trade off; Twins},
+}
+
+@Article{Behrmanetal1994,
+  author={Behrman, Jere R and Rosenzweig, Mark R and Taubman, Paul},
+  title={Endowments and the Allocation of Schooling in the Family and in the Marriage Market: The Twins Experiment},
+  journal={Journal of Political Economy},
+  year=1994,
+  volume={102},
+  number={6},
+  pages={1131-74},
+  month={December},
+  keys={Twins; }
+}
+
+@Article{BehrmanRosenzweig1999,
+  author={Behrman, Jere R. and Rosenzweig, Mark R.},
+  title={Ability biases in schooling returns and twins: a test and new estimates},
+  journal={Economics of Education Review},
+  year=1999,
+  volume={18},
+  number={2},
+  pages={159-167},
+  month={April},
+  keys={Twins; Returns to Schooling}
+}
+
+@Article{RosenzweigZhang2009,
+  author={Mark R. Rosenzweig and Junsen Zhang},
+  title={Do Population Control Policies Induce More Human Capital Investment? Twins, Birth Weight and China's \&quot;One-Child\&quot; Policy},
+  journal={Review of Economic Studies},
+  year=2009,
+  volume={76},
+  number={3},
+  pages={1149-1174},
+  month={07},
+  keys={human capital;  Birthweight; Twins; Population Control}
+}
+
+@Article{Bonjour2003,
+  author={Dorothe Bonjour and Lynn F. Cherkas and Jonathan E. Haskel and Denise D. Hawkes and Tim D Spector},
+  title={Returns to Education: Evidence from U.K. Twins},
+  journal={American Economic Review},
+  year=2003,
+  volume={93},
+  number={5},
+  pages={1799-1812},
+  month={December},
+  keywords={Twins; returns to schooling}
+}
+
+@Article{Neumark1999,
+  author={Neumark, David},
+  title={Biases in twin estimates of the return to schooling},
+  journal={Economics of Education Review},
+  year=1999,
+  volume={18},
+  number={2},
+  pages={143-148},
+  month={April},
+  keys={Twins; Returns to schooling}
+}
+
+@Article{AngristEvans1998,
+  author={Angrist, Joshua D and Evans, William N},
+  title={Children and Their Parents' Labor Supply: Evidence from Exogenous Variation in Family Size},
+  journal={American Economic Review},
+  year=1998,
+  volume={88},
+  number={3},
+  pages={450-77},
+  month={June},
+  keys={}
+}
+
+@article{AngristLavySchlosser2010,
+     title = {Multiple Experiments for the Causal Link between the Quantity and Quality of Children},
+     author = {Angrist, Joshua  and Lavy, Victor  and Schlosser, Analia },
+     journal = {Journal of Labor Economics},
+     volume = {28},
+     number = {4},
+     pages = {pp. 773-824},
+     language = {English},
+     year = {2010},
+     keys = {}
+ }
+
+@TechReport{Qian2009,
+  author={Nancy Qian},
+  title={Quantity-Quality and the One Child Policy:The Only-Child Disadvantage in School Enrollment in Rural China},
+  year=2009,
+  month=May,
+  institution={National Bureau of Economic Research, Inc},
+  type={NBER Working Papers},
+  number={14973},
+  keys={Q-Q; fertility}
+}
+
+@article{Lietal2008,
+author = {Li, H.},
+author = {Zhang, J.},
+author = {Zhu, Y.},
+title= {The Quantity-Quality Trade-off of Children in a Developing Country: Identification Using Chinese Twins},
+year = {2008},
+journal = {Demography},
+volume = {45},
+number = {1},
+pages = {223-243},
+keys = {Q-Q; fertility}
+}

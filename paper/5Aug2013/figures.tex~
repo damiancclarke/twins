@@ -1,0 +1,26 @@
+\begin{center}
+\begin{figure}[h!]
+\caption{Proportion of Twins by Birth Order}
+\includegraphics[scale=0.8]{twinbybord.eps} 
+\label{fig:twinbybord}
+\end{figure}
+\end{center}
+
+
+\begin{figure}[h!]
+\begin{center}
+\caption{Twin Births and Total Fertility}
+\includegraphics[scale=0.8]{famsize.eps} 
+\label{fig:famsize}
+\end{center}
+\end{figure}
+
+
+\begin{center}
+\begin{figure}[h!]
+\caption{Distribution of Ideal Family Size}
+\includegraphics[scale=0.8]{idealfamsize.eps} 
+\label{fig:ideal}
+\end{figure}
+\end{center}
+

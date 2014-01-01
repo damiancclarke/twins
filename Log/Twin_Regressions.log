@@ -1,0 +1,663 @@
+---------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twin_Regressions.log
+  log type:  text
+ opened on:   1 Jan 2014, 07:37:48
+
+. use "$Data/DHS_twins"
+
+. 
+. replace bmi=. if bmi>50
+(68237 real changes made, 68237 to missing)
+
+. replace height=. if height>240
+(56043 real changes made, 56043 to missing)
+
+. replace height=. if height<80
+(3686 real changes made, 3686 to missing)
+
+. replace educ=. if age<6
+(1408120 real changes made, 1408120 to missing)
+
+. replace educ=. if educ>25
+(0 real changes made)
+
+. replace educf=. if educf>25
+(2568 real changes made, 2568 to missing)
+
+. 
+. drop if twinfamily==3|twinfamily==4
+(6719 observations deleted)
+
+. keep if _merge==3
+(2824737 observations deleted)
+
+. 
+. 
+. foreach ado in ivreg2 outreg2 estout ranktest {
+  2.         cap which `ado'
+  3.         if _rc!=0 ssc install `ado'
+  4. }
+
+. 
+. *******************************************************************************
+. *** (2) Summary Stats
+. *******************************************************************************
+. if `sumstats'==1 {
+. 
+.         if c(os)=="Windows" local format png
+.         else if c(os)=="Unix" local format eps
+. 
+.         ***************************************************************************
+.         *** (2a) Graphical
+.         *** graph 1: total births by family type (twins vs non-twins)
+.         *** graph 2: total births by family type for families who exceed desired
+.         *** graph 3: Proportion of twins by birth order
+.         *** graph 4: Desired family size
+.         *** graphs 5-7: Desired family size by mother's characteristics
+.         ***************************************************************************
+.         if `graphs'==1 {
+.         twoway kdensity fert if twinfamily==1, lpattern(dash) bw(2) || ///
+>           kdensity fert if twinfamily==0, bw(2) scheme(s1color) ytitle("Density") ///
+>           legend(label(1 "Twin Family") label(2 "Singleton Family")) ///
+>           title("Total births by Family Type") xtitle("total children ever born") 
+.         graph save "$Graphs/`famsize'", replace
+.         graph export "$Graphs/`famsize'.`format'", as(`format') replace
+. 
+. 
+.         twoway kdensity fert if twinfamily==1 & fert > idealnumkids, ///
+>           bw(2) lpattern(dash) || kdensity fert if twinfamily==0 & ///
+>           fert > idealnumkids & twin_bord >= idealnumkids, bw(2) scheme(s1color) ///
+>           legend(label(1 "Twin Family") label(2 "Singleton Family")) ///
+>           ytitle("Density") title("Total births by Family Type") ///
+>           xtitle("total children ever born") ///
+>           subtitle("For families who exceed desired family size")
+.         graph save "$Graphs/`famsize_e'", replace
+.         graph export "$Graphs/`famsize_e'.`format'", as(`format') replace
+. 
+.         
+.         local note1 "Single births are 1-frac(twins). "
+.         local note2 "Total fraction of twins is represented by the solid line."
+.         local gnote "`note1' `note2'"
+.         preserve
+.         collapse twind [pw=sweight], by(bord)
+.         line twind bord if bord<11, lpattern(dash) title("Twinning by birth order") ///
+>           ytitle("Fraction twins") xtitle("Birth Order") yline(0.0189) ///
+>           note(`gnote') scheme(s1color)
+.         graph save "$Graphs/`twinbord'", replace
+.         graph export "$Graphs/`twinbord'.`format'", as(`format') replace
+.         restore
+. 
+.         
+.         local n1 "Total sample of families is 1,416,924.  2.61% of families report "
+.         local n2 "'up to god', and 4.39% provide"
+.         local n3 "a non-numeric response. These are classed as 10+ in graphical output."        
+.         preserve
+.         collapse idealnumkids [pw=sweight], by(id)
+.         gen idealnum=idealnumkids if idealnumkids<=10
+.         replace idealnum=10 if idealnumkids>10 & idealnumkids!=.
+.         lab def n 0 "0" 1 "1" 2 "2" 3 "3" 4 "4" 5 "5" 6 "6" 7 "7" 8 "8" 9 "9" 10 "10+"
+.         lab val idealnum n
+.         hist idealnum,  note("`n1' `n2'" "`n3'") frac scheme(s1color) ///
+>           xtitle("Ideal Family Size") title("Self Reported Ideal Family Size") ///
+>           xla(0/10, valuelabel) bcolor(navy)
+.         graph save "$Graphs/`idealfam'", replace
+.         graph export "$Graphs/`idealfam'.`format'", as(`format') replace
+.         restore
+. 
+.         
+.         foreach c of varlist agemay agefirstbirth fert {
+  2.                 preserve
+  3.                 if `"`c'"'=="agemay" {
+  4.                         local cond agemay>=15&agemay<=45
+  5.                         local char "Age of mother at time of question"
+  6.                 }
+  7.                 else if `"`c'"'=="agefirstbirth" {
+  8.                         local cond agefirstbirth>=15&agefirstbirth<45
+  9.                         local char "Age of Mother at First birth"
+ 10.                 }
+ 11.                 else if `"`c'"'=="fert"{
+ 12.                         local cond fert<=10
+ 13.                         local char "Total births at time of question"
+ 14.                 }
+ 15.                 bys id: gen num=_n
+ 16.                 keep if num==1
+ 17.                 collapse idealnumkids [pw=sweight], by(`c')
+ 18.                 line idealnumkids `c' if `cond', title("Ideal Family Size by `char'") ///
+>                   scheme(s1color) xtitle("`char'") ytitle("Average Desired Family Size")
+ 19.            graph save "$Graphs/idealfam_`c'", replace
+ 20.            graph export "$Graphs/idealfam_`c'.`format'", as(`format') replace
+ 21.                 restore
+ 22.         }
+.         }
+. 
+.         ***************************************************************************
+.         *** (2b) Numerical:
+.         *** characteristics of families who want different ideal sizes (P.Dev idea)
+.         ***************************************************************************
+. *       areg idealnumkids educf_* agefirstbirth poor1 height bmi i.year_birth /*
+> *       */ i.child_yob i.agemay [pw=sweight], a(_cou) `se'
+. *       outreg2 educf_0 educf_1_4 educf_5_6 educf_7_10 agefirstbirth poor1 /*
+> *       */ educ height bmi using "$Tables/fampref.xls", excel replace   
+. 
+. 
+.         ***************************************************************************
+.         *** (2c) Tables
+.         ***************************************************************************
+.         * (A) By twins
+.         local opts cells("count mean sd min max")
+.         
+.         gen cat="Low Inc, Singleton" if twind==0 & income=="low"
+.         replace cat="Low Inc, Twin" if twind==1 & income=="low"
+.         replace cat="Mid Inc, Single" if twind==0 & income=="mid"
+.         replace cat="Mid Inc, Twin" if twind==1 & income=="mid"
+.         encode cat, gen(catnum)
+.         
+.         local numkids "Number of Children `sep'"
+.         local nummothers "Number of Mothers `sep'"
+.         local numcountry "Number of Countries `sep'"
+.         foreach num of numlist 1(1)4 {
+  2.                 cap drop count
+  3.                 gen count = 1
+  4.                 replace count=. if catnum!=`num'
+  5.                 foreach var of local sumstats {
+  6.                         replace count=. if `var'==.
+  7.                 }
+  8.                 count if count==1
+  9.                 local numkids "`numkids' `r(N)'`sep'"
+ 10. 
+.                 bys id: gen n=_n
+ 11.                 count if count==1&n==1
+ 12.                 local nummothers "`nummothers' `r(N)'`sep'"
+ 13.                 drop n
+ 14. 
+.                 bys _cou: gen n=_n
+ 15.                 count if count==1&n==1
+ 16.                 local numcountry "`numcountry' `r(N)'`sep'"
+ 17.                 drop n
+ 18.         }
+. 
+.         sum twind if income=="low"
+.         scalar lt = `r(mean)'
+.         scalar ls = `r(sd)'
+.         sum twind if income=="mid"
+.         scalar mt = `r(mean)'
+.         scalar ms = `r(sd)'
+.         local twinlow "`=scalar(lt)' (`=scalar(ls)')"
+.         local twinmid "`=scalar(mt)' (`=scalar(ms)')"
+. 
+.         local cap "Summary Statistics"
+.         local label "TWINtab:sumstats"
+.         
+.         estpost tabstat $sumstats, by(cat) statistics(mean sd) listwise ///
+>          columns(statistics)
+.         estout using "$Tables/Summary/`Sum'.tex", unstack ///
+>           cells("mean(fmt(3)) sd(par fmt(3))") prehead("`prenote'") ///
+>           posthead(\begin{tabular}{lccccc}\toprule&\multicolumn{2}{c}{Low Income} ///
+>                 & \multicolumn{2}{c}{Middle Income} & Total \\ \cmidrule(r){2-3}       ///
+>                 \cmidrule(r){4-5} \cmidrule(r){6} & Single & Twins & Single & Twins \\ ///
+>                 \midrule) /*delimit(";")*/                                             ///
+>            varlabels(bord "Birth Order" fert "Fertility" idealnumkids             ///
+>           "Ideal family size" agemay "Age" educf "Education" height "Height" bmi  ///
+>           "BMI" educ "Education (Years)" school_zscore "Education (Z-Score)"      ///
+>           noeduc "No Education (Percent)" infantmortality "Infant Mortality"      ///
+>           childmortality "Child Mortality") style(tex) replace                    ///
+>           prefoot(\multcolumn{6}{p{10cm}}{Fraction twin low income: `twinlow',    ///
+>           "middle income: `twinmid' `lineend' `linedraw' `numcountry' `lineend' " ///
+>          "`nummothers' `lineend' `numkids' `lineend' `linedraw'"                  ///
+>          "Notes: Education is reported as total years attained, attendance is a " ///
+>          "binary variable indicating current attendance status. Infant mortality" ///
+>          " refers to the proportion of children who die before 1 year of age, "   ///
+>          "while child mortality refers to the proportion who die before 5 years " ///
+>          "years.  Maternal height is reported in cm.  For a full list of country" ///
+>           "and years of survey see appendix table REF."})                         ///
+>          postfoot("\bottomrule\end{tabular}\end{center}\end{table}")
+. 
+.         *(B) By birthorder
+. *       foreach num of numlist 1(1)10 {
+. *          estpost sum $sumstats if bord==`num'&age<19
+. *          estout using "$Tables/`SumBord'.xls", append `opts' title("Birth order=`num'")
+. *          *(C) Country-year observations
+. *          tabout _cou _year using "$Tables/country_year.xls", replace
+. *       }
+. *       *(C) Desired versus actual family size
+. *       local cond1 age<19&agefirstbirth>14&idealnumkids!=.
+. *       local out "$Tables/`idealsum'.txt"
+. *       cap rm `out'
+. 
+. *       tabout idealfam if `cond' using `out' , c(freq col)
+. *       tabout idealfam if `cond'&agemay<=35 using `out', c(freq col) append
+. *       tabout idealfam if `cond'&agemay>35 using `out', c(freq col) append
+. *       tabout idealfam if `cond'&income=="low" using `out', c(freq col) append
+. *       tabout idealfam if `cond'&income=="mid" using `out', c(freq col) append
+. }
+
+. 
+. ********************************************************************************
+. **** (3) Twin predict regressions
+. ********************************************************************************
+. if `twin'== 1 {
+.         
+.         fvset base 1 _cou
+.         fvset base 1 child_yob
+.         
+.         eststo: reg twind100 $twinpredict `wt', `se'
+. 
+.         foreach inc in low mid {
+  2.                 eststo: reg twind100 $twinpredict `wt' if income=="`inc'", `se'
+  3.         }
+.         
+.         local cond1 child_yob>1989
+.         local cond2 child_yob<=1989
+. 
+.         foreach condtn in cond1 cond2 {
+  2.                 eststo: reg twind100 $twinpredict `wt' if ``condtn'', `se'
+  3.         }
+. 
+.         estout est1 est2 est3 est4 est5 using "$Tables/Twin/`TwinPred'.xls", ///
+>           keep($twinout) title("Probability of Giving Birth to Twins (DHS)") ///
+>           varlabels(agemay "Age" magesq "Age Squared" agefirstbirth ///
+>           "Age First Birth" educf "Education" educfyrs_sq "Educ Squared" ///
+>           height "Height" bmi "BMI") `estopt' replace ///
+>           note("Notes: All specifications include a full set of year of birth and" ///
+>           " country dummies, and are estimated as linear probability models. " ///
+>           "Twin is multiplied by 100 for presentation.  Height is measured in cm" ///
+>           " and BMI is weight in kg divided by height in cm squared.")
+. 
+.         estimates clear
+. }
+
+. 
+. ********************************************************************************
+. **** (4) Simple OLS of Q-Q (can then apply Altonji)
+. ********************************************************************************
+. if `"`ols'"'=="yes" {
+.         cap rm "$Results/Outreg/QQ_ols.xls"
+.         cap rm "$Results/Outreg/QQ_ols.txt"
+.         local out "$Results/Outreg/QQ_ols.xls"
+. 
+.         foreach y of varlist $outcomes {
+  2.                 qui reg `y' fert $cont $S $H [pw=sweight], cluster(_cou)
+  3.                 reg `y' fert $cont [pw=sweight] if e(sample)==1, cluster(_cou)
+  4.                 outreg2 fert $contout using `out', excel append
+  5.                 reg `y' fert $cont $S [pw=sweight] if e(sample)==1, cluster(_cou)
+  6.                 outreg2 fert $contout $S using `out', excel append
+  7.                 reg `y' fert $cont $S $H [pw=sweight], cluster(_cou)    
+  8.                 outreg2 fert $contout $S $H using `out', excel append
+  9.         }
+. 
+.         foreach inc in low mid {
+  2.                 foreach y of varlist $outcomes {
+  3.                         qui reg `y' fert $cont $S $H if income==`"`inc'"', cluster(_cou)
+  4.                         reg `y' fert $cont [pw=sweight] if income==`"`inc'"'&e(sample)/*
+>                         */, cluster(_cou)
+  5.                         outreg2 fert $contout using `out', excel append
+  6. 
+.                         reg `y' fert $cont $S [pw=sweight] if income==`"`inc'"'&e(sample),/*
+>                         */ cluster(_cou)
+  7.                         outreg2 fert $contout $S using `out', excel append
+  8. 
+.                         reg `y' fert $cont $S $H [pw=sweight] if income==`"`inc'"',/*
+>                         */ cluster(_cou)        
+  9.                         outreg2 fert $contout $S $H using `out', excel append
+ 10.                 }
+ 11.         }
+. }
+
+. 
+. ********************************************************************************
+. **** (5) IV (using twin at order n), subsequent inclusion of twin predictors
+. ********************************************************************************
+. if `IV'==1 {
+.    tab _cou, gen(_country)
+.    tab year_birth, gen(_yb)
+.    tab age, gen(_age)
+.         local base malec _country* _yb* _age*
+. 
+. 
+.         local n1=1
+.         local n2=2
+.         local n3=3
+.         local estimates
+.         local firststage
+. 
+.         foreach n in two three four five {
+  2.                 local c  `cond'&`n'_plus==1
+  3.                 local ce `cond'&`n'_plus==1&e(sample)
+  4.                 foreach y of varlist $outcomes {
+  5.                         eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+>                         */ `se' savefirst savefp(f`n3')
+  6.                         eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' `ce',   /*
+>                         */ `se' savefirst savefp(f`n2')
+  7.                         eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' `ce',           /*
+>                         */ `se' savefirst savefp(f`n1')
+  8. 
+.                         local estimates `estimates' est`n3' est`n2' est`n1' 
+  9.                         local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+ 10.                         local n1=`n1'+3
+ 11.                         local n2=`n2'+3
+ 12.                         local n3=`n3'+3
+ 13.                 }
+ 14.         }
+. 
+.         estout `estimates' using "$Tables/IV/`IV'.xls", replace ///
+>         keep(fert malec $age $S $H) `estopt' `varlab'
+. 
+.         estout `firststage' using "$Tables/IV/`IV1'.xls", replace ///
+>         keep(twin_* malec $age $S $H) `estopt' `varlab' 
+.         
+.         estimates clear
+. }
+
+. 
+. ********************************************************************************
+. **** (6) IV including twins and pre-twins
+. ********************************************************************************
+. if `IVtwin'==1 {
+.         
+. }
+
+. 
+. ********************************************************************************
+. **** (7) IV by income
+. ********************************************************************************
+. if `income'==1 {
+.         cap drop _country* _yb* _age*
+.         
+.    tab _cou, gen(_country)
+.    tab year_birth, gen(_yb)
+.    tab age, gen(_age)
+.         local base malec _country* _yb* _age*
+. 
+. 
+.         foreach inc in low mid {
+  2.                 local n1=1
+  3.                 local n2=2
+  4.                 local n3=3
+  5.                 local estimates
+  6.                 local firststage
+  7. 
+.                 foreach n in two three four five {
+  8.                         local c  `cond'&`n'_plus==1&income=="`inc'"
+  9.                         local ce `cond'&`n'_plus==1&income=="`inc'"&e(sample)
+ 10.                         foreach y of varlist $outcomes {
+ 11.                                 eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' 
+> `c',/*
+>                                 */ `se' savefirst savefp(f`n3')
+ 12.                                 eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' `ce
+> ', /*
+>                                 */ `se' savefirst savefp(f`n2')
+ 13.                                 eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' `ce', /*
+>                                 */ `se' savefirst savefp(f`n1')
+ 14. 
+. 
+.                                 local estimates `estimates' est`n3' est`n2' est`n1' 
+ 15.                                 local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+ 16.                                 local n1=`n1'+3
+ 17.                                 local n2=`n2'+3
+ 18.                                 local n3=`n3'+3
+ 19.                         }
+ 20.                 }
+ 21. 
+.         estout `estimates' using "$Tables/IV/`IVinc'_`inc'.xls", replace ///
+>         keep(fert malec $age $S $H) `estopt' `varlab'
+ 22. 
+.         estout `firststage' using "$Tables/IV/`IVinc1'_`inc'.xls", replace ///
+>         keep(twin_* malec $age $S $H) `estopt' `varlab'
+ 23.         
+.         estimates clear
+ 24.         }
+. }
+
+. 
+. ********************************************************************************
+. **** (8) IV with twin threshold
+. ********************************************************************************
+. if `desire'==1 {
+.         tab _cou, gen(_country)
+
+   country (numeric code) |      Freq.     Percent        Cum.
+--------------------------+-----------------------------------
+                  Albania |      9,852        0.25        0.25
+                  Armenia |     23,119        0.59        0.84
+               Azerbaijan |     10,099        0.26        1.10
+               Bangladesh |    138,845        3.54        4.64
+                    Benin |     50,921        1.30        5.94
+                  Bolivia |     90,337        2.30        8.24
+                   Brazil |     26,480        0.68        8.92
+             Burkina-Faso |     80,844        2.06       10.98
+                  Burundi |     17,179        0.44       11.42
+                 Cambodia |     78,393        2.00       13.42
+                 Cameroon |     57,924        1.48       14.89
+ Central-African-Republic |      8,424        0.21       15.11
+                     Chad |     31,870        0.81       15.92
+                 Colombia |    153,340        3.91       19.83
+                  Comoros |      4,405        0.11       19.94
+        Congo-Brazzaville |     24,201        0.62       20.56
+Congo-Democratic-Republic |     17,942        0.46       21.02
+            Cote-d-Ivoire |     37,865        0.97       21.98
+       Dominican-Republic |     85,859        2.19       24.17
+                    Egypt |    190,129        4.85       29.02
+                 Ethiopia |     77,034        1.96       30.99
+                    Gabon |     19,164        0.49       31.47
+                    Ghana |     29,402        0.75       32.22
+                Guatemala |     26,389        0.67       32.90
+                   Guinea |     26,887        0.69       33.58
+                   Guyana |      9,787        0.25       33.83
+                    Haiti |     54,833        1.40       35.23
+                 Honduras |     64,405        1.64       36.87
+                    India |    494,736       12.62       49.49
+                Indonesia |    370,438        9.45       58.94
+                   Jordan |    104,263        2.66       61.60
+               Kazakhstan |     10,902        0.28       61.87
+                    Kenya |     41,113        1.05       62.92
+          Kyrgyz-Republic |      6,260        0.16       63.08
+                  Lesotho |     19,628        0.50       63.58
+                  Liberia |      9,946        0.25       63.84
+               Madagascar |     66,478        1.70       65.53
+                   Malawi |     94,897        2.42       67.95
+                 Maldives |     11,367        0.29       68.24
+                     Mali |     81,286        2.07       70.31
+                  Moldova |      7,146        0.18       70.50
+                  Morocco |     38,862        0.99       71.49
+               Mozambique |     51,802        1.32       72.81
+                  Namibia |     22,202        0.57       73.38
+                    Nepal |     62,324        1.59       74.96
+                Nicaragua |     45,936        1.17       76.14
+                    Niger |     47,657        1.22       77.35
+                  Nigeria |     94,682        2.41       79.77
+                 Pakistan |     49,895        1.27       81.04
+                 Paraguay |      9,839        0.25       81.29
+                     Peru |    109,120        2.78       84.07
+              Philippines |     92,995        2.37       86.44
+                   Rwanda |     72,571        1.85       88.29
+    Sao-Tome-and-Principe |      4,549        0.12       88.41
+                  Senegal |     74,161        1.89       90.30
+             Sierra-Leone |     10,632        0.27       90.57
+             South-Africa |     12,962        0.33       90.90
+                Swaziland |      5,874        0.15       91.05
+                 Tanzania |     95,811        2.44       93.50
+                     Togo |     11,893        0.30       93.80
+                   Turkey |     37,920        0.97       94.77
+                   Uganda |     52,893        1.35       96.12
+                  Ukraine |      6,037        0.15       96.27
+               Uzbekistan |      7,962        0.20       96.47
+                  Vietnam |     25,392        0.65       97.12
+                    Yemen |     20,806        0.53       97.65
+                   Zambia |     52,383        1.34       98.99
+                 Zimbabwe |     39,743        1.01      100.00
+--------------------------+-----------------------------------
+                    Total |  3,921,292      100.00
+.         tab year_birth, gen(_yb)
+
+   Mother's |
+    year of |
+      birth |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       1936 |          2        0.00        0.00
+       1937 |        144        0.00        0.00
+       1938 |        100        0.00        0.01
+       1939 |        135        0.00        0.01
+       1940 |        484        0.01        0.02
+       1941 |      2,363        0.06        0.08
+       1942 |      5,901        0.15        0.23
+       1943 |      9,487        0.24        0.47
+       1944 |     12,170        0.31        0.79
+       1945 |     18,010        0.46        1.24
+       1946 |     20,974        0.53        1.78
+       1947 |     25,217        0.64        2.42
+       1948 |     29,924        0.76        3.19
+       1949 |     35,618        0.91        4.09
+       1950 |     47,362        1.21        5.30
+       1951 |     46,318        1.18        6.48
+       1952 |     59,816        1.53        8.01
+       1953 |     61,337        1.56        9.57
+       1954 |     72,277        1.84       11.42
+       1955 |     80,593        2.06       13.47
+       1956 |     89,451        2.28       15.75
+       1957 |     98,418        2.51       18.26
+       1958 |    109,074        2.78       21.04
+       1959 |    113,142        2.89       23.93
+       1960 |    138,301        3.53       27.46
+       1961 |    121,367        3.10       30.55
+       1962 |    145,483        3.71       34.26
+       1963 |    143,188        3.65       37.91
+       1964 |    145,990        3.72       41.64
+       1965 |    151,833        3.87       45.51
+       1966 |    143,494        3.66       49.17
+       1967 |    137,996        3.52       52.69
+       1968 |    149,415        3.81       56.50
+       1969 |    135,661        3.46       59.96
+       1970 |    151,614        3.87       63.82
+       1971 |    125,332        3.20       67.02
+       1972 |    133,676        3.41       70.43
+       1973 |    122,668        3.13       73.56
+       1974 |    111,647        2.85       76.40
+       1975 |    113,003        2.88       79.28
+       1976 |    102,718        2.62       81.90
+       1977 |     91,015        2.32       84.23
+       1978 |     89,800        2.29       86.52
+       1979 |     78,219        1.99       88.51
+       1980 |     81,458        2.08       90.59
+       1981 |     62,755        1.60       92.19
+       1982 |     60,514        1.54       93.73
+       1983 |     51,965        1.33       95.06
+       1984 |     42,778        1.09       96.15
+       1985 |     37,074        0.95       97.09
+       1986 |     30,897        0.79       97.88
+       1987 |     22,240        0.57       98.45
+       1988 |     19,676        0.50       98.95
+       1989 |     12,829        0.33       99.28
+       1990 |     10,952        0.28       99.56
+       1991 |      7,161        0.18       99.74
+       1992 |      5,038        0.13       99.87
+       1993 |      2,792        0.07       99.94
+       1994 |      1,482        0.04       99.98
+       1995 |        674        0.02       99.99
+       1996 |        245        0.01      100.00
+       1997 |         25        0.00      100.00
+------------+-----------------------------------
+      Total |  3,921,292      100.00
+.         tab age, gen(_age)
+
+Child's age |
+   in years |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    278,324        7.10        7.10
+          1 |    249,311        6.36       13.46
+          2 |    236,581        6.03       19.49
+          3 |    233,634        5.96       25.45
+          4 |    226,104        5.77       31.21
+          5 |    216,076        5.51       36.72
+          6 |    231,904        5.91       42.64
+          7 |    211,027        5.38       48.02
+          8 |    208,221        5.31       53.33
+          9 |    182,900        4.66       57.99
+         10 |    202,331        5.16       63.15
+         11 |    161,842        4.13       67.28
+         12 |    182,635        4.66       71.94
+         13 |    159,152        4.06       76.00
+         14 |    150,463        3.84       79.83
+         15 |    133,418        3.40       83.24
+         16 |    119,198        3.04       86.28
+         17 |     99,881        2.55       88.82
+         18 |     96,338        2.46       91.28
+         19 |     66,767        1.70       92.98
+         20 |     68,469        1.75       94.73
+         21 |     44,761        1.14       95.87
+         22 |     42,741        1.09       96.96
+         23 |     30,728        0.78       97.74
+         24 |     24,235        0.62       98.36
+         25 |     22,087        0.56       98.92
+         26 |     13,366        0.34       99.27
+         27 |      9,762        0.25       99.51
+         28 |      7,419        0.19       99.70
+         29 |      3,902        0.10       99.80
+         30 |      4,172        0.11       99.91
+         31 |      1,380        0.04       99.94
+         32 |      1,096        0.03       99.97
+         33 |        494        0.01       99.99
+         34 |        262        0.01       99.99
+         35 |        187        0.00      100.00
+         36 |         62        0.00      100.00
+         37 |         29        0.00      100.00
+         38 |         13        0.00      100.00
+         39 |          5        0.00      100.00
+         40 |          9        0.00      100.00
+         41 |          2        0.00      100.00
+         42 |          3        0.00      100.00
+         44 |          1        0.00      100.00
+------------+-----------------------------------
+      Total |  3,921,292      100.00
+.         local base malec _country* _yb* _age*
+.         local endog fert fertXthreshold
+. 
+.         foreach inc in all /*low mid*/ {
+  2.                 if "`inc'"=="all" local cex
+  3.                 else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
+  4. 
+.                 local n1=1
+  5.                 local n2=2
+  6.                 local n3=3
+  7.                 local estimates
+  8.                 local firststage
+  9. 
+.                 local t=2
+ 10.                 foreach n in two three four five {
+ 11.                         local c  `cond'&`n'_plus==1 `cex'
+ 12.                         local ce `cond'&`n'_plus==1&e(sample) `cex'
+ 13. 
+.                         gen threshold=(twin_`n'_fam==1 & idealnumkids==`t')
+ 14.                         gen fertXthreshold=fert*threshold
+ 15.                         
+.                         cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
+ 16.                         local insts twin_`n'_fam twin`n'Xthreshold
+ 17. 
+.                         foreach y of varlist $outcomes {
+ 18.                                 eststo: ivreg2 `y' `base' $age $S $H (`endog' = `insts') /*
+>                                 */ `wt' `c', `se' savefirst savefp(f`n3')
+ 19.                                 eststo: ivreg2 `y' `base' $age $S (`endog' = `insts') /*
+>                                 */ `wt' `ce', `se' savefirst savefp(f`n2')
+ 20.                                 eststo: ivreg2 `y' `base' (`endog' = `insts') /*
+>                                 */ `wt' `ce', `se' savefirst savefp(f`n1')
+ 21. 
+.                                 local estimates `estimates' est`n3' est`n2' est`n1'
+ 22.                                 local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+ 23.                 
+.                                 local ++t
+ 24.                                 local n1=`n1'+3
+ 25.                                 local n2=`n2'+3
+ 26.                                 local n3=`n3'+3
+ 27.                         }
+ 28.                         drop threshold fertXthreshold
+ 29.                 }
+ 30. 
+.                 estout `estimates' using "$Tables/IV/`IVdes'_`inc'.xls", replace ///
+>                  keep(fert fertXthreshold malec $age $S $H) `estopt' `varlab'
+ 31. 
+.                 estout `firststage' using "$Tables/IV/`IVdes1'_`inc'.xls", replace ///
+>                  keep(twin* malec $age $S $H) `estopt' `varlab'
+ 32.         
+.                 estimates clear
+ 33.         }
+(sum of wgt is     2.5647e+11)

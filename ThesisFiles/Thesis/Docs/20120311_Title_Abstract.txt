@@ -1,0 +1,10 @@
+Child Quantity versus Quality: Are Twin Births Exogenous?
+
+The literature on twin studies treats twin birth as an exogenous shock to sibship, and uses this
+event as a manner to instrument for the otherwise endogenous parental decision of ideal family size.
+This methodology has been popular in examining the child quality-quantity trade-off hypothesis.  Here,
+I examine whether multiple birth is exogenous, and find that it is not, responding to factors such as mother's
+height and education.  Using the Demographic and Health Surveys I examine the potential size of the
+bias introduced using the traditional IV strategy, and run Monte Carlo simluations to determine how the 
+magnitude of this bias will vary as the correlation between twinning and mother's characteristics increases.
+

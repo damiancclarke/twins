@@ -1,0 +1,1389 @@
+\documentclass{article}[11pt,subeqn]
+
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+\usepackage[pdftex]{graphicx}
+\usepackage{setspace}
+\usepackage{framed}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\title{Child Quantity versus Quality: Are Twin Births Exogenous?}
+\author{Sonia Bhalotra\thanks{University of Bristol, \href{mailto:s.bhalotra@bristol.ac.uk}{s.bhalotra@bristol.ac.uk}.} \and Damian Clarke\thanks{The University of Oxford, \href{mailto:damian.clarke@economics.ox.ac.uk}{damian.clarke@economics.ox.ac.uk}.}}
+
+\setlength\topmargin{-0.575in}
+%\setlength\headheight{15pt}
+%\setlength\headwidth{6.05in}
+\setlength\textheight{9.2in}
+\setlength\textwidth{6.2in}
+\setlength\oddsidemargin{0.18in}
+\setlength\evensidemargin{-0.5in}
+\setlength\parindent{0.25in}
+\setlength\parskip{0.25in}
+
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+\usepackage{hyperref}
+
+\usepackage{lscape}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{rotating,capt-of}
+\usepackage{array}
+
+%\usepackage{lineno}
+\usepackage[update,prepend]{epstopdf}
+
+\usepackage[font=sc]{caption}
+
+%NEW COMMANDS
+\newcommand{\Lagr}{\mathcal{L}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcolumntype{P}[1]{>{\raggedright}p{#1\linewidth}}
+
+\usepackage{appendix}
+\usepackage{booktabs}
+\usepackage{cleveref}
+
+%\fancyhead{}
+%\fancyfoot{}
+%\fancyhead[L]{\textsc{Extended Essay}}
+%\fancyhead[C]{\textsc{MSc. Economics for Development}}
+%\fancyhead[R]{\textsc{Damian C. Clarke}}
+%\fancyfoot[C]{\textsc{\thepage\ of  \pageref{LastPage}}}
+%\fancyfoot[R]{\texttt{ \Large DRAFT}}
+
+
+
+\begin{document}
+%\linenumbers
+\begin{spacing}{1.25}
+
+
+
+\maketitle
+\end{spacing}
+\begin{spacing}{1.5}	
+
+\begin{abstract}
+Given the endogenous nature of a family's fertility decisions, demonstrating the existence of a trade-off between child quality and child quantity requires the 
+identification of a valid exclusion restriction in a quality-quantity model.  Prior work has suggested that the exogeneity of multiple births can be exploited to 
+estimate this relationship.  We show that twin births are \emph{not} exogenous in a developing country setting.  Instead twin birth depends on a range of 
+observable (and potentially unobservable) characteristics of the mother and the family, such as maternal height, maternal BMI, and family income.  The resulting bias 
+in typical 2SLS and OLS estimates 
+is then examined via Monte Carlo simulation and empirically, using data on approximately 2,000,000 births in 60 developing countries created by pooling the Demographic
+and Health Surveys.  We show that estimates of the Q-Q model are quite sensitive to assumptions regarding the exogeneity of twin birth, and to the children who are
+considered to be affected by the `unexpected' increase in fertility.  When our new health-based twin predictor variables are included in the `typical'
+IV strategy we find little evidence of a Q-Q tradeoff, however when we consider all children in the family and include the new set of maternal health controls, we find 
+quite strong evidence in favour of a causal tradeoff between number of children and outcomes per child in the developing world.
+
+\end{abstract}
+\newpage
+
+\section{Introduction}
+\label{scn:intro}
+Twin studies since at least \citet{RosenzweigWolpin1980} have attempted to leverage the occurrence of twin births to estimate the effect of family size on
+child outcomes.  Presumably, if twin births occur at random, these fertility shocks will act to increase family size in a way unrelated to family characteristics,
+parental preferences, and other unobservables which may be related to child quality.  This has provided economists with a way to estimate the quantity-quality
+(Q-Q) model of \citet{BeckerLewis1973}.  In order for twin births to act as a reliable exclusion restriction in a Q-Q setup, these births must truly be random, 
+or at least depend upon variables observed by the econometrician.  This implies that both twin conception \emph{and} twin gestation cannot depend upon unobservable 
+characteristics of the family.
+
+In this paper we examine this assumption of conditional exogeneity of twin births in low income countries.  We find that rather than appearing to be random events, 
+twin births depend upon maternal and family characteristics in a way that is likely to invalidate strategies which rely on this exogeneity assumption.  Principally, 
+we show that twin births are more likely to occur when a mother is heavier, taller, and more highly educated.  This result holds both preeceding and following the introduction
+of in-vitro fertilisation (IVF).
+
+The use of twins as an instrument requires that twinning is an exogenous shock to family size.  \citet{Kahnetal2003} suggest that twin conception may 
+be a random event conditional upon mother's age, parity, and race.\footnote{As per related medical literature, parity here refers to the number of previous 
+live births \citep{Elwood1978}. For now we abstract from the issue of in vitro fertilisation (IVF).  This topic will be returned to at various points in the coming 
+sections.}  However, exogeneity of twin births is a stricter condition than exogeneity of twin conception.  Even where conception is conditionally exogenous, 
+the subsequent success of twin gestation and birth must not interact with maternal or family characteristics for the instrument to be valid.  Recent work in 
+the medical literature suggests that this may not be the case. \citet{Shinagawaetal2005} find that the metabolic demand on mothers during the third trimester 
+of twin pregnancy is about 10\% higher than for mothers with a singleton pregnancy. \citet{Philipson2008} also suggests that twin and mother survival at 
+birth depends (more so than singleton births) upon the availability of costly technology and professionals.  Both of these results imply that a family's 
+probability of twinning will depend upon the resources invested during (and even preceeding) gestation.  This point is particularly salient for low-income 
+economies.  Anemia, fetal death, and maternal death are much more common in developing countries and vary depending upon income and place of residence
+ \citep{Rush2000}.  Where comprehensive pre-natal programs are available for mothers, as is the case in many industrialised countries (for example the 
+program \emph{Women, Infants and Children}, a program which targets low-income pregnant and postpartum women in the USA), this may reduce the effect 
+of ill-health or low socioeconomic status on a mother's likelihood of carrying twins to full term by providing compensatory investments.
+
+Despite the higher physiological and economic costs of giving birth to twins, the economic literature is yet to fully incorporate these findings into twin 
+studies.  Here we examine the plausibility of exogeneity of twin births in a developing country setting more exhaustively.  This condition seems to be largely 
+untested in the empirical literature on the Q-Q trade-off beyond a brief examination of the relationship between the probability of a twin birth and 
+maternal education levels in a developed country setting (see \citet{Blacketal2005} and \citet{Angristetal2010}).  Although these studies find that twinning 
+is not related to maternal education, there is no reason to believe \emph{a priori} that this will be the case when examining countries in the developing world, 
+or when examining the relationship between twin birth and a wider set of characteristics such as maternal health in more developed countries. 
+
+Economists, and presumably policy makers in developing countries, are interested in determining whether a larger family size causes lower `quality' offspring.  
+Such a consideration has a long history in economic thought, with implications for optimal population decisions at both the macroeconomic and family level.  
+%The existence of a trade-off between family size and child quality is an enduring hypothesis in economics.  
+\citet{Malthus1798} famously introduced a theory in which population growth entered into competition with economic well-being.  Despite the apparent 
+intractability of Malthus' initial theory, contemporary microeconomic models have sought to use the idea of a quality-quantity trade-off in order to explain the 
+observed (negative) quality gradient in fertility.  Early work by \citet{BeckerLewis1973} and \citet{BeckerTomes1976} proposed that a household's ability to 
+produce child `quality' is a function of the quantity of children.  Surveys at both a macro- and microeconomic level have documented the existence of a 
+negative correlation between a wide range of child outcome measures and family size (see for example \cite{Desai1995}, or \cite{Hanushek1992}).
+
+Whether a Q-Q trade-off occurs is an important question for developing economies.  \citet{Clelandetal2006} suggest that the main motivation for the 
+introduction of family planning policies in Asia was as a manner to ``enhance prospects for socioeconomic development by reducing population growth''.  
+Family planning is also still considered a concern according to policy makers in the developing world.  A recent survey of national governments\footnote{
+The United Nations Inquiry among Governments on Population and Development, 2010.} suggests that fertility was perceived as too high in 50\% of 
+developing countries, with this figure rising to 86\% among the least developed countries (United Nations, \citeyear{UN2010}).   Whilst there are a 
+range of other motivations for family planning policies, in what follows this paper aims to examine the perception that reducing the number of children 
+results in an increase in per-child investments at a family level.  We will proceed as follows; section \ref{scn:lit} discusses the use of the twin instrument in 
+prior literature.  Section \ref{scn:EF} then discusses the basic empirical framework to be employed in this paper, with section \ref{scn:data} discussing the 
+data employed in this empirical analysis.  Results are presented in section \ref{scn:results}; we examine the exogeneity of twin births in subsection 
+\ref{scn:twinendog}, and then provide a simulated and empirical analysis of the bias potential endogeneity produces in subsection \ref{scn:bias}. Subsection 
+\ref{scn:RZway} provides an alternative method of quantifying the Q-Q trade-off extending to \emph{all} children in the family.  Finally, section 
+\ref{scn:conclusion} concludes. 
+
+\section{Twin Studies}
+\label{scn:lit}
+\vspace{-5mm}
+Despite the empirically observed regularity linking an individual's sibship size and their measured `quality', testing whether such a trade-off is represents a
+causal relationship is not trivial.  Particularly, concerns exist that parental decisions regarding the production of child quality and quantity are jointly made and 
+possibly influenced by unobserved factors.  Concerns regarding unobservable heterogeneity at the family level and omitted variable bias\footnote{Principally 
+here we are concerned with unobserved parental 
+behaviours which may favour both lower family size and higher child quality.  \citet{Qian2009} suggests that such a mechanism will exist where parents who 
+value education more highly also decide to have less children.} have spawned an entire literature which aims to isolate the causal effect of sibship size.  In 
+order to determine whether increases in child quantity actually cause families to lower investments in quality, exogenous shocks to family size must be exploited.  
+The economic literature has suggested a number of ways that this can be done, with one of the most common being the unexpected rise in family size resulting 
+from a multiple or twin birth.  Other strategies which have been 
+proposed to identify the quantity-quality (Q-Q) model involve gender mix and parental stopping rules \citep{ConleyGlauber2006}, son-preference \citep{Lee2008}, 
+and natural experiments based upon the relaxation of government fertility policies \citep{Qian2009}.   In what follows, we only focus on the use of multiple 
+births as an instrument.
+
+
+The use of twin births to address the problem of endogeneity in the Q-Q model seems to have been initially proposed by \citet{RosenzweigWolpin1980}.  
+They derive the theoretical requirements to estimate the size of the trade-off when the shadow price of child quality depends on the number 
+of children and vice versa.  By relying on the assumption that multiple births are an exogenous shock to family size (once accounting for 
+the total number of a mother's pregnancies) they estimate the effect of a twin birth upon the educational attainment of children in the twins' 
+family.  This and alternate empirical specifications discussed in this section are described in table \ref{tab:litrev} in appendix \ref{scn:litrev}.  
+
+Subsequent papers employing a twin-birth methodology have proposed a number of strategies which enable them to obtain consistent estimates of 
+the Q-Q trade-off while relaxing Rosenzweig and Wolpin's exogeneity assumption.  \citet{Blacketal2005} extend the controls to account for the 
+fact that the probability of multiple birth increases with maternal age as described by \citet{Jacobsenetal1999} and others.  They include a 
+set of parental age and education controls, however note that they are unable to reject the hypothesis that parental education has no effect 
+on the probability of multiple birth.  Likewise, \citet{Caceres2006} includes controls for mother's age, race, and education, suggesting that 
+the use of these and pre-1980 US Census data should be sufficient to approximate conditional exogeneity.\footnote{The use of pre-1980 Census 
+data seems important as this predates the widespread introduction of fertility drugs.  The use of fertility drugs is associated with higher a 
+probability of multiple births, and resulting concerns that the orthogonality assumption will be violated if users of fertility treatment are 
+non-random.}  Finally, \citet{Angristetal2010} recognise that twin birth varies with maternal age at birth and race, including twinning as 
+one of three instruments to estimate the Q-Q model. 
+
+Angrist et al.\ join recent work from \citet{RosenzweigZhang2009} in questioning the validity of twin instrumentation in another sense.  These 
+authors suggest that the error term in the Q-Q equation is unlikely to be orthogonal to the instrument given that twinning imposes predictable 
+and unobserved family responses in investment decisions.  Particularly, these studies question the effect that close birth spacing and an endowment 
+effect---where parental behaviours respond to the lower health at birth of twins compared to single births\footnote{Using data from the United States, \citet{Almondetal2005} 
+document that twins have substantially lower birth weight, lower APGAR scores, higher use of assisted ventilation at birth and lower gestion period 
+than singletons.}---has on investments in pre-twin siblings.  Based upon this critique, Rosenzweig and Zhang suggest a technique to compute an upper 
+and a lower bound of the Q-Q trade-off.  They suggest that if parents reinforce child endowments, and given the relative costliness of investing
+in twins due to their close birth-spacing, parents are likely to shift resources away from (low endowment) twins and towards 
+(higher endowment) singletons following twin births.  As a result, the effect of twinning on twins (the own-effect) will overstate the true effect of the Q-Q tradeoff, 
+and the effect on non-twin siblings (the cross effect) will understate this effect.  In the following section we return to this point when we discuss
+the empirical framework of this paper.
+
+More recently, instrumentation using twin births has been applied to estimate a Q-Q model in the developing world. \cite{SouzaPonczek2012}, 
+\cite{FitzsimonsMalde2010}, \citet{Sanhueza2009} and \citet{Lietal2008} have applied a similar methodology to that of Angrist et al., 
+examining twin births in Brazil, Mexico, Chile and China respectively.  These studies find mixed results depending upon the country under 
+examination and once again, while considering the invalidity of the twin exclusion restriction in the Q-Q model in terms of maternal education, 
+do not examine this in terms of non-random twin births due to maternal health or other behaviours. 
+
+\section{Empirical Framework}
+\label{scn:EF}
+
+Before turning to tests of the Q-Q model, we are interested in testing the (conditional) exogeneity of twin births.  Although birth exogeneity is 
+inherently untestable as there are many unobserved factors which could interact with birth outcomes, it is possible to test whether the probability of twin birth depends upon observable 
+characteristics of the mother and the family environment.  Whilst the dependence of twinning on observable characteristics offers no conclusive evidence 
+that it will also depend upon unobservables, it will cast doubt on the validity of the twin instrumentation strategy---particularly when the vector of 
+observable characteristics is small.  If, for example, twin birth depends upon observed measures of maternal health such as height 
+and weight, it also seems reasonable to suggest that unmeasured or unobserved health measures such as pre-natal medical visits and a mother's behaviour 
+and diet are also related to the likelihood of live twin births. 
+
+Using a linear probability model\footnote{We also test this with a probit model, however the implications of each model are identical for our results.} 
+the following twin birth equation is estimated: 
+\begin{equation}
+\label{eqn:twinpred}
+P(Twin_{ijk}=1)=\delta_1 B_i + W'_j\vect{\delta_\vect{W}}+ T'_{i}\vect{\delta_\vect{T}} +  \phi_k + \varepsilon_{ijk}.
+\end{equation}
+Here $Twin_{ijk}$ takes the value one if child $i$ from family $j$ and country $k$ is a twin, and zero otherwise.  A full set of year of birth ($T$) and country
+dummies ($\phi$) are included.  The observable parameters of interest $W'_j$ are family level variables representing characteristics such as maternal age and
+education, maternal height and BMI, and a variable representing the family's socioeconomic quintile (based on assets).  We are interested in testing the
+hypothesis that all $\delta_\vect{W}=0$, as rejection of this would provide suggestive evidence of the endogeneity of multiple births in the sense discussed
+above.
+
+After examining the validity of the twin instrument, we test the Q-Q model in a number of ways: firstly,  we use the instrumental strategy followed by the majority of 
+studies discussed in the previous section, and then using a variation of the technique initially discussed by \citet{RosenzweigZhang2009}. Most recent empirical studies 
+examining the Q-Q tradeoff follow \cite{Angristetal2010} in estimating the following two-stage strategy:
+\begin{subequations}
+\label{eqn:2SLS}
+\begin{eqnarray}
+\label{eqn:QQ}
+Q_{ij}&=&\beta_0+\beta_1\widehat{Fert}_j+\beta_2B_{i}+X'_{ij}\vect{\beta_{\vect{X}}}+W'_j\vect{\beta_\vect{W}}+u_{ij} \label{eqn:2SLSa}\\
+Fert_{j}&=&\gamma_0+\gamma_1Twin_{ij}+\gamma_2B_{i}+X'_{ij}\vect{\gamma_\vect{X}}+W'_j\vect{\gamma_\vect{W}}+v_{ij}. \label{eqn:2SLSb}
+ \end{eqnarray}
+\end{subequations}
+Here $Fert_j$ refers to the number of children in family $j$, $B_i$ birth order of child $i$, $X_{ij}$ a vector of individual characteristics, and $W_j$ 
+a vector of family characteristics such as income and parental education.  Along with instrumental relevance, this strategy requires that two separate 
+assumptions hold regarding the error term $u_{ij}$ for estimates of $\beta_1$ to be unbiased.  Firstly, $u_{ij}$ must be uncorrelated with factors which
+predict twin births and which are contained in $v_{ij}$.  This is the typical validity assumption of an IV strategy, and is indirectly examined by 
+(\ref{eqn:twinpred}) above.  However, \emph{even} in the case where this assumption holds, $\beta_1$ will not provide an unbiased estimate of the Q-Q
+tradeoff if parents make reinforcing investments in higher endowment single-birth children and shift resources due to the close birth-spacing of twins.
+For this reason we estimate the following equation (where our notation is similar to that of \citet{RosenzweigZhang2009}):
+\begin{equation}
+ \label{eqn:RZ}
+ Q_{ij}=\eta_0TF_j+\eta_1(TF_j\times pretwin_{ij})+\eta_2pretwin_{ij}+X'_{ij}\vect{\eta_\vect{X}}+W'_j\vect{\eta_\vect{W}}+\varepsilon_{ij}.
+\end{equation}
+This specification examines educational outcome variables for children who are born in twin families ($TF_j$) and non-twin families, and separates by
+twins and non-twin births ($pretwin_{ij}$).  Effectively, we compare children born in those families where a twin is born on the last birth with children
+in similar families where a singleton birth occurs.  Given that we are comparing families with twins born on the last birth to those with singleton births,
+each family has $n$ birth occurrences, however twin families have $n+1$ children compared to the $n$ children in singleton families due to twinning on the 
+$n^{th}$ birth.  As we discuss in section 
+\ref{scn:lit}, we are interested in separately identifying the effect of an extra birth on both twins and on their siblings, given that these estimates
+will give us estimates of the bounds of the Q-Q tradeoff under the assumption that twin births are exogenous.  These estimates are provided by $\eta_0$
+and $\eta_0+\eta_1$ respectively.
+
+\vspace{-5mm}
+\section{Data}
+\label{scn:data}
+\vspace{-5mm}
+The estimation of the Q-Q model requires information on maternal characteristics and child outcomes. In order to estimate specification (\ref{eqn:2SLSa}-%
+\ref{eqn:2SLSb}) and (\ref{eqn:RZ}), observations of child `quality' outcomes plus a mother's full birth rota (including a measure of twin or singleton 
+births) are required.  In order to test (partially) the hypothesis of twin endogeneity, stricter data requirements 
+must be met.  Along with child outcomes, the mother's health, and family socioeconomic characteristics must be observed.
+
+We take advantage of the comprehensive information available on maternal and child outcomes in the Demographic and Health Surveys (DHS) 
+to estimate the Q-Q model.  The DHS are a nationally representative set of surveys administered in approximately 90 developing countries.  
+The entire set of surveys between 1991 and 2012 has been pooled, resulting in 98 surveys from 60 countries.\footnote{We make available the script
+for remotely accessing and merging these DHS surveys on one of the \href{https://sites.google.com/site/damiancclarke/computation\#TOC-The-Demographic-and-Health-Surveys}
+{author's webpages}.}  A full list of surveys by 
+country and year is available as table \ref{tab:survey} in Appendix \ref{scn:surveys}.  DHS survey data on the educational achievement 
+of each member in surveyed households has been merged with maternal characteristics including weight, body mass index (BMI), and 
+household level socioeconomic variables.  This merge results in 1,978,538 matched children with both educational and maternal health
+data.  Of this sample, 41,169 (or 2.08\%) correspond to children born in multiple births.
+
+Table \ref{tab:missing} provides summary statistics by birth type (single or multiple) and by country type.  Countries are classified 
+according to country income level in order to allow for a disaggregation of Q-Q results by country group.  This classification is obtained
+from the World Bank\footnote{\url{http://data.worldbank.org/about/country-classifications},  accessed May 10, 2012.}, with DHS
+surveyed countries falling into three groups: low-income economies (GNI per capita of \$1,005 or less), lower-middle-income (\$1,006-\$3,975)
+and upper-middle-income (\$3,976-\$12,275).  Details regarding this classification are provided in table \ref{tab:survey}.  An initial 
+examination of these summary statistics shows that fertility \emph{and} twin birth are correlated with wealth, education and health.
+Section \ref{scn:results} analyses this more closely.
+
+%In approximately 
+%one third of the surveys conducted the mother's height (and BMI) is not recorded and as a result these observations are not used in the 
+%Q-Q analysis.  \texttt{COMMENT}
+
+
+  \begin{table}[ht]
+\caption{Summary statistics by birth type}
+\label{tab:missing}
+\vspace{-7mm}
+\begin{center}
+\begin{tabular}{lccp{5mm}ccp{5mm}cc} 
+%\multicolumn{3}{c}{\textsc{versus non-missing height}}\\
+%& & \\
+\toprule
+  & \multicolumn{2}{c}{Low Income} & & \multicolumn{2}{c}{Lower Middle}& & \multicolumn{2}{c}{Upper Middle} \\ \cmidrule(r){2-3} \cmidrule(r){5-6} \cmidrule(r){8-9} 
+ & Single & Twins && Single & Twins&& Single & Twins \\ \midrule
+\textsc{Fertility} & & &&&&&& \\																
+\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize} &	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize} &	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}		\\
+Birth order	&	3.56	&	4.90	&	&	3.15	&	4.24	&	&	2.97	&	2.42		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (2.35)\end{footnotesize} & \begin{footnotesize} (2.49)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (2.18)\end{footnotesize} & \begin{footnotesize} (2.41)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (2.18)\end{footnotesize} & \begin{footnotesize} (2.42)\end{footnotesize}	\\
+Fertility	&	5.08	&	6.67	&	&	4.49	&	5.77	&	&	4.21	&	5.33		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (2.65)\end{footnotesize} & \begin{footnotesize} (2.67)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (2.52)\end{footnotesize} & \begin{footnotesize} (2.66)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (2.63)\end{footnotesize} & \begin{footnotesize} (2.80)\end{footnotesize}	\\
+Mother's age	&	32.6	&	34.5	&	&	32.9	&	34.5	&	&	33.1	&	34.6		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (7.57)\end{footnotesize} & \begin{footnotesize} (7.15)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (7.33)\end{footnotesize} & \begin{footnotesize} (7.11)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (7.39)\end{footnotesize} & \begin{footnotesize} (7.18)\end{footnotesize}	\\
+\textsc{Socioeconomic} & & &&&&&& \\																
+\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize} &	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize} &	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}		\\
+Mother's education (yrs)	&	2.67	&	2.66	&	&	4.46	&	4.91	&	&	6.94	&	7.30		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (4.03)\end{footnotesize} & \begin{footnotesize} (4.08)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (4.90)\end{footnotesize} & \begin{footnotesize} (5.41)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (4.63)\end{footnotesize} & \begin{footnotesize} (4.61)\end{footnotesize}	\\
+Child's education (yrs)	&	1.10	&	0.993	&	&	2.16	&	1.84	&	&	2.43	&	2.26		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (2.13)\end{footnotesize} & \begin{footnotesize} (2.00)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (3.10)\end{footnotesize} & \begin{footnotesize} (2.89)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (3.27)\end{footnotesize} & \begin{footnotesize} (3.16)\end{footnotesize}	\\
+Attendance (dummy)	&	0.566	&	0.573	&	&	0.668	&	0.640	&	&	1.02	&	0.954		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (0.798)\end{footnotesize} & \begin{footnotesize} (0.817)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (0.751)\end{footnotesize} & \begin{footnotesize} (0.743)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (0.930)\end{footnotesize} & \begin{footnotesize} (0.909)\end{footnotesize}	\\
+proportion low asset	&	0.121	&	0.116	&	&	0.125	&	0.128	&	&	0.132	&	0.143		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (0.326)\end{footnotesize} & \begin{footnotesize} (0.321)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (0.331)\end{footnotesize} & \begin{footnotesize} (0.334)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (0.338)\end{footnotesize} & \begin{footnotesize} (0.350)\end{footnotesize}	\\
+\textsc{Health} & & &&&&&& \\															
+\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize} &	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize} &	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}		\\
+Height	&	157.1	&	158.7	&	&	155.0	&	157.2	&	&	154.5	&	156.1		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (7.17)\end{footnotesize} & \begin{footnotesize} (6.91)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (7.21)\end{footnotesize} & \begin{footnotesize} (7.08)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (6.74)\end{footnotesize} & \begin{footnotesize} (6.63)\end{footnotesize}	\\
+BMI	&	21.72	&	22.3	&	&	23.8	&	24.6	&	&	25.8	&	26.3		\\
+\begin{footnotesize}\end{footnotesize}	& \begin{footnotesize} (3.57)\end{footnotesize} & \begin{footnotesize} (3.77)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (5.07)\end{footnotesize} & \begin{footnotesize} (5.24)\end{footnotesize} & \begin{footnotesize} 	\end{footnotesize} & \begin{footnotesize} (4.69)\end{footnotesize} & \begin{footnotesize} (4.89)\end{footnotesize}	\\
+\\ \midrule																
+Number of Countries & 27 & 27 & & 22 & 22 & & 11 & 11 \\
+%Observations & 582,168 & 13,617 & & 850,863 & 14,804 & & 233,258 & 3,562 \\ 
+Observations & 788,029 & 19,436 & &  840,696  & 16,542 & & 308,644  & 5,191 \\ 
+\bottomrule																
+\multicolumn{9}{p{12cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} Group means are presented with standard deviations displayed below in parenthesis.\end{footnotesize}}\\
+
+\end{tabular}
+\end{center}
+\end{table}
+\vspace{-3mm}
+
+Child quality is measured using individual educational results collected during DHS surveys.   Survey results are available for all children who live in the 
+same household as their mother.  These `children' range in age from 0--41 (as offspring can share houses with parents up until any age).  For the analysis which
+follows, we restrict our sample to children aged under 18 years, a group which represents 92.78\% of the sample.  Educational results are examined as an 
+indicator of child `quality'.  Years of completed education and a dummy indicator of school attendance are examined in relevant age groups of the population.  
+Years of education is examined only for those individuals over the age of 16 years, and attendance is restricted to the subgroup of children between the ages 
+of 6 to 16.  As both of these variables would be expected to vary by age, a complete set of age and year of birth dummies are included in all specifications of 
+the Q-Q model.  Finally, for all individuals over 6 years of age a standardized schooling variable is created.  This is a school Z-score, comparing each child's 
+schooling attainment with the mean of all individuals in his or her country and cohort (age) group, and dividing by the standard deviation.  
+
+Recent studies attempting to estimate a child Q-Q instrumental specification (such as our equations \ref{eqn:2SLSa} and \ref{eqn:2SLSb}) have restricted their 
+instrumental analyses to singleton births preceeding twins.  We follow \citet{Angristetal2010} in defining a number of samples based upon total family fertility.  
+As per Angrist et al.\ the first sample consists of all first-born children in families with two or more births and the second sample all first- and second-born 
+children in families with at least three total births.  These samples are denominated 2+ and 3+ respectively.  Given the higher fertility rates in the DHS sample 
+we also define similar groups for higher parity families; the 4+, 5+, 6+ and 7+ groups.\footnote{We would expect the total size of groups these to exceed the number 
+of children in the survey data given that each child can be included in multiple groups.  For example the first-born child in a family of three children would be 
+included in both the 2+ and 3+ groups.  The sample size of each group is $N_{2+}= 338,158$, $N_{3+}=467,086$, $N_{4+}= 464,393$, $N_{5+}=409,276$, $N_{6+}=336,335$ and 
+$N_{7+}=256,755$.} %As each child quality variable is restricted to certain age-groups, the final size of each sample in each regression specification is a portion of this $N$.  
+The motivation in restricting to children born before twins is to isolate a plausibly exogenous shock in terms of family investment behaviour.  For those individuals 
+born before twins, parents will already have formed their optimal family size target and carry out investment per child in line with this.  Upon the arrival of twins, 
+the optimal family size may be exceeded in certain cases, resulting in a rearrangement of investment patterns.  For those children born after twins such an effect does 
+not exist.  As parents have already internalised the prior arrival of the multiple birth event, twinning cannot be regarded as a shock to investments in subsequent 
+births.
+
+In order to estimate (\ref{eqn:RZ}) we extend our analysis to both siblings preceeding twins and the twins themselves.  The reason for doing this is that we
+may be concerned that even if twinning were to occur randomly, parental behaviour in response to twins may be non-random, with resource shifting as described previously
+in this paper. If this is the case, our IV estimates will understate the true effect of the tradeoff, as part of the effect of increased family size on twins'
+siblings will be compensated by parental investment patterns.  Given that we know the birth order at which twins occur, we can focus on those families where
+twin arrival is a true `shock' to fertility.  We estimate two versions of (\ref{eqn:RZ}).  The first examines only families in which twins occur on the last 
+birth as for these families the twin arrival induces them to stop child-bearing, suggesting that the extra birth has caused parents to exceed (or at least reach)
+their optimal family size.  Our second specification takes advantage of a question in DHS surveys which allows us to identify exactly whether or not twins cause
+parents to exceed their optimal family size.  The DHS asks parents to report their ideal family size, and so we compare as our fertility shock those twin births which 
+caused parents to exceed this optimal size, to singleton births in similar families which result in the achievement of the optimal target.
+
+\section{Results}
+\label{scn:results}
+
+\subsection{Twin Endogeneity}
+\label{scn:twinendog}
+In table \ref{tab:twinreg1} we report the results from specification (\ref{eqn:twinpred}). These results suggest that twin births are not 
+\begin{table}[htpb!]
+\caption{Probability of giving birth to}
+\vspace{-7mm}
+\label{tab:twinreg1}
+\begin{center}
+\begin{tabular}{lcccc} 
+\multicolumn{5}{c}{\textsc{multiple children}}\\
+& & \\
+\toprule
+ & (1) & (2) & (3) & (4) \\
+\textsc{Twin=1} & Pooled & Low & Lower- & Upper- \\ 
+ & Sample & Income & Middle & Middle \\  \midrule
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
+birth order & 1.012** & 1.191** & 0.914** & 0.768** \\
+\vspace{4pt} & \begin{footnotesize}(0.0143)\end{footnotesize} & \begin{footnotesize}(0.0232)\end{footnotesize} & \begin{footnotesize}(0.0209)\end{footnotesize} & \begin{footnotesize}(0.0357)\end{footnotesize} \\
+mother's age & -0.0780** & -0.127** & -0.0525** & -0.0286** \\
+\vspace{4pt} & \begin{footnotesize}(0.00388)\end{footnotesize} & \begin{footnotesize}(0.00647)\end{footnotesize} & \begin{footnotesize}(0.00573)\end{footnotesize} & \begin{footnotesize}(0.00899)\end{footnotesize} \\
+mother educ 1--4 & 0.372** & 0.365** & 0.333** & 0.668** \\
+\vspace{4pt} & \begin{footnotesize}(0.0591)\end{footnotesize} & \begin{footnotesize}(0.0923)\end{footnotesize} & \begin{footnotesize}(0.0864)\end{footnotesize} & \begin{footnotesize}(0.162)\end{footnotesize} \\
+mother educ 5--6 & 0.640** & 0.537** & 0.598** & 0.952** \\
+\vspace{4pt} & \begin{footnotesize}(0.0638)\end{footnotesize} & \begin{footnotesize}(0.114)\end{footnotesize} & \begin{footnotesize}(0.0914)\end{footnotesize} & \begin{footnotesize}(0.160)\end{footnotesize} \\
+mother educ 7--10 & 1.099** & 1.255** & 0.969** & 1.162** \\
+\vspace{4pt} & \begin{footnotesize}(0.0617)\end{footnotesize} & \begin{footnotesize}(0.109)\end{footnotesize} & \begin{footnotesize}(0.0858)\end{footnotesize} & \begin{footnotesize}(0.166)\end{footnotesize} \\
+mother educ 11 + & 2.044** & 1.393** & 1.849** & 2.285** \\
+\vspace{4pt} & \begin{footnotesize}(0.0786)\end{footnotesize} & \begin{footnotesize}(0.171)\end{footnotesize} & \begin{footnotesize}(0.107)\end{footnotesize} & \begin{footnotesize}(0.193)\end{footnotesize} \\
+height & 0.0622** & 0.0645** & 0.0583** & 0.0614** \\
+\vspace{4pt} & \begin{footnotesize}(0.00315)\end{footnotesize} & \begin{footnotesize}(0.00505)\end{footnotesize} & \begin{footnotesize}(0.00467)\end{footnotesize} & \begin{footnotesize}(0.00781)\end{footnotesize} \\
+BMI & 0.000471** & 0.000715** & 0.000479** & 0.000129 \\
+\vspace{4pt} & \begin{footnotesize}(5.01e-05)\end{footnotesize} & \begin{footnotesize}(9.74e-05)\end{footnotesize} & \begin{footnotesize}(7.04e-05)\end{footnotesize} & \begin{footnotesize}(0.000105)\end{footnotesize} \\
+low assets & -0.125* & 0.0644 & -0.384** & 0.388* \\
+\vspace{4pt} & \begin{footnotesize}(0.0599)\end{footnotesize} & \begin{footnotesize}(0.0985)\end{footnotesize} & \begin{footnotesize}(0.0845)\end{footnotesize} & \begin{footnotesize}(0.161)\end{footnotesize} \\
+%Constant & -9.203** & -8.924** & -8.644** & -3.718 \\
+% & \begin{footnotesize}(0.611)\end{footnotesize} & \begin{footnotesize}(0.824)\end{footnotesize} & \begin{footnotesize}(1.673)\end{footnotesize} & \begin{footnotesize}(5.599)\end{footnotesize} \\
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
+Observations & 1,964,879 & 804,556 & 849,552 & 310,771 \\
+ $R^2$ & 0.011 & 0.012 & 0.011 & 0.007 \\ \midrule
+\multicolumn{5}{c}{\begin{footnotesize} Robust standard errors clustered by country \end{footnotesize}} \\
+\multicolumn{5}{c}{\begin{footnotesize} ** p$<$0.01, * p$<$0.05 \end{footnotesize}} \\
+\bottomrule
+\multicolumn{5}{p{11cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} All specifications include a full set of year of birth and country
+dummies and are estimated as linear probability models.  Results are robust to the inclusion of birth order dummies (rather than a single discrete 
+variable).  Twin is multiplied by 100 for presentation; coefficients can now be interpreted as percents.  Height is measured in centimetres and low
+asset refers to those households in the lowest quintile based upon household possessions.  Maternal education is included as dummies, with 0 years of
+education the omitted base.\end{footnotesize}}\\
+\end{tabular}
+\end{center}
+\end{table}
+\setstretch{1.5}
+
+\noindent random, even after conditioning on maternal age and child birth order as done in previous work. The inclusion of a full set of country and 
+year of birth dummies (not reported in table \ref{tab:twinreg1}) will capture any trend in probability of twin birth across time or regions, and country 
+dummies will absorb all time invariant differences in the probability of a twin birth across countries.  The estimated coefficients and signs support the 
+idea discussed in section \ref{scn:intro} that higher `investments' (for example in maternal health) required to maintain multiple healthy fetuses \emph{in 
+utero} may result in non-random twin births. Initially results from the pooled DHS data are presented as this provides a particularly large sample with which 
+to test the hypothesis of twin exogeneity.  This is represented in table \ref{tab:twinreg1} column (1) and provides considerable evidence that live multiple
+births respond to family `choice' variables such as education (tests for the joint significance of both socioeconomic variables and health variables are 
+rejected with p-values of 0.0000).
+
+The fact that maternal health is correlated with twinning is supported by medical literature, although is not a point that has been incorporated into prior 
+economic studies of twinning.  \citet{Hall2003} for example suggests that follicle-stimulating hormone (FSH) is associated with an increased likelihood of 
+twinning, and is found in higher concentrations in older, heavier and taller mothers.  Further, she suggests ``that adequate maternal folic acid consumption 
+could affect the number of twins coming to term'' (see p.\ 741, and further discussion in \citet{Lietal2003}).  Given that twinning also increases in cases where 
+the mother undergoes fertility treatment, we run a similar regression for children born in a period not potentially affected by IVF.\footnote{In order to be
+safe we estimate for the period preceeding 1990, the date which coincides with the first reported successful use of IVF in South Africa, an early-adopter among
+DHS countries.}  These results are
+included as table \ref{tab:twinreg1990} in appendix \ref{scn:apptables}, and although education is now no longer always significant, maternal height and weight, 
+and family socioeconomic variables remain economically and statistically significant.
+
+If the reason non-random twin births are observed is due to insufficient investment in the developing fetus, it seems likely that twin `selection' will be more 
+pronounced in lower income settings, and settings where the mother is less well resourced during gestation.  This is tested in columns (2)--(4), where it is 
+shown that the violation of the twin exclusion restriction is particularly strong in low income countries.  Here maternal health is a more important predictor, 
+and the explained portion of this set of variables is nearly twice that in upper-middle-income countries.\footnote{The low $R^2$ in these regressions is not at 
+all surprising given that twin conception can be thought of as an approximately random process.  The fact that socioeconomic and health variables have \emph{any} 
+power in explaining twin birth however is sufficient to invalidate IV estimations if these or other relevant predictors are not controlled for.}
+
+These results call into question the veracity of the IV validity assumption discussed in section \ref{scn:EF}, and imply that a 2SLS regression 
+omitting factors such as family income, maternal health and maternal education would be inconsistent, at least in the case of the data from the 
+DHS surveys.  In what follows we will examine the implication of this finding first by examining the importance of omitted variables in a simulated 
+Q-Q model based upon correlations similar to those from the available DHS data, and then by examining empirically the performance of these IV estimates.  
+\subsection{Bias in IV Regressions}
+\label{scn:bias}
+\subsubsection{Monte Carlo Simulation}
+\label{scn:MCS}
+The results from section \ref{scn:twinendog} suggest that twin birth is not exogenous when conditioning on only a limited set of variables. As a result, 
+IV estimates failing to control for the full set of 
+relevant factors in the second stage will produce inconsistent estimates of the importance of family size on child quality.  As a first 
+approach at quantifying the importance of this bias, Monte Carlo simulations are run allowing for correlation between twin birth and previously uncontrolled factors
+to vary.\footnote{Whilst it may seem unlikely that the correlation between twin births and these unobserved factors will vary over time and hence that
+simulation of a range of values is un-illustrative, these simulations may be useful in abstracting to other situations.  This analysis is identical to the
+case where multiple births occur more frequently where in-vitro fertilisation (IVF) is used.  As IVF treatment often involves the implantation of 
+multiple embryos, multiple births are more likely here compared with traditional methods of fertilisation \citep{Beraletal1990}.  These simulations then could be 
+thought as analogous to examining the role increasing use of IVF plays on the consistency of twin estimates where only birth records are available, 
+but details regarding fertilisation are unknown.}  This allows for the examination of the importance of the instrumental validity assumption, essentially
+by simulating values of $E(twin_{ij}\cdot u_{ij})$ in (\ref{eqn:2SLSa})-(\ref{eqn:2SLSb}) which increasingly diverge from zero. 
+
+We simulate an ($n \times 3)$ vector of $N=100,000$ standard normal error terms for the following system of equations.
+\begin{eqnarray}
+\label{eqn:MC1}
+y_i&=&\beta_0+\beta_1 x_i + \varepsilon_{1i} \nonumber\\
+x_i&=&\gamma_0 + \gamma_1 z_i + \varepsilon_{2i} \nonumber\\
+z_i&=&1[\alpha_0+\varepsilon_{3i}>0], \nonumber
+\end{eqnarray} 
+where simulated $\varepsilon_j$ follow:
+\begin{equation}
+\begin{bmatrix}
+\varepsilon_1\\
+\varepsilon_2\\
+\varepsilon_3\\
+\end{bmatrix}
+\sim \mathcal{N}
+\left(\begin{bmatrix}
+0\\
+0\\
+0\\
+\end{bmatrix}
+,
+\begin{bmatrix}
+\sigma_{\varepsilon_1}^2 &  \rho_{\varepsilon_1\varepsilon_2} &  \rho_{\varepsilon_1\varepsilon_3}\\
+\rho_{\varepsilon_2\varepsilon_1} & \sigma_{\varepsilon_2}^2 &  \rho_{\varepsilon_2\varepsilon_3} \\
+\rho_{\varepsilon_3\varepsilon_1}&  \rho_{\varepsilon_3\varepsilon_2}& \sigma_{\varepsilon_3}^2 \\
+\end{bmatrix}\right).
+\end{equation}
+
+This system of equations follows a Q-Q type setup, in which $y_i$ can be thought of as a quality variable such as years of schooling, and $x_i$ represents
+sibship size which depends upon twin births $z_i$. The true population value of $\beta_1$ is defined as -0.15 and the value of $\gamma_1$ is 0.5.  These
+values imply that the Q-Q hypothesis is correct ($\beta_1<0$), and that parents partially offset twin births by reducing future births ($0<\gamma_1<1$).
+Whilst the true value for $\beta_1$ is not known, the sample value of $\gamma_1$ can be plausibly estimated from the DHS data.  The  value chosen is consistent
+with a range of twin births at different parities in the sample data.
+A negative correlation is defined to exist between $\varepsilon_1$ and $\varepsilon_2$ ($\rho_{\varepsilon_1\varepsilon_2}=-0.3$) in line with omitted variables such as
+parental preference for highly educated children which drive both lower family size and higher educational attainment. % and a positive correlation between $z$ and $x$ for
+%instrumental relevance. %($\rho_{\varepsilon_2\varepsilon_3}=0.67$). 
+Finally $\rho_{\varepsilon_1\varepsilon_3}$ is allowed to vary from 0 to 0.5.  This allows
+us to observe the behaviour of the IV strategy under violations of the instrumental consistency assumption which increase in magnitude---a situation
+which occurs when twin births are not exogenous.
+
+\begin{figure}[!htbp]
+\caption{Simulations of IV and OLS consistency}
+\label{fig:MC}
+\begin{center}
+\vspace{-4mm}
+\includegraphics[scale=0.36]{Sim4_uz_20120401.eps}
+\end{center}
+\end{figure}
+
+
+Simulation results are presented in figure \ref{fig:MC} and suggest that even a small (non-zero) correlation between $z$ and $\varepsilon_1$ can introduce an 
+important bias in IV estimates.  Whilst OLS estimates consistently overestimate the importance of the Q-Q trade-off ($\hat{\beta}_{1,OLS}=-0.2436 (0.0023)$), a correlation
+as small as 0.05 between the instrument and the error in the Q-Q equation results in an estimate of no trade-off when in reality the true effect is negative.\footnote{The
+simulation described above assumes that $x$ is a continuous variable.  Alternate simulations were run modelling $x$ as a discrete count variable in order to more closely resemble 
+the fertility size variable in our true data set.  These simulations assumed that $x$ depends upon a latent variable $x^*$, and behaves as follows:
+\[ x = \left\{ \begin{array}{ll}
+         1 & \mbox{if $x^* < 2$}\\
+         2 & \mbox{if $2\leq x^* \leq 3$}\\
+        \vdots & \\
+        11 & \mbox{if $x > 11$}.\end{array} \right. \]
+ The results from section \ref{scn:MCS} were found to be robust to the discretisation of $x$.
+}
+%\vspace{-5mm}
+\subsubsection{Empirical Evidence}
+\label{scn:EE}
+%\vspace{-5mm}
+The Q-Q specification (\ref{eqn:2SLSa}-\ref{eqn:2SLSb}) is fitted to the pooled DHS data using OLS and IV with a limited set of controls and with the full set of observed 
+controls suggested as important in the probability of twin birth equation (table \ref{tab:twinreg1}).  A set of controls consistent with the recent literature on twin 
+births (which include socioeconomic variables such as education but omit health variables) is also included, to examine the relative importance of these omitted factors.  
+The results for one outcome variable (years of schooling) and controls are presented in table \ref{tab:YrsEduc}.  Here for simplicity only two fertility groups are reported 
+which are representative of twinning at relatively low- and relatively high-parity births.  Results for the remaining fertility groups are similar, and are available upon 
+request.
+
+
+%________________________________________________________________________________________________________________________________
+\begin{sidewaystable}[!htbp]																					
+\caption{Q-Q specification with years of schooling as quality}																					
+\vspace{-3mm}																					
+\label{tab:YrsEduc}																					
+\begin{center}																					
+\begin{tabular}{lcccccccccc} \toprule																					
+& \multicolumn{5}{c}{2 +} & \multicolumn{5}{c}{5 +} \\ \cmidrule(r){2-6} \cmidrule(r){7-11}																					
+& OLS  & OLS & IV & IV  & IV  & OLS  & OLS & IV  & IV  & IV \\ 																					
+& No control & All & No control &  Socioec. & + Health & No control & All & No control &  Socioec. & + Health \\ \midrule
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\																					
+fertility	&	-0.588**	&	-0.309**	&	0.915	&	0.260	&	0.118	&	-0.492**	&	-0.298**	&	0.0254	&	-0.149	&	-0.246	\\
+\vspace{4pt} & \begin{footnotesize}		(0.00962)	\end{footnotesize} & \begin{footnotesize}	(0.00914)	\end{footnotesize} & \begin{footnotesize}	(0.776)	\end{footnotesize} & \begin{footnotesize}	(0.482)	\end{footnotesize} & \begin{footnotesize}	(0.449)	\end{footnotesize} & \begin{footnotesize}	(0.00857)	\end{footnotesize} & \begin{footnotesize}	(0.00810)	\end{footnotesize} & \begin{footnotesize}	(0.286)	\end{footnotesize} & \begin{footnotesize}	(0.247)	\end{footnotesize} & \begin{footnotesize}	(0.238)	\end{footnotesize} \\
+mother educ 0	&		&	-4.337**	&		&	-5.585**	&	-5.052**	&		&	-3.344**	&		&	-4.753**	&	-4.353**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0641)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.851)	\end{footnotesize} & \begin{footnotesize}	(0.754)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0511)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.309)	\end{footnotesize} & \begin{footnotesize}	(0.282)	\end{footnotesize} \\
+mother educ 1--4	&		&	-2.874**	&		&	-3.892**	&	-3.488**	&		&	-1.955**	&		&	-3.245**	&	-2.953**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0682)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.725)	\end{footnotesize} & \begin{footnotesize}	(0.649)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0546)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.251)	\end{footnotesize} & \begin{footnotesize}	(0.231)	\end{footnotesize} \\
+mother educ 5--6	&		&	-1.650**	&		&	-2.264**	&	-2.036**	&		&	-0.847**	&		&	-2.003**	&	-1.828**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0665)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.455)	\end{footnotesize} & \begin{footnotesize}	(0.411)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0576)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.174)	\end{footnotesize} & \begin{footnotesize}	(0.162)	\end{footnotesize} \\
+mother educ 7--10	&		&	-0.871**	&		&	-1.229**	&	-1.121**	&		&		&		&	-1.045**	&	-0.971**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0631)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.294)	\end{footnotesize} & \begin{footnotesize}	(0.271)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.131)	\end{footnotesize} & \begin{footnotesize}	(0.126)	\end{footnotesize} \\
+Poor	&		&	-1.937**	&		&	-2.521**	&	-2.243**	&		&	-1.815**	&		&	-2.064**	&	-1.847**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0691)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.378)	\end{footnotesize} & \begin{footnotesize}	(0.329)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0522)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.170)	\end{footnotesize} & \begin{footnotesize}	(0.155)	\end{footnotesize} \\
+Height	&		&	0.0244**	&		&		&	0.0280**	&		&	0.0178**	&		&		&	0.0182**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.00279)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00472)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00229)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00287)	\end{footnotesize} \\
+BMI	&		&	0.0700**	&		&		&	0.0810**	&		&	0.0864**	&		&		&	0.0875**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.00346)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0121)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00287)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00582)	\end{footnotesize} \\
+Male	&	-0.104**	&	0.151**	&	-0.142**	&	0.159**	&	0.179**	&	0.124**	&	0.342**	&	0.0792*	&	0.300**	&	0.340**	\\
+\vspace{4pt} & \begin{footnotesize}		(0.0380)	\end{footnotesize} & \begin{footnotesize}	(0.0343)	\end{footnotesize} & \begin{footnotesize}	(0.0519)	\end{footnotesize} & \begin{footnotesize}	(0.0455)	\end{footnotesize} & \begin{footnotesize}	(0.0462)	\end{footnotesize} & \begin{footnotesize}	(0.0302)	\end{footnotesize} & \begin{footnotesize}	(0.0279)	\end{footnotesize} & \begin{footnotesize}	(0.0397)	\end{footnotesize} & \begin{footnotesize}	(0.0296)	\end{footnotesize} & \begin{footnotesize}	(0.0286)	\end{footnotesize} \\
+mother's age &	0.128**	&	0.0502**	&	0.309**	&	0.0948*	&	0.0824*	&	0.0449**	&	0.0318**	&	0.0834**	&	0.0395*	&	0.0353*	\\
+\vspace{4pt} & \begin{footnotesize}		(0.00606)	\end{footnotesize} & \begin{footnotesize}	(0.00559)	\end{footnotesize} & \begin{footnotesize}	(0.0938)	\end{footnotesize} & \begin{footnotesize}	(0.0370)	\end{footnotesize} & \begin{footnotesize}	(0.0343)	\end{footnotesize} & \begin{footnotesize}	(0.00516)	\end{footnotesize} & \begin{footnotesize}	(0.00477)	\end{footnotesize} & \begin{footnotesize}	(0.0219)	\end{footnotesize} & \begin{footnotesize}	(0.0170)	\end{footnotesize} & \begin{footnotesize}	(0.0166)	\end{footnotesize} \\
+%Birth Order 2	&		&		&		&		&		&	-3.79e-05	&	-0.0234	&	-0.280*	&	-0.0826	&	-0.0504	\\
+%\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0395)	\end{footnotesize} & \begin{footnotesize}	(0.0364)	\end{footnotesize} & \begin{footnotesize}	(0.160)	\end{footnotesize} & \begin{footnotesize}	(0.133)	\end{footnotesize} & \begin{footnotesize}	(0.129)	\end{footnotesize} \\
+%Birth Order 3	&		&		&		&		&		&	0.124**	&	0.0689	&	-0.431	&	-0.0399	&	0.0153	\\
+%\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0458)	\end{footnotesize} & \begin{footnotesize}	(0.0423)	\end{footnotesize} & \begin{footnotesize}	(0.310)	\end{footnotesize} & \begin{footnotesize}	(0.256)	\end{footnotesize} & \begin{footnotesize}	(0.249)	\end{footnotesize} \\
+																					
+																					
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} &  \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\																					
+Observations & 39,946 & 39,946 & 39,946 & 39,946 & 39,946 & 65,685 & 65,685 & 65,685 & 65,685 & 65,685 \\																					
+$R^2$ & 0.254 & 0.367 & & & &0.325 & 0.454 &  & & \\ \midrule																					
+\multicolumn{11}{c}{\begin{footnotesize} Robust standard errors in parentheses\end{footnotesize}} \\																					
+\multicolumn{11}{c}{\begin{footnotesize} ** p$<$0.01, * p$<$0.05 \end{footnotesize}} \\																					
+\bottomrule																					
+\multicolumn{11}{p{21cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} All specifications include a full set of country, age, and year of birth controls, along with complete birth order dummies. Robust standard errors are clustered by country.	No controls refers to the basic IV model which assumes that twins are exogenous conditioning only on mother's age and parity, while Socioec. refers to an IV
+model which assumes conditional exogeneity when controlling for education and income along with basic controls.	  Health is the new IV model proposed here where all variables determined to influence twin birth are included. 	
+\end{footnotesize}}\\																					
+\end{tabular}																					
+\end{center}																					
+\end{sidewaystable}																					
+\setstretch{1.5}																					
+
+
+
+%_________________________________________________________________________________________________________________________________
+
+As expected, children's completed schooling depends positively upon maternal education (with decreasing returns to higher education), 
+and positively upon maternal health (proxied by height and BMI) and age at birth of child.  The quality outcome responds negatively to higher birth order dummies
+however these have been supressed for ease of presentation (available upon request).  The results for the Q-Q model act in a similar manner as predicted in the Monte
+Carlo simulations.  Whilst OLS shows a significantly negative effect of higher fertility on education, IV estimates are significantly more positive, a result consistent with
+fertility being negatively correlated with the residual in the education equation.  Indeed, failure to 
+include the full set of observed maternal controls in the IV estimation results in positive point estimate for the effect of family size on child quality. 
+If statistically significant, this would imply that children in larger families achieve \emph{higher} education levels, a result inconsistent with the Q-Q model.
+
+
+Table \ref{tab:fertilityALL} describes the effect of fertility on all educational quality variables examined, and in all three country groups.  The results in this table 
+represent one parity group (4+), where the coefficients on further control variables are suppressed for ease of presentation.  Full results for point estimates and 
+confidence intervals across the entire range of parity groups are presented in figure \ref{fig:YrS}, appendix \ref{scn:Graphs}. Estimates on all three outcome 
+variables behave as in simulations, and suggest that the non-exogeneity of twins is quantitatively important to the consistency of IV estimates.  This is particularly 
+true for attendance and schooling Z-score, where failure to account for the non-random nature of twin birth (the NC column) results in positive (but insignificant) 
+point estimates, whereas the inclusion of full health and socioeconomic controls produces negative, but once again insignificant, point estimates.
+
+Overall the IV results suggest that no Q-Q trade-off exists \emph{if} twinning is exogenous when conditioning on the full set of controls included in (\ref{eqn:twinpred}).  
+As discussed in section \ref{scn:twinendog}, this relies fundamentally on the ability of observable characteristics to predict twin births.  Where the vector of observables 
+only goes part way to explaining twin likelihood, the true estimate of the Q-Q trade-off will be expected to lie between the negative and significant OLS estimate (column b) 
+and the estimate from IV which is not statistically different from zero (column e).  This follows given that in the case of OLS it is likely that parental unobervables such as 
+desire for education are positively correlated with child `quality' but 
+
+
+\begin{table}[htpb!]														
+\caption{Q-Q estimates for all outcome variables}														
+\vspace{-3mm}														
+\label{tab:fertilityALL}														
+\begin{center}														
+\begin{tabular}{lcccccc} \toprule														
+& (a) & (b) & (c) & (d) & (e) & (f)\\														
+& OLS & OLS & IV & IV & IV & Implied \\														
+& NC & S+H & NC & S & S+H & Ratio\textsuperscript{a} \\														
+\midrule														
+\textsc{Years of Schooling} & & & & & &\\														
+Pooled &		-0.554**	&	-0.317**	&	0.201	&	0.0544	&	0.0174	&	1.34		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.00784)	\end{footnotesize} & \begin{footnotesize}	(0.00744)	\end{footnotesize} & \begin{footnotesize}	(0.358)	\end{footnotesize} & \begin{footnotesize}	(0.296)	\end{footnotesize} & \begin{footnotesize}	(0.290)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Low Income &		-0.378**	&	-0.216**	&	-0.0785	&	-0.0944	&	0.0252	&	2.33		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.0132)	\end{footnotesize} & \begin{footnotesize}	(0.0121)	\end{footnotesize} & \begin{footnotesize}	(0.471)	\end{footnotesize} & \begin{footnotesize}	(0.426)	\end{footnotesize} & \begin{footnotesize}	(0.426)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Lower Middle &		-0.641**	&	-0.377**	&	0.563	&	0.125	&	0.0225	&	1.43		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.0110)	\end{footnotesize} & \begin{footnotesize}	(0.0105)	\end{footnotesize} & \begin{footnotesize}	(0.635)	\end{footnotesize} & \begin{footnotesize}	(0.469)	\end{footnotesize} & \begin{footnotesize}	(0.443)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Upper Middle &		-0.583**	&	-0.308**	&	-0.0839	&	0.123	&	0.115	&	1.12		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.0189)	\end{footnotesize} & \begin{footnotesize}	(0.0185)	\end{footnotesize} & \begin{footnotesize}	(0.744)	\end{footnotesize} & \begin{footnotesize}	(0.707)	\end{footnotesize} & \begin{footnotesize}	(0.704)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+\midrule														
+\textsc{P(Attendance)=1} & & & & & &\\														
+Pooled &		-0.0272**	&	-0.0111**	&	0.00140	&	-0.00613	&	-0.00901	&	0.689		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.000835)	\end{footnotesize} & \begin{footnotesize}	(0.000821)	\end{footnotesize} & \begin{footnotesize}	(0.0135)	\end{footnotesize} & \begin{footnotesize}	(0.0127)	\end{footnotesize} & \begin{footnotesize}	(0.0127)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Low Income &		-0.00654**	&	0.00371**	&	-0.01	&	-0.0179	&	-0.0245	&	N/A		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.00131)	\end{footnotesize} & \begin{footnotesize}	(0.00127)	\end{footnotesize} & \begin{footnotesize}	(0.0203)	\end{footnotesize} & \begin{footnotesize}	(0.0194)	\end{footnotesize} & \begin{footnotesize}	(0.0193)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Lower Middle &		-0.0476**	&	-0.0276**	&	0.0197	&	0.00461	&	0.00372	&	1.38		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.00123)	\end{footnotesize} & \begin{footnotesize}	(0.00121)	\end{footnotesize} & \begin{footnotesize}	(0.0201)	\end{footnotesize} & \begin{footnotesize}	(0.0186)	\end{footnotesize} & \begin{footnotesize}	(0.0184)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Upper Middle &		-0.0300**	&	-0.0142**	&	-0.00889	&	-0.00213	&	-0.00523	&	0.899		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.00211)	\end{footnotesize} & \begin{footnotesize}	(0.00218)	\end{footnotesize} & \begin{footnotesize}	(0.0370)	\end{footnotesize} & \begin{footnotesize}	(0.0375)	\end{footnotesize} & \begin{footnotesize}	(0.0371)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+\midrule														
+\textsc{School Z-Score} & & & & & &\\														
+Pooled &		-0.125**	&	-0.0778**	&	0.0219	&	-0.00863	&	-0.0162	&	1.65		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.00123)	\end{footnotesize} & \begin{footnotesize}	(0.00118)	\end{footnotesize} & \begin{footnotesize}	(0.0277)	\end{footnotesize} & \begin{footnotesize}	(0.0247)	\end{footnotesize} & \begin{footnotesize}	(0.0244)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Low Income &		-0.102**	&	-0.0730**	&	-0.00256	&	-0.0284	&	-0.0376	&	2.52		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.00187)	\end{footnotesize} & \begin{footnotesize}	(0.00176)	\end{footnotesize} & \begin{footnotesize}	(0.0354)	\end{footnotesize} & \begin{footnotesize}	(0.0325)	\end{footnotesize} & \begin{footnotesize}	(0.0321)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Lower Middle &		-0.142**	&	-0.0875**	&	0.0324	&	-0.0231	&	-0.0303	&	1.61		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.00186)	\end{footnotesize} & \begin{footnotesize}	(0.00179)	\end{footnotesize} & \begin{footnotesize}	(0.0447)	\end{footnotesize} & \begin{footnotesize}	(0.0387)	\end{footnotesize} & \begin{footnotesize}	(0.0382)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+Upper Middle &		-0.136**	&	0.0665**	&	0.0924	&	0.119	&	0.114	&	0.957		\\
+\vspace{4pt} &	\begin{footnotesize}	(0.00335)	\end{footnotesize} & \begin{footnotesize}	(0.00327)	\end{footnotesize} & \begin{footnotesize}	(0.0849)	\end{footnotesize} & \begin{footnotesize}	(0.0798)	\end{footnotesize} & \begin{footnotesize}	(0.0788)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize}	\\
+\midrule														
+\multicolumn{7}{c}{\begin{footnotesize} Robust standard errors in parentheses\end{footnotesize}} \\														
+\multicolumn{7}{c}{\begin{footnotesize} ** p$<$0.01, * p$<$0.05 \end{footnotesize}} \\														
+\bottomrule														
+\multicolumn{7}{p{14.2cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} All specifications include a full set of country, age, and year of birth controls. Robust 
+standard errors are clustered by country. In column headings, NC refers to No controls, S refers to socioeconomic controls, and S+H refers to all controls (socioec.\ and 
+health).  For a more complete description see the note to table \ref{tab:YrsEduc}.\end{footnotesize}}\\														
+\multicolumn{7}{p{14.2cm}}{\setstretch{0.9}\begin{footnotesize}\textsuperscript{a}The implied ratio is a statistic proposed by \citet{Altonjietal2005} to determine 
+the necessary ratio of selection on unobservables to selection on observables in order to explain away the entire OLS coefficient of interest. This is discussed in appendix 
+\ref{scn:selection}. \end{footnotesize}}\\														
+\end{tabular}														
+\end{center}														
+\end{table}														
+
+
+\noindent negatively related to family size, thus biasing downward estimates of $\beta$.  The opposite will be 
+the case for IV, where the concern involves omitted twin selection variables.  Variables such as maternal diet during fetal gestation will be both positively related to 
+family size (via higher likelihood of twin birth) and to their child's eventual educational attainment\footnote{This can be shown simply by considering the bias in OLS and IV
+estimates of $\beta$ where the residual $u$ is correlated with $X$ and $Z$ as described.  Biases are $\hat{\beta}_{1,OLS}-\beta=(X'X)^{-1}X'u$ and $\hat{\beta}_{1,IV}-\beta=(Z'X)^{-1}Z'u$.
+As per the description above, $X'u<0$ and $Z'u>0$.  Then $\hat{\beta}_{1,OLS}-\beta<\hat{\beta}_{1,IV}-\beta\Rightarrow\hat{\beta}_{1,OLS}<\beta<\hat{\beta}_{1,IV}$.}
+ (see for example \citet{Barker1995} for a discussion of the fetal origins 
+hypothesis.)  It is interesting to note that there is some evidence that the Q-Q trade-off is stronger in poorer country groups.  Estimates of $\beta_{Fert}$ are 
+consistently lower in poorer countries, for both OLS and IV estimation strategies.  
+
+It seems unlikely, however, that survey data will allow for all relevant predictors to be observed.  While maternal weight and height and family socio-economic 
+characteristics are observable, many aspects of a mother's pre-natal behaviour are not observed by the econometrician.  Dietary habits, stress levels, environmental 
+pollutants and other household investments in (pre-natal) child health may be both difficult to observe, and correlated with child quality and the occurrence of 
+twinning.  In this case, a problem of selection on unobservables exists for twin births.  The inclusion of observable predictors of twin births in the 2SLS 
+specification---although partially correcting for the resulting inconsistency--- will not correct for it completely.
+
+
+\subsection{Parental Investment Q-Q Estimates for All Children}
+\label{scn:RZway}
+The relatively weak evidence supporting the Q-Q model in the previous section is not necessarily surprising given the subgroup of births
+which we have focused on in our estimation of (\ref{eqn:2SLSa})-(\ref{eqn:2SLSb}).  This strategy only looks at those children who 
+\emph{preceed} twins, eliminating twins from the analysis given their relatively low birth endowments, and eliminating children who
+follow twins given that parents have already considered the exogenous fertility shock of twin births before having further children.  
+However, the restriction of estimation only for children who preceed twins is likely to fail to identify an important effect of the Q-Q 
+tradeoff, especially if parents shift resources in a way to favour the more highly endowed earlier (single) births.
+
+In order to estimate the full effect of the quantity-quality tradeoff including the response of parental investment to twins, we estimate 
+(\ref{eqn:RZ}).  In table \ref{tab:RZave} we present estimates of the effect of an additional twin birth on \emph{average} child quality
+in the family.  This average effect (for both twins and births preceeding twins) is then examined separately by child in table \ref{tab:RZall}.
+The estimates in table \ref{tab:RZave} represent three groups denominated `All', `Final birth', and `Exceeds desired \#'.  `All' refers to the
+effect of twinning at a specific birth order on all other children in the family; whether they be pre-twin, twin, or post-twin, and compares
+this to families with the same number of births, but where no twins were born.  `Final birth' only examines those families where the twin births
+occur on the final birth, and compares these 
+
+
+\label{sscn:resultsRZ}
+\begin{sidewaystable}[!htbp]													
+\caption{Effect of twinning on average child quality (Education Z-Score)}													
+\vspace{-3mm}													
+\label{tab:RZave}													
+\begin{center}													
+\begin{tabular}{lcccccc} \toprule													
+& \multicolumn{2}{c}{All} & \multicolumn{2}{c}{Final birth} & \multicolumn{2}{c}{Exceeds Desired \#} \\ \cmidrule(r){2-3} \cmidrule(r){4-5} \cmidrule(r){6-7}													
+& (1) & (2) & (3) & (4) & (5) & (6) \\
+\textsc{Twin Birth Order}	&	Base controls	&	Twin Predictors	&	Base controls	&	Twin Predictors	&	Base controls	&	Twin Predictors	\\ \midrule
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\													
+2\textsuperscript{nd} birth	&	-0.140***	&	-0.115***	&	-0.130***	&	-0.100**	&	-0.0843*	&	-0.0874	\\  
+\vspace{4pt}	& \begin{footnotesize}	(0.0248)	\end{footnotesize} & \begin{footnotesize}	(0.0260)	\end{footnotesize} & \begin{footnotesize}	(0.0334)	\end{footnotesize} & \begin{footnotesize}	(0.0394)	\end{footnotesize} & \begin{footnotesize}	(0.0503)	\end{footnotesize} & \begin{footnotesize}	(0.0555)	\end{footnotesize} \\
+3\textsuperscript{rd} birth	&	-0.114***	&	-0.0826***	&	-0.128***	&	-0.103***	&	-0.0279	&	-0.0177	\\  
+\vspace{4pt}	& \begin{footnotesize}	(0.0181)	\end{footnotesize} & \begin{footnotesize}	(0.0145)	\end{footnotesize} & \begin{footnotesize}	(0.0247)	\end{footnotesize} & \begin{footnotesize}	(0.0217)	\end{footnotesize} & \begin{footnotesize}	(0.0577)	\end{footnotesize} & \begin{footnotesize}	(0.0445)	\end{footnotesize} \\
+4\textsuperscript{th} birth	&	-0.120***	&	-0.0916***	&	-0.109***	&	-0.0814***	&	0.0160	&	0.0279	\\  
+\vspace{4pt}	& \begin{footnotesize}	(0.0189)	\end{footnotesize} & \begin{footnotesize}	(0.0164)	\end{footnotesize} & \begin{footnotesize}	(0.0257)	\end{footnotesize} & \begin{footnotesize}	(0.0261)	\end{footnotesize} & \begin{footnotesize}	(0.0554)	\end{footnotesize} & \begin{footnotesize}	(0.0549)	\end{footnotesize} \\
+5\textsuperscript{th} birth	&	-0.0926***	&	-0.0779***	&	-0.0833***	&	-0.0669***	&	-0.0348	&	-0.0515	\\  
+\vspace{4pt}	& \begin{footnotesize}	(0.0176)	\end{footnotesize} & \begin{footnotesize}	(0.0139)	\end{footnotesize} & \begin{footnotesize}	(0.0233)	\end{footnotesize} & \begin{footnotesize}	(0.0204)	\end{footnotesize} & \begin{footnotesize}	(0.0688)	\end{footnotesize} & \begin{footnotesize}	(0.0716)	\end{footnotesize} \\
+6\textsuperscript{th} birth	&	-0.0707***	&	-0.0669***	&	-0.0423	&	-0.0469*	&	-0.114**	&	-0.112**	\\  
+\vspace{4pt}	& \begin{footnotesize}	(0.0221)	\end{footnotesize} & \begin{footnotesize}	(0.0173)	\end{footnotesize} & \begin{footnotesize}	(0.0323)	\end{footnotesize} & \begin{footnotesize}	(0.0239)	\end{footnotesize} & \begin{footnotesize}	(0.0547)	\end{footnotesize} & \begin{footnotesize}	(0.0509)	\end{footnotesize} \\
+7\textsuperscript{th} birth	&	-0.0424*	&	-0.0475**	&	-0.0510*	&	-0.0563**	&	0.00896	&	0.0213	\\  
+\vspace{4pt}	& \begin{footnotesize}	(0.0217)	\end{footnotesize} & \begin{footnotesize}	(0.0215)	\end{footnotesize} & \begin{footnotesize}	(0.0269)	\end{footnotesize} & \begin{footnotesize}	(0.0241)	\end{footnotesize} & \begin{footnotesize}	(0.114)	\end{footnotesize} & \begin{footnotesize}	(0.0812)	\end{footnotesize} \\
+8\textsuperscript{th} birth	&	-0.0314	&	-0.0427	&	-0.0353	&	-0.0306	&	-0.248***	&	-0.232***	\\  
+	& \begin{footnotesize}	(0.0266)	\end{footnotesize} & \begin{footnotesize}	(0.0284)	\end{footnotesize} & \begin{footnotesize}	(0.0445)	\end{footnotesize} & \begin{footnotesize}	(0.0472)	\end{footnotesize} & \begin{footnotesize}	(0.0862)	\end{footnotesize} & \begin{footnotesize}	(0.0722)	\end{footnotesize} \\
+\\ \midrule													
+\multicolumn{7}{c}{\begin{footnotesize} Robust standard errors in parentheses\end{footnotesize}} \\													
+\multicolumn{7}{c}{\begin{footnotesize} *** p$<$0.01, ** p$<$0.05, * p$<$0.10 \end{footnotesize}} \\													
+\bottomrule													
+\multicolumn{7}{p{19cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} Standard errors are clustered at the country level.  Child gender, age and maternal age, along with
+country and year of birth fixed effects are included in all specifications (these are the Base controls). Additionally, columns labeled `Twin Predictors' include additional
+variables which increase the likelihood of twin birth such as maternal health, education, and family socioeconomic status. For a description of the grouped births (`Final birth'
+and `Exceeds Desired \#', see notes to table \ref{tab:RZall}. \end{footnotesize}}\\												
+\end{tabular}													
+\end{center}													
+\end{sidewaystable}													
+
+\noindent to families with the same number of births but with singleton final pregnancies, and `Exceeds birth \#' compares families in which 
+twins resulted in a greater than desired number of births as reported by the family, and compares these to families which exactly achieved their desired number of births with 
+a singleton birth.  Whilst `Exceeds Desired \#' is our preferred estimation strategy, the demanding requirements for families to fall into
+this group mean that sample sizes are small (particularly so for twin families), so we also focus on the `Final birth' group: a group analogous to that examined by 
+\citet{RosenzweigZhang2009} in a similar setup.  
+
+For this group we see that---particularly at low parities---twin births seem to result in lower average child quality.  Column (3) suggests that
+this is of the order of magnitude of 0.1 standard deviations in the years of schooling distribution, a quantitatively important effect.  However, when we account for the socioeconomic
+and health characteristics which we have shown to be important in table \ref{tab:twinreg1}, estimates of the Q-Q tradeoff fall by as much as 30\%
+(column 4).  This result is in line with economic intuition: if healthier mothers are more likely to have twins and if twins are negatively correlated
+with child quality, then relegating health variables to the error term will result in a negative bias on the twin coefficient.
+
+In table \ref{tab:RZall} we provide estimates of the effect of twinning on all children separately.  Here we are effectively interested in the 
+coefficient $\eta_0$ in row one, and $\eta_0+\eta_1$ (rows one and two).  If, as we discuss in section \ref{scn:EF}, parents shift investments
+to compensate more highly endowed children and in response to close birth spacing of twins, we will then have upper and lower bound estimates
+of the effect of a twin birth on child quality in the family.  We can see that in all cases examined, both $\eta_0$ and $\eta_0+\eta_1$ are negative,
+although these coefficients are weakly determined in the lower panel (the `Exceeds Desired \#' group), where the number of twin families is small.
+Further, we see that the inclusion maternal health and education characteristics once again reduces the size of the Q-Q tradeoff we estimate.  Here
+the assumption that twin births is exogenous (conditional upon maternal age and parity) would result in an overestimate of the quantitative importance
+of the Q-Q tradeoff, however, importantly, even when including our extended group of controls we find a significant effect of child quality on quantity
+in the `Final birth' group.
+
+\begin{table}									
+\caption{Effect of Twinning on All Children (Education Z-Score)}									
+\vspace{-3mm}									
+\label{tab:RZall}									
+\begin{center}									
+\begin{tabular}{lcccc} \toprule									
+& \multicolumn{2}{c}{2\textsuperscript{nd} Birth Twins} & \multicolumn{2}{c}{5\textsuperscript{th} Birth Twins} \\ \cmidrule(r){2-3} \cmidrule(r){4-5}									
+\textsc{Variables}	&	Base controls	&	Twin Predictors	&	Base controls	&	Twin Predictors	\\ \midrule
+\multicolumn{5}{l}{\textsc{Panel A: Final Birth Twins}} \\
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\									
+TwinFamily	&	-0.0649*	&	-0.0627	&	-0.180***	&	-0.171***	\\   
+\vspace{4pt}	& \begin{footnotesize}	(0.0342)	\end{footnotesize} & \begin{footnotesize}	(0.0380)	\end{footnotesize} & \begin{footnotesize}	(0.0645)	\end{footnotesize} & \begin{footnotesize}	(0.0606)	\end{footnotesize} \\
+TwinFamily$\times$Pre-twin \ \ \	&	-0.112***	&	-0.0859**	&	0.111*	&	0.118*	\\   
+\vspace{4pt}	& \begin{footnotesize}	(0.0344)	\end{footnotesize} & \begin{footnotesize}	(0.0345)	\end{footnotesize} & \begin{footnotesize}	(0.0625)	\end{footnotesize} & \begin{footnotesize}	(0.0609)	\end{footnotesize} \\
+Pre-twin	&	0.0840***	&	0.0408**	&	-0.0577	&	-0.0541**	\\   
+\vspace{4pt}	& \begin{footnotesize}	(0.0140)	\end{footnotesize} & \begin{footnotesize}	(0.0169)	\end{footnotesize} & \begin{footnotesize}	(0.0352)	\end{footnotesize} & \begin{footnotesize}	(0.0262)	\end{footnotesize} \\
+Height	&		&	0.000375***	&		&	0.000506***	\\   
+\vspace{4pt}	& \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.000101)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.000101)	\end{footnotesize} \\
+BMI	&		&	0.000113***	&		&	0.000204***	\\   
+\vspace{4pt}	& \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(1.49e-05)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(2.46e-05)	\end{footnotesize} \\
+Maternal Education	&		&	0.0363***	&		&	0.0594***	\\   
+\vspace{4pt}	& \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00375)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00741)	\end{footnotesize} \\
+low assets	&		&	-0.239***	&		&	-0.290***	\\   
+\vspace{4pt}	& \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0460)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0286)	\end{footnotesize} \\
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\									
+Obs	&	85,578	&	84,905	&	134,834	&	133,566	\\   
+$R^2$	&	0.096	&	0.155	&	0.045	&	0.131	\\   \midrule
+\multicolumn{5}{l}{\textsc{Panel B: Twins Exceeding Desired Quantity}} \\
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\									
+TwinFamily	&	-0.0581	&	-0.0826*	&	-0.0875	&	-0.0588	\\   
+\vspace{4pt}	& \begin{footnotesize}	(0.0445)	\end{footnotesize} & \begin{footnotesize}	(0.0443)	\end{footnotesize} & \begin{footnotesize}	(0.156)	\end{footnotesize} & \begin{footnotesize}	(0.147)	\end{footnotesize} \\
+TwinFamily$\times$Pre-twin \ \ \	&	-0.0298	&	6.99e-05	&	0.0562	&	0.0177	\\   
+\vspace{4pt}	& \begin{footnotesize}	(0.0761)	\end{footnotesize} & \begin{footnotesize}	(0.0726)	\end{footnotesize} & \begin{footnotesize}	(0.171)	\end{footnotesize} & \begin{footnotesize}	(0.164)	\end{footnotesize} \\
+Pre-twin	&	0.0784***	&	0.0368***	&	-0.0758**	&	-0.0664**	\\   
+\vspace{4pt}	& \begin{footnotesize}	(0.0107)	\end{footnotesize} & \begin{footnotesize}	(0.0115)	\end{footnotesize} & \begin{footnotesize}	(0.0289)	\end{footnotesize} & \begin{footnotesize}	(0.0259)	\end{footnotesize} \\
+Height	&		&	0.000374***	&		&	0.000510***	\\   
+\vspace{4pt}	& \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.000130)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.000186)	\end{footnotesize} \\
+BMI	&		&	9.04e-05***	&		&	0.000171***	\\   
+\vspace{4pt}	& \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(1.43e-05)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(3.08e-05)	\end{footnotesize} \\
+Maternal Education	&		&	0.0292***	&		&	0.0656***	\\   
+\vspace{4pt}	& \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00258)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00898)	\end{footnotesize} \\
+low assets	&		&	-0.222***	&		&	-0.312***	\\   
+\vspace{4pt}	& \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0493)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0428)	\end{footnotesize} \\
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\									
+Obs	&	46,732	&	46,422	&	19,999	&	19,792	\\   
+$R^2$	&	0.103	&	0.145	&	0.085	&	0.174	\\   \midrule
+\multicolumn{5}{c}{\begin{footnotesize} Robust standard errors in parentheses\end{footnotesize}} \\									
+\multicolumn{5}{c}{\begin{footnotesize} *** p$<$0.01, ** p$<$0.05, * p$<$0.10 \end{footnotesize}} \\									
+\bottomrule									
+\multicolumn{5}{p{15cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} Standard errors are clustered at the country level.  Child gender, age and maternal age are included
+in all specifications.  In panel A, `Final birth twins' refers to those families where twins occur on their last birth and those families with an identical number of births but one 
+fewer child due to singleton births.  All children (both in twin and non-twin families) are considered pre-twin if they are born before the final birth.  In panel B, `Twins
+exceeding desired quantity' refers to those families where a twin birth on the final birth causes parents to exceed their optimal number of children, and similar families who
+achieve optimal fertility levels with singleton final births. \end{footnotesize}}\\								
+\end{tabular}									
+\end{center}									
+\end{table}									
+
+
+\section{Conclusion}
+\label{scn:conclusion}
+This paper examines the plausibility of the quantity-quality trade-off in a developing country setting using a large dataset which spans 60 developing countries over more than 20 
+years.  In this way, it has added to the previously scant literature examining the Q-Q hypothesis in the developing world.  Our main contribution is to show that strategies 
+which utilize twins as an exclusion restriction are likely to be invalid, given that multiple births do not appear to be random, depending instead upon maternal height and 
+BMI, along with other factors previously controlled for in the literature: education, maternal age, and parity.  Given that this study focuses only on developing countries, 
+it does not suggest that prior instrumentation strategies using twins in a \emph{developed} country setting are necessarily invalid, given that higher prenatal investment 
+and more comprehensive public policies may act to allow more universal survival of twin fetuses to birth even if the mother is less healthy or less educated.  It does however 
+suggest that tests using similar variables in a developed country setting are warranted.  These results may also  be useful when thinking about multiple births in the presence 
+of IVF treatment.
+
+We examine the effect that this finding has upon empirical and theoretical estimates of the Q-Q tradeoff using two main strategies the recent literature has used to estimate
+this model.  IV results suggest that although the exclusion of maternal health and socioeconomic characteristics is likely to result in point estimates which are higher than
+those where these (relevant) factors are controlled for, the difference is not statistically significant due to imprecision in 2SLS estimates.  However, when we extend the
+analysis to include all children in twin families (our prefered method), we see that omitting these twin predictors can have large effects: reducing by up to 30\% the estimate of
+the Q-Q tradeoff when examining school attainment outcomes.
+
+More generally, this result suggests that significant care must be taken when using multiple births to estimate the effect of additional siblings on child outcomes.  If the
+maternal health and socioeconomic characteristics identified in this paper as being important predictors of twin birth are the \emph{only} relevant additional variables to
+explain multiple births, then consistent estimates can be obtained by including these in existing setups.  However, if, as seems likely, these variables are only an indication
+of many health and behavioural practices of a woman which result in a higher probability of multiple birth and a higher `quality' child, existing estimates will be biased even
+with the inclusion of these variables.  Finally, we provide evidence that the form of the Q-Q model estimated is quite sensitive to assumptions regarding which children are
+affected by the fertility shock.  When estimates are restricted only to those children who are born before twins (as in a number of recent studies), and where parental 
+investments favour heavier or otherwise more highly endowed children, Q-Q estimates looking at children early in the birth order may fail to identify tradeoffs, while in reality
+a quantity-quality tradeoff does exist.
+
+
+\newpage
+\bibliography{BiBBase1}
+
+\newpage
+\appendix
+\section{Twin Births}
+\begin{figure}[!htbp]
+\caption{When do twin births occur?}
+\label{fig:birthtype}
+\begin{center}
+\includegraphics[scale=0.9]{../Results/birthtype.eps}
+\end{center}	
+\end{figure}
+
+\begin{figure}[!htbp]
+\caption{How large are twin families?}
+\label{fig:familytype}
+\begin{center}
+\includegraphics[scale=0.9]{../Results/familytype.eps}
+\end{center}	
+\end{figure}
+
+\section{Twin Estimation Strategies}
+\label{scn:litrev}
+
+\vspace{19.8cm}	
+
+\begin{center}
+\begin{rotate}{90}
+\begin{tabular}{lp{4mm}lll}\toprule
+Author and Country& &  Estimation Strategy & \multicolumn{2}{c}{Controls} \\ \midrule
+&& & \hspace{5mm}1\textsuperscript{st} Stage Controls & 2\textsuperscript{nd} Stage Controls \\  \cmidrule(r){4-4} \cmidrule{5-5}
+Rosenzweig and Wolpin (1980) & &
+$ED=\omega_0+\omega_1 TR+u_1$&
+\begin{small}None.\end{small}&
+\begin{small}N\slash A\end{small}.
+\\
+(India) & & & &
+\\
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\
+Black \emph{et al.} (2005) & &
+(1) $FSIZE=\alpha_0 + \alpha_1 T + X\alpha_2 + v$ &
+\begin{small}Full family size and  birth \end{small}&
+\begin{small}Covariates from\end{small}
+\\
+(Norway) & &
+(2) $ED=\beta_0+\beta_1 FSIZE + X\beta_2 + \varepsilon$ &
+\begin{small}order dummies. Demogra-\end{small}  &
+\begin{small}stage 1.\end{small}
+\\
+& & &
+\begin{small}phic controls: age, sex, pa-\end{small}&
+\\
+& & &
+\begin{small}rental age and education.\end{small}&
+\\
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\
+C\'aceres (2006) & &
+(1) $n_i=X'_i\mu + \rho mb_i + v_i$ &
+\begin{small}Dummies by age, state of\end{small}&
+\begin{small}Covariates from\end{small}
+\\
+(USA) & &
+(2) $y_i=\alpha + \gamma n_i + X'_i\beta + \varepsilon_i$ &
+\begin{small}residence, mother's educ- \end{small}&
+\begin{small}stage 1.\end{small}
+\\
+& & &
+\begin{small}ation, race, mother's age\end{small}&
+\\
+& & &
+\begin{small}and sex.\end{small}&
+\\
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\
+Angrist \emph{et al.} (2006) &  &
+(1)  $c_1=X'_i\beta+\alpha t_{2i}+\eta_i$ &
+\begin{small}Mother's age, mother's \end{small} & 
+\begin{small}Covariates $X_i$\end{small}
+\\
+(Israel) & &
+(2) $y_i=W'_i\mu+\rho c_i + \varepsilon_i$ &  
+\begin{small}age at first birth, census \end{small} &
+\begin{small}from stage 1.\end{small}
+\\
+& & &
+\begin{small}year, parental birth place.\end{small}&
+\\
+\bottomrule 
+\multicolumn{5}{p{19.2cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} Nomenclature employed here is as faithful as possible to the original studies.  $TR$ refers to twin ratio, the number of twin births per mother divided by number of pregnancies, and $ED$ represents a child's standardised educational attainment. $FSIZE$ refers to sibship size and $T$ a dummy for twin birth on the $n$\textsuperscript{th} birth, restricting the analysis to children with birth order $<n$. The variable $n_i$ defined by C\'aceres once again refers to sibship size, and $mb_i$ multiple births. Finally, $c_i$ refers to child $i$'s sibship size, with $t_{2i}$ denoting multiple second births.\end{footnotesize}}\\
+\end{tabular}
+\end{rotate}
+\captionof{table}{Prior empirical specifications}
+\label{tab:litrev}
+\end{center}
+\setstretch{1.25}
+
+\section{Full Survey Data}
+\label{scn:surveys}
+\input{Appendix_SurveyCountries.tex}
+
+\section{Graphical Results by Country Group}
+\label{scn:Graphs}
+\begin{figure}[!htbp]
+\caption{Years of Schooling Estimates by Sibship and Country Group}
+\label{fig:YrS}
+\begin{center}
+\vspace{-4mm}
+\textsc{A: Years of Schooling}
+\includegraphics[scale=0.45]{YrsSch_results1.png}
+\end{center}	
+\begin{center}
+\vspace{4mm}
+\textsc{B: Attendance}
+\includegraphics[scale=0.45]{Attend_results1.png}
+\end{center}
+\begin{footnotesize}\textsc{ Notes to figures:} Estimates are presented by country groups (y-axis).  Six groups of point estimates and confidence intervals 
+are provided on the x-axis.  These correspond to basic controls (OLS NC and IV NC), basic and socioeconomic controls (OLS S and IV S), and full controls including 
+socioeconomic and health variables (OLS H and IV H).  Point estimates are represented by circles, and confidence intervals by vertical bars (these 
+are very small in the case of OLS estimates.)  The colour of these symbols represents the magnitude of each point estimate.  For each class of 
+estimates and countries, results are presented for the 2+, 3+, 4+, 5+ 6+ and 7+ group (from left to right).  Subfigures present $\hat{\beta}_{fertility}$ 
+for different quality variables; years of schooling (A), attendance (B) and school Z-score (omitted in the interests of space).  Further details are available in section 
+\ref{scn:data} (Data).  \end{footnotesize}
+\end{figure}
+
+
+%\begin{figure}[!htbp]
+%\caption{Years of Schooling Estimates by Sibship and Country Group}
+%\begin{center}
+%\vspace{4mm}
+%\textsc{C: Schooling Z-Score}
+%\includegraphics[scale=0.42]{ZScore_results1.png}
+%\end{center}
+%\begin{footnotesize}\textsc{ Notes to figures:} See preceding page. \end{footnotesize}
+%\end{figure}
+
+%\let\clearpage\relax
+
+
+\section{Implied Ratio Estimates}
+\label{scn:selection}
+We follow recent work of \citet{Altonjietal2005, Altonjietal2008}\footnote{See an application by \citet{BellowsMiguel2008}.} who propose an alternative method to examine the significance of a coefficient of interest in the presence of 
+potential selection on unobservables.  This involves determining the degree of selection on unobservables which must occur to force the OLS estimate of $\beta_1$ in equation 
+(\ref{eqn:2SLSa}) to zero.  %This acts to bypass the endogeneity problem which has been demonstrated to exist in the twin birth 2SLS strategy by directly addressing selection on 
+%unobservables which exists in the Q-Q equation. 
+Suppose that selection of family size is represented by $SELEC$, and that this is comprised of a vector of observed factors, $\vect{X}$, and an unobserved residual $\widetilde{SELEC}$:  %In this case, I am interested in determining the degree of unobserved selection which must occur in a family's fertility decision 
+\begin{equation}
+SELEC=\vect{X'\gamma}+ \widetilde{SELEC}.
+\end{equation}
+Further, assume that the effect of the controls $\vect{X}$ are only related to total fertility through their effect on $SELEC$.   In order to consistently estimate the effect of 
+family size on child quality we are interested in estimating equation 
+(\ref{eqn:selectionAC}).  However, given that only a subset of the selection variables are observed we are only able to estimate (\ref{eqn:selectionC}).
+\begin{subequations}
+\label{eqn:selection}
+\begin{eqnarray}
+Q_{ij}&=&\alpha SIZE_{j}+\beta SELEC_j+u_{ij} \label{eqn:selectionAC}\\
+Q_{ij}&=&\alpha SIZE_{j}+\vect{X'\gamma}+v_{ij} \label{eqn:selectionC}\\
+Q_{ij}&=&\alpha SIZE_{j}+\varepsilon_{ij} \label{eqn:selectionNC}
+\end{eqnarray}
+\end{subequations}
+Obtaining an estimate of $\alpha$ from (\ref{eqn:selectionC}) results in the following:
+\begin{equation}
+\label{eqn:biasC}
+ p\lim \hat\alpha=\alpha + \gamma\frac{cov(SIZE,\widetilde{SELEC})}{var(SIZE)}
+\end{equation}
+which is inconsistent given the correlation between SIZE and the omitted portion of the selection term.  This estimate will fall between that from (\ref{eqn:selectionNC}), an estimable equation where
+no controls are included, and that from (\ref{eqn:selectionAC}), the consistent Q-Q equation which cannot be estimated given the unobserved portion of selection.  It can then be shown that the
+difference between estimates of $\alpha$ from (\ref{eqn:selectionC}) and (\ref{eqn:selectionNC}) is:
+\begin{equation}
+ \label{eqn:biasdif}
+\hat\alpha_{Controls} - \hat\alpha_{NoControls} = \gamma\frac{cov(SIZE,\vect{X}'\gamma)}{var(SIZE)}.
+\end{equation}
+As the objective is to determine the size of the correlation between non-observables and observables which would drive the estimate of $\alpha$ to zero, $\alpha$ in (\ref{eqn:biasC})
+is set to zero and (\ref{eqn:biasC}) is divided by (\ref{eqn:biasdif}).  This results in the ratio of non-observables to observables, our statistic of interest:
+\begin{equation}
+ \label{eqn:Aratio}
+\frac{\hat\alpha_{Controls}}{\hat\alpha_{Controls} - \hat\alpha_{NoControls}}=\frac{cov(SIZE,\widetilde{SELEC})}{cov(SIZE,\vect{X}'\gamma)}.
+\end{equation}
+
+This ratio describes how strong the covariance must be between the unobserved part of the fertility selection term and total fertility compared to the covariance between the observed
+part and fertility in order for the true effect of fertility on quality to be zero.  \citet{Altonjietal2005} suggest that if this ratio is high and if the observed controls are
+representative of the full set of controls, it is unlikely that the true effect is zero given that an important proportion of explanatory power must be contained in the unobservable 
+characteristics.  Based upon an enumerated set of assumptions, Altonji et al.\ argue that a ratio exceeding 1 suggests that the true effect is not zero, however this depends 
+fundamentally on the underlying mechanism of selection in the economic process under study and the quantity of observed characteristics in the sample data.
+
+A set of estimates of the Altonji et al.\ ratio (or implied ratio) are provided in column f of table \ref{tab:fertilityALL}.  These results do not provide overwhelming evidence
+that additional siblings affect school attendance, but do suggest that higher family size results in lower overall attainment of schooling, both when looking at completed years 
+of schooling, and the standardized variable which compares each child to their country--age cohort.  It is particularly notable that this ratio greatly exceeds 1 in the low
+ income sample of countries, providing evidence in favour of some Q-Q trade-off in a low income setting.  An implied ratio greater than 2, as is the case for years of schooling 
+and school z-score in low income countries, implies that observed characteristics such as parental education, place of residence and maternal health can only explain one third 
+of the family size decision, while unobservables must explain at least two thirds.  Such a result is consistent with one of two explanations; either family size decisions are 
+inherently more `unobservable' in low income countries, or the evidence in favour of a Q-Q trade-off is greater in these settings.  Given that there seems to be no particular 
+reason to suppose that the family fertility decisions are sufficiently more unobservable in a low-income setting to explain away the entire difference in the implied ratio\footnote{It 
+is possible to suggest some mechanisms by which fertility in low income countries may be more unobservable: fertility may depend upon family labour patterns or perceived 
+health risk, and contraception may be less available resulting in less predictable birth patterns. However, these would need to account for more than two times the 
+unobservables in lower-middle-income countries, which are themselves likely to encounter similar characteristics.}, this provides some evidence that the Q-Q trade-off may 
+be more than a simple artefact when incomes are low. 
+
+\newpage
+\section{Appendix Tables}
+
+\label{scn:apptables}
+\begin{table}[htpb!]
+\caption{Probability of giving birth to}
+\vspace{-7mm}
+\label{tab:twinreg1990}
+\begin{center}
+\begin{tabular}{lcccc} 
+\multicolumn{5}{c}{\textsc{multiple children (pre-1990)}}\\
+& & \\
+\toprule
+ & (1) & (2) & (3) & (4) \\
+\textsc{Twin=1} & Pooled & Low & Lower- & Upper- \\ 
+ & Sample & Income & Middle & Middle \\  \midrule
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
+birth order & 0.868** & 1.137** & 0.750** & 0.541** \\
+\vspace{4pt} & \begin{footnotesize}(0.0941)\end{footnotesize} & \begin{footnotesize}(0.182)\end{footnotesize} & \begin{footnotesize}(0.0904)\end{footnotesize} & \begin{footnotesize}(0.143)\end{footnotesize} \\
+mother's age & 0.104 & 0.0390 & 0.181* & 0.0352 \\
+\vspace{4pt} & \begin{footnotesize}(0.0611)\end{footnotesize} & \begin{footnotesize}(0.0942)\end{footnotesize} & \begin{footnotesize}(0.0666)\end{footnotesize} & \begin{footnotesize}(0.0935)\end{footnotesize} \\
+mother educ 1--4 & 0.195 & 0.236 & 0.216 & 0.109 \\
+\vspace{4pt} & \begin{footnotesize}(0.125)\end{footnotesize} & \begin{footnotesize}(0.180)\end{footnotesize} & \begin{footnotesize}(0.235)\end{footnotesize} & \begin{footnotesize}(0.257)\end{footnotesize} \\
+mother educ 5--6 & 0.380** & 0.510 & 0.135 & 0.445 \\
+\vspace{4pt} & \begin{footnotesize}(0.135)\end{footnotesize} & \begin{footnotesize}(0.303)\end{footnotesize} & \begin{footnotesize}(0.194)\end{footnotesize} & \begin{footnotesize}(0.304)\end{footnotesize} \\
+mother educ 7--10 & 0.930** & 1.047** & 0.903** & 0.527 \\
+\vspace{4pt} & \begin{footnotesize}(0.136)\end{footnotesize} & \begin{footnotesize}(0.178)\end{footnotesize} & \begin{footnotesize}(0.213)\end{footnotesize} & \begin{footnotesize}(0.393)\end{footnotesize} \\
+mother educ 11 + & 1.797** & 1.056 & 1.643** & 1.391* \\
+\vspace{4pt} & \begin{footnotesize}(0.232)\end{footnotesize} & \begin{footnotesize}(0.525)\end{footnotesize} & \begin{footnotesize}(0.302)\end{footnotesize} & \begin{footnotesize}(0.442)\end{footnotesize} \\
+height & 0.0483** & 0.0515** & 0.0352* & 0.0747** \\
+\vspace{4pt} & \begin{footnotesize}(0.00969)\end{footnotesize} & \begin{footnotesize}(0.0146)\end{footnotesize} & \begin{footnotesize}(0.0144)\end{footnotesize} & \begin{footnotesize}(0.0208)\end{footnotesize} \\
+BMI & 0.0496** & 0.0596* & 0.0565** & 0.0235 \\
+\vspace{4pt} & \begin{footnotesize}(0.0110)\end{footnotesize} & \begin{footnotesize}(0.0215)\end{footnotesize} & \begin{footnotesize}(0.0130)\end{footnotesize} & \begin{footnotesize}(0.0255)\end{footnotesize} \\
+low assets & 0.484 & 1.072* & 0.116 & 0.399 \\
+\vspace{4pt} & \begin{footnotesize}(0.261)\end{footnotesize} & \begin{footnotesize}(0.414)\end{footnotesize} & \begin{footnotesize}(0.360)\end{footnotesize} & \begin{footnotesize}(0.566)\end{footnotesize} \\
+%Constant & -9.203** & -8.924** & -8.644** & -3.718 \\
+% & \begin{footnotesize}(0.611)\end{footnotesize} & \begin{footnotesize}(0.824)\end{footnotesize} & \begin{footnotesize}(1.673)\end{footnotesize} & \begin{footnotesize}(5.599)\end{footnotesize} \\
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
+Observations & 480,918 & 184,499 & 216,545 & 79,874 \\
+ $R^2$ & 0.010 & 0.013 & 0.008 & 0.006 \\ \midrule
+\multicolumn{5}{c}{\begin{footnotesize} Robust standard errors clustered by country \end{footnotesize}} \\
+\multicolumn{5}{c}{\begin{footnotesize} ** p$<$0.01, * p$<$0.05 \end{footnotesize}} \\
+\bottomrule
+\multicolumn{5}{p{8cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} See notes to table \ref{tab:twinreg1}.\end{footnotesize}}\\
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+
+
+\end{spacing}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Assessing the Role of Unobservable Determinants of Twin Births}
+\label{scn:selection}
+Sections \ref{scn:MCS} and \ref{scn:EE} demonstrate that the incidence of omitted twin predictor variables will invalidate the instrumental variable identification strategy.  
+Monte Carlo simulations suggest that even a relatively minor correlation between these unobserved terms and the stochastic component of the Q-Q equation can result in estimators 
+which perform quantitatively worse than traditional OLS estimators.  However, if we are able to collect data on these variables which influence twin-selection,\footnote{We refer to twin ``selection" 
+here not because families choose whether or not to have twins, but rather because certain characteristics make it appear as if families are more likely to select in to multiple 
+births.  Once again, a parallel may be drawn with the use of twins as an instrument in situations where IVF treatment is available; in this case it seems less farfetched to speak 
+of ``selection'' of multiple births.  The usefulness of this term will become apparent in the analysis which follows (for the OLS analysis), which draws from prior literature on 
+selection on observables versus selection on unobservables.} a 2SLS methodology can still be used consistently by including these predictors as controls in the first and second 
+stage.  This is a technique employed in previous literature which has included controls for parity, race and mother's age, along with (more recently) mother's education.  The 
+credibility of this strategy however relies on the ability to perfectly observe determinant factors which increase the propensity of twin birth.  If we believe that models such 
+as (\ref{eqn:twinpred}) are structural representations of twin birth, we can simply include all relevant predictors, and recover consistent estimates of family size.
+
+
+
+
+
+
+
+
+
+
+
+
+In what follows, exogenous variables in equation \ref{eqn:2SLSa} will be denoted 
+$\mathbf{x_2}$, the endogenous variable $Fert_j$ as $x_1$, the instrumental variable twin as $z_1$, and the outcome variable $Q_{ij}$ as $y$.  
+Then, the regressors from equation \ref{eqn:2SLSa} are represented as $\vect{x}=[x_1\ \vect{x}_2']'$ and the instruments from \ref{eqn:2SLSb} as 
+$\vect{z}=[z_1\ \vect{x}_2']'$.
+
+In order to derive the asymptotic properties of the estimators of $\vect{\beta}$, we start from the typical instrumental variables estimator
+$\vect{\hat{\beta}}_{IV}=(\vect{Z}'\vect{X})^{-1}\vect{Z}'\vect{y} $ where $\vect{Z}$ and $\vect{X}$ are $N \times k$ matrices with $i$\textsuperscript{th} 
+row $\vect{z}_i'$ and $\vect{x}_i'$ respectively.  Determining consistency proceeds via the susbstitution of the structural equation for $\vect{y}$:
+\vspace{-5mm}
+\begin{eqnarray}
+\label{eqn:IVderive}
+\vect{\hat{\beta}}_{IV}&=&(\vect{Z}'\vect{X})^{-1}\vect{Z}'[\vect{X\beta}+\vect{u}] \nonumber\\
+&=&\vect{\beta}+(\vect{Z}'\vect{X})^{-1}\vect{Z}'\vect{u}\nonumber\\
+&=&\vect{\beta}+(N^{-1}\vect{Z}'\vect{X})^{-1}N^{-1}\vect{Z}'\vect{u}
+\end{eqnarray}
+where the final line is included in order to demonstrate consistency via the use of the law of large numbers\footnote{This relies
+on the fact that $N^{-1}\vect{Z}'\vect{X}=N^{-1}\sum_i\vect{z}_i\vect{x}_i'$ and likewise for $N^{-1}\vect{Z}'\vect{u}$.  A
+complete exposition can be found in Cameron and Trivedi (2006).}.  Consistency of the IV estimator requires that
+\begin{eqnarray}
+\mathrm{plim} N^{-1}\vect{Z'u}&=&0, \hspace{5mm}\mathrm{and} \label{eqn:IVconsist3}\\ 
+\mathrm{plim} N^{-1}\vect{Z'X}&\neq&0, \label{eqn:IVrelevance}
+\end{eqnarray}
+the typical IV assumptions of consistency (\ref{eqn:IVconsist3}) and relevance (\ref{eqn:IVrelevance}).  
+
+This paper is concerned with the potential endogeneity of twin births.  Where twin births are endogenous, responding to characteristics such as mother's 
+health and education and family income, omitting these factors in the structural equation \ref{eqn:2SLSa} will lead to biased and inconsistent estimates of 
+$\vect{\hat{\beta}}_{IV}$.  Suppose that relevant (observed or unobserved) factors are omitted from (\ref{eqn:2SLSa}) and (\ref{eqn:2SLSb}) thus being 
+relegated to the error terms $u_{ij}$ and $v_{ij}$.  If these omitted variables are correlated with twin birth ($Twin$), this will invalidate the IV strategy via 
+the violation of condition (\ref{eqn:IVconsist3}).  This inconsistency follows directly from a rearrangement of (\ref{eqn:IVderive}):
+\begin{equation}
+\label{eqn:inconsistency}
+\vect{\hat{\beta}}_{IV}-\beta=(N^{-1}\vect{Z}'\vect{X})^{-1}N^{-1}\vect{Z}'\vect{u}.
+\end{equation}
+If twin birth is indeed endogenous and its determinants are omitted from our IV estimation strategy, the magnitude of the inconsistency in 
+(\ref{eqn:inconsistency}) will depend upon two things.  Firstly, (inversely) upon the correlation between the exogenous instrumental
+variables and the explanatory variables $\vect{x}$, and secondly upon the correlation between the exogenous instrumental component
+$\vect{z}$ and u.  We will turn to these points in section \ref{scn:results}.
+
+
+
+
+
+
+We provide results from IV estimations of the Q-Q model when including a more comprehensive set of controls than previous papers, fundamentally extending the vector to include 
+maternal health variables. This methodology suggests that any effect of family fertility on a child's schooling is insignificant, \emph{if} twin births are exogenous conditional on 
+the extended control set.  Monte Carlo simulation suggests however that even a small correlation between twin births and the residual in the Q-Q regression will lead to a 
+quantitatively important bias in this estimate.  In order to examine the plausibility that any trade-off exists, recent work by Altonji et al.\ has beed applied to the Q-Q model, suggesting 
+that un-observed factors must be more than twice as important as observables in this model to explain away the entire effect of family size on child `quality'.  Particularly in 
+low-income countries, this suggests that the plausibility that larger sibship reduces investment per child may be higher than IV estimates suggest.
+
+These results suggest that the Q-Q trade-off may be a relevant phenomenon, however that this trade-off becomes weaker as country incomes rise.  Such a result is consistent 
+with a situation in which there are decreasing marginal returns to investments in child quality.  An increase in income which shifts outward the household budget constraint makes 
+more of both child quantity and quality feasible. While shifts towards quality at low levels of child investment result in a measured improvement in observable human capital 
+outcomes, diminishing returns imply that subsequent fertility reductions yield smaller increases in quality.  This seems to be reflected in the wider literature, with a lack of evidence 
+in favour of the Q-Q trade-off in human capital existing in the developed world (Angrist et al., 2010; Black et al., 2005), whereas recent empirical results from developing countries 
+provide some supporting evidence (Sanhueza, 2009; Li et al., 2008).  These results have implications for fertility policies in low-income countries.  If policy makers view fertility 
+as `too high' due to the burden it places on household finances and the dilution of resources destined to each child, an exogenous shock to family size (such as that imposed 
+by maximum fertility rules) should result in an increase in child attainment.  This paper calls into question the validity of such policies in all but the lowest income country groups,
+where households appear to face a particularly steep Q-Q trade-off.
+
+
+
+
+
+
+
+
+\begin{sidewaystable}[!htbp]																					
+\caption{Q-Q specification with years of schooling as quality}																					
+\vspace{-3mm}																					
+\label{tab:YrsEducAPP1}																					
+\begin{center}																					
+\begin{tabular}{lcccccccccc} \toprule																					
+& \multicolumn{5}{c}{2 +} & \multicolumn{5}{c}{5 +} \\ \cmidrule(r){2-6} \cmidrule(r){7-11}																					
+& OLS  & OLS & IV & IV  & IV  & OLS  & OLS & IV  & IV  & IV \\ 																					
+& No control & All & No control &  Socioec. & + Health & No control & All & No control &  Socioec. & + Health \\ \midrule
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\																					
+fertility	&	-0.588**	&	-0.309**	&	0.915	&	0.260	&	0.118	&	-0.492**	&	-0.298**	&	0.0254	&	-0.149	&	-0.246	\\
+\vspace{4pt} & \begin{footnotesize}		(0.00962)	\end{footnotesize} & \begin{footnotesize}	(0.00914)	\end{footnotesize} & \begin{footnotesize}	(0.776)	\end{footnotesize} & \begin{footnotesize}	(0.482)	\end{footnotesize} & \begin{footnotesize}	(0.449)	\end{footnotesize} & \begin{footnotesize}	(0.00857)	\end{footnotesize} & \begin{footnotesize}	(0.00810)	\end{footnotesize} & \begin{footnotesize}	(0.286)	\end{footnotesize} & \begin{footnotesize}	(0.247)	\end{footnotesize} & \begin{footnotesize}	(0.238)	\end{footnotesize} \\
+mother educ 0	&		&	-4.337**	&		&	-5.585**	&	-5.052**	&		&	-3.344**	&		&	-4.753**	&	-4.353**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0641)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.851)	\end{footnotesize} & \begin{footnotesize}	(0.754)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0511)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.309)	\end{footnotesize} & \begin{footnotesize}	(0.282)	\end{footnotesize} \\
+mother educ 1--4	&		&	-2.874**	&		&	-3.892**	&	-3.488**	&		&	-1.955**	&		&	-3.245**	&	-2.953**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0682)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.725)	\end{footnotesize} & \begin{footnotesize}	(0.649)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0546)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.251)	\end{footnotesize} & \begin{footnotesize}	(0.231)	\end{footnotesize} \\
+mother educ 5--6	&		&	-1.650**	&		&	-2.264**	&	-2.036**	&		&	-0.847**	&		&	-2.003**	&	-1.828**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0665)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.455)	\end{footnotesize} & \begin{footnotesize}	(0.411)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0576)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.174)	\end{footnotesize} & \begin{footnotesize}	(0.162)	\end{footnotesize} \\
+mother educ 7--10	&		&	-0.871**	&		&	-1.229**	&	-1.121**	&		&		&		&	-1.045**	&	-0.971**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0631)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.294)	\end{footnotesize} & \begin{footnotesize}	(0.271)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.131)	\end{footnotesize} & \begin{footnotesize}	(0.126)	\end{footnotesize} \\
+Poor	&		&	-1.937**	&		&	-2.521**	&	-2.243**	&		&	-1.815**	&		&	-2.064**	&	-1.847**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0691)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.378)	\end{footnotesize} & \begin{footnotesize}	(0.329)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0522)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.170)	\end{footnotesize} & \begin{footnotesize}	(0.155)	\end{footnotesize} \\
+Height	&		&	0.0244**	&		&		&	0.0280**	&		&	0.0178**	&		&		&	0.0182**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.00279)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00472)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00229)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00287)	\end{footnotesize} \\
+BMI	&		&	0.0700**	&		&		&	0.0810**	&		&	0.0864**	&		&		&	0.0875**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.00346)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0121)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00287)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00582)	\end{footnotesize} \\
+Male	&	-0.104**	&	0.151**	&	-0.142**	&	0.159**	&	0.179**	&	0.124**	&	0.342**	&	0.0792*	&	0.300**	&	0.340**	\\
+\vspace{4pt} & \begin{footnotesize}		(0.0380)	\end{footnotesize} & \begin{footnotesize}	(0.0343)	\end{footnotesize} & \begin{footnotesize}	(0.0519)	\end{footnotesize} & \begin{footnotesize}	(0.0455)	\end{footnotesize} & \begin{footnotesize}	(0.0462)	\end{footnotesize} & \begin{footnotesize}	(0.0302)	\end{footnotesize} & \begin{footnotesize}	(0.0279)	\end{footnotesize} & \begin{footnotesize}	(0.0397)	\end{footnotesize} & \begin{footnotesize}	(0.0296)	\end{footnotesize} & \begin{footnotesize}	(0.0286)	\end{footnotesize} \\
+mother's age &	0.128**	&	0.0502**	&	0.309**	&	0.0948*	&	0.0824*	&	0.0449**	&	0.0318**	&	0.0834**	&	0.0395*	&	0.0353*	\\
+\vspace{4pt} & \begin{footnotesize}		(0.00606)	\end{footnotesize} & \begin{footnotesize}	(0.00559)	\end{footnotesize} & \begin{footnotesize}	(0.0938)	\end{footnotesize} & \begin{footnotesize}	(0.0370)	\end{footnotesize} & \begin{footnotesize}	(0.0343)	\end{footnotesize} & \begin{footnotesize}	(0.00516)	\end{footnotesize} & \begin{footnotesize}	(0.00477)	\end{footnotesize} & \begin{footnotesize}	(0.0219)	\end{footnotesize} & \begin{footnotesize}	(0.0170)	\end{footnotesize} & \begin{footnotesize}	(0.0166)	\end{footnotesize} \\
+%Birth Order 2	&		&		&		&		&		&	-3.79e-05	&	-0.0234	&	-0.280*	&	-0.0826	&	-0.0504	\\
+%\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0395)	\end{footnotesize} & \begin{footnotesize}	(0.0364)	\end{footnotesize} & \begin{footnotesize}	(0.160)	\end{footnotesize} & \begin{footnotesize}	(0.133)	\end{footnotesize} & \begin{footnotesize}	(0.129)	\end{footnotesize} \\
+%Birth Order 3	&		&		&		&		&		&	0.124**	&	0.0689	&	-0.431	&	-0.0399	&	0.0153	\\
+%\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0458)	\end{footnotesize} & \begin{footnotesize}	(0.0423)	\end{footnotesize} & \begin{footnotesize}	(0.310)	\end{footnotesize} & \begin{footnotesize}	(0.256)	\end{footnotesize} & \begin{footnotesize}	(0.249)	\end{footnotesize} \\
+																					
+																					
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} &  \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\																					
+Observations & 39,946 & 39,946 & 39,946 & 39,946 & 39,946 & 65,685 & 65,685 & 65,685 & 65,685 & 65,685 \\																					
+$R^2$ & 0.254 & 0.367 & & & &0.325 & 0.454 &  & & \\ \midrule																					
+\multicolumn{11}{c}{\begin{footnotesize} Robust standard errors in parentheses\end{footnotesize}} \\																					
+\multicolumn{11}{c}{\begin{footnotesize} ** p$<$0.01, * p$<$0.05 \end{footnotesize}} \\																					
+\bottomrule																					
+\multicolumn{11}{p{21cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} See notes to table \ref{tab:YrsEduc}. \end{footnotesize}}\\																					
+\end{tabular}																					
+\end{center}																					
+\end{sidewaystable}																					
+
+
+
+
+\begin{sidewaystable}[!htbp]																					
+\caption*{Q-Q specification with years of schooling as quality (continued)}																					
+\vspace{-3mm}																					
+\label{tab:YrsEducAPP2}																					
+\begin{center}																					
+\begin{tabular}{lcccccccccc} \toprule																					
+& \multicolumn{5}{c}{2 +} & \multicolumn{5}{c}{5 +} \\ \cmidrule(r){2-6} \cmidrule(r){7-11}																					
+& OLS  & OLS & IV & IV  & IV  & OLS  & OLS & IV  & IV  & IV \\ 																					
+& No control & All & No control &  Socioec. & + Health & No control & All & No control &  Socioec. & + Health \\ \midrule
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\																					
+fertility	&	-0.588**	&	-0.309**	&	0.915	&	0.260	&	0.118	&	-0.492**	&	-0.298**	&	0.0254	&	-0.149	&	-0.246	\\
+\vspace{4pt} & \begin{footnotesize}		(0.00962)	\end{footnotesize} & \begin{footnotesize}	(0.00914)	\end{footnotesize} & \begin{footnotesize}	(0.776)	\end{footnotesize} & \begin{footnotesize}	(0.482)	\end{footnotesize} & \begin{footnotesize}	(0.449)	\end{footnotesize} & \begin{footnotesize}	(0.00857)	\end{footnotesize} & \begin{footnotesize}	(0.00810)	\end{footnotesize} & \begin{footnotesize}	(0.286)	\end{footnotesize} & \begin{footnotesize}	(0.247)	\end{footnotesize} & \begin{footnotesize}	(0.238)	\end{footnotesize} \\
+mother educ 0	&		&	-4.337**	&		&	-5.585**	&	-5.052**	&		&	-3.344**	&		&	-4.753**	&	-4.353**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0641)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.851)	\end{footnotesize} & \begin{footnotesize}	(0.754)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0511)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.309)	\end{footnotesize} & \begin{footnotesize}	(0.282)	\end{footnotesize} \\
+mother educ 1--4	&		&	-2.874**	&		&	-3.892**	&	-3.488**	&		&	-1.955**	&		&	-3.245**	&	-2.953**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0682)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.725)	\end{footnotesize} & \begin{footnotesize}	(0.649)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0546)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.251)	\end{footnotesize} & \begin{footnotesize}	(0.231)	\end{footnotesize} \\
+mother educ 5--6	&		&	-1.650**	&		&	-2.264**	&	-2.036**	&		&	-0.847**	&		&	-2.003**	&	-1.828**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0665)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.455)	\end{footnotesize} & \begin{footnotesize}	(0.411)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0576)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.174)	\end{footnotesize} & \begin{footnotesize}	(0.162)	\end{footnotesize} \\
+mother educ 7--10	&		&	-0.871**	&		&	-1.229**	&	-1.121**	&		&		&		&	-1.045**	&	-0.971**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0631)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.294)	\end{footnotesize} & \begin{footnotesize}	(0.271)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.131)	\end{footnotesize} & \begin{footnotesize}	(0.126)	\end{footnotesize} \\
+Poor	&		&	-1.937**	&		&	-2.521**	&	-2.243**	&		&	-1.815**	&		&	-2.064**	&	-1.847**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.0691)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.378)	\end{footnotesize} & \begin{footnotesize}	(0.329)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0522)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.170)	\end{footnotesize} & \begin{footnotesize}	(0.155)	\end{footnotesize} \\
+Height	&		&	0.0244**	&		&		&	0.0280**	&		&	0.0178**	&		&		&	0.0182**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.00279)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00472)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00229)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00287)	\end{footnotesize} \\
+BMI	&		&	0.0700**	&		&		&	0.0810**	&		&	0.0864**	&		&		&	0.0875**	\\
+\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}	(0.00346)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0121)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00287)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00582)	\end{footnotesize} \\
+Male	&	-0.104**	&	0.151**	&	-0.142**	&	0.159**	&	0.179**	&	0.124**	&	0.342**	&	0.0792*	&	0.300**	&	0.340**	\\
+\vspace{4pt} & \begin{footnotesize}		(0.0380)	\end{footnotesize} & \begin{footnotesize}	(0.0343)	\end{footnotesize} & \begin{footnotesize}	(0.0519)	\end{footnotesize} & \begin{footnotesize}	(0.0455)	\end{footnotesize} & \begin{footnotesize}	(0.0462)	\end{footnotesize} & \begin{footnotesize}	(0.0302)	\end{footnotesize} & \begin{footnotesize}	(0.0279)	\end{footnotesize} & \begin{footnotesize}	(0.0397)	\end{footnotesize} & \begin{footnotesize}	(0.0296)	\end{footnotesize} & \begin{footnotesize}	(0.0286)	\end{footnotesize} \\
+mother's age &	0.128**	&	0.0502**	&	0.309**	&	0.0948*	&	0.0824*	&	0.0449**	&	0.0318**	&	0.0834**	&	0.0395*	&	0.0353*	\\
+\vspace{4pt} & \begin{footnotesize}		(0.00606)	\end{footnotesize} & \begin{footnotesize}	(0.00559)	\end{footnotesize} & \begin{footnotesize}	(0.0938)	\end{footnotesize} & \begin{footnotesize}	(0.0370)	\end{footnotesize} & \begin{footnotesize}	(0.0343)	\end{footnotesize} & \begin{footnotesize}	(0.00516)	\end{footnotesize} & \begin{footnotesize}	(0.00477)	\end{footnotesize} & \begin{footnotesize}	(0.0219)	\end{footnotesize} & \begin{footnotesize}	(0.0170)	\end{footnotesize} & \begin{footnotesize}	(0.0166)	\end{footnotesize} \\
+%Birth Order 2	&		&		&		&		&		&	-3.79e-05	&	-0.0234	&	-0.280*	&	-0.0826	&	-0.0504	\\
+%\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0395)	\end{footnotesize} & \begin{footnotesize}	(0.0364)	\end{footnotesize} & \begin{footnotesize}	(0.160)	\end{footnotesize} & \begin{footnotesize}	(0.133)	\end{footnotesize} & \begin{footnotesize}	(0.129)	\end{footnotesize} \\
+%Birth Order 3	&		&		&		&		&		&	0.124**	&	0.0689	&	-0.431	&	-0.0399	&	0.0153	\\
+%\vspace{4pt} & \begin{footnotesize}			\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0458)	\end{footnotesize} & \begin{footnotesize}	(0.0423)	\end{footnotesize} & \begin{footnotesize}	(0.310)	\end{footnotesize} & \begin{footnotesize}	(0.256)	\end{footnotesize} & \begin{footnotesize}	(0.249)	\end{footnotesize} \\
+																					
+																					
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} &  \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\																					
+Observations & 39,946 & 39,946 & 39,946 & 39,946 & 39,946 & 65,685 & 65,685 & 65,685 & 65,685 & 65,685 \\																					
+$R^2$ & 0.254 & 0.367 & & & &0.325 & 0.454 &  & & \\ \midrule																					
+\multicolumn{11}{c}{\begin{footnotesize} Robust standard errors in parentheses\end{footnotesize}} \\																					
+\multicolumn{11}{c}{\begin{footnotesize} ** p$<$0.01, * p$<$0.05 \end{footnotesize}} \\																					
+\bottomrule																					
+\multicolumn{11}{p{21cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} See notes to table \ref{tab:YrsEduc}. \end{footnotesize}}\\																					
+\end{tabular}																					
+\end{center}																					
+\end{sidewaystable}																					

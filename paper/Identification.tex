@@ -1,0 +1,82 @@
+\documentclass{article}[11pt]
+
+\usepackage{amsmath}
+
+
+\newcommand{\mathsc}[1]{{\small\textsc{#1}}}
+
+\setlength\parindent{0.25in}
+\setlength\parskip{0.25in}
+
+\title{Draft Notes: Twin Identification}
+\date{}
+
+\begin{document}
+\maketitle
+
+Consider a case where child educational outcomes in family $j$, $\mathsc{Y}_{ij}$, 
+are determined by family size $\mathsc{Q}_{ij}$, and a vector of child- and 
+family-specific covariates $\textbf{X}_{i}$ and $\textbf{X}_{ij}$.  We define 
+$\mathsc{Y}_{ij}(q,z)$ as the potential outcome for child $i$, where we follow 
+the potential outcomes notation of Angrist and Imbens (1995).  Here a child's 
+`potential outcome' depends upon their treatment status, $\mathsc{Q}_{ij}=q$, 
+and instrument value $\mathsc{Z}_{ij}=z$. We are thus interested in estimating:
+\begin{equation}
+\mathsc{Y}_{ij}(\mathsc{Q}_{ij}+1,\mathsc{Z}_{ij})-\mathsc{Y}_{ij}(\mathsc{Q}_{ij},\mathsc{Z}_{ij}), 
+\end{equation}
+the causal effect of an additional sibling on child outcomes.  For simplicity
+we will assume that $\mathsc{Y}_{ij}(\mathsc{Q}_{ij}+1)-\mathsc{Y}_{ij}(\mathsc{Q}_{ij})
+=\rho$ for all $i$ and $j$,\footnote{Referred to as a linear constant-effects model
+by Angrist et al.\ (2010).  \texttt{We should come back to this.}} however this will 
+later be relaxed.
+
+If twinning were truly randomly assigned,
+2SLS estimates of $\hat{\rho}$ driven by the twin instrument would provide consistent
+estimates of the effect of an additional birth on child outcomes.  Here we could 
+consider a Wald estimate of $\rho$:
+\begin{equation}
+ \frac{E[\mathsc{Y}_{ij}|\mathsc{Z}_{ij}=1]-E[\mathsc{Y}_{ij}|\mathsc{Z}_{ij}=0]}{E[\mathsc{Q}_{ij}|\mathsc{Z}_{ij}=1]-E[\mathsc{Q}_{ij}|\mathsc{Z}_{ij}=0]}=E[Y_{1ij}-Y_{0ij}|\mathsc{Q}_{1ij}>\mathsc{Q}_{0ij}].
+\end{equation}
+This is the well known Local Average Treatment Effect (LATE) of the effect of an
+additional birth on
+compliers.  As Angrist et al.\ (2010) suggest, if we accept the strong assumption
+that twinning is as good as randomly assigned, causal effects for the population
+with twin births are the same as for the population without twin births, and this
+parameter is then the average effect for the entire population.\footnote{We do 
+\emph{not} question their assumption that all families who receive twin births are 
+compliers, however do question the more important assumption of random assignation 
+of twin births.}
+
+However, as we discuss, twins are not randomly assigned, but rather depend upon
+maternal and family characteristics such as maternal age, health, and parity:
+\begin{equation}
+\label{eqn:twinZ}
+ Z_{ij} = \left\{
+  \begin{array}{l l}
+    1 & \quad \text{if} \quad Z_{ij}^*=\textbf{X}_{ij}^\prime \beta + \varepsilon_{ij} > 0 \\
+    0 & \quad \text{if} \quad Z_{ij}^*=\textbf{X}_{ij}^\prime \beta + \varepsilon_{ij} \leq 0
+  \end{array} \right.
+\end{equation}
+Typically, prior literature assumes that even though twins are not entirely an 
+exogenous shock, they are ``as good as randomly assigned'' (Angrist et al.\ 2010, 
+p.\ 788).  This is tantamount to assuming that all relevant twin predictor variables 
+$\textbf{X}_{ij}$ are observed and can be included in a 2SLS specification.  This
+then results in an estimable specification:
+\begin{equation}
+\label{eqn:qqz}
+y_{ij}=\textbf{X}_{ij}^\prime \beta+\textbf{X}_{i}^\prime \mu + \rho Q_{ij} + \nu_{ij}
+\end{equation}
+which is consistent under 2SLS due to the inclusion of the vector $\textbf{X}_{ij}$ 
+in the first and second stages.
+
+Our results suggest that even an `as good as randomly assigned' assumption may
+be questionable.  We are concerned that unobserved maternal characteristics driving
+twinning in (\ref{eqn:twinZ}) are also relevant (unobserved) predictors of child 
+outcomes in (\ref{eqn:qqz}).  In this case $E[\nu_{ij}\varepsilon_{ij}]\neq 0$, a 
+failure of the conditions for instrumental validity.
+
+
+
+
+
+\end{document}

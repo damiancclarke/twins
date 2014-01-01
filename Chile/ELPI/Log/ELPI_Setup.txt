@@ -1,0 +1,743 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Chile/ELPI/Log/ELPI_Setup.txt
+  log type:  text
+ opened on:   3 Jul 2013, 18:25:48
+
+. 
+. ********************************************************************************
+. *** (1) Create relevant vars from Hogar database
+. ********************************************************************************
+. use $DATA/Hogar
+
+. bys folio: egen fert=total(a16==6) //a16==6 is sibling of index child
+
+. replace fert=fert+1
+(74232 real changes made)
+
+. 
+. gen child=1 if a16==6 | a16==13 //a16==13 is child chosen to be followed
+(44965 missing values generated)
+
+. gsort folio child -a19 
+
+. bys folio: gen birthorder=_n if child==1
+(44965 missing values generated)
+
+. 
+. bys folio: gen m_age=a19 if a16==1
+(59236 missing values generated)
+
+. bys folio: egen mother_age=mean(m_age)
+(906 missing values generated)
+
+. gen m_age_birth=mother_age-a19 if a16==6 | a16==13
+(45235 missing values generated)
+
+. drop m_age
+
+. replace m_age_birth=. if m_age_birth<10
+(25 real changes made, 25 to missing)
+
+. gen m_age_sq=m_age_birth^2
+(45260 missing values generated)
+
+. 
+. gen educ=1 if b02n==19|b02n==99
+(61979 missing values generated)
+
+. replace educ=2 if b02n<=4
+(9549 real changes made)
+
+. replace educ=3 if b02n>4 & b02n<=7
+(19012 real changes made)
+
+. replace educ=4 if b02n>7 & b02n<=11 & b02c<4
+(9351 real changes made)
+
+. replace educ=5 if b02n>7 & b02n<=11 & b02c>=4
+(15792 real changes made)
+
+. replace educ=6 if b02n==12|b02n==14
+(1777 real changes made)
+
+. replace educ=7 if b02n==16
+(2076 real changes made)
+
+. replace educ=8 if b02n==13|b02n==15
+(2028 real changes made)
+
+. replace educ=9 if b02n==17|b02n==18
+(2326 real changes made)
+
+. label def educ_lab 1 "None" 2 "Pre-school" 3 "Primary" ///
+> 4 "Secondary incomplete"  5 "Secondary complete" 6 "Technical incomplete" ///
+> 7"University incomplete" 8"Technical complete" 9 "University Complete"
+
+. label val educ educ_lab
+
+. gen mateduc=educ if a16==1
+(59263 missing values generated)
+
+. bys folio: egen mother_educ=mean(mateduc)
+(1030 missing values generated)
+
+. gen educ1_4=(mother_educ==3)
+
+. gen educ5_6=(mother_educ==4)
+
+. gen educ7_10=(mother_educ==5|mother_educ==6)
+
+. gen educ11plus=(mother_educ>7&mother_educ!=.)
+
+. 
+. *Gen family income, replacing for ranges
+. gen family_income=d11m
+(59057 missing values generated)
+
+. replace family_income=50000 if d11t==1
+(80 real changes made)
+
+. replace family_income=98000 if d11t==2
+(349 real changes made)
+
+. replace family_income=191000 if d11t==3
+(683 real changes made)
+
+. replace family_income=300000 if d11t==4
+(491 real changes made)
+
+. replace family_income=400000 if d11t==5
+(342 real changes made)
+
+. replace family_income=550000 if d11t==6
+(262 real changes made)
+
+. replace family_income=750000 if d11t==7
+(151 real changes made)
+
+. replace family_income=950000 if d11t==8
+(158 real changes made)
+
+. replace family_income=1150000 if d11t==9
+(72 real changes made)
+
+. replace family_income=1500000 if d11t==10
+(305 real changes made)
+
+. replace family_income=. if family_income==99
+(693 real changes made, 693 to missing)
+
+. 
+. bys folio: egen family_inc=max(family_income)
+(3497 missing values generated)
+
+. drop family_income
+
+. 
+. gen ypc=family_inc/tot_per
+(3497 missing values generated)
+
+. 
+. rename a18 sex
+
+. gen indigenous=(a23!=10&a23!=99)
+
+. 
+. label var m_age_birth "Age of mother at child's birth"
+
+. label var sex "Gender"
+
+. label var family_inc "Monthly family income"
+
+. label var educ "Education level (not years)"
+
+. label var mother_age "Current age of mother"
+
+. label var child "Selected child or sibling"
+
+. label var fert "Sibship size of selected child"
+
+. label var birthorder "Order of births in child's family"
+
+. label var ypc "Income per person in the household"
+
+. label var mother_educ "Maternal education (of followed child)"
+
+. 
+. 
+. keep folio a16 a19 orden tot_per d11m fexp_hog fert birthorder mother_age /*
+> */ m_age_birth educ family_inc sex indigenous child ypc mother_educ m_age_sq/*
+> */ educ1_4 educ5_6 educ7_10 educ11plus
+
+. 
+. ********************************************************************************
+. *** (2) Create relevant vars from Entrevistada database
+. ********************************************************************************
+. merge m:1 folio using $DATA/Entrevistada
+(label LABD already defined)
+(label LABC already defined)
+(label LABB already defined)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            74,232  (_merge==3)
+    -----------------------------------------
+
+. 
+. gen twin=(a03!=5)
+
+. *gen child=1 if a16==6 | a16==13
+. sort folio a03 child a19
+
+. bys folio: gen agedif=a19[_n+1]-a19[_n] 
+(15175 missing values generated)
+
+. replace agedif=agedif*child
+(29790 real changes made, 29790 to missing)
+
+. gen agedif2=agedif[_n-1]
+(44965 missing values generated)
+
+. replace agedif2=agedif2*child
+(15175 real changes made, 15175 to missing)
+
+. 
+. rename g01 preg_No_attention 
+
+. replace preg_No_attention=. if preg_No_attention==9
+(4 real changes made, 4 to missing)
+
+. rename g02 preg_numcontrols
+
+. replace preg_numcontrols=. if preg_numcontrols==9
+(111 real changes made, 111 to missing)
+
+. gen preg_anemia=(g03_08==8)
+
+. 
+. replace g05b=. if g05b>4
+(104 real changes made, 104 to missing)
+
+. rename g05b preg_nutrition
+
+. label def nutr 1 "Low weight" 2 "Normal" 3 "Overweight" 4 "Obese"  
+
+. label val preg_nutrition nutr
+
+. replace g06a=. if g06a>4
+(231 real changes made, 231 to missing)
+
+. rename g06a preg_nutrition_dur
+
+. label val preg_nutrition_dur nutr
+
+. 
+. gen preg_smoked=g07a==1
+
+. gen preg_drugs=g11b
+(906 missing values generated)
+
+. replace preg_drugs=. if preg_drugs==8
+(117 real changes made, 117 to missing)
+
+. 
+. gen preg_alcohol=g09
+(906 missing values generated)
+
+. replace preg_alcohol=. if preg_alcohol==8
+(158 real changes made, 158 to missing)
+
+. 
+. gen preg_publichosp=g16==1
+
+. 
+. label var preg_No_attention "Mother received no medical attention during pregnancy"
+
+. label var preg_numcontrols "Number of pregnancy controls"
+
+. label var preg_anemia "Mother suffered from Anemia during pregnancy"
+
+. label var preg_nutrition "Mother's nutritional status before pregnancy"
+
+. label var preg_nutrition_dur "Mother's nutritional status during pregnancy"
+
+. 
+. gen poor=ypc<32000
+
+. rename a19 age
+
+. rename area rural
+
+. 
+. 
+. ********************************************************************************
+. *** (3) Run twin predict regressions
+. ********************************************************************************
+. ***(A) LOCALS FOR VARIABLES
+. local twincontrols_typical m_age_birth m_age_sq indigenous 
+
+. local tc_educ i.mother_educ
+
+. local twincontrols_1 poor educ1_4 educ5_6 educ7_10 educ11plus i.preg_nutrition preg_anemia preg_No_attention /*
+> */ preg_smoked i.preg_drugs i.preg_alcohol preg_publichosp
+
+. local twincontrols_2 poor educ1_4 educ5_6 educ7_10 educ11plus i.preg_nutrition preg_anemia preg_No_attention /*
+> */ preg_smoked i.preg_drugs i.preg_alcohol preg_publichosp
+
+. local region i.region i.age rural //note here controlling for age controls for year of birth
+
+. 
+. ***(B) REGRESSIONS
+. reg twin `twincontrols_typical' `region' if a16==13 [pw=fexp_enc]
+(sum of wgt is   8.6699e+05)
+
+Linear regression                                      Number of obs =   14996
+                                                       F( 22, 14973) =    1.42
+                                                       Prob > F      =  0.0917
+                                                       R-squared     =  0.0018
+                                                       Root MSE      =  .15635
+
+------------------------------------------------------------------------------
+             |               Robust
+        twin |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ m_age_birth |   .0045575   .0013129     3.47   0.001     .0019841    .0071309
+    m_age_sq |  -.0000746   .0000226    -3.29   0.001    -.0001189   -.0000302
+  indigenous |  -.0104073   .0037611    -2.77   0.006    -.0177794   -.0030351
+             |
+      region |
+          2  |   .0023554   .0112531     0.21   0.834    -.0197019    .0244128
+          3  |   .0062799   .0143728     0.44   0.662    -.0218925    .0344523
+          4  |  -.0036945   .0108888    -0.34   0.734    -.0250379    .0176489
+          5  |  -.0026199    .010121    -0.26   0.796    -.0224584    .0172185
+          6  |  -.0002962    .010865    -0.03   0.978     -.021593    .0210006
+          7  |    .003818   .0108985     0.35   0.726    -.0175443    .0251804
+          8  |  -.0051753   .0099081    -0.52   0.601    -.0245963    .0142457
+          9  |   .0007043   .0107942     0.07   0.948    -.0204537    .0218623
+         10  |    .002467   .0108553     0.23   0.820    -.0188106    .0237447
+         11  |  -.0068835   .0150307    -0.46   0.647    -.0363456    .0225785
+         12  |   .0139481   .0187473     0.74   0.457    -.0227988    .0506951
+         13  |   .0019012    .009607     0.20   0.843    -.0169296     .020732
+         14  |  -.0047906   .0124808    -0.38   0.701    -.0292544    .0196733
+         15  |  -.0088311   .0121852    -0.72   0.469    -.0327155    .0150533
+             |
+         age |
+          1  |  -.0004236   .0050873    -0.08   0.934    -.0103955    .0095482
+          2  |   .0037528   .0051853     0.72   0.469     -.006411    .0139166
+          3  |   .0030885   .0051667     0.60   0.550    -.0070389    .0132159
+          4  |   .0002859   .0060162     0.05   0.962    -.0115066    .0120784
+             |
+       rural |   .0004314    .004386     0.10   0.922    -.0081657    .0090285
+       _cons |  -.0416237   .0219737    -1.89   0.058    -.0846948    .0014474
+------------------------------------------------------------------------------
+
+. outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel replace
+~/investigacion/Activa/Twins/Chile/ELPI/Results/Outreg/ELPI_twinpredict.xls
+dir : seeout
+
+. 
+. reg twin `twincontrols_typical' `twincontrols_2' `region' if a16==13 [pw=fexp_enc]
+(sum of wgt is   8.6301e+05)
+
+Linear regression                                      Number of obs =   14927
+                                                       F( 38, 14888) =    3.97
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.0045
+                                                       Root MSE      =  .15636
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+             twin |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+      m_age_birth |   .0044758   .0012906     3.47   0.001      .001946    .0070055
+         m_age_sq |  -.0000736   .0000222    -3.31   0.001    -.0001172     -.00003
+       indigenous |  -.0111168   .0038376    -2.90   0.004    -.0186391   -.0035945
+             poor |   .0088324    .004199     2.10   0.035     .0006018    .0170631
+          educ1_4 |  -.0058233   .0061925    -0.94   0.347    -.0179612    .0063147
+          educ5_6 |  -.0028613   .0061161    -0.47   0.640    -.0148497    .0091271
+         educ7_10 |  -.0038953   .0054517    -0.71   0.475    -.0145813    .0067907
+       educ11plus |   .0098366   .0070604     1.39   0.164    -.0040027    .0236759
+                  |
+   preg_nutrition |
+               2  |   .0083544   .0041584     2.01   0.045     .0002035    .0165053
+               3  |   .0109331   .0048735     2.24   0.025     .0013804    .0204857
+               4  |   -.008823   .0069334    -1.27   0.203    -.0224133    .0047672
+                  |
+      preg_anemia |   .0084889   .0048027     1.77   0.077     -.000925    .0179027
+preg_No_attention |  -.0174625   .0066683    -2.62   0.009    -.0305332   -.0043919
+      preg_smoked |  -.0063505   .0039893    -1.59   0.111      -.01417     .001469
+                  |
+       preg_drugs |
+               2  |  -.0019323   .0157912    -0.12   0.903     -.032885    .0290204
+               3  |  -.0182899   .0034934    -5.24   0.000    -.0251375   -.0114423
+                  |
+     preg_alcohol |
+               2  |  -.0011112    .005484    -0.20   0.839    -.0118606    .0096381
+               3  |  -.0184376   .0028982    -6.36   0.000    -.0241185   -.0127567
+                  |
+  preg_publichosp |   .0103716   .0033682     3.08   0.002     .0037695    .0169737
+                  |
+           region |
+               2  |   .0048643   .0113051     0.43   0.667     -.017295    .0270237
+               3  |   .0054754   .0142614     0.38   0.701    -.0224788    .0334295
+               4  |  -.0070322   .0108434    -0.65   0.517    -.0282866    .0142221
+               5  |  -.0026457   .0101253    -0.26   0.794    -.0224925    .0172012
+               6  |  -.0014393   .0108471    -0.13   0.894    -.0227009    .0198223
+               7  |   .0021765   .0109084     0.20   0.842    -.0192054    .0235584
+               8  |   -.006009   .0098919    -0.61   0.544    -.0253983    .0133803
+               9  |  -.0024117   .0107232    -0.22   0.822    -.0234305    .0186072
+              10  |   .0017515   .0108681     0.16   0.872    -.0195513    .0230543
+              11  |  -.0090988   .0149323    -0.61   0.542    -.0383679    .0201704
+              12  |   .0145033   .0188063     0.77   0.441    -.0223594     .051366
+              13  |   .0025521   .0095881     0.27   0.790    -.0162417    .0213459
+              14  |  -.0064449   .0126139    -0.51   0.609    -.0311696    .0182798
+              15  |   -.008265   .0121725    -0.68   0.497    -.0321246    .0155946
+                  |
+              age |
+               1  |  -.0003541     .00512    -0.07   0.945    -.0103899    .0096817
+               2  |   .0039245   .0052179     0.75   0.452    -.0063032    .0141523
+               3  |   .0032112   .0052005     0.62   0.537    -.0069825    .0134049
+               4  |   .0004236   .0060726     0.07   0.944    -.0114794    .0123267
+                  |
+            rural |  -.0001854    .004492    -0.04   0.967    -.0089903    .0086195
+            _cons |  -.0368919   .0242275    -1.52   0.128    -.0843809     .010597
+-----------------------------------------------------------------------------------
+
+. outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+~/investigacion/Activa/Twins/Chile/ELPI/Results/Outreg/ELPI_twinpredict.xls
+dir : seeout
+
+. 
+. reg twin `twincontrols_typical' `twincontrols_1' `region' if a16==13 [pw=fexp_enc]
+(sum of wgt is   8.6301e+05)
+
+Linear regression                                      Number of obs =   14927
+                                                       F( 38, 14888) =    3.97
+                                                       Prob > F      =  0.0000
+                                                       R-squared     =  0.0045
+                                                       Root MSE      =  .15636
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+             twin |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+      m_age_birth |   .0044758   .0012906     3.47   0.001      .001946    .0070055
+         m_age_sq |  -.0000736   .0000222    -3.31   0.001    -.0001172     -.00003
+       indigenous |  -.0111168   .0038376    -2.90   0.004    -.0186391   -.0035945
+             poor |   .0088324    .004199     2.10   0.035     .0006018    .0170631
+          educ1_4 |  -.0058233   .0061925    -0.94   0.347    -.0179612    .0063147
+          educ5_6 |  -.0028613   .0061161    -0.47   0.640    -.0148497    .0091271
+         educ7_10 |  -.0038953   .0054517    -0.71   0.475    -.0145813    .0067907
+       educ11plus |   .0098366   .0070604     1.39   0.164    -.0040027    .0236759
+                  |
+   preg_nutrition |
+               2  |   .0083544   .0041584     2.01   0.045     .0002035    .0165053
+               3  |   .0109331   .0048735     2.24   0.025     .0013804    .0204857
+               4  |   -.008823   .0069334    -1.27   0.203    -.0224133    .0047672
+                  |
+      preg_anemia |   .0084889   .0048027     1.77   0.077     -.000925    .0179027
+preg_No_attention |  -.0174625   .0066683    -2.62   0.009    -.0305332   -.0043919
+      preg_smoked |  -.0063505   .0039893    -1.59   0.111      -.01417     .001469
+                  |
+       preg_drugs |
+               2  |  -.0019323   .0157912    -0.12   0.903     -.032885    .0290204
+               3  |  -.0182899   .0034934    -5.24   0.000    -.0251375   -.0114423
+                  |
+     preg_alcohol |
+               2  |  -.0011112    .005484    -0.20   0.839    -.0118606    .0096381
+               3  |  -.0184376   .0028982    -6.36   0.000    -.0241185   -.0127567
+                  |
+  preg_publichosp |   .0103716   .0033682     3.08   0.002     .0037695    .0169737
+                  |
+           region |
+               2  |   .0048643   .0113051     0.43   0.667     -.017295    .0270237
+               3  |   .0054754   .0142614     0.38   0.701    -.0224788    .0334295
+               4  |  -.0070322   .0108434    -0.65   0.517    -.0282866    .0142221
+               5  |  -.0026457   .0101253    -0.26   0.794    -.0224925    .0172012
+               6  |  -.0014393   .0108471    -0.13   0.894    -.0227009    .0198223
+               7  |   .0021765   .0109084     0.20   0.842    -.0192054    .0235584
+               8  |   -.006009   .0098919    -0.61   0.544    -.0253983    .0133803
+               9  |  -.0024117   .0107232    -0.22   0.822    -.0234305    .0186072
+              10  |   .0017515   .0108681     0.16   0.872    -.0195513    .0230543
+              11  |  -.0090988   .0149323    -0.61   0.542    -.0383679    .0201704
+              12  |   .0145033   .0188063     0.77   0.441    -.0223594     .051366
+              13  |   .0025521   .0095881     0.27   0.790    -.0162417    .0213459
+              14  |  -.0064449   .0126139    -0.51   0.609    -.0311696    .0182798
+              15  |   -.008265   .0121725    -0.68   0.497    -.0321246    .0155946
+                  |
+              age |
+               1  |  -.0003541     .00512    -0.07   0.945    -.0103899    .0096817
+               2  |   .0039245   .0052179     0.75   0.452    -.0063032    .0141523
+               3  |   .0032112   .0052005     0.62   0.537    -.0069825    .0134049
+               4  |   .0004236   .0060726     0.07   0.944    -.0114794    .0123267
+                  |
+            rural |  -.0001854    .004492    -0.04   0.967    -.0089903    .0086195
+            _cons |  -.0368919   .0242275    -1.52   0.128    -.0843809     .010597
+-----------------------------------------------------------------------------------
+
+. outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+~/investigacion/Activa/Twins/Chile/ELPI/Results/Outreg/ELPI_twinpredict.xls
+dir : seeout
+
+. 
+. reg twin i.birthorder `twincontrols_typical' `region' if a16==13 [pw=fexp_enc]
+(sum of wgt is   8.6699e+05)
+
+Linear regression                                      Number of obs =   14996
+                                                       F( 29, 14964) =       .
+                                                       Prob > F      =       .
+                                                       R-squared     =  0.0037
+                                                       Root MSE      =  .15625
+
+------------------------------------------------------------------------------
+             |               Robust
+        twin |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+  birthorder |
+          2  |    .008812   .0037951     2.32   0.020     .0013732    .0162508
+          3  |   .0174829    .005208     3.36   0.001     .0072745    .0276912
+          4  |    .027184   .0087526     3.11   0.002     .0100278    .0443403
+          5  |   .0299086   .0183694     1.63   0.104    -.0060978    .0659149
+          6  |   .0337601   .0322382     1.05   0.295    -.0294307    .0969509
+          7  |  -.0120641   .0049969    -2.41   0.016    -.0218586   -.0022695
+          8  |  -.0061293   .0060412    -1.01   0.310    -.0179707    .0057121
+          9  |  -.0187864   .0051161    -3.67   0.000    -.0288145   -.0087583
+         10  |  -.0095009   .0058157    -1.63   0.102    -.0209004    .0018986
+             |
+ m_age_birth |   .0032941    .001475     2.23   0.026      .000403    .0061852
+    m_age_sq |  -.0000633   .0000246    -2.58   0.010    -.0001114   -.0000152
+  indigenous |  -.0111271   .0037731    -2.95   0.003    -.0185228   -.0037313
+             |
+      region |
+          2  |   .0027832   .0112323     0.25   0.804    -.0192334    .0247998
+          3  |   .0072191   .0143988     0.50   0.616    -.0210043    .0354425
+          4  |  -.0020264   .0108768    -0.19   0.852    -.0233463    .0192935
+          5  |  -.0006456   .0101065    -0.06   0.949    -.0204556    .0191643
+          6  |    .002236   .0108548     0.21   0.837    -.0190408    .0235128
+          7  |   .0060579   .0108756     0.56   0.578    -.0152596    .0273755
+          8  |  -.0034475   .0098993    -0.35   0.728    -.0228513    .0159562
+          9  |   .0022229   .0108024     0.21   0.837     -.018951    .0233969
+         10  |    .004404    .010844     0.41   0.685    -.0168515    .0256595
+         11  |  -.0052055   .0150229    -0.35   0.729    -.0346523    .0242412
+         12  |   .0164703   .0186593     0.88   0.377    -.0201042    .0530448
+         13  |   .0037184   .0095886     0.39   0.698    -.0150765    .0225132
+         14  |  -.0028047   .0124579    -0.23   0.822    -.0272236    .0216143
+         15  |  -.0070582   .0121833    -0.58   0.562     -.030939    .0168225
+             |
+         age |
+          1  |  -.0006013   .0050912    -0.12   0.906    -.0105808    .0093782
+          2  |   .0034142   .0051866     0.66   0.510    -.0067521    .0135805
+          3  |   .0027989   .0051621     0.54   0.588    -.0073194    .0129173
+          4  |  -.0001638   .0060098    -0.03   0.978    -.0119437    .0116161
+             |
+       rural |  -.0003864   .0043855    -0.09   0.930    -.0089825    .0082097
+       _cons |  -.0237206   .0237285    -1.00   0.317    -.0702313    .0227901
+------------------------------------------------------------------------------
+
+. outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel
+~/investigacion/Activa/Twins/Chile/ELPI/Results/Outreg/ELPI_twinpredict.xls
+dir : seeout
+
+. 
+. reg twin i.birthorder `twincontrols_typical' `twincontrols_2' `region' if a16==13 [pw=fexp_enc]
+(sum of wgt is   8.6301e+05)
+
+Linear regression                                      Number of obs =   14927
+                                                       F( 45, 14879) =       .
+                                                       Prob > F      =       .
+                                                       R-squared     =  0.0066
+                                                       Root MSE      =  .15624
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+             twin |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+       birthorder |
+               2  |    .010652   .0038937     2.74   0.006     .0030198    .0182842
+               3  |   .0199438   .0054309     3.67   0.000     .0092985    .0305891
+               4  |   .0303073   .0090684     3.34   0.001     .0125321    .0480826
+               5  |    .033334   .0186999     1.78   0.075    -.0033201     .069988
+               6  |   .0389529   .0337092     1.16   0.248    -.0271212     .105027
+               7  |   -.005567   .0071772    -0.78   0.438    -.0196352    .0085012
+               8  |  -.0107022    .007937    -1.35   0.178    -.0262597    .0048552
+               9  |  -.0204602   .0078612    -2.60   0.009    -.0358692   -.0050512
+              10  |  -.0035747   .0099962    -0.36   0.721    -.0231684     .016019
+                  |
+      m_age_birth |   .0024421   .0014625     1.67   0.095    -.0004246    .0053089
+         m_age_sq |  -.0000512   .0000242    -2.11   0.035    -.0000987   -3.72e-06
+       indigenous |  -.0109846   .0038404    -2.86   0.004    -.0185123   -.0034569
+             poor |   .0060714   .0041829     1.45   0.147    -.0021276    .0142705
+          educ1_4 |  -.0102052   .0063836    -1.60   0.110    -.0227179    .0023076
+          educ5_6 |  -.0067877   .0062904    -1.08   0.281    -.0191177    .0055423
+         educ7_10 |  -.0050235   .0054821    -0.92   0.359    -.0157691    .0057221
+       educ11plus |   .0117743   .0070623     1.67   0.095    -.0020688    .0256174
+                  |
+   preg_nutrition |
+               2  |   .0080336    .004147     1.94   0.053    -.0000951    .0161623
+               3  |   .0098453   .0048714     2.02   0.043     .0002967     .019394
+               4  |  -.0094394   .0069621    -1.36   0.175    -.0230861    .0042072
+                  |
+      preg_anemia |   .0073703   .0048445     1.52   0.128    -.0021255    .0168662
+preg_No_attention |  -.0186598    .006667    -2.80   0.005    -.0317279   -.0055917
+      preg_smoked |  -.0071199   .0039782    -1.79   0.074    -.0149176    .0006778
+                  |
+       preg_drugs |
+               2  |  -.0015427   .0158129    -0.10   0.922     -.032538    .0294525
+               3  |  -.0173109   .0037144    -4.66   0.000    -.0245917   -.0100302
+                  |
+     preg_alcohol |
+               2  |  -.0013724   .0054872    -0.25   0.803     -.012128    .0093832
+               3  |  -.0191895   .0032741    -5.86   0.000    -.0256071   -.0127719
+                  |
+  preg_publichosp |   .0094814   .0033499     2.83   0.005     .0029152    .0160475
+                  |
+           region |
+               2  |   .0052103   .0112892     0.46   0.644    -.0169179    .0273385
+               3  |   .0067937   .0142928     0.48   0.635    -.0212221    .0348094
+               4  |  -.0046583   .0108311    -0.43   0.667    -.0258887    .0165721
+               5  |   -.000492   .0101138    -0.05   0.961    -.0203162    .0193323
+               6  |   .0019979     .01085     0.18   0.854    -.0192695    .0232653
+               7  |   .0055606   .0108926     0.51   0.610    -.0157902    .0269115
+               8  |  -.0036051   .0098924    -0.36   0.716    -.0229955    .0157852
+               9  |   .0001214   .0107417     0.01   0.991    -.0209336    .0211764
+              10  |   .0045275   .0108669     0.42   0.677     -.016773     .025828
+              11  |  -.0062209   .0149219    -0.42   0.677    -.0354698    .0230279
+              12  |   .0171527   .0187185     0.92   0.359    -.0195379    .0538432
+              13  |    .004623   .0095786     0.48   0.629    -.0141522    .0233982
+              14  |  -.0036891   .0125962    -0.29   0.770    -.0283793     .021001
+              15  |  -.0065487   .0121739    -0.54   0.591     -.030411    .0173136
+                  |
+              age |
+               1  |  -.0005606   .0051264    -0.11   0.913    -.0106089    .0094878
+               2  |     .00351    .005219     0.67   0.501      -.00672    .0137399
+               3  |   .0028978   .0051969     0.56   0.577    -.0072888    .0130845
+               4  |  -.0001767   .0060676    -0.03   0.977      -.01207    .0117165
+                  |
+            rural |   .0000893   .0044866     0.02   0.984     -.008705    .0088835
+            _cons |  -.0050695   .0262094    -0.19   0.847    -.0564432    .0463041
+-----------------------------------------------------------------------------------
+
+. outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+~/investigacion/Activa/Twins/Chile/ELPI/Results/Outreg/ELPI_twinpredict.xls
+dir : seeout
+
+. 
+. reg twin i.birthorder `twincontrols_typical' `twincontrols_1' `region' if a16==13 [pw=fexp_enc]
+(sum of wgt is   8.6301e+05)
+
+Linear regression                                      Number of obs =   14927
+                                                       F( 45, 14879) =       .
+                                                       Prob > F      =       .
+                                                       R-squared     =  0.0066
+                                                       Root MSE      =  .15624
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+             twin |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+       birthorder |
+               2  |    .010652   .0038937     2.74   0.006     .0030198    .0182842
+               3  |   .0199438   .0054309     3.67   0.000     .0092985    .0305891
+               4  |   .0303073   .0090684     3.34   0.001     .0125321    .0480826
+               5  |    .033334   .0186999     1.78   0.075    -.0033201     .069988
+               6  |   .0389529   .0337092     1.16   0.248    -.0271212     .105027
+               7  |   -.005567   .0071772    -0.78   0.438    -.0196352    .0085012
+               8  |  -.0107022    .007937    -1.35   0.178    -.0262597    .0048552
+               9  |  -.0204602   .0078612    -2.60   0.009    -.0358692   -.0050512
+              10  |  -.0035747   .0099962    -0.36   0.721    -.0231684     .016019
+                  |
+      m_age_birth |   .0024421   .0014625     1.67   0.095    -.0004246    .0053089
+         m_age_sq |  -.0000512   .0000242    -2.11   0.035    -.0000987   -3.72e-06
+       indigenous |  -.0109846   .0038404    -2.86   0.004    -.0185123   -.0034569
+             poor |   .0060714   .0041829     1.45   0.147    -.0021276    .0142705
+          educ1_4 |  -.0102052   .0063836    -1.60   0.110    -.0227179    .0023076
+          educ5_6 |  -.0067877   .0062904    -1.08   0.281    -.0191177    .0055423
+         educ7_10 |  -.0050235   .0054821    -0.92   0.359    -.0157691    .0057221
+       educ11plus |   .0117743   .0070623     1.67   0.095    -.0020688    .0256174
+                  |
+   preg_nutrition |
+               2  |   .0080336    .004147     1.94   0.053    -.0000951    .0161623
+               3  |   .0098453   .0048714     2.02   0.043     .0002967     .019394
+               4  |  -.0094394   .0069621    -1.36   0.175    -.0230861    .0042072
+                  |
+      preg_anemia |   .0073703   .0048445     1.52   0.128    -.0021255    .0168662
+preg_No_attention |  -.0186598    .006667    -2.80   0.005    -.0317279   -.0055917
+      preg_smoked |  -.0071199   .0039782    -1.79   0.074    -.0149176    .0006778
+                  |
+       preg_drugs |
+               2  |  -.0015427   .0158129    -0.10   0.922     -.032538    .0294525
+               3  |  -.0173109   .0037144    -4.66   0.000    -.0245917   -.0100302
+                  |
+     preg_alcohol |
+               2  |  -.0013724   .0054872    -0.25   0.803     -.012128    .0093832
+               3  |  -.0191895   .0032741    -5.86   0.000    -.0256071   -.0127719
+                  |
+  preg_publichosp |   .0094814   .0033499     2.83   0.005     .0029152    .0160475
+                  |
+           region |
+               2  |   .0052103   .0112892     0.46   0.644    -.0169179    .0273385
+               3  |   .0067937   .0142928     0.48   0.635    -.0212221    .0348094
+               4  |  -.0046583   .0108311    -0.43   0.667    -.0258887    .0165721
+               5  |   -.000492   .0101138    -0.05   0.961    -.0203162    .0193323
+               6  |   .0019979     .01085     0.18   0.854    -.0192695    .0232653
+               7  |   .0055606   .0108926     0.51   0.610    -.0157902    .0269115
+               8  |  -.0036051   .0098924    -0.36   0.716    -.0229955    .0157852
+               9  |   .0001214   .0107417     0.01   0.991    -.0209336    .0211764
+              10  |   .0045275   .0108669     0.42   0.677     -.016773     .025828
+              11  |  -.0062209   .0149219    -0.42   0.677    -.0354698    .0230279
+              12  |   .0171527   .0187185     0.92   0.359    -.0195379    .0538432
+              13  |    .004623   .0095786     0.48   0.629    -.0141522    .0233982
+              14  |  -.0036891   .0125962    -0.29   0.770    -.0283793     .021001
+              15  |  -.0065487   .0121739    -0.54   0.591     -.030411    .0173136
+                  |
+              age |
+               1  |  -.0005606   .0051264    -0.11   0.913    -.0106089    .0094878
+               2  |     .00351    .005219     0.67   0.501      -.00672    .0137399
+               3  |   .0028978   .0051969     0.56   0.577    -.0072888    .0130845
+               4  |  -.0001767   .0060676    -0.03   0.977      -.01207    .0117165
+                  |
+            rural |   .0000893   .0044866     0.02   0.984     -.008705    .0088835
+            _cons |  -.0050695   .0262094    -0.19   0.847    -.0564432    .0463041
+-----------------------------------------------------------------------------------
+
+. outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+~/investigacion/Activa/Twins/Chile/ELPI/Results/Outreg/ELPI_twinpredict.xls
+dir : seeout
+
+. 
+. 
+. sum birthorder `twincontrols_typical' fert poor mother_educ preg_nutrition age rural /*
+> */ preg_nutrition preg_nutrition_dur preg_anemia preg_No_attention preg_smoked preg_drugs /*
+> */ preg_alcohol preg_publichosp if a16==13
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+  birthorder |     15175    1.824909    .9627224          1         10
+ m_age_birth |     14996    27.23106    6.983744         13         57
+    m_age_sq |     14996    790.3001    399.9671        169       3249
+  indigenous |     15175    .0988468     .298466          0          1
+        fert |     15175    1.928633    .9972847          1         10
+-------------+--------------------------------------------------------
+        poor |     15175    .1382537    .3451774          0          1
+ mother_educ |     14969    5.074487     1.70652          1          9
+preg_nutri~n |     14976    2.231303      .60121          1          4
+         age |     15175    2.032619    1.113999          0          4
+       rural |     15175    1.099044    .2987316          1          2
+-------------+--------------------------------------------------------
+preg_nutri~n |     14976    2.231303      .60121          1          4
+preg_nutri~r |     14953     2.44466    .6625974          1          4
+ preg_anemia |     15175    .1355519    .3423234          0          1
+preg_No_at~n |     14995    1.010804    .1033808          1          2
+ preg_smoked |     15175    .0999012     .299878          0          1
+-------------+--------------------------------------------------------
+  preg_drugs |     14972    1.011355     .130272          1          3
+preg_alcohol |     14964    1.076049     .277405          1          3
+preg_publi~p |     15175    .7424712    .4372875          0          1
+
+.  
+.  
+. 
+end of do-file
+

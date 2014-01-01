@@ -1,0 +1,2076 @@
+-------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Log/TwinSetup.log
+  log type:  text
+ opened on:   4 Oct 2012, 13:52:35
+
+. 
+. *******************************************************************************
+. ****(2) Check which DHS surveys coincide for education and child data
+. *******************************************************************************
+. use $Data/world_childsmall.dta
+
+. bys country yearint: gen num=_N
+
+. collapse yearint num, by(id2 country)
+
+. save $Data/world_childsmall1.dta,replace
+file ~/database/DHS/world_childsmall1.dta saved
+
+. 
+. *MUST CORRECT AS yearint IN CHILD DATA NOT ALWAYS THE SAME AS YEAR (CAN BE +/-1)
+. *NOTE: THIS ONLY CORRECTS FOR YEARS WHICH ALSO APPEAR IN EDUCATION SURVEY DATA
+.         do $Base/Do/countrynaming
+
+. if c(filename)=="~/database/DHS/world_childsmall1.dta" {
+.         cap gen year=yearint
+.         replace year=1993 if id2=="bd3"
+(1 real change made)
+.         replace year=1996 if id2=="bd1"
+(1 real change made)
+.         replace year=1994 if id2=="bo3"
+(1 real change made)
+.         replace year=2003 if id2=="bo4"
+(1 real change made)
+.         replace year=1992 if id2=="bf1"
+(1 real change made)
+.         replace year=1998 if id2=="bf2"
+(1 real change made)
+.         replace year=1996 if id2=="td1"
+(1 real change made)
+.         replace year=2005 if id2=="co5"
+(1 real change made)
+.         replace year=1998 if id2=="ci1"
+(1 real change made)
+.         replace year=1992 if id2=="eg2"
+(1 real change made)
+.         replace year=1995 if id2=="eg3"
+(1 real change made)
+.         replace year=1993 if id2=="gh3"
+(1 real change made)
+.         replace year=1998 if id2=="gh4"
+(1 real change made)
+.         replace year=1994 if id2=="ht1"
+(1 real change made)
+.         replace year=2005 if id2=="hn1"
+(1 real change made)
+.         replace year=1999 if id2=="ia2"
+(1 real change made)
+.         replace year=2004 if id2=="ls1"
+(1 real change made)
+.         replace year=2004 if id2=="md3"
+(1 real change made)
+.         replace year=2004 if id2=="mw1"
+(1 real change made)
+.         replace year=1995 if id2=="ml2"
+(1 real change made)
+.         replace year=2003 if id2=="ma3"
+(1 real change made)
+.         replace year=2003 if id2=="mz2"
+(1 real change made)
+.         replace year=1997 if id2=="nc1"
+(1 real change made)
+.         replace year=1991 if id2=="pk1"
+(1 real change made)
+.         replace year=1992 if id2=="sn3"
+(1 real change made)
+.         replace year=1992 if id2=="tz3"
+(1 real change made)
+.         replace year=2004 if id2=="tz2"
+(1 real change made)
+.         replace year=2000 if id2=="ug3"
+(1 real change made)
+.         replace year=1996 if id2=="zm2"
+(1 real change made)
+.         replace year=2001 if id2=="zm3"
+(1 real change made)
+. 
+.         *replace country="CongoBr" if country==" "
+.         *replace country="Cote D Ivoire" if country==" "
+.         *replace country="Cote D Ivoire" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         
+. 
+.         gen income_status=      "LOWERMIDDLE"   if country=="Albania"
+(143 missing values generated)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Armenia"
+income_status was str1 now str11
+(2 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Azerbaijan"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Bangladesh"
+(4 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Benin"
+(2 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
+(4 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Brazil"
+(3 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Burkina Faso"
+(3 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Burundi"
+(1 real change made)
+.         replace income_status=  "LOWINCOME"     if country=="Cambodia"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
+(3 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cape-Verde"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="CAR"
+(1 real change made)
+.         replace income_status=  "LOWINCOME"     if country=="Chad"
+(2 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
+(5 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Comoros"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Congo-Brazzaville"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Congo"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cote d'Ivoire"
+(2 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Dominican Republic"
+(4 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
+(5 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Eritrea"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Ethiopia"
+(2 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Gabon"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
+(4 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guatemala"
+(2 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Guinea"
+(2 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guyana"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Haiti"
+(2 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="India"
+(2 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
+(5 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Jordan"
+(0 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
+(2 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Kenya"
+(4 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Kyrgyz Republic"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
+(1 real change made)
+.         replace income_status=  "LOWINCOME"     if country=="Liberia"
+(1 real change made)
+.         replace income_status=  "LOWINCOME"     if country=="Madagascar"
+(3 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Malawi"
+(3 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Maldives"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mali"
+(3 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mauritania"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Moldova"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
+(3 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mozambique"
+(2 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
+(2 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Nepal"
+(2 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
+(2 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Niger"
+(2 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
+(3 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Paraguay"
+(1 real change made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Peru"
+(3 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
+(3 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Rwanda"
+(3 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Samoa"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sao-Tome-and-Principe"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
+(4 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Sierra-Leone"
+(0 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="South Africa"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sri Lanka"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sudan"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Swaziland"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Tanzania"
+(3 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Timor-Leste"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Togo"
+(2 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
+(2 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkmenistan"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Uganda"
+(3 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ukraine"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Uzbekistan"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
+(2 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Yemen"
+(1 real change made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
+(3 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
+(3 real changes made)
+. }
+
+. 
+. else {
+.         *THIS IS NOT NECESSARY FOR THE MERGE.  THIS WAS FOR A SEPERATE VARIABLE.
+.         gen income_status=      "LOWERMIDDLE"   if country=="Albania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Armenia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Azerbaijan"
+.         replace income_status=  "LOWINCOME"     if country=="Bangladesh"
+.         replace income_status=  "LOWINCOME"     if country=="Benin"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Brazil"
+.         replace income_status=  "LOWINCOME"     if country=="Burkina-Faso"
+.         replace income_status=  "LOWINCOME"     if country=="Burundi"
+.         replace income_status=  "LOWINCOME"     if country=="Cambodia"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cape-Verde"
+.         replace income_status=  "LOWINCOME"     if country=="CAR"
+.         replace income_status=  "LOWINCOME"     if country=="Chad"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
+.         replace income_status=  "LOWINCOME"     if country=="Comoros"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Congo-Brazzaville"
+.         replace income_status=  "LOWINCOME"     if country=="Congo-Democratic-Republic"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cote-d-Ivoire"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Dominican-Republic"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
+.         replace income_status=  "LOWINCOME"     if country=="Eritrea"
+.         replace income_status=  "LOWINCOME"     if country=="Ethiopia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Gabon"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guatemala"
+.         replace income_status=  "LOWINCOME"     if country=="Guinea"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guyana"
+.         replace income_status=  "LOWINCOME"     if country=="Haiti"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
+.         replace income_status=  "LOWERMIDDLE"   if country=="India"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Jordan"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
+.         replace income_status=  "LOWINCOME"     if country=="Kenya"
+.         replace income_status=  "LOWINCOME"     if country=="Kyrgyz-Republic"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
+.         replace income_status=  "LOWINCOME"     if country=="Liberia"
+.         replace income_status=  "LOWINCOME"     if country=="Madagascar"
+.         replace income_status=  "LOWINCOME"     if country=="Malawi"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Maldives"
+.         replace income_status=  "LOWINCOME"     if country=="Mali"
+.         replace income_status=  "LOWINCOME"     if country=="Mauritania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Moldova"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
+.         replace income_status=  "LOWINCOME"     if country=="Mozambique"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
+.         replace income_status=  "LOWINCOME"     if country=="Nepal"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
+.         replace income_status=  "LOWINCOME"     if country=="Niger"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Paraguay"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Peru"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
+.         replace income_status=  "LOWINCOME"     if country=="Rwanda"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Samoa"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sao-Tome-and-Principe"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
+.         replace income_status=  "LOWINCOME"     if country=="Sierra-Leone"
+.         replace income_status=  "UPPERMIDDLE"   if country=="South-Africa"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sri-Lanka"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sudan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Swaziland"
+.         replace income_status=  "LOWINCOME"     if country=="Tanzania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Timor-Leste"
+.         replace income_status=  "LOWINCOME"     if country=="Togo"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkmenistan"
+.         replace income_status=  "LOWINCOME"     if country=="Uganda"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ukraine"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Uzbekistan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Yemen"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
+.         replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
+. }
+
+. *THIS COMES FROM WORLD BANK ATLAS METHOD (http://data.worldbank.org/about/country-classifications)
+. *ACTUAL CLASSIFICATION IS HERE: (http://data.worldbank.org/about/country-classifications/country-and-lending-groups#Low_income)
+. 
+. 
+end of do-file
+
+.         label var year "year of interview"
+
+.         drop yearint
+
+.         save $Data/Twins/DHSyears_childdata, replace
+file ~/database/DHS/Twins/DHSyears_childdata.dta saved
+
+. 
+. rm $Data/world_childsmall1.dta
+
+. use $Data/dhs_educBASE, clear
+
+. bys country year: gen num_educ=_N
+
+. collapse num_educ, by(country year)
+
+. save $Data/Twins/DHSyears_educdata, replace
+file ~/database/DHS/Twins/DHSyears_educdata.dta saved
+
+. 
+. merge m:m country year using $Data/Twins/DHSyears_childdata
+year was int now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                            97
+        from master                        47  (_merge==1)
+        from using                         50  (_merge==2)
+
+    matched                                93  (_merge==3)
+    -----------------------------------------
+
+. *THIS GIVES 99 MATCHES (country-year surveys)
+. *ALL MATCHES OCCUR BETWEEN 1990-2005
+. keep if _merge==3
+(97 observations deleted)
+
+. drop _merge
+
+. save $Data/Twins/MatchedSurveys, replace
+(note: file /home/damiancclarke/database/DHS/Twins/MatchedSurveys.dta not found)
+file ~/database/DHS/Twins/MatchedSurveys.dta saved
+
+. 
+. *******************************************************************************
+. ****(3) Keep educational data for countries with household data
+. *******************************************************************************
+. use $Data/dhs_educBASE
+
+. merge m:m country year using $Data/Twins/MatchedSurveys
+year was int now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     3,174,266
+        from master                 3,174,266  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                         5,057,658  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge==3
+(3174266 observations deleted)
+
+. drop _merge
+
+. *drop if relationship==1|relationship==2|relationship==6
+. 
+. *******************************************************************************
+. ****(4) Adjust household id for consistency
+. *This is to create an identical hh variable in both datasets.  The education
+. *data includes an id with one extra number at the end.
+. *******************************************************************************
+. split hhid, destring
+variables born as string: 
+hhid1  hhid2  hhid3  hhid4  hhid5
+hhid1 has all characters numeric; replaced as double
+hhid2 has all characters numeric; replaced as long
+(1406591 missing values generated)
+hhid3 has all characters numeric; replaced as long
+(3890052 missing values generated)
+hhid4 has all characters numeric; replaced as int
+(4839650 missing values generated)
+hhid5 has all characters numeric; replaced as byte
+(5050440 missing values generated)
+
+. gen hhii=1 if hhid5==. & hhid4==.  & hhid3==.  & hhid2==. & hhid1!=.
+(3651067 missing values generated)
+
+. replace hhii=2 if hhid5==. & hhid4==.  & hhid3==.  & hhid2!=. & hhid1!=.
+(2483461 real changes made)
+
+. replace hhii=3 if hhid5==. & hhid4==.  & hhid3!=.  & hhid2!=. & hhid1!=.
+(949598 real changes made)
+
+. replace hhii=4 if hhid5==. & hhid4!=.  & hhid3!=.  & hhid2!=. & hhid1!=.
+(210790 real changes made)
+
+. replace hhii=5 if hhid5!=. & hhid4!=.  & hhid3!=.  & hhid2!=. & hhid1!=.
+(7218 real changes made)
+
+. drop hhid1-hhid5
+
+. split hhid
+variables created as string: 
+hhid1  hhid2  hhid3  hhid4  hhid5
+
+. gen space=" "
+
+. gen hhid_m=hhid1 if hhii==1
+(3651067 missing values generated)
+
+. egen hh=concat(hhid1 space hhid2) if hhii==2
+(2574197 missing values generated)
+
+. replace hhid_m=hh if hhii==2
+(2483461 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhid1 space hhid2 space hhid3) if hhii==3
+(4108060 missing values generated)
+
+. replace hhid_m=hh if hhii==3
+(949598 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhid1 space hhid2 space hhid3 space hhid4) if hhii==4
+(4846868 missing values generated)
+
+. replace hhid_m=hh if hhii==4
+(210790 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhid1 space hhid2 space hhid3 space hhid4 space hhid5) if hhii==5
+(5050440 missing values generated)
+
+. replace hhid_m=hh if hhii==5
+(7218 real changes made)
+
+. drop hh hhii hhid1-hhid5 space
+
+. save $Data/Twins/dhs_educBASEavail, replace
+(note: file /home/damiancclarke/database/DHS/Twins/dhs_educBASEavail.dta not found)
+file ~/database/DHS/Twins/dhs_educBASEavail.dta saved
+
+. 
+. use $Data/world_child
+file /home/damiancclarke/database/DHS/world_child.dta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "/tmp/SD13076.000000"
+
+. use $Data/world_child
+
+. do $Base/Do/countrynaming
+
+. if c(filename)=="~/database/DHS/world_childsmall1.dta" {
+.         cap gen year=yearint
+.         replace year=1993 if id2=="bd3"
+.         replace year=1996 if id2=="bd1"
+.         replace year=1994 if id2=="bo3"
+.         replace year=2003 if id2=="bo4"
+.         replace year=1992 if id2=="bf1"
+.         replace year=1998 if id2=="bf2"
+.         replace year=1996 if id2=="td1"
+.         replace year=2005 if id2=="co5"
+.         replace year=1998 if id2=="ci1"
+.         replace year=1992 if id2=="eg2"
+.         replace year=1995 if id2=="eg3"
+.         replace year=1993 if id2=="gh3"
+.         replace year=1998 if id2=="gh4"
+.         replace year=1994 if id2=="ht1"
+.         replace year=2005 if id2=="hn1"
+.         replace year=1999 if id2=="ia2"
+.         replace year=2004 if id2=="ls1"
+.         replace year=2004 if id2=="md3"
+.         replace year=2004 if id2=="mw1"
+.         replace year=1995 if id2=="ml2"
+.         replace year=2003 if id2=="ma3"
+.         replace year=2003 if id2=="mz2"
+.         replace year=1997 if id2=="nc1"
+.         replace year=1991 if id2=="pk1"
+.         replace year=1992 if id2=="sn3"
+.         replace year=1992 if id2=="tz3"
+.         replace year=2004 if id2=="tz2"
+.         replace year=2000 if id2=="ug3"
+.         replace year=1996 if id2=="zm2"
+.         replace year=2001 if id2=="zm3"
+. 
+.         *replace country="CongoBr" if country==" "
+.         *replace country="Cote D Ivoire" if country==" "
+.         *replace country="Cote D Ivoire" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         
+. 
+.         gen income_status=      "LOWERMIDDLE"   if country=="Albania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Armenia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Azerbaijan"
+.         replace income_status=  "LOWINCOME"     if country=="Bangladesh"
+.         replace income_status=  "LOWINCOME"     if country=="Benin"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Brazil"
+.         replace income_status=  "LOWINCOME"     if country=="Burkina Faso"
+.         replace income_status=  "LOWINCOME"     if country=="Burundi"
+.         replace income_status=  "LOWINCOME"     if country=="Cambodia"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cape-Verde"
+.         replace income_status=  "LOWINCOME"     if country=="CAR"
+.         replace income_status=  "LOWINCOME"     if country=="Chad"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
+.         replace income_status=  "LOWINCOME"     if country=="Comoros"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Congo-Brazzaville"
+.         replace income_status=  "LOWINCOME"     if country=="Congo"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cote d'Ivoire"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Dominican Republic"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
+.         replace income_status=  "LOWINCOME"     if country=="Eritrea"
+.         replace income_status=  "LOWINCOME"     if country=="Ethiopia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Gabon"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guatemala"
+.         replace income_status=  "LOWINCOME"     if country=="Guinea"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guyana"
+.         replace income_status=  "LOWINCOME"     if country=="Haiti"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
+.         replace income_status=  "LOWERMIDDLE"   if country=="India"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Jordan"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
+.         replace income_status=  "LOWINCOME"     if country=="Kenya"
+.         replace income_status=  "LOWINCOME"     if country=="Kyrgyz Republic"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
+.         replace income_status=  "LOWINCOME"     if country=="Liberia"
+.         replace income_status=  "LOWINCOME"     if country=="Madagascar"
+.         replace income_status=  "LOWINCOME"     if country=="Malawi"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Maldives"
+.         replace income_status=  "LOWINCOME"     if country=="Mali"
+.         replace income_status=  "LOWINCOME"     if country=="Mauritania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Moldova"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
+.         replace income_status=  "LOWINCOME"     if country=="Mozambique"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
+.         replace income_status=  "LOWINCOME"     if country=="Nepal"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
+.         replace income_status=  "LOWINCOME"     if country=="Niger"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Paraguay"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Peru"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
+.         replace income_status=  "LOWINCOME"     if country=="Rwanda"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Samoa"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sao-Tome-and-Principe"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
+.         replace income_status=  "LOWINCOME"     if country=="Sierra-Leone"
+.         replace income_status=  "UPPERMIDDLE"   if country=="South Africa"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sri Lanka"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sudan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Swaziland"
+.         replace income_status=  "LOWINCOME"     if country=="Tanzania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Timor-Leste"
+.         replace income_status=  "LOWINCOME"     if country=="Togo"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkmenistan"
+.         replace income_status=  "LOWINCOME"     if country=="Uganda"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ukraine"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Uzbekistan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Yemen"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
+.         replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
+. }
+
+. 
+. else {
+.         *THIS IS NOT NECESSARY FOR THE MERGE.  THIS WAS FOR A SEPERATE VARIABLE.
+.         gen income_status=      "LOWERMIDDLE"   if country=="Albania"
+(4232399 missing values generated)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Armenia"
+income_status was str1 now str11
+(21414 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Azerbaijan"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Bangladesh"
+(122721 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Benin"
+(37891 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
+(119534 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Brazil"
+(52985 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Burkina-Faso"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Burundi"
+(11672 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Cambodia"
+(40895 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
+(53819 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cape-Verde"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="CAR"
+(16052 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Chad"
+(46224 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
+(141457 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Comoros"
+(7861 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Congo-Brazzaville"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Congo-Democratic-Republic"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cote-d-Ivoire"
+(0 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Dominican-Republic"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
+(240372 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Eritrea"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Ethiopia"
+(82596 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Gabon"
+(15798 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
+(55043 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guatemala"
+(53067 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Guinea"
+(49109 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guyana"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Haiti"
+(38418 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
+(49449 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="India"
+(522975 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
+(369552 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Jordan"
+(0 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
+(14563 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Kenya"
+(92380 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Kyrgyz-Republic"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
+(14403 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Liberia"
+(16506 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Madagascar"
+(60191 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Malawi"
+(90954 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Maldives"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mali"
+(97032 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mauritania"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Moldova"
+(9724 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
+(79442 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mozambique"
+(61906 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
+(26999 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Nepal"
+(56430 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
+(70191 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Niger"
+(51696 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
+(73737 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
+(27065 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Paraguay"
+(15165 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Peru"
+(173530 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
+(97701 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Rwanda"
+(76308 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Samoa"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sao-Tome-and-Principe"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
+(99169 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Sierra-Leone"
+(0 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="South-Africa"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sri-Lanka"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sudan"
+(25299 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Swaziland"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Tanzania"
+(81241 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Timor-Leste"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Togo"
+(36018 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
+(35751 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkmenistan"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Uganda"
+(60149 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ukraine"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Uzbekistan"
+(9574 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
+(29837 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Yemen"
+(29803 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
+(68339 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
+(41153 real changes made)
+. }
+
+. *THIS COMES FROM WORLD BANK ATLAS METHOD (http://data.worldbank.org/about/country-classifications)
+. *ACTUAL CLASSIFICATION IS HERE: (http://data.worldbank.org/about/country-classifications/country-and-lending-groups#Low_income)
+. 
+. 
+end of do-file
+
+. *NOTE, NEPAL SURVEY np2 HAS NO CHILD BIRTHYEAR INFO.  CAN BE CALCULATED FROM AGE
+. *AND SURVEY DATE:
+.         replace yearc=year-agec+v006/12-monthc/12 if id2=="np2"
+year ambiguous abbreviation
+r(111);
+
+end of do-file
+
+r(111);
+
+. lookfor year
+
+              storage  display     value
+variable name   type   format      label      variable label
+-------------------------------------------------------------------------------------------------------------------------------------------
+yearc           int    %8.0g                  year of birth, child (b2)
+yearint         int    %8.0g       v007       year of interview (v007)
+yearm           int    %8.0g                  respondent's year of birth (v010)
+v013            byte   %8.0g       v013       age 5-year groups
+v104            byte   %8.0g       v104       years lived in place of res.
+v107            byte   %8.0g                  highest year of education
+educfyrs        byte   %8.0g       v133       years of educ of mother
+v208            byte   %8.0g                  births in last five years
+v209            byte   %8.0g                  births in past year
+v238            byte   %8.0g                  births in last three years
+v241            int    %8.0g                  year of last termination pregnancy
+v316            int    %8.0g                  year of start of use of method
+v319            byte   %8.0g       v319       years since sterilization
+v508            int    %8.0g                  year of first marriage
+v512            byte   %8.0g                  years since first marriage
+v702            byte   %8.0g       v702       highest year of education
+v732            byte   %8.0g       v732       employment all year/seasonal
+v738            long   %8.0g                  yearly earnings for work na
+v726            byte   %8.0g                  year started work before - na
+v728            byte   %8.0g                  year job prior to 8? ende - na
+v522            byte   %8.0g       v522       years lived with parents
+agemay          byte   %9.0g                  age ma at birth of child, integer year value
+
+. do "/tmp/SD13076.000000"
+
+.         replace yearc=yearint-agec+v006/12-monthc/12 if id2=="np2"
+yearc was int now float
+(23729 real changes made)
+
+.         replace yearc=floor(yearc) if id2=="np2"
+(21855 real changes made)
+
+. *NOTE: bidx (used for caseid3 is calculated as follows):
+. *gsort caseid2 -dobc -twinc
+. *by caseid2: gen bidx3=_n
+. gen twind=1 if twinc>0  //twind is actually multiple birth
+(4138895 missing values generated)
+
+. replace twind=0 if twinc==0
+(4138895 real changes made)
+
+. 
+. label var year "year of interview"
+year ambiguous abbreviation
+r(111);
+
+end of do-file
+
+r(111);
+
+. do "/tmp/SD13076.000000"
+
+. rename yearint year
+
+. label var year "year of interview"
+
+. merge m:m country year using $Data/Twins/MatchedSurveys
+country was str19 now str46
+year was int now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     1,736,694
+        from master                 1,736,694  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                         2,495,705  (_merge==3)
+    -----------------------------------------
+
+. keep if _merge==3
+(1736694 observations deleted)
+
+. drop _merge
+
+. 
+. 
+. *******************************************************************************
+. ****(5) Merge education and child datasets (this requires hhid as above)
+. *******************************************************************************
+. *IN ORDER TO MERGE IT WILL BE NECESSARY TO CALCULATE EACH OBSERVATION'S RELATION
+. *TO HH HEAD.  AS THIS IS NOT AVAILABLE, THIS WILL BE CALCULATED INDIRECTLY. 
+. *WE HAVE THE CHILD'S MOTHER'S RELATION TO HH HEAD, THIS ALLOWS ME TO CALCULATE
+. *CHILD RELATION (NECESSARY TO MERGE WITH EDUC DATASET)
+. gen relationship=3 if v150==1|v150==2|v150==9
+(308283 missing values generated)
+
+. replace relationship=5 if v150==3|v150==4|v150==11
+(214936 real changes made)
+
+. replace relationship=8 if v150==6|v150==7
+(19341 real changes made)
+
+. replace relationship=10 if v150==8|v150==8|v150==12
+(29062 real changes made)
+
+. gen sex=1 if malec==1
+(1219080 missing values generated)
+
+. replace sex=2 if malec==0
+(1219080 real changes made)
+
+. rename agec age
+
+. 
+. *hhid:
+. gen hhi=caseid
+
+. split hhi, destring
+variables born as string: 
+hhi1  hhi2  hhi3  hhi4  hhi5  hhi6
+hhi1 has all characters numeric; replaced as double
+hhi2 has all characters numeric; replaced as long
+(3 missing values generated)
+hhi3 has all characters numeric; replaced as long
+(673591 missing values generated)
+hhi4 has all characters numeric; replaced as int
+(1906376 missing values generated)
+hhi5 has all characters numeric; replaced as byte
+(2364478 missing values generated)
+hhi6 has all characters numeric; replaced as byte
+(2490917 missing values generated)
+
+. gen hhii=1 if hhi6==. & hhi5==. & hhi4==.  & hhi3==.  & hhi2==. & hhi1!=.
+(2495702 missing values generated)
+
+. replace hhii=2 if hhi6==. & hhi5==. & hhi4==.  & hhi3==.  & hhi2!=. & hhi1!=.
+(673588 real changes made)
+
+. replace hhii=3 if hhi6==. & hhi5==. & hhi4==.  & hhi3!=.  & hhi2!=. & hhi1!=.
+(1232785 real changes made)
+
+. replace hhii=4 if hhi6==. & hhi5==. & hhi4!=.  & hhi3!=.  & hhi2!=. & hhi1!=.
+(458102 real changes made)
+
+. replace hhii=5 if hhi6==. & hhi5!=. & hhi4!=.  & hhi3!=.  & hhi2!=. & hhi1!=.
+(126439 real changes made)
+
+. replace hhii=6 if hhi6!=. & hhi5!=. & hhi4!=.  & hhi3!=.  & hhi2!=. & hhi1!=.
+(4788 real changes made)
+
+. 
+. drop hhi1-hhi6
+
+. split hhi
+variables created as string: 
+hhi1  hhi2  hhi3  hhi4  hhi5  hhi6
+
+. gen space=" "
+
+. gen hhid_m=hhi1 if hhii==1|hhii==2
+(1822114 missing values generated)
+
+. egen hh=concat(hhi1 space hhi2) if hhii==3
+(1262920 missing values generated)
+
+. replace hhid_m=hh if hhii==3
+(1232785 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhi1 space hhi2 space hhi3) if hhii==4
+(2037603 missing values generated)
+
+. replace hhid_m=hh if hhii==4
+(458102 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhi1 space hhi2 space hhi3 space hhi4) if hhii==5
+(2369266 missing values generated)
+
+. replace hhid_m=hh if hhii==5
+(126439 real changes made)
+
+. drop hh
+
+. egen hh=concat(hhi1 space hhi2 space hhi3 space hhi4 space hhi5) if hhii==6
+(2490917 missing values generated)
+
+. replace hhid_m=hh if hhii==6
+(4788 real changes made)
+
+. drop hh hhii hhi1-hhi5 space
+
+. 
+. bys caseid2: gen kidcount2=_N
+
+. scatter kidcount2 fert
+
+. save $Data/Twins/world_childavail, replace
+(note: file /home/damiancclarke/database/DHS/Twins/world_childavail.dta not found)
+file ~/database/DHS/Twins/world_childavail.dta saved
+
+. 
+. merge m:m country year hhid_m relationship sex age using $Data/Twins/dhs_educBASEavail
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     4,687,901
+        from master                 1,064,293  (_merge==1)
+        from using                  3,623,608  (_merge==2)
+
+    matched                         1,437,779  (_merge==3)
+    -----------------------------------------
+
+. save $Data/Twins/DHS_MergedBase, replace
+(note: file /home/damiancclarke/database/DHS/Twins/DHS_MergedBase.dta not found)
+file ~/database/DHS/Twins/DHS_MergedBase.dta saved
+
+. 
+. *PROBLEM: many don't merge.  Twins of course merge doubly.
+. * 1,698,362 matched, 1,299,051 not matched.
+. use $Data/Twins/DHS_MergedBase, clear
+
+. 
+. keep if _merge==3
+(4687901 observations deleted)
+
+. keep caseid caseid2 caseid3 id2 bidx country continent ssa bord twinc monthc /*
+> */ yearc dobc malec age b11 b12 m1b m5 m15 m18 m19 hw2 hw3 m1a m2 m3 m34 v001/*
+> */ v002 v003 sweight v006 yearint v009 yearm dobm agem v013 v020 v024 v025 /*
+> */v026 v106 v107 v113 v115 v116 educfyrs v136 v137 educf v150 v151 v152 fert /*
+> */v208 v209 v211 v213 v301 v302 v312 v320 v426 v437 height bmi anemia v501 /*
+> */v504 agefirstma v602 v701 v702 v108 v751 v325 v118 cont_name educf1- educf6/*
+> */ educm1- educm6 mort15 under5_exp wealth wealthq wealthwq poor1 rich1 poor2/*
+> */ rich2 poor3 rich3 ht_miss bmi_normal bmi_low bmi_high bmi1 educfyrs2 /*
+> */relationship sex hv005 hhid hv007 urban edulevel eduyears eduattainment v228 /*
+> */enrolment aiquin p_attendence s_attendence birth_y cohort twind ncode agemay /*
+> */ v206 v207 v212
+variable yearint not found
+r(111);
+
+end of do-file
+
+r(111);
+
+. do "/tmp/SD13076.000000"
+
+. keep caseid caseid2 caseid3 id2 bidx country continent ssa bord twinc monthc /*
+> */ yearc dobc malec age b11 b12 m1b m5 m15 m18 m19 hw2 hw3 m1a m2 m3 m34 v001/*
+> */ v002 v003 sweight v006 /*yearint*/ year v009 yearm dobm agem v013 v020 v024 v025 /*
+> */v026 v106 v107 v113 v115 v116 educfyrs v136 v137 educf v150 v151 v152 fert /*
+> */v208 v209 v211 v213 v301 v302 v312 v320 v426 v437 height bmi anemia v501 /*
+> */v504 agefirstma v602 v701 v702 v108 v751 v325 v118 cont_name educf1- educf6/*
+> */ educm1- educm6 mort15 under5_exp wealth wealthq wealthwq poor1 rich1 poor2/*
+> */ rich2 poor3 rich3 ht_miss bmi_normal bmi_low bmi_high bmi1 educfyrs2 /*
+> */relationship sex hv005 hhid hv007 urban edulevel eduyears eduattainment v228 /*
+> */enrolment aiquin p_attendence s_attendence birth_y cohort twind ncode agemay /*
+> */ v206 v207 v212
+
+. 
+. rename v228 terminated_preg
+
+. 
+. save $Data/Twins/DHS_Base, replace
+(note: file /home/damiancclarke/database/DHS/Twins/DHS_Base.dta not found)
+file ~/database/DHS/Twins/DHS_Base.dta saved
+
+. *cap rm $Data/Twins/DHS_MergedBase
+. cap rm $Data/Twins/MatchedSurveys
+
+. cap rm $Data/Twins/DHSyears_childdata
+
+. cap rm $Data/Twins/DHSyears_educdata
+
+. 
+. 
+. 
+. *******************************************************************************
+. ****(6) Variable creation
+. *******************************************************************************
+. use $Data/Twins/DHS_Base, clear
+
+. tab country, gen(country)
+
+                      full country name |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+                                Armenia |     16,055        1.12        1.12
+                             Bangladesh |     39,117        2.72        3.84
+                                  Benin |     17,951        1.25        5.09
+                                Bolivia |     43,085        3.00        8.08
+                           Burkina Faso |     28,578        1.99       10.07
+                               Cambodia |     23,620        1.64       11.71
+                               Cameroon |     25,509        1.77       13.49
+                                   Chad |     12,477        0.87       14.35
+                               Colombia |     75,198        5.23       19.59
+                                Comoros |      4,106        0.29       19.87
+                                  Egypt |    138,658        9.64       29.51
+                                  Ghana |     18,851        1.31       30.83
+                                 Guinea |     24,547        1.71       32.53
+                                  Haiti |     19,036        1.32       33.86
+                               Honduras |      6,903        0.48       34.34
+                                  India |    124,747        8.68       43.01
+                              Indonesia |    119,704        8.33       51.34
+                             Kazakhstan |      4,727        0.33       51.67
+                                  Kenya |     38,017        2.64       54.31
+                                Lesotho |      8,832        0.61       54.93
+                             Madagascar |     30,088        2.09       57.02
+                                 Malawi |     45,039        3.13       60.15
+                                   Mali |     30,184        2.10       62.25
+                                Morocco |     30,284        2.11       64.36
+                             Mozambique |     29,589        2.06       66.42
+                                Namibia |     11,745        0.82       67.23
+                                  Nepal |     28,375        1.97       69.21
+                              Nicaragua |     26,244        1.83       71.03
+                                  Niger |     19,140        1.33       72.36
+                                Nigeria |     23,085        1.61       73.97
+                               Pakistan |     14,487        1.01       74.98
+                                   Peru |     75,369        5.24       80.22
+                            Philippines |     70,096        4.88       85.09
+                                 Rwanda |     48,123        3.35       88.44
+                                Senegal |     22,177        1.54       89.98
+                           South Africa |         19        0.00       89.98
+                               Tanzania |     29,351        2.04       92.02
+                                   Togo |     10,805        0.75       92.78
+                                 Turkey |     21,818        1.52       94.29
+                                 Uganda |     14,225        0.99       95.28
+                                Vietnam |     24,899        1.73       97.01
+                                 Zambia |     26,488        1.84       98.86
+                               Zimbabwe |     16,431        1.14      100.00
+----------------------------------------+-----------------------------------
+                                  Total |  1,437,779      100.00
+
+. 
+. *The creation of Q-Q subgroups is quite inefficient, but for now I will keep
+. *it as is since I can't be bothered to change it, plus it is understandable.
+. *QUALITY-QUANTITY (1+)
+. gen one_plus=1 if bord==1 & fert>=2
+(1172660 missing values generated)
+
+. replace one_plus=0 if bord>1|fert==1
+(1172660 real changes made)
+
+. replace one_plus=0 if twinc!=0
+(2072 real changes made)
+
+. gen twin2=1 if twinc==1 & bord==2
+(1435302 missing values generated)
+
+. replace twin2=0 if twin2!=1
+(1435302 real changes made)
+
+. bys caseid2: egen twin2fam=max(twin2)
+
+. 
+. *QUALITY-QUANTITY (2+)
+. gen two_plus=1 if bord==1 & fert>=3
+(1260665 missing values generated)
+
+. replace two_plus=1 if bord==2 & fert>=3
+(207013 real changes made)
+
+. replace two_plus=0 if two_plus!=1
+(1053652 real changes made)
+
+. replace two_plus=0 if twinc!=0
+(4951 real changes made)
+
+. gen twin3=1 if twinc==1 & bord==3
+(1435415 missing values generated)
+
+. replace twin3=0 if twin3!=1
+(1435415 real changes made)
+
+. bys caseid2: egen twin3fam=max(twin3) 
+
+. 
+. *QUALITY-QUANTITY (3+)
+. gen three_plus=1 if bord==1 & fert>=4
+(1327254 missing values generated)
+
+. replace three_plus=1 if bord==2 & fert>=4
+(131899 real changes made)
+
+. replace three_plus=1 if bord==3 & fert>=4
+(151939 real changes made)
+
+. replace three_plus=0 if three_plus!=1
+(1043416 real changes made)
+
+. replace three_plus=0 if twinc!=0
+(6556 real changes made)
+
+. gen twin4=1 if twinc==1 & bord==4
+(1435754 missing values generated)
+
+. replace twin4=0 if twin4!=1
+(1435754 real changes made)
+
+. bys caseid2: egen twin4fam=max(twin4) 
+
+. 
+. *QUALITY-QUANTITY (4+)
+. gen four_plus=1 if bord==1 & fert>=5
+(1370828 missing values generated)
+
+. replace four_plus=1 if bord==2 & fert>=5
+(81633 real changes made)
+
+. replace four_plus=1 if bord==3 & fert>=5
+(95857 real changes made)
+
+. replace four_plus=1 if bord==4 & fert>=5
+(109378 real changes made)
+
+. replace four_plus=0 if four_plus!=1
+(1083960 real changes made)
+
+. replace four_plus=0 if twinc!=0
+(7024 real changes made)
+
+. gen twin5=1 if twinc==1 & bord==5
+(1436106 missing values generated)
+
+. replace twin5=0 if twin5!=1
+(1436106 real changes made)
+
+. bys caseid2: egen twin5fam=max(twin5) 
+
+. 
+. *QUALITY-QUANTITY (5+)
+. gen five_plus=1 if bord==1 & fert>=6
+(1398322 missing values generated)
+
+. replace five_plus=1 if bord==2 & fert>=6
+(49780 real changes made)
+
+. replace five_plus=1 if bord==3 & fert>=6
+(59614 real changes made)
+
+. replace five_plus=1 if bord==4 & fert>=6
+(68813 real changes made)
+
+. replace five_plus=1 if bord==5 & fert>=6
+(78241 real changes made)
+
+. replace five_plus=0 if five_plus!=1
+(1141874 real changes made)
+
+. replace five_plus=0 if twinc!=0
+(6866 real changes made)
+
+. gen twin6=1 if twinc==1 & bord==6
+(1436490 missing values generated)
+
+. replace twin6=0 if twin6!=1
+(1436490 real changes made)
+
+. bys caseid2: egen twin6fam=max(twin6) 
+
+. 
+. *QUALITY-QUANTITY (6+)
+. gen six_plus=1 if bord==1 & fert>=7
+(1415715 missing values generated)
+
+. replace six_plus=1 if bord==2 & fert>=7
+(28739 real changes made)
+
+. replace six_plus=1 if bord==3 & fert>=7
+(35424 real changes made)
+
+. replace six_plus=1 if bord==4 & fert>=7
+(41586 real changes made)
+
+. replace six_plus=1 if bord==5 & fert>=7
+(47825 real changes made)
+
+. replace six_plus=1 if bord==6 & fert>=7
+(53907 real changes made)
+
+. replace six_plus=0 if six_plus!=1
+(1208234 real changes made)
+
+. replace six_plus=0 if twinc!=0
+(6138 real changes made)
+
+. gen twin7=1 if twinc==1 & bord==7
+(1436859 missing values generated)
+
+. replace twin7=0 if twin7!=1
+(1436859 real changes made)
+
+. bys caseid2: egen twin7fam=max(twin7) 
+
+. 
+. gen attendance=0 if enrolment==0
+(617803 missing values generated)
+
+. replace attenda=1 if enrolment==2
+(2772 real changes made)
+
+. replace attenda=2 if enrolment==1
+(592103 real changes made)
+
+. *GAP
+. gen gap=age-eduyears-6 if age>6 & age<17
+(805524 missing values generated)
+
+. replace gap=. if gap<-2
+(1553 real changes made, 1553 to missing)
+
+. 
+. tab v701, gen(educmale)
+
+   partner's |
+   education |
+       level |      Freq.     Percent        Cum.
+-------------+-----------------------------------
+no education |    389,767       27.54       27.54
+     primary |    517,311       36.56       64.10
+   secondary |    380,260       26.87       90.97
+      higher |    110,479        7.81       98.78
+           4 |         28        0.00       98.78
+  don't know |     17,306        1.22      100.00
+-------------+-----------------------------------
+       Total |  1,415,151      100.00
+
+. drop educfyrs2
+
+. tab educfyrs, gen(educfyrs)
+
+    years of |
+     educ of |
+      mother |      Freq.     Percent        Cum.
+-------------+-----------------------------------
+           0 |    566,691       39.43       39.43
+           1 |     34,033        2.37       41.80
+           2 |     64,229        4.47       46.27
+           3 |     74,695        5.20       51.46
+           4 |     73,946        5.15       56.61
+           5 |    111,436        7.75       64.36
+           6 |    118,793        8.27       72.63
+           7 |     72,544        5.05       77.68
+           8 |     53,303        3.71       81.38
+           9 |     60,100        4.18       85.57
+          10 |     53,693        3.74       89.30
+          11 |     41,316        2.87       92.18
+          12 |     52,942        3.68       95.86
+          13 |      9,272        0.65       96.51
+          14 |     15,509        1.08       97.58
+          15 |     11,320        0.79       98.37
+          16 |     14,314        1.00       99.37
+          17 |      3,892        0.27       99.64
+          18 |      4,454        0.31       99.95
+          19 |        448        0.03       99.98
+          20 |        180        0.01       99.99
+          21 |         39        0.00       99.99
+          22 |         48        0.00      100.00
+          23 |          4        0.00      100.00
+          24 |         15        0.00      100.00
+          25 |          3        0.00      100.00
+          26 |          3        0.00      100.00
+-------------+-----------------------------------
+       Total |  1,437,222      100.00
+
+. tab age, gen(age)
+
+  age child |
+       (b8) |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    100,943        7.02        7.02
+          1 |     90,770        6.31       13.33
+          2 |     85,987        5.98       19.32
+          3 |     84,786        5.90       25.21
+          4 |     83,634        5.82       31.03
+          5 |     79,218        5.51       36.54
+          6 |     85,209        5.93       42.47
+          7 |     77,100        5.36       47.83
+          8 |     76,483        5.32       53.15
+          9 |     68,328        4.75       57.90
+         10 |     74,710        5.20       63.10
+         11 |     60,404        4.20       67.30
+         12 |     67,915        4.72       72.02
+         13 |     58,969        4.10       76.12
+         14 |     55,957        3.89       80.02
+         15 |     49,660        3.45       83.47
+         16 |     44,430        3.09       86.56
+         17 |     37,092        2.58       89.14
+         18 |     35,317        2.46       91.60
+         19 |     25,098        1.75       93.34
+         20 |     24,405        1.70       95.04
+         21 |     15,939        1.11       96.15
+         22 |     15,034        1.05       97.19
+         23 |     10,767        0.75       97.94
+         24 |      8,406        0.58       98.53
+         25 |      7,284        0.51       99.03
+         26 |      4,506        0.31       99.35
+         27 |      3,247        0.23       99.57
+         28 |      2,464        0.17       99.74
+         29 |      1,253        0.09       99.83
+         30 |      1,348        0.09       99.93
+         31 |        452        0.03       99.96
+         32 |        342        0.02       99.98
+         33 |        154        0.01       99.99
+         34 |         67        0.00      100.00
+         35 |         39        0.00      100.00
+         36 |         11        0.00      100.00
+         37 |          1        0.00      100.00
+------------+-----------------------------------
+      Total |  1,437,729      100.00
+
+. tab yearc, gen(yearc)
+
+    year of |
+     birth, |
+ child (b2) |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       1918 |          3        0.00        0.00
+       1919 |          1        0.00        0.00
+       1920 |          4        0.00        0.00
+       1921 |          1        0.00        0.00
+       1922 |          7        0.00        0.00
+       1923 |          8        0.00        0.00
+       1924 |         19        0.00        0.00
+       1925 |         19        0.00        0.00
+       1926 |         21        0.00        0.01
+       1927 |         32        0.00        0.01
+       1928 |         60        0.00        0.01
+       1929 |         60        0.00        0.02
+       1930 |         70        0.00        0.02
+       1931 |        114        0.01        0.03
+       1932 |        128        0.01        0.04
+       1933 |        129        0.01        0.05
+       1934 |        223        0.02        0.06
+       1935 |        238        0.02        0.08
+       1936 |        304        0.02        0.10
+       1937 |        373        0.03        0.13
+       1938 |        445        0.03        0.16
+       1939 |        415        0.03        0.19
+       1940 |        613        0.04        0.23
+       1941 |        509        0.04        0.26
+       1942 |        579        0.04        0.30
+       1943 |        612        0.04        0.35
+       1944 |        613        0.04        0.39
+       1945 |        719        0.05        0.44
+       1946 |        724        0.05        0.49
+       1947 |        811        0.06        0.55
+       1948 |        904        0.06        0.61
+       1949 |        937        0.07        0.67
+       1950 |        998        0.07        0.74
+       1951 |      1,117        0.08        0.82
+       1952 |      1,093        0.08        0.90
+       1953 |         30        0.00        0.90
+       1955 |          1        0.00        0.90
+       1956 |          1        0.00        0.90
+       1957 |          6        0.00        0.90
+       1958 |         16        0.00        0.90
+       1959 |         30        0.00        0.90
+       1960 |        103        0.01        0.91
+       1961 |        107        0.01        0.92
+       1962 |        209        0.01        0.93
+       1963 |        338        0.02        0.96
+       1964 |        551        0.04        0.99
+       1965 |        816        0.06        1.05
+       1966 |      1,076        0.07        1.13
+       1967 |      1,435        0.10        1.23
+       1968 |      2,274        0.16        1.38
+       1969 |      2,871        0.20        1.58
+       1970 |      4,230        0.29        1.88
+       1971 |      5,059        0.35        2.23
+       1972 |      7,096        0.49        2.72
+       1973 |      8,978        0.62        3.35
+       1974 |     11,138        0.77        4.12
+       1975 |     13,821        0.96        5.08
+       1976 |     16,978        1.18        6.26
+       1977 |     19,824        1.38        7.64
+       1978 |     24,302        1.69        9.33
+       1979 |     28,098        1.95       11.29
+       1980 |     35,193        2.45       13.74
+       1981 |     36,040        2.51       16.24
+       1982 |     43,059        2.99       19.24
+       1983 |     46,336        3.22       22.46
+       1984 |     50,718        3.53       25.99
+       1985 |     54,724        3.81       29.79
+       1986 |     59,142        4.11       33.91
+       1987 |     61,262        4.26       38.17
+       1988 |     65,791        4.58       42.74
+       1989 |     66,974        4.66       47.40
+       1990 |     74,595        5.19       52.59
+       1991 |     71,600        4.98       57.57
+       1992 |     72,606        5.05       62.62
+       1993 |     67,934        4.72       67.34
+       1994 |     67,422        4.69       72.03
+       1995 |     63,482        4.42       76.45
+       1996 |     61,096        4.25       80.70
+       1997 |     57,779        4.02       84.72
+       1998 |     49,285        3.43       88.14
+       1999 |     43,187        3.00       91.15
+       2000 |     36,817        2.56       93.71
+       2001 |     25,569        1.78       95.49
+       2002 |     24,533        1.71       97.19
+       2003 |     22,653        1.58       98.77
+       2004 |     13,842        0.96       99.73
+       2005 |      3,849        0.27      100.00
+------------+-----------------------------------
+      Total |  1,437,779      100.00
+
+. tab bord, gen(borddummy)
+
+birth order |
+     number |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    353,769       24.61       24.61
+          2 |    308,993       21.49       46.10
+          3 |    238,547       16.59       62.69
+          4 |    174,217       12.12       74.80
+          5 |    125,334        8.72       83.52
+          6 |     89,041        6.19       89.71
+          7 |     60,542        4.21       93.93
+          8 |     39,417        2.74       96.67
+          9 |     23,580        1.64       98.31
+         10 |     13,143        0.91       99.22
+         11 |      6,460        0.45       99.67
+         12 |      2,985        0.21       99.88
+         13 |      1,088        0.08       99.95
+         14 |        412        0.03       99.98
+         15 |        154        0.01       99.99
+         16 |         67        0.00      100.00
+         17 |         22        0.00      100.00
+         18 |          4        0.00      100.00
+         19 |          2        0.00      100.00
+         20 |          1        0.00      100.00
+         21 |          1        0.00      100.00
+------------+-----------------------------------
+      Total |  1,437,779      100.00
+
+. 
+. rename twin2fam twin_one_fam
+
+. rename twin3fam twin_two_fam
+
+. rename twin4fam twin_three_fam
+
+. rename twin5fam twin_four_fam
+
+. rename twin6fam twin_five_fam
+
+. rename twin7fam twin_six_fam
+
+. 
+. gen educfyrs_sq=educfyrs*educfyrs
+(557 missing values generated)
+
+. 
+. gen educf_0=educfyrs==0
+
+. gen educf_1_4=educfyrs>0&educfyrs<5
+
+. gen educf_5_6=educfyrs>4&educfyrs<7
+
+. gen educf_7_10=educfyrs>6&educfyrs<11
+
+. gen educf_11plus=educfyrs>10
+
+. 
+. gen twind100=twind*100
+
+. 
+. tab cont_name, gen(cont_name)
+
+  continent |
+       name |      Freq.     Percent        Cum.
+------------+-----------------------------------
+     Africa |    704,299       48.99       48.99
+       Asia |    487,645       33.92       82.90
+   LAandCar |    245,835       17.10      100.00
+------------+-----------------------------------
+      Total |  1,437,779      100.00
+
+. 
+end of do-file
+
+. tab aiquin
+
+asset index |
+  quintiles |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    303,085       21.09       21.09
+          2 |    296,780       20.65       41.75
+          3 |    290,879       20.24       61.99
+          4 |    283,979       19.76       81.76
+          5 |    262,122       18.24      100.00
+------------+-----------------------------------
+      Total |  1,436,845      100.00
+
+. count
+1437779
+
+. tab v190
+variable v190 not found
+r(111);
+
+. lookfor wealth
+
+              storage  display     value
+variable name   type   format      label      variable label
+-------------------------------------------------------------------------------------------------------------------------------------------
+wealth          float  %9.0g                  wealth index
+wealthq         byte   %9.0g                  country-specific wealth quartiles
+wealthwq        byte   %8.0g                  5 quantiles of wealth
+
+. tab wealth
+
+     wealth |
+      index |      Freq.     Percent        Cum.
+------------+-----------------------------------
+  -2.020379 |     81,288        7.28        7.28
+  -1.861601 |     19,170        1.72        8.99
+  -1.671491 |    131,541       11.77       20.77
+  -1.512712 |     40,792        3.65       24.42
+  -1.482255 |     74,769        6.69       31.11
+  -1.396306 |        914        0.08       31.19
+  -1.323476 |     49,502        4.43       35.62
+  -1.237527 |        895        0.08       35.70
+  -1.133366 |     70,619        6.32       42.03
+  -1.132938 |      9,808        0.88       42.90
+  -1.047417 |      1,386        0.12       43.03
+  -1.035029 |        919        0.08       43.11
+  -.9745875 |     48,693        4.36       47.47
+  -.9741589 |      4,048        0.36       47.83
+  -.9497662 |        236        0.02       47.85
+  -.9265088 |        172        0.02       47.87
+  -.8886384 |      2,038        0.18       48.05
+  -.8762501 |        469        0.04       48.09
+  -.8581815 |      3,988        0.36       48.45
+  -.7909874 |         96        0.01       48.46
+   -.784049 |     22,504        2.01       50.47
+  -.7677301 |         14        0.00       50.47
+  -.6994027 |      7,123        0.64       51.11
+  -.6861402 |      1,454        0.13       51.24
+  -.6666806 |      4,843        0.43       51.67
+  -.6252702 |     11,138        1.00       52.67
+  -.6008775 |        285        0.03       52.70
+  -.5948133 |     15,166        1.36       54.05
+  -.5776201 |        100        0.01       54.06
+  -.5273615 |      1,674        0.15       54.21
+  -.5092928 |      2,533        0.23       54.44
+  -.5088642 |        295        0.03       54.47
+  -.5079018 |        917        0.08       54.55
+  -.4969045 |      5,699        0.51       55.06
+  -.4420988 |        107        0.01       55.07
+  -.4360346 |      6,354        0.57       55.64
+  -.4188414 |         32        0.00       55.64
+  -.4116418 |      1,081        0.10       55.74
+  -.4109555 |         94        0.01       55.75
+  -.3883844 |        445        0.04       55.79
+  -.3505141 |      7,358        0.66       56.44
+  -.3500855 |        417        0.04       56.48
+  -.3381258 |      4,200        0.38       56.86
+  -.3256928 |         43        0.00       56.86
+  -.3024354 |          3        0.00       56.86
+  -.2528631 |        593        0.05       56.91
+  -.2521767 |        136        0.01       56.93
+  -.2459246 |     17,230        1.54       58.47
+  -.2296057 |        128        0.01       58.48
+  -.1669141 |         40        0.00       58.48
+  -.1599756 |        992        0.09       58.57
+  -.1480159 |      4,462        0.40       58.97
+  -.1475873 |      4,989        0.45       59.42
+  -.1285562 |      6,040        0.54       59.96
+  -.0871459 |     14,313        1.28       61.24
+  -.0627532 |        696        0.06       61.30
+  -.0623246 |        123        0.01       61.31
+  -.0620668 |        270        0.02       61.34
+  -.0426072 |         89        0.01       61.35
+  -.0394958 |        168        0.02       61.36
+  -.0390672 |        730        0.07       61.43
+  -.0011969 |      1,031        0.09       61.52
+   .0107629 |      4,244        0.38       61.90
+   .0111915 |      4,201        0.38       62.27
+   .0231959 |         31        0.00       62.28
+   .0292601 |      1,150        0.10       62.38
+   .0302225 |      1,837        0.16       62.54
+   .0355842 |         14        0.00       62.55
+   .0588416 |         31        0.00       62.55
+   .0960255 |        361        0.03       62.58
+   .0964541 |         19        0.00       62.58
+   .0967119 |        472        0.04       62.62
+   .1161715 |         29        0.00       62.63
+   .1192829 |         45        0.00       62.63
+   .1197115 |        146        0.01       62.64
+   .1271689 |      1,044        0.09       62.74
+   .1441043 |          7        0.00       62.74
+   .1819746 |         41        0.00       62.74
+   .1880388 |        961        0.09       62.83
+   .1943629 |         11        0.00       62.83
+   .2013014 |     10,783        0.97       63.79
+   .2124316 |        190        0.02       63.81
+   .2176203 |         13        0.00       63.81
+    .220761 |      5,563        0.50       64.31
+    .235689 |         25        0.00       64.31
+   .2859476 |      1,575        0.14       64.45
+   .2865641 |         90        0.01       64.46
+   .3098215 |        772        0.07       64.53
+   .3186698 |        301        0.03       64.56
+   .3600801 |      6,765        0.61       65.16
+   .3712103 |        375        0.03       65.20
+   .3781488 |      2,220        0.20       65.40
+   .3795397 |      1,506        0.13       65.53
+   .3844728 |         18        0.00       65.53
+   .3905371 |     18,110        1.62       67.15
+   .3944677 |         30        0.00       67.16
+   .4039325 |         44        0.00       67.16
+   .4077303 |         40        0.00       67.16
+   .4271899 |         65        0.01       67.17
+   .4453428 |         27        0.00       67.17
+   .4686002 |        315        0.03       67.20
+   .4757998 |        482        0.04       67.24
+   .4760575 |        822        0.07       67.32
+   .4764861 |        416        0.04       67.35
+   .4774485 |        120        0.01       67.36
+   .4929929 |          8        0.00       67.37
+   .4955172 |        335        0.03       67.40
+   .4990572 |      1,624        0.15       67.54
+   .5369275 |      3,802        0.34       67.88
+   .5432516 |         12        0.00       67.88
+   .5493158 |     11,011        0.99       68.87
+   .5613202 |        134        0.01       68.88
+   .5617488 |         21        0.00       68.88
+   .5627112 |         16        0.00       68.88
+   .5665089 |          9        0.00       68.88
+   .5737085 |        574        0.05       68.94
+   .5845776 |          5        0.00       68.94
+   .5850062 |         31        0.00       68.94
+   .5859686 |          3        0.00       68.94
+    .596966 |        498        0.04       68.98
+   .6345785 |        130        0.01       69.00
+   .6348363 |      1,841        0.16       69.16
+   .6352648 |      1,240        0.11       69.27
+   .6542959 |        291        0.03       69.30
+   .6578358 |        543        0.05       69.35
+   .6822286 |         50        0.00       69.35
+    .682915 |          3        0.00       69.35
+   .7200989 |        209        0.02       69.37
+   .7205275 |         12        0.00       69.37
+   .7324873 |        333        0.03       69.40
+   .7394257 |     23,713        2.12       71.52
+   .7433563 |         12        0.00       71.52
+   .7437849 |         10        0.00       71.52
+   .7557446 |        216        0.02       71.54
+   .7588854 |      7,786        0.70       72.24
+   .8184363 |          6        0.00       72.24
+   .8246884 |        270        0.02       72.27
+   .8253748 |        816        0.07       72.34
+   .8410074 |         37        0.00       72.34
+   .8448344 |        146        0.01       72.35
+   .8479458 |      1,700        0.15       72.51
+   .8567941 |      1,356        0.12       72.63
+   .8982044 |     16,726        1.50       74.13
+   .9106375 |         27        0.00       74.13
+   .9176641 |      2,664        0.24       74.37
+   .9225972 |        200        0.02       74.38
+   .9230258 |        385        0.03       74.42
+   .9338949 |        135        0.01       74.43
+   .9420568 |        196        0.02       74.45
+   .9427432 |         28        0.00       74.45
+   .9458546 |        149        0.01       74.46
+   .9462832 |      2,853        0.26       74.72
+   .9653142 |         90        0.01       74.73
+   .9834671 |        190        0.02       74.74
+   .9841535 |      1,500        0.13       74.88
+   1.003613 |        121        0.01       74.89
+   1.006724 |      1,470        0.13       75.02
+   1.014611 |      2,814        0.25       75.27
+   1.015573 |        627        0.06       75.33
+   1.028006 |          6        0.00       75.33
+   1.031117 |         46        0.00       75.33
+   1.031546 |         85        0.01       75.34
+   1.069416 |         37        0.00       75.35
+   1.081376 |        125        0.01       75.36
+   1.081805 |         58        0.01       75.36
+   1.092674 |        187        0.02       75.38
+   1.099873 |         81        0.01       75.39
+   1.100836 |         50        0.00       75.39
+   1.101522 |         76        0.01       75.40
+   1.104633 |         77        0.01       75.40
+   1.105062 |        669        0.06       75.46
+   1.123131 |        209        0.02       75.48
+   1.124093 |         47        0.00       75.49
+   1.129455 |          1        0.00       75.49
+   1.167325 |         15        0.00       75.49
+   1.173389 |      3,704        0.33       75.82
+   1.186785 |          5        0.00       75.82
+   1.189896 |         11        0.00       75.82
+   1.190325 |          7        0.00       75.82
+   1.197782 |        160        0.01       75.84
+   1.206111 |      6,228        0.56       76.39
+   1.221039 |         83        0.01       76.40
+   1.258652 |         98        0.01       76.41
+   1.271914 |        100        0.01       76.42
+   1.281909 |        121        0.01       76.43
+   1.288233 |          3        0.00       76.43
+   1.291374 |         94        0.01       76.44
+   1.295172 |      4,124        0.37       76.81
+   1.306302 |          3        0.00       76.81
+   1.314631 |        678        0.06       76.87
+   1.356561 |        249        0.02       76.89
+   1.363499 |      2,451        0.22       77.11
+    1.36489 |      3,323        0.30       77.41
+   1.379818 |         99        0.01       77.42
+   1.380435 |         46        0.00       77.42
+   1.382959 |        363        0.03       77.45
+   1.389283 |         10        0.00       77.45
+    1.41254 |         25        0.00       77.46
+   1.430693 |         60        0.01       77.46
+   1.448762 |        111        0.01       77.47
+   1.450153 |          6        0.00       77.47
+   1.453951 |      1,247        0.11       77.58
+    1.46115 |      1,348        0.12       77.70
+   1.465081 |         14        0.00       77.71
+   1.472019 |        972        0.09       77.79
+    1.47341 |        218        0.02       77.81
+   1.480868 |        184        0.02       77.83
+   1.484408 |      9,464        0.85       78.68
+   1.497803 |          3        0.00       78.68
+   1.522278 |      5,725        0.51       79.19
+   1.539213 |         31        0.00       79.19
+   1.541737 |        269        0.02       79.21
+   1.546671 |         52        0.00       79.22
+   1.547099 |         26        0.00       79.22
+   1.548062 |         13        0.00       79.22
+    1.56613 |         23        0.00       79.23
+    1.56967 |        195        0.02       79.24
+   1.569928 |         19        0.00       79.24
+   1.570357 |        316        0.03       79.27
+   1.571319 |         13        0.00       79.27
+   1.589388 |         10        0.00       79.27
+    1.60754 |        253        0.02       79.30
+   1.619929 |        618        0.06       79.35
+   1.630798 |      1,992        0.18       79.53
+   1.639646 |        335        0.03       79.56
+   1.643186 |      4,377        0.39       79.95
+   1.655191 |          1        0.00       79.95
+   1.655619 |          3        0.00       79.95
+   1.667579 |        152        0.01       79.97
+   1.705449 |         68        0.01       79.97
+   1.705878 |         17        0.00       79.97
+   1.724909 |         32        0.00       79.98
+   1.728449 |         44        0.00       79.98
+   1.728707 |         35        0.00       79.98
+   1.729135 |        269        0.02       80.01
+   1.744236 |     23,140        2.07       82.08
+   1.810039 |        586        0.05       82.13
+   1.813969 |          1        0.00       82.13
+   1.814398 |          3        0.00       82.13
+   1.826358 |         71        0.01       82.14
+   1.829498 |        178        0.02       82.15
+   1.830185 |        716        0.06       82.22
+   1.833296 |     22,654        2.03       84.25
+   1.852756 |      1,650        0.15       84.39
+   1.895988 |         28        0.00       84.40
+   1.903014 |     11,654        1.04       85.44
+   1.915447 |          1        0.00       85.44
+   1.918559 |        359        0.03       85.47
+   1.919245 |        166        0.01       85.49
+   1.927407 |        122        0.01       85.50
+   1.938705 |         46        0.00       85.50
+   1.950665 |        147        0.01       85.52
+   1.968817 |        465        0.04       85.56
+   1.988277 |         92        0.01       85.57
+   1.988963 |      1,173        0.10       85.67
+   1.992075 |      8,304        0.74       86.41
+   2.004508 |         25        0.00       86.42
+   2.011534 |        555        0.05       86.47
+   2.016468 |         22        0.00       86.47
+   2.016896 |      1,013        0.09       86.56
+   2.035927 |         19        0.00       86.56
+   2.036614 |          4        0.00       86.56
+   2.054767 |         30        0.00       86.56
+   2.074226 |          7        0.00       86.56
+   2.077338 |        457        0.04       86.60
+   2.078024 |        202        0.02       86.62
+   2.085223 |        296        0.03       86.65
+   2.086186 |         44        0.00       86.65
+   2.097484 |         12        0.00       86.65
+   2.108481 |      2,142        0.19       86.85
+   2.109443 |         68        0.01       86.85
+   2.163287 |         21        0.00       86.85
+   2.175246 |         11        0.00       86.85
+   2.175675 |        211        0.02       86.87
+   2.193744 |         16        0.00       86.88
+   2.194706 |          9        0.00       86.88
+   2.244002 |        548        0.05       86.92
+    2.26726 |      2,234        0.20       87.12
+   2.276724 |        270        0.02       87.15
+   2.291652 |         13        0.00       87.15
+   2.299982 |      6,341        0.57       87.72
+   2.352522 |         29        0.00       87.72
+   2.365785 |        176        0.02       87.74
+   2.368309 |      2,108        0.19       87.92
+   2.385245 |         75        0.01       87.93
+   2.434112 |        152        0.01       87.95
+   2.435503 |         69        0.01       87.95
+   2.450431 |         20        0.00       87.95
+   2.453572 |         35        0.00       87.96
+    2.45737 |      1,287        0.12       88.07
+    2.45876 |      1,654        0.15       88.22
+   2.476829 |        118        0.01       88.23
+   2.483153 |          7        0.00       88.23
+   2.524564 |         61        0.01       88.24
+   2.527088 |      3,476        0.31       88.55
+   2.542632 |        241        0.02       88.57
+   2.544023 |          7        0.00       88.57
+   2.551481 |         14        0.00       88.57
+   2.555021 |      2,734        0.24       88.82
+   2.574738 |         27        0.00       88.82
+   2.592891 |        401        0.04       88.85
+    2.61235 |         34        0.00       88.86
+   2.616148 |      2,345        0.21       89.07
+   2.635608 |         80        0.01       89.07
+   2.640541 |          3        0.00       89.07
+    2.64097 |         58        0.01       89.08
+   2.641932 |          1        0.00       89.08
+   2.660001 |          2        0.00       89.08
+   2.701411 |        829        0.07       89.15
+   2.710259 |         60        0.01       89.16
+   2.713799 |      1,182        0.11       89.27
+   2.733517 |         27        0.00       89.27
+    2.79932 |         16        0.00       89.27
+   2.799748 |         42        0.00       89.27
+   2.814849 |      1,571        0.14       89.41
+   2.818779 |          8        0.00       89.41
+   2.838106 |     47,070        4.21       93.63
+   2.900798 |         15        0.00       93.63
+   2.903909 |      1,568        0.14       93.77
+   2.923369 |        207        0.02       93.79
+   2.924055 |        819        0.07       93.86
+   2.973628 |        724        0.06       93.93
+   2.989858 |          5        0.00       93.93
+   2.996885 |     19,558        1.75       95.68
+   3.021278 |         65        0.01       95.68
+   3.059577 |         21        0.00       95.68
+   3.062688 |      1,152        0.10       95.79
+   3.082148 |         88        0.01       95.80
+   3.082834 |      1,078        0.10       95.89
+   3.148637 |         24        0.00       95.89
+   3.179094 |        564        0.05       95.94
+   3.180056 |         37        0.00       95.95
+   3.266006 |          6        0.00       95.95
+   3.337873 |        981        0.09       96.04
+   3.370595 |      1,726        0.15       96.19
+   3.438922 |        193        0.02       96.21
+    3.46218 |      5,879        0.53       96.73
+   3.527983 |        335        0.03       96.76
+   3.529374 |        388        0.03       96.80
+   3.547442 |         18        0.00       96.80
+   3.597701 |        370        0.03       96.83
+   3.620958 |      7,156        0.64       97.47
+   3.645351 |          8        0.00       97.48
+   3.686761 |        862        0.08       97.55
+   3.706221 |         16        0.00       97.55
+    3.80413 |         24        0.00       97.56
+   3.908719 |     14,477        1.30       98.85
+   3.994668 |        114        0.01       98.86
+   4.067498 |      7,930        0.71       99.57
+   4.153447 |        151        0.01       99.59
+   4.532793 |      1,517        0.14       99.72
+   4.691571 |      3,115        0.28      100.00
+------------+-----------------------------------
+      Total |  1,117,146      100.00
+
+. lookfor wealth
+
+              storage  display     value
+variable name   type   format      label      variable label
+-------------------------------------------------------------------------------------------------------------------------------------------
+wealth          float  %9.0g                  wealth index
+wealthq         byte   %9.0g                  country-specific wealth quartiles
+wealthwq        byte   %8.0g                  5 quantiles of wealth
+
+. lookfor wealthq
+
+              storage  display     value
+variable name   type   format      label      variable label
+-------------------------------------------------------------------------------------------------------------------------------------------
+wealthq         byte   %9.0g                  country-specific wealth quartiles
+
+. tab wealthq
+
+country-spe |
+      cific |
+     wealth |
+  quartiles |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    327,766       29.34       29.34
+          2 |    187,745       16.81       46.15
+          3 |    226,891       20.31       66.46
+          4 |    194,908       17.45       83.90
+          5 |    179,836       16.10      100.00
+------------+-----------------------------------
+      Total |  1,117,146      100.00
+
+. count
+1437779
+
+. count if height==.
+508804
+
+. sum twin_one_fam twin_two_fam twin_three_fam twin_four_fam
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+twin_one_fam |   1437779    .0060872    .0777825          0          1
+twin_two_fam |   1437779    .0064933    .0803193          0          1
+twin_three~m |   1437779    .0061762    .0783457          0          1
+twin_four_~m |   1437779    .0055231    .0741121          0          1
+
+. sum twin_five_fam twin_six_fam
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+twin_five_~m |   1437779     .004596    .0676377          0          1
+twin_six_fam |   1437779    .0033454    .0577429          0          1
+
+. tab twin
+twin ambiguous abbreviation
+r(111);
+
+. tab twind
+
+      twind |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  1,410,558       98.11       98.11
+          1 |     27,221        1.89      100.00
+------------+-----------------------------------
+      Total |  1,437,779      100.00
+
+. tab twinc
+
+ child is twin, |
+           (b0) |      Freq.     Percent        Cum.
+----------------+-----------------------------------
+   single birth |  1,410,558       98.11       98.11
+1st of multiple |     14,168        0.99       99.09
+2nd of multiple |     12,971        0.90       99.99
+3rd of multiple |         81        0.01      100.00
+4th of multiple |          1        0.00      100.00
+----------------+-----------------------------------
+          Total |  1,437,779      100.00
+
+. tab one_plus
+
+   one_plus |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  1,174,732       81.70       81.70
+          1 |    263,047       18.30      100.00
+------------+-----------------------------------
+      Total |  1,437,779      100.00
+
+. tab fert if one_plus==1
+
+   mother's |
+      total |
+   children |
+  ever born |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          2 |     87,254       33.17       33.17
+          3 |     66,091       25.13       58.30
+          4 |     43,261       16.45       74.74
+          5 |     27,307       10.38       85.12
+          6 |     17,273        6.57       91.69
+          7 |     10,245        3.89       95.58
+          8 |      5,792        2.20       97.79
+          9 |      3,118        1.19       98.97
+         10 |      1,570        0.60       99.57
+         11 |        687        0.26       99.83
+         12 |        292        0.11       99.94
+         13 |        103        0.04       99.98
+         14 |         32        0.01       99.99
+         15 |         11        0.00      100.00
+         16 |          9        0.00      100.00
+         18 |          1        0.00      100.00
+         19 |          1        0.00      100.00
+------------+-----------------------------------
+      Total |    263,047      100.00
+

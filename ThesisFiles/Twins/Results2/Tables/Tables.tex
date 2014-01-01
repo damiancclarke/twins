@@ -1,0 +1,109 @@
+\documentclass{article}[11pt,subeqn]
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage[pdftex]{graphicx}
+\usepackage{setspace}
+\usepackage{framed}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\title{Child Quantity versus Quality: Are Twin Births Exogenous?}
+\author{Damian C. Clarke}
+
+\setlength\topmargin{-0.375in}
+\setlength\headheight{20pt}
+\setlength\headwidth{5.8in}
+\setlength\textheight{8.8in}
+\setlength\textwidth{5.8in}
+\setlength\oddsidemargin{0.4in}
+\setlength\evensidemargin{-0.5in}
+\setlength\parindent{0.25in}
+\setlength\parskip{0.25in}
+
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+\usepackage{lscape}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{rotating,capt-of}
+\usepackage{array}
+
+\usepackage{lineno}
+\usepackage[update,prepend]{epstopdf}
+
+\usepackage[font=sc]{caption}
+
+%NEW COMMANDS
+\newcommand{\Lagr}{\mathcal{L}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcolumntype{P}[1]{>{\raggedright}p{#1\linewidth}}
+
+\usepackage{appendix}
+\usepackage{booktabs}
+\usepackage{cleveref}
+
+\fancyhead{}
+\fancyfoot{}
+\fancyhead[L]{\textsc{Extended Essay}}
+\fancyhead[C]{\textsc{MSc. Economics for Development}}
+\fancyhead[R]{\textsc{Damian C. Clarke}}
+\fancyfoot[C]{\textsc{\thepage\ of  \pageref{LastPage}}}
+\fancyfoot[R]{\texttt{\huge{DRAFT}}}
+
+\begin{document}
+\begin{spacing}{1.25}
+
+
+
+\begin{sidewaystable}[!htbp]													
+\caption{Q-Q specification with years of schooling as quality}													
+\vspace{-3mm}													
+\label{tab:YrsEduc}													
+\begin{center}													
+\begin{tabular}{lcccccc} \toprule													
+& \multicolumn{6}{c}{3 +}  \\ \cmidrule(r){2-7}													
+& OLS& OLS& OLS & IV & IV& IV   \\ \midrule													
+\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}&\begin{footnotesize}\end{footnotesize}\\													
+													
+fert	&	0.317	&	0.446	&	1.310**	&	-0.324***	&	-0.341***	&	-0.595***	\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.339) \end{footnotesize}	&	 \begin{footnotesize}(0.363) \end{footnotesize}	&	 \begin{footnotesize}(0.637) \end{footnotesize}	&	 \begin{footnotesize}(0.00748) \end{footnotesize}	&	 \begin{footnotesize}(0.00750) \end{footnotesize}	&	 \begin{footnotesize}(0.00784) \end{footnotesize}	\\
+educf0	&	-5.292***	&	-5.822***	&		&	-4.283***	&	-4.508***	&		\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.535) \end{footnotesize}	&	 \begin{footnotesize}(0.609) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	 \begin{footnotesize}(0.0547) \end{footnotesize}	&	 \begin{footnotesize}(0.0544) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	\\
+educf14	&	-3.677***	&	-4.073***	&		&	-2.818***	&	-2.966***	&		\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.457) \end{footnotesize}	&	 \begin{footnotesize}(0.514) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	 \begin{footnotesize}(0.0576) \end{footnotesize}	&	 \begin{footnotesize}(0.0576) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	\\
+educf56	&	-2.203***	&	-2.430***	&		&	-1.666***	&	-1.743***	&		\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.290) \end{footnotesize}	&	 \begin{footnotesize}(0.323) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	 \begin{footnotesize}(0.0570) \end{footnotesize}	&	 \begin{footnotesize}(0.0572) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	\\
+educf710	&	-1.162***	&	-1.260***	&		&	-0.803***	&	-0.813***	&		\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.198) \end{footnotesize}	&	 \begin{footnotesize}(0.215) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	 \begin{footnotesize}(0.0560) \end{footnotesize}	&	 \begin{footnotesize}(0.0563) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	\\
+poor1	&	-2.335***	&	-2.623***	&		&	-1.838***	&	-1.969***	&		\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.268) \end{footnotesize}	&	 \begin{footnotesize}(0.307) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	 \begin{footnotesize}(0.0545) \end{footnotesize}	&	 \begin{footnotesize}(0.0546) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	\\
+height	&	0.0287***	&		&		&	0.0228***	&		&		\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.00390) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	 \begin{footnotesize}(0.00225) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	\\
+bmi	&	0.0911***	&		&		&	0.0730***	&		&		\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.0100) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	 \begin{footnotesize}(0.00277) \end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	\\
+malec	&	0.192***	&	0.168***	&	-0.161***	&	0.160***	&	0.137***	&	-0.0876***	\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.0334) \end{footnotesize}	&	 \begin{footnotesize}(0.0332) \end{footnotesize}	&	 \begin{footnotesize}(0.0485) \end{footnotesize}	&	 \begin{footnotesize}(0.0274) \end{footnotesize}	&	 \begin{footnotesize}(0.0276) \end{footnotesize}	&	 \begin{footnotesize}(0.0302) \end{footnotesize}	\\
+agemay	&	0.0919***	&	0.103***	&	0.312***	&	0.0424***	&	0.0418***	&	0.0999***	\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.0265) \end{footnotesize}	&	 \begin{footnotesize}(0.0285) \end{footnotesize}	&	 \begin{footnotesize}(0.0714) \end{footnotesize}	&	 \begin{footnotesize}(0.00455) \end{footnotesize}	&	 \begin{footnotesize}(0.00458) \end{footnotesize}	&	 \begin{footnotesize}(0.00494) \end{footnotesize}	\\
+borddummy2	&	-0.435**	&	-0.496**	&	-1.450***	&	-0.0715**	&	-0.0531*	&	-0.168***	\\
+\vspace{4pt}	&	 \begin{footnotesize}(0.194) \end{footnotesize}	&	 \begin{footnotesize}(0.207) \end{footnotesize}	&	 \begin{footnotesize}(0.431) \end{footnotesize}	&	 \begin{footnotesize}(0.0286) \end{footnotesize}	&	 \begin{footnotesize}(0.0287) \end{footnotesize}	&	 \begin{footnotesize}(0.0314) \end{footnotesize}	\\
+Constant	&	2.732	&	9.476**	&	-1.037	&	14.38***	&	20.55***	&	19.37***	\\
+	&	 \begin{footnotesize}(4.524) \end{footnotesize}	&	 \begin{footnotesize}(4.252) \end{footnotesize}	&	 \begin{footnotesize}(6.859) \end{footnotesize}	&	 \begin{footnotesize}(3.794) \end{footnotesize}	&	 \begin{footnotesize}(3.796) \end{footnotesize}	&	 \begin{footnotesize}(4.166) \end{footnotesize}	\\
+\vspace{4pt}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	&	\begin{footnotesize}\end{footnotesize}	\\
+Observations	&	64,246	&	64,246	&	64,246	&	64,246	&	64,246	&	64,246	\\
+R-squared	&	0.364	&	0.324	&	-0.335	&	0.430	&	0.423	&	0.305	\\  \midrule
+\multicolumn{7}{c}{\begin{footnotesize} Robust standard errors in parentheses\end{footnotesize}} \\													
+\multicolumn{7}{c}{\begin{footnotesize} *** p$<$0.01, ** p$<$0.05, * p$<$0.1\end{footnotesize}} \\													
+\bottomrule													
+\multicolumn{7}{p{12.2cm}}{\setstretch{0.9}\begin{footnotesize}\textsc{Note:} All specifications include a full set of country, age, and year of birth controls. Robust standard errors are clustered by country.													
+\end{footnotesize}}\\													
+\end{tabular}													
+\end{center}													
+\end{sidewaystable}													
+
+
+\end{spacing}
+\end{document}

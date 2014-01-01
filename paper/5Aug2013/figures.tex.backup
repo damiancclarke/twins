@@ -1,0 +1,7 @@
+\begin{center}
+\begin{figure}[h!]
+\includegraphics[scale=0.8]{./\chaptname9/Figures/ValueFunctionSolution.eps} 
+\caption{Resolving dynamic behaviour using a value function}
+\label{figDCF:ValueFunctionSolution}
+\end{figure}
+\end{center}

@@ -1,0 +1,28 @@
+	(1)
+VARIABLES	idealnumkids
+	
+educf_0	0.903***
+	(0.154)
+educf_1_4	0.431***
+	(0.116)
+educf_5_6	0.236**
+	(0.0931)
+educf_7_10	0.0279
+	(0.0818)
+fert	0.242***
+	(0.0120)
+agefirstbirth	0.000134
+	(0.00355)
+poor1	0.211***
+	(0.0547)
+height	0.000328
+	(0.00187)
+bmi	-0.0118***
+	(0.00343)
+Constant	3.667*
+	(2.016)
+	
+Observations	2,072,897
+R-squared	0.434
+Robust standard errors in parentheses	
+*** p<0.01, ** p<0.05, * p<0.1	

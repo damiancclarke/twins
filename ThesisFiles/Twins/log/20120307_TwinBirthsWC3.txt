@@ -1,0 +1,33 @@
+-------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\ExtendedEssay\Twins\Log\20120307_TwinBirthsWC3.txt
+  log type:  text
+ opened on:   7 Mar 2012, 11:44:26
+
+. 
+. use $Base\..\DHS\world_child3
+
+. 
+. 
+end of do-file
+
+. count caseid
+varlist not allowed
+r(101);
+
+. gen a=1
+
+. count a
+varlist not allowed
+r(101);
+
+. count if a==1
+2306482
+
+. do "C:\Users\DAMIAN~1.CLA\AppData\Local\Temp\STD00000000.tmp"
+
+. clear all
+
+. version 11.2
+
+. cap log close

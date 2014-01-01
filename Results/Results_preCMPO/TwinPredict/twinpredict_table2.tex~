@@ -1,0 +1,36 @@
+\documentclass[]{article}
+\setlength{\pdfpagewidth}{8.5in} \setlength{\pdfpageheight}{11in}
+\begin{document}
+\begin{center}
+\begin{tabular}{lcccc} \hline
+ & (1) & (2) & (3) & (4) \\
+VARIABLES & twind100 & twind100 & twind100 & twind100 \\ \hline
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
+bord & 1.012** & 1.191** & 0.914** & 0.768** \\
+\vspace{4pt} & \begin{footnotesize}(0.0143)\end{footnotesize} & \begin{footnotesize}(0.0232)\end{footnotesize} & \begin{footnotesize}(0.0209)\end{footnotesize} & \begin{footnotesize}(0.0357)\end{footnotesize} \\
+agemay & -0.0780** & -0.127** & -0.0525** & -0.0286** \\
+\vspace{4pt} & \begin{footnotesize}(0.00388)\end{footnotesize} & \begin{footnotesize}(0.00647)\end{footnotesize} & \begin{footnotesize}(0.00573)\end{footnotesize} & \begin{footnotesize}(0.00899)\end{footnotesize} \\
+educf\_1\_4 & 0.372** & 0.365** & 0.333** & 0.668** \\
+\vspace{4pt} & \begin{footnotesize}(0.0591)\end{footnotesize} & \begin{footnotesize}(0.0923)\end{footnotesize} & \begin{footnotesize}(0.0864)\end{footnotesize} & \begin{footnotesize}(0.162)\end{footnotesize} \\
+educf\_5\_6 & 0.640** & 0.537** & 0.598** & 0.952** \\
+\vspace{4pt} & \begin{footnotesize}(0.0638)\end{footnotesize} & \begin{footnotesize}(0.114)\end{footnotesize} & \begin{footnotesize}(0.0914)\end{footnotesize} & \begin{footnotesize}(0.160)\end{footnotesize} \\
+educf\_7\_10 & 1.099** & 1.255** & 0.969** & 1.162** \\
+\vspace{4pt} & \begin{footnotesize}(0.0617)\end{footnotesize} & \begin{footnotesize}(0.109)\end{footnotesize} & \begin{footnotesize}(0.0858)\end{footnotesize} & \begin{footnotesize}(0.166)\end{footnotesize} \\
+educf\_11plus & 2.044** & 1.393** & 1.849** & 2.285** \\
+\vspace{4pt} & \begin{footnotesize}(0.0786)\end{footnotesize} & \begin{footnotesize}(0.171)\end{footnotesize} & \begin{footnotesize}(0.107)\end{footnotesize} & \begin{footnotesize}(0.193)\end{footnotesize} \\
+height & 0.00622** & 0.00645** & 0.00583** & 0.00614** \\
+\vspace{4pt} & \begin{footnotesize}(0.000315)\end{footnotesize} & \begin{footnotesize}(0.000505)\end{footnotesize} & \begin{footnotesize}(0.000467)\end{footnotesize} & \begin{footnotesize}(0.000781)\end{footnotesize} \\
+bmi & 0.000471** & 0.000715** & 0.000479** & 0.000129 \\
+\vspace{4pt} & \begin{footnotesize}(5.01e-05)\end{footnotesize} & \begin{footnotesize}(9.74e-05)\end{footnotesize} & \begin{footnotesize}(7.04e-05)\end{footnotesize} & \begin{footnotesize}(0.000105)\end{footnotesize} \\
+poor1 & -0.125* & 0.0644 & -0.384** & 0.388* \\
+\vspace{4pt} & \begin{footnotesize}(0.0599)\end{footnotesize} & \begin{footnotesize}(0.0985)\end{footnotesize} & \begin{footnotesize}(0.0845)\end{footnotesize} & \begin{footnotesize}(0.161)\end{footnotesize} \\
+Constant & -9.203** & -8.924** & -8.644** & -3.718 \\
+ & \begin{footnotesize}(0.611)\end{footnotesize} & \begin{footnotesize}(0.824)\end{footnotesize} & \begin{footnotesize}(1.673)\end{footnotesize} & \begin{footnotesize}(5.599)\end{footnotesize} \\
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
+Observations & 1,964,879 & 804,556 & 849,552 & 310,771 \\
+ $R^2$ & 0.011 & 0.012 & 0.011 & 0.007 \\ \hline
+\multicolumn{5}{c}{\begin{footnotesize} Robust standard errors in parentheses\end{footnotesize}} \\
+\multicolumn{5}{c}{\begin{footnotesize} ** p$<$0.01, * p$<$0.05\end{footnotesize}} \\
+\end{tabular}
+\end{center}
+\end{document}

@@ -1,0 +1,138 @@
+\documentclass{article}[11pt,subeqn]
+
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+\usepackage{color}
+\usepackage[pdftex]{graphicx}
+\usepackage{setspace}
+\usepackage{framed}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\title{Child Quantity versus Quality: Are Twin Births Exogenous?}
+\author{Sonia Bhalotra\thanks{University of Bristol, \href{mailto:s.bhalotra@bristol.ac.uk}{s.bhalotra@bristol.ac.uk}.} \and Damian Clarke\thanks{The University of Oxford, \href{mailto:damian.clarke@economics.ox.ac.uk}{damian.clarke@economics.ox.ac.uk}.}}
+
+\setlength\topmargin{-0.575in}
+%\setlength\headheight{15pt}
+%\setlength\headwidth{6.05in}
+\setlength\textheight{9.2in}
+\setlength\textwidth{6.2in}
+\setlength\oddsidemargin{0.18in}
+\setlength\evensidemargin{-0.5in}
+\setlength\parindent{0.25in}
+\setlength\parskip{0.25in}
+
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+\usepackage{hyperref}
+
+\usepackage{lscape}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{rotating,capt-of}
+\usepackage{array}
+
+%\usepackage{lineno}
+\usepackage[update,prepend]{epstopdf}
+
+\usepackage[font=sc]{caption}
+
+%NEW COMMANDS
+\newcommand{\Lagr}{\mathcal{L}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcolumntype{P}[1]{>{\raggedright}p{#1\linewidth}}
+
+\usepackage{appendix}
+\usepackage{booktabs}
+\usepackage{cleveref}
+
+%\fancyhead{}
+%\fancyfoot{}
+%\fancyhead[L]{\textsc{Extended Essay}}
+%\fancyhead[C]{\textsc{MSc. Economics for Development}}
+%\fancyhead[R]{\textsc{Damian C. Clarke}}
+%\fancyfoot[C]{\textsc{\thepage\ of  \pageref{LastPage}}}
+%\fancyfoot[R]{\texttt{ \Large DRAFT}}
+
+
+
+\begin{document}
+%\linenumbers
+\begin{spacing}{1.25}
+ 
+\section{Twin Methodology}
+\label{scn:EF}
+
+Before turning to tests of the Q-Q model, we are interested in testing the (conditional) exogeneity of twin births.  Although birth exogeneity is 
+inherently untestable as there are many unobserved factors which could interact with birth outcomes, it is possible to test whether the probability of twin birth depends upon observable 
+characteristics of the mother and the family environment.  Whilst the dependence of twinning on observable characteristics offers no conclusive evidence 
+that it will also depend upon unobservables, it will cast doubt on the validity of the twin instrumentation strategy---particularly when the vector of 
+observable characteristics is small.  If, for example, twin birth depends upon observed measures of maternal health such as height 
+and weight, it also seems reasonable to suggest that unmeasured or unobserved health measures such as pre-natal medical visits and a mother's behaviour 
+and diet are also related to the likelihood of live twin births. 
+
+Using a linear probability model\footnote{We also test this with a probit model, however the implications of each model are identical for our results.} 
+the following twin birth equation is estimated: 
+\begin{equation}
+\label{eqn:twinpred}
+P(Twin_{ijk}=1)=\delta_1 B_i + W'_j\vect{\delta_\vect{W}}+ T'_{i}\vect{\delta_\vect{T}} +  \phi_k + \varepsilon_{ijk}.
+\end{equation}
+Here $Twin_{ijk}$ takes the value one if child $i$ from family $j$ and country $k$ is a twin, and zero otherwise.  A full set of year of birth ($T$) and country
+dummies ($\phi$) are included.  The observable parameters of interest $W'_j$ are family level variables representing characteristics such as maternal age and
+education, maternal height and BMI, and a variable representing the family's socioeconomic quintile (based on assets).  We are interested in testing the
+hypothesis that all $\delta_\vect{W}=0$, as rejection of this would provide suggestive evidence of the endogeneity of multiple births in the sense discussed
+above.
+
+After examining the validity of the twin instrument, we test the Q-Q model in a number of ways: firstly,  we use the instrumental strategy followed by the majority of 
+studies discussed in the previous section, and then using a variation of the technique initially discussed by \citet{RosenzweigZhang2009}. Most recent empirical studies 
+examining the Q-Q tradeoff follow \cite{Angristetal2010} in estimating the following two-stage strategy:
+\begin{subequations}
+\label{eqn:2SLS}
+\begin{eqnarray}
+\label{eqn:QQ}
+Q_{ij}&=&\beta_0+\beta_1\widehat{Fert}_j+\beta_2B_{i}+X'_{ij}\vect{\beta_{\vect{X}}}+W'_j\vect{\beta_\vect{W}}+u_{ij} \label{eqn:2SLSa}\\
+Fert_{j}&=&\gamma_0+\gamma_1Twin_{ij}+\gamma_2B_{i}+X'_{ij}\vect{\gamma_\vect{X}}+W'_j\vect{\gamma_\vect{W}}+v_{ij}. \label{eqn:2SLSb}
+ \end{eqnarray}
+\end{subequations}
+Here $Fert_j$ refers to the number of children in family $j$, $B_i$ birth order of child $i$, $X_{ij}$ a vector of individual characteristics, and $W_j$ 
+a vector of family characteristics such as income and parental education.  Along with instrumental relevance, this strategy requires that two separate 
+assumptions hold regarding the error term $u_{ij}$ for estimates of $\beta_1$ to be unbiased.  Firstly, $u_{ij}$ must be uncorrelated with factors which
+predict twin births and which are contained in $v_{ij}$.  This is the typical validity assumption of an IV strategy, and is indirectly examined by 
+(\ref{eqn:twinpred}) above.  If we believe that this is \emph{not} the case, rather than estimating the true tradeoff $\beta_1$, we will estimate:
+\[
+ \hat{\beta}_1=\beta_1+(Z'X)^{-1}Z'u
+\]
+where the second part of this term refers to the typical omitted variable bias, and the direction of the bias depends upon the correlation between
+twins and fertility (which we expect and observe to be positive), and the unobserved correlation between twinning and unobservables.  If, for example,
+we believe that we are not capturing the full health behaviour of a mother, and that healthier mothers are more likely to have twins, we will then
+have that our estimated $\hat{\beta}_1$ overstates the true Q-Q tradeoff.
+
+However, \emph{even} in the case where the instrumental validity assumption holds, $\beta_1$ will not provide an unbiased estimate of the Q-Q
+tradeoff if parents make reinforcing investments in higher endowment single-birth children and shift resources due to the close birth-spacing of twins.
+For this reason we estimate the following equation (where our notation is similar to that of \citet{RosenzweigZhang2009}):
+\begin{equation}
+ \label{eqn:RZ}
+ Q_{ij}=\eta_0TF_j+\eta_1(TF_j\times pretwin_{ij})+\eta_2pretwin_{ij}+X'_{ij}\vect{\eta_\vect{X}}+W'_j\vect{\eta_\vect{W}}+\varepsilon_{ij}.
+\end{equation}
+This specification examines educational outcome variables for children who are born in twin families ($TF_j$) and non-twin families, and separates by
+twins and non-twin births ($pretwin_{ij}$).  Effectively, we compare children born in those families where a twin is born on the last birth with children
+in similar families where a singleton birth occurs.  Given that we are comparing families with twins born on the last birth to those with singleton births,
+each family has $n$ birth occurrences, however twin families have $n+1$ children compared to the $n$ children in singleton families due to twinning on the 
+$n^{th}$ birth.  As we discuss in section 
+\ref{scn:lit}, we are interested in separately identifying the effect of an extra birth on both twins and on their siblings, given that these estimates
+will give us estimates of the bounds of the Q-Q tradeoff under the assumption that twin births are exogenous.  These estimates are provided by $\eta_0$
+and $\eta_0+\eta_1$ respectively.
+
+Explain twin groups.  Show how RZ biased.
+
+\textcolor{blue}{Angrist et al may be worth reporting as it is current state of literature.  We reiterate how it is wrong in two ways.}
+
+
+\bibliography{BiBBase1} 
+\end{spacing}
+\end{document}
+
+
+

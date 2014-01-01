@@ -1,0 +1,1388 @@
+-----------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twins_DHS.txt
+  log type:  text
+ opened on:  18 Dec 2013, 05:23:45
+
+. ********************************************************************************
+. *** (2) Take necessary variables from BR (mother births) and PR (household me-
+. *** mber) The IR dataset has the majority of family and maternal characterist-
+. *** ics used in the regressions, however there is no child education variables
+. *** in this dataset.  The child education information comes from PR.
+. ********************************************************************************
+. ***Do in parts as merge of full dataset is impossible with 8gb of RAM
+. foreach num of numlist 1(1)7 {
+  2.         use $DATA/World_BR_p`num', clear
+  3. 
+.         keep _cou _year caseid v000-v026 v101 v106 v107 v130 v131 v133 v136 v137 /*
+>         */ v149 v150 v151 v152 v190 v191 v201 v202 v203 v204 v205 v206 v207 v208 /*
+>         */ v209 v211 v212 v213 v228 v229 v230 v437 v438 v445 v457 v463a v481 v501/*
+>         */ v504 v602 v605 v715 v701 v730 bord b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11/*
+>         */ b12 b13 b14 b15 b16 v613 v614 m19 m19a v367 v312 v364
+  4.         
+.         cap rename v010 year_birth
+  5.         cap rename v012 agemay
+  6.         cap rename v106 educlevel_f
+  7.         cap rename v130 religion
+  8.         cap rename v133 educf
+  9.         cap rename v137 kids_under5
+ 10.         cap rename v140 rural
+ 11.         cap rename v190 wealth
+ 12.         cap rename v201 fert
+ 13.         cap rename v212 agefirstbirth
+ 14.         cap rename v228 terminated_preg
+ 15.         cap rename v437 weightk
+ 16.         cap rename v438 height
+ 17.         cap rename v445 bmi
+ 18.         cap rename v367 wanted_last_child
+ 19.         cap rename v312 contracep_method
+ 20.         cap rename v364 contracep_intent
+ 21.         cap rename b0 twin
+ 22.         cap rename b2 child_yob
+ 23.         cap rename b3 child_dob
+ 24.         cap rename b4 sex
+ 25.         cap rename b5 child_alive
+ 26.         cap rename b8 age 
+ 27. 
+.         replace age=floor(v007-child_yob+(v006-b1/12)) if age==.
+ 28. 
+. 
+.         **The following lines correct for the fact that we only observe each births'
+.         **mothers' relationship to the household head.  In this way, if the mother 
+.         **is the wife, the birth must be the child of the household head.
+.         gen relationship=3 if v150==1|v150==2|v150==9
+ 29.         replace relationship=5 if v150==3|v150==4|v150==11
+ 30.         replace relationship=8 if v150==6|v150==7
+ 31.         replace relationship=10 if v150==8|v150==10|v150==12|v150==5
+ 32.         
+.         egen id=concat(_cou _year v001 v002)
+ 33. 
+.         save $TEMP/BR`num', replace
+ 34. }
+(139917 real changes made)
+(162393 missing values generated)
+(74778 real changes made)
+(10361 real changes made)
+(29814 real changes made)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR1.dta not found)
+file ~/investigacion/Activa/Twins/Temp/BR1.dta saved
+(123698 real changes made)
+(239965 missing values generated)
+(96398 real changes made)
+(7596 real changes made)
+(47175 real changes made)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR2.dta not found)
+file ~/investigacion/Activa/Twins/Temp/BR2.dta saved
+(96080 real changes made)
+(174447 missing values generated)
+(131355 real changes made)
+(12565 real changes made)
+(26450 real changes made)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR3.dta not found)
+file ~/investigacion/Activa/Twins/Temp/BR3.dta saved
+(176905 real changes made)
+(293330 missing values generated)
+(103013 real changes made)
+(8266 real changes made)
+(36792 real changes made)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR4.dta not found)
+file ~/investigacion/Activa/Twins/Temp/BR4.dta saved
+(161145 real changes made)
+(185507 missing values generated)
+(81325 real changes made)
+(6349 real changes made)
+(36191 real changes made)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR5.dta not found)
+file ~/investigacion/Activa/Twins/Temp/BR5.dta saved
+(117864 real changes made)
+(227575 missing values generated)
+(81341 real changes made)
+(3564 real changes made)
+(42377 real changes made)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR6.dta not found)
+file ~/investigacion/Activa/Twins/Temp/BR6.dta saved
+(58299 real changes made)
+(107017 missing values generated)
+(36005 real changes made)
+(2200 real changes made)
+(15511 real changes made)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR7.dta not found)
+file ~/investigacion/Activa/Twins/Temp/BR7.dta saved
+
+. 
+. 
+. foreach num of numlist 1(1)7 {
+  2.         use $DATA/World_PR_p`num', clear
+  3. 
+.         keep _cou _year hhid hvidx hv000-hv002 hv101 hv104 hv105 hv106 hv121 hv122/*
+>         */ hv123 hv129 hv108
+  4. 
+.         cap rename hv101 relationship
+  5.         cap rename hv104 sex
+  6.         cap rename hv105 age
+  7.         cap rename hv106 educlevel
+  8.         cap rename hv121 attend_year
+  9.         cap rename hv129 attend
+ 10.         cap rename hv108 educ
+ 11.         rename hv001 v001
+ 12.         rename hv002 v002
+ 13.         egen id=concat(_cou _year v001 v002)
+ 14.         
+.         save $TEMP/PR`num', replace
+ 15. }
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR1.dta not found)
+file ~/investigacion/Activa/Twins/Temp/PR1.dta saved
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR2.dta not found)
+file ~/investigacion/Activa/Twins/Temp/PR2.dta saved
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR3.dta not found)
+file ~/investigacion/Activa/Twins/Temp/PR3.dta saved
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR4.dta not found)
+file ~/investigacion/Activa/Twins/Temp/PR4.dta saved
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR5.dta not found)
+file ~/investigacion/Activa/Twins/Temp/PR5.dta saved
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR6.dta not found)
+file ~/investigacion/Activa/Twins/Temp/PR6.dta saved
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR7.dta not found)
+file ~/investigacion/Activa/Twins/Temp/PR7.dta saved
+
+. 
+. ***Merge PR and BR (still in parts)
+. foreach num of numlist 1(1)7 {
+  2.         use $TEMP/PR`num'
+  3.         merge m:m id relationship sex age using $TEMP/BR`num'
+  4.         keep if _merge==3|_merge==2 //updated Apr 24, 2013
+  5.         save $TEMP/twins`num', replace
+  6. }
+relationship was byte now float
+(label LABG already defined)
+(label LABH already defined)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     1,425,676
+        from master                 1,038,805  (_merge==1)
+        from using                    386,871  (_merge==2)
+
+    matched                           584,446  (_merge==3)
+    -----------------------------------------
+(1038805 observations deleted)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins1.dta not found)
+file ~/investigacion/Activa/Twins/Temp/twins1.dta saved
+relationship was byte now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     1,767,456
+        from master                 1,299,127  (_merge==1)
+        from using                    468,329  (_merge==2)
+
+    matched                           650,772  (_merge==3)
+    -----------------------------------------
+(1299127 observations deleted)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins2.dta not found)
+file ~/investigacion/Activa/Twins/Temp/twins2.dta saved
+relationship was byte now float
+(label LABD already defined)
+(label LABE already defined)
+(label LABI already defined)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     1,392,865
+        from master                 1,080,109  (_merge==1)
+        from using                    312,756  (_merge==2)
+
+    matched                           494,830  (_merge==3)
+    -----------------------------------------
+(1080109 observations deleted)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins3.dta not found)
+file ~/investigacion/Activa/Twins/Temp/twins3.dta saved
+relationship was byte now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     2,303,006
+        from master                 1,715,142  (_merge==1)
+        from using                    587,864  (_merge==2)
+
+    matched                           936,252  (_merge==3)
+    -----------------------------------------
+(1715142 observations deleted)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins4.dta not found)
+file ~/investigacion/Activa/Twins/Temp/twins4.dta saved
+relationship was byte now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     2,138,357
+        from master                 1,690,776  (_merge==1)
+        from using                    447,581  (_merge==2)
+
+    matched                           523,421  (_merge==3)
+    -----------------------------------------
+(1690776 observations deleted)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins5.dta not found)
+file ~/investigacion/Activa/Twins/Temp/twins5.dta saved
+v001 was int now long
+relationship was byte now float
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                     1,445,130
+        from master                 1,034,332  (_merge==1)
+        from using                    410,798  (_merge==2)
+
+    matched                           490,957  (_merge==3)
+    -----------------------------------------
+(1034332 observations deleted)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins6.dta not found)
+file ~/investigacion/Activa/Twins/Temp/twins6.dta saved
+_cou was str10 now str19
+relationship was byte now float
+id was str20 now str29
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                       787,409
+        from master                   572,819  (_merge==1)
+        from using                    214,590  (_merge==2)
+
+    matched                           243,281  (_merge==3)
+    -----------------------------------------
+(572819 observations deleted)
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins7.dta not found)
+file ~/investigacion/Activa/Twins/Temp/twins7.dta saved
+
+. 
+. // Remove partial PR/BR datasets
+. foreach t in PR BR {
+  2.         foreach file in `t'1 `t'2 `t'3 `t'4 `t'5 `t'6 `t'7 {
+  3.                 rm "$TEMP/`file'.dta"
+  4.         }
+  5. }
+
+. 
+. use $TEMP/twins1
+
+. append using $TEMP/twins2 $TEMP/twins3 $TEMP/twins4 $TEMP/twins5 $TEMP/twins6 /*
+> */ $TEMP/twins7
+_cou was str12 now str25
+id was str22 now str35
+v003 was byte now int
+(label _merge already defined)
+(label v190 already defined)
+(label m19a already defined)
+(label m19 already defined)
+(label b16 already defined)
+(label b13 already defined)
+(label b9 already defined)
+(label b6 already defined)
+(label b0 already defined)
+(label v730 already defined)
+(label v701 already defined)
+(label v614 already defined)
+(label v613 already defined)
+(label v605 already defined)
+(label v602 already defined)
+(label v504 already defined)
+(label v501 already defined)
+(label v367 already defined)
+(label v364 already defined)
+(label v312 already defined)
+(label LABN already defined)
+(label v213 already defined)
+(label v152 already defined)
+(label v150 already defined)
+(label v149 already defined)
+(label v130 already defined)
+(label v106 already defined)
+(label LABE already defined)
+(label LABD already defined)
+(label v023 already defined)
+(label v020 already defined)
+(label LABC already defined)
+(label v015 already defined)
+(label LABB already defined)
+(label v013 already defined)
+(label b14 already defined)
+(label hv108 already defined)
+(label hv106 already defined)
+(label hv105 already defined)
+(label hv104 already defined)
+(label hv101 already defined)
+(label hv129 already defined)
+(label hv121 already defined)
+(label _merge already defined)
+(label m19a already defined)
+(label m19 already defined)
+(label b16 already defined)
+(label b13 already defined)
+(label b9 already defined)
+(label b6 already defined)
+(label b0 already defined)
+(label v730 already defined)
+(label v701 already defined)
+(label v614 already defined)
+(label v613 already defined)
+(label v605 already defined)
+(label v602 already defined)
+(label v504 already defined)
+(label v501 already defined)
+(label v367 already defined)
+(label v364 already defined)
+(label v312 already defined)
+(label LABO already defined)
+(label LABN already defined)
+(label v213 already defined)
+(label LABM already defined)
+(label v190 already defined)
+(label LABK already defined)
+(label v152 already defined)
+(label v150 already defined)
+(label v149 already defined)
+(label v133 already defined)
+(label LABH already defined)
+(label v106 already defined)
+(label LABF already defined)
+(label v020 already defined)
+(label LABC already defined)
+(label v015 already defined)
+(label LABB already defined)
+(label v013 already defined)
+(label LABI already defined)
+(label hv108 already defined)
+(label hv106 already defined)
+(label hv101 already defined)
+(label LABE already defined)
+(label LABD already defined)
+(label hv129 already defined)
+(label hv121 already defined)
+(label _merge already defined)
+(label v190 already defined)
+(label m19a already defined)
+(label m19 already defined)
+(label b16 already defined)
+(label b13 already defined)
+(label b9 already defined)
+(label b6 already defined)
+(label b0 already defined)
+(label v730 already defined)
+(label v701 already defined)
+(label v614 already defined)
+(label v613 already defined)
+(label v605 already defined)
+(label v602 already defined)
+(label v504 already defined)
+(label v501 already defined)
+(label v367 already defined)
+(label v364 already defined)
+(label v312 already defined)
+(label v213 already defined)
+(label v152 already defined)
+(label v150 already defined)
+(label v149 already defined)
+(label v133 already defined)
+(label v131 already defined)
+(label v130 already defined)
+(label v106 already defined)
+(label v101 already defined)
+(label v023 already defined)
+(label v020 already defined)
+(label v015 already defined)
+(label v013 already defined)
+(label b14 already defined)
+(label v481 already defined)
+(label hv129 already defined)
+(label hv122 already defined)
+(label hv121 already defined)
+(label hv108 already defined)
+(label hv106 already defined)
+(label hv105 already defined)
+(label hv104 already defined)
+(label hv101 already defined)
+(label hv123 already defined)
+(label _merge already defined)
+(label m19a already defined)
+(label m19 already defined)
+(label b15 already defined)
+(label b14 already defined)
+(label b13 already defined)
+(label b10 already defined)
+(label b9 already defined)
+(label b6 already defined)
+(label b5 already defined)
+(label b0 already defined)
+(label v730 already defined)
+(label v715 already defined)
+(label v701 already defined)
+(label v614 already defined)
+(label v613 already defined)
+(label v605 already defined)
+(label v602 already defined)
+(label v504 already defined)
+(label v501 already defined)
+(label v367 already defined)
+(label v364 already defined)
+(label v312 already defined)
+(label v230 already defined)
+(label v229 already defined)
+(label v228 already defined)
+(label v213 already defined)
+(label v151 already defined)
+(label v150 already defined)
+(label v149 already defined)
+(label v133 already defined)
+(label v131 already defined)
+(label v130 already defined)
+(label v106 already defined)
+(label v101 already defined)
+(label v025 already defined)
+(label v024 already defined)
+(label v023 already defined)
+(label v020 already defined)
+(label v019 already defined)
+(label v018 already defined)
+(label v015 already defined)
+(label v014 already defined)
+(label v013 already defined)
+(label b16 already defined)
+(label v190 already defined)
+(label LABH already defined)
+(label hv108 already defined)
+(label hv106 already defined)
+(label hv105 already defined)
+(label hv104 already defined)
+(label hv101 already defined)
+(label hv129 already defined)
+(label hv123 already defined)
+(label hv122 already defined)
+(label hv121 already defined)
+(label _merge already defined)
+(label m19a already defined)
+(label m19 already defined)
+(label b16 already defined)
+(label b15 already defined)
+(label b13 already defined)
+(label b10 already defined)
+(label b9 already defined)
+(label b6 already defined)
+(label b5 already defined)
+(label b0 already defined)
+(label v730 already defined)
+(label v715 already defined)
+(label v701 already defined)
+(label v614 already defined)
+(label v613 already defined)
+(label v605 already defined)
+(label v602 already defined)
+(label v504 already defined)
+(label v501 already defined)
+(label v481 already defined)
+(label v463a already defined)
+(label v457 already defined)
+(label v445 already defined)
+(label v367 already defined)
+(label v364 already defined)
+(label v312 already defined)
+(label v230 already defined)
+(label v229 already defined)
+(label v228 already defined)
+(label v213 already defined)
+(label v190 already defined)
+(label v152 already defined)
+(label v151 already defined)
+(label v150 already defined)
+(label v149 already defined)
+(label v133 already defined)
+(label v130 already defined)
+(label v106 already defined)
+(label v101 already defined)
+(label v026 already defined)
+(label v025 already defined)
+(label v024 already defined)
+(label v023 already defined)
+(label v020 already defined)
+(label v019 already defined)
+(label v018 already defined)
+(label v015 already defined)
+(label v014 already defined)
+(label v013 already defined)
+(label hv129 already defined)
+(label hv121 already defined)
+(label LABI already defined)
+(label LABH already defined)
+(label hv101 already defined)
+(label LABF already defined)
+(label LABD already defined)
+(label LABC already defined)
+(label _merge already defined)
+(label m19a already defined)
+(label m19 already defined)
+(label b16 already defined)
+(label b13 already defined)
+(label b9 already defined)
+(label b6 already defined)
+(label b0 already defined)
+(label v730 already defined)
+(label v701 already defined)
+(label v614 already defined)
+(label v613 already defined)
+(label v605 already defined)
+(label v602 already defined)
+(label v504 already defined)
+(label v501 already defined)
+(label LABZ already defined)
+(label v367 already defined)
+(label v364 already defined)
+(label v312 already defined)
+(label LABO already defined)
+(label LABM already defined)
+(label LABL already defined)
+(label v213 already defined)
+(label v190 already defined)
+(label LABJ already defined)
+(label v152 already defined)
+(label LABI already defined)
+(label v150 already defined)
+(label v149 already defined)
+(label v133 already defined)
+(label v130 already defined)
+(label v106 already defined)
+(label LABF already defined)
+(label LABE already defined)
+(label LABD already defined)
+(label v023 already defined)
+(label v020 already defined)
+(label LABC already defined)
+(label v015 already defined)
+(label LABB already defined)
+(label v013 already defined)
+(label v007 already defined)
+(label hv129 already defined)
+(label hv123 already defined)
+(label hv122 already defined)
+(label hv121 already defined)
+(label hv108 already defined)
+(label hv106 already defined)
+(label hv105 already defined)
+(label hv104 already defined)
+(label hv101 already defined)
+
+. 
+. foreach num of numlist 1(1)7 {
+  2.         rm $TEMP/twins`num'.dta
+  3. }
+
+. rmdir $TEMP
+
+. 
+. replace _cou="CAR" if hv000=="CF3" &_cou==""
+(0 real changes made)
+
+. replace _cou="Zimbabwe" if hv000=="ZW6" &_cou==""
+(0 real changes made)
+
+. replace _year="2004" if hv000=="CF3" &_year==""
+(0 real changes made)
+
+. replace _year="2010" if hv000=="ZW6" &_year==""
+(0 real changes made)
+
+. 
+. ***Year of birth for Nepal (convert from Vikram Samvat to Gregorian calendar)
+. foreach year of varlist child_yob year_birth {
+  2.         replace `year'=`year'+2000 if _cou=="Nepal" & `year'<100
+  3.         replace `year'=`year'-57 if _cou=="Nepal"
+  4. }
+(29215 real changes made)
+(111268 real changes made)
+(29215 real changes made)
+(111268 real changes made)
+
+. ***Year of birth for Ethiopia (convert from Ge'ez to Gregorian calendar)
+. foreach year of varlist child_yob year_birth {
+  2.         replace `year'=`year'+8 if _cou=="Ethiopia"
+  3. }
+(129672 real changes made)
+(129672 real changes made)
+
+. 
+. replace child_yob=child_yob+1900 if child_yob<100&child_yob>2
+(2952497 real changes made)
+
+. replace child_yob=child_yob+2000 if child_yob<=2
+(2198 real changes made)
+
+. replace year_birth=year_birth+1900 if year_birth<100
+(2954695 real changes made)
+
+. 
+. save $PATH/Data/DHS_twins, replace
+file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
+
+. 
+. ********************************************************************************
+. *** (3) Setup Variables which are used in TwinRegression
+. ********************************************************************************
+. use $PATH/Data/DHS_twins, clear
+
+. 
+. ********************************************************************************
+. *** (3A) Generate sibling size subgroups (1+, 2+, 3+,...)  As per Angrist et al.
+. ********************************************************************************
+. gen mid="a"
+
+. drop id
+
+. egen id=concat(_cou mid _year mid v001 mid v002 mid v150 mid caseid)
+
+. drop mid
+
+. 
+. local max 1
+
+. local fert 2
+
+. 
+. foreach num in two three four five {
+  2.         gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'  
+  3.         gen `num'_plus_withtwin=`num'_plus
+  4.         replace `num'_plus=0 if twin!=0
+  5.         gen twin`num'=(twin==1 & bord==`fert')|(twin==2 & bord==`fert'+1)
+  6.         bys id: egen twin_`num'_fam=max(twin`num')
+  7.         drop twin`num'
+  8.         local ++max
+  9.         local ++fert
+ 10. }
+(13543 real changes made)
+(34242 real changes made)
+(47207 real changes made)
+(52326 real changes made)
+
+. 
+. ********************************************************************************
+. *** (3B) "Quality" variables
+. ********************************************************************************
+. *** Attendance (attend_year==2 is sometimes)
+. gen attendance=0 if attend_year==0
+(5626477 missing values generated)
+
+. replace attendance=1 if attend_year==2
+(493830 real changes made)
+
+. replace attendance=2 if attend_year==1
+(394502 real changes made)
+
+. replace attendance=. if age<6
+(763384 real changes made, 763384 to missing)
+
+. 
+. *** Z-Score
+. replace educ=. if educ>25 // come back here when compiling summary stats.
+(13323 real changes made, 13323 to missing)
+
+. bys _cou age: egen sd_educ=sd(educ)
+(209305 missing values generated)
+
+. bys _cou age: egen mean_educ=mean(educ)
+(198354 missing values generated)
+
+. gen school_zscore=(educ-mean_educ)/sd_educ
+(4053269 missing values generated)
+
+. replace school_zscore=. if age<6
+(261293 real changes made, 261293 to missing)
+
+. 
+. *** Highschool
+. gen highschool=1 if (educlevel==2|educlevel==3)&age>=11
+(6097256 missing values generated)
+
+. replace highschool=0 if (educlevel==0|educlevel==1)&age>=11
+(782909 real changes made)
+
+. 
+. *** No Educ
+. gen noeduc=1 if educlevel==0&age>6
+(6427421 missing values generated)
+
+. replace noeduc=0 if (educlevel==1|educlevel==2|educlevel==3)&age>6
+(1908786 real changes made)
+
+. 
+. *** Health
+. gen childsurvive=child_alive
+
+. gen childageatdeath=b7/12
+(5878329 missing values generated)
+
+. gen infantmortality=childageatdeath<=1
+
+. replace infantmortality=. if age<1
+(324359 real changes made, 324359 to missing)
+
+. gen childmortality=childageatdeath<=5
+
+. replace childmortality=. if age<5
+(1534888 real changes made, 1534888 to missing)
+
+. 
+. ********************************************************************************
+. *** (3C) Control variables
+. ********************************************************************************
+. gen gender="F" if sex==2
+(3459479 missing values generated)
+
+. replace gender="M" if sex==1
+(3459470 real changes made)
+
+. 
+. gen educfyrs_sq=educf*educf
+(2076 missing values generated)
+
+. gen educf_0=educf==0
+
+. gen educf_1_4=educf>0&educf<5
+
+. gen educf_5_6=educf>4&educf<7
+
+. gen educf_7_10=educf>6&educf<11
+
+. gen educf_11plus=educf>10
+
+. gen twind=1 if twin>=1&twin!=.
+(6597229 missing values generated)
+
+. replace twind=0 if twin==0
+(6597229 real changes made)
+
+. gen twind100=twin*100
+
+. gen malec=(gender=="M")
+
+. 
+. replace height=height/10
+height was int now float
+(3711958 real changes made)
+
+. replace weight=weight/10
+weightk was int now float
+(3711925 real changes made)
+
+. replace bmi=bmi/100
+bmi was int now float
+(3709402 real changes made)
+
+. 
+. gen poor1=wealth==1
+
+. gen agesq=age*age
+
+. gen magesq=agemay*agemay
+
+. 
+. *** General variables (country year)
+. rename _cou country
+
+. rename v005 sweight
+
+. encode country, gen(_cou)
+
+. 
+. ********************************************************************************
+. *** (3D) Twin variables
+. ********************************************************************************
+. bys id: egen twinfamily=max(twin)
+
+. gen twin_bord=bord-twin+1 if twin>0
+(6597229 missing values generated)
+
+. bys id: egen twin_bord_fam=max(twin_bord)
+(6291219 missing values generated)
+
+. bys id: egen nummultiple=max(twin)
+
+. gen finaltwin=(fert==bord)&twind==1
+
+. bys id: egen finaltwinfamily=max(finaltwin)
+
+. replace finaltwinfamily=0 if finaltwinfamily==.
+(0 real changes made)
+
+. 
+. 
+. ********************************************************************************
+. *** (3E) Fertility variables
+. ********************************************************************************
+. gen idealnumkids=v613 if v613<25
+(814046 missing values generated)
+
+. gen lastbirth=fert==bord&twin==0
+
+. replace lastbirth=1 if (twin_bord==(fert-1))&nummultiple==2
+(52879 real changes made)
+
+. replace lastbirth=1 if (twin_bord==(fert-2))&nummultiple==3
+(979 real changes made)
+
+. replace lastbirth=1 if (twin_bord==(fert-3))&nummultiple==4
+(40 real changes made)
+
+. 
+. gen wantedbirth=bord<=idealnumkids
+
+. gen idealfam=0 if idealnumkids==fert
+(5451188 missing values generated)
+
+. replace idealfam=1 if idealnumkids<fert
+(2764176 real changes made)
+
+. replace idealfam=-1 if idealnumkids>fert
+(2687012 real changes made)
+
+. 
+. gen quant_exceed=fert-idealnumkids
+(814046 missing values generated)
+
+. gen exceeder=1 if bord-idealnumkids==1
+(6248716 missing values generated)
+
+. gen twinexceeder=exceeder==1&(twin==2|twin==3|twin==4)
+
+. bys id: egen twinexceedfamily=max(twinexceeder)
+
+. gen tu=twin_bord>=idealnumkids
+
+. gen td=twin_bord>=idealnumkids
+
+. bys id: egen twin_undesired=max(tu)
+
+. bys id: egen twin_desired=max(td)
+
+. drop td tu
+
+. 
+. *Twins born on final birth causing parents to exceed desired family size
+. gen twinexceed=finaltwinfamily==1&idealfam==1
+
+. gen singlexceed=finaltwinfamily==0&idealfam==1
+
+. gen twinattain=finaltwinfamily==1&idealfam==0
+
+. 
+. **Generate sub-region (and ethnicity) specific desired fertility
+. bys _cou v101: egen desiredfert_region=mean(idealnumkids)
+(11677 missing values generated)
+
+. bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
+(9925 missing values generated)
+
+. 
+. 
+. ********************************************************************************
+. *** (4) Labels
+. ********************************************************************************
+. lab var year_birth "Mother's year of birth"
+
+. lab var religion "Reported religion"
+
+. lab var fert "Total number of children in the family"
+
+. lab var bord "Child's birth order"
+
+. lab var agefirstbirth "Mother's age at first birth"
+
+. lab var child_yob "Child's year of birth"
+
+. lab var two_plus "First born child in families with at least two births"
+
+. lab var three_plus "1,2 born children in families with at least 3 births"
+
+. lab var four_plus "1,2,3 born children in families with at least 4 births"
+
+. lab var five_plus "1,2,3,4 born children in families with at least 5 births"
+
+. lab var twin_two_fam "Twin birth at second birth"
+
+. lab var twin_three_fam "twin birth at third birth"
+
+. lab var twin_four_fam "twin birth at fourth birth"
+
+. lab var twin_five_fam "twin birth at fifth birth"
+
+. lab var id "Unique family identifier"
+
+. lab var attendance "child attends school (1=sometimes, 2=always)"
+
+. lab var educ "Years of education (child)"
+
+. lab var school_zscore "Standardised educ attainment compared to country cohort"
+
+. lab var highschool "Attends or attended highschool (>=12 years)"
+
+. lab var noeduc "No education (>7 years)"
+
+. lab var infantmortality "child died before 1 year of age"
+
+. lab var childmortality "child died before 5 years of age"
+
+. lab var gender "string variable: F or M"
+
+. lab var educf "Mother's years of education"
+
+. lab var educfyrs_sq "Mother's years of education squared"
+
+. lab var educf_0 "Mother has 0 years of education (binary)"
+
+. lab var educf_1_4 "Mother has 1-4 years of education (binary)"
+
+. lab var educf_5_6 "Mother has 5-6 years of education (binary)"
+
+. lab var educf_7_10 "Mother has 7-10 years of education (binary)"
+
+. lab var educf_11plus "Mother has 11+ years of education (binary)"
+
+. lab var twind "Child is a twin (binary)"
+
+. lab var twin "Child is a twin (0-4) for no, twin, triplet, ... "
+
+. lab var twind100 "Child is twin (binary*100)"
+
+. lab var malec "Child is a boy"
+
+. lab var height "height in centimetres"
+
+. lab var weightk "Weight in kilograms"
+
+. lab var bmi "Body Mass Index (weight in kilos squared/height in cm)"
+
+. lab var poor1 "In lowest asset quintile"
+
+. lab var age "Child's age in years"
+
+. lab var agemay "Mother's age in years"
+
+. lab var agesq "Child's age squared"
+
+. lab var magesq "Mother's age squared"
+
+. lab var sweight "Sample weight (from DHS)"
+
+. lab var country "Coutry name"
+
+. lab var _cou "country (numeric code)"
+
+. lab var twinfamily "At least one twin birth in family"
+
+. lab var twin_bord "Birth order when twins occur (for twins only)"
+
+. lab var twin_bord_fam "Birth order when twins occur (for whole family)"
+
+. lab var nummultiple "0 if singleton family, 1 if twins, 2 if triplets, ..."
+
+. lab var finaltwinfamily "The family had twins at their final birth"
+
+. lab var idealnumkids "Ideal number of children reported (truncate at 25)"
+
+. lab var lastbirth "Child is family's last birth (singleton or both twins)"
+
+. lab var wantedbirth "Birth occurs before optimal target"
+
+. lab var idealfam "Has family obtained ideal size? (negative implies < ideal)"
+
+. lab var quant_exceed "Difference between total births and desired births"
+
+. lab var exceeder "1 if child causes family to exceed optimal size"
+
+. lab var twinexceeder "Twin birth causes parents to exceed optimal size"
+
+. lab var twinexceedfamily "Family exceeds desired N and twin caused exceed"
+
+. lab var twin_undesired "Family has had twins, and twins were >desired births"
+
+. lab var twin_desired "Family has had twins, and twins were <=desired births"
+
+. lab var twinexceed "Twin birth causes parents to exceed optimal size"
+
+. lab var singlexceed "Single birth causes parents to exceed optimal size"
+
+. lab var twinattain "Twin birth causes parents to attain optimal size"
+
+. lab var desiredfert_region "Average desired family size by (subcountry) region"
+
+. lab var desiredfert_ethnic "Average desired family size by ethnicity"
+
+. 
+. 
+. lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
+
+. lab val idealfam ideal
+
+. 
+. replace age=age+100 if age<0
+(5537 real changes made)
+
+. ********************************************************************************
+. *** (5) Create country income levels and weight variables
+. ********************************************************************************
+. replace country="CAR" if v000=="CF3" & _cou==.
+(0 real changes made)
+
+. replace _cou=10 if v000=="CF3" & _cou==.
+(0 real changes made)
+
+. replace country="Zimbabwe" if v000=="ZW6" & _cou==.
+(0 real changes made)
+
+. replace _cou=69 if v000=="ZW6" & _cou==.
+(0 real changes made)
+
+. 
+. do $PATH/Do/countrynaming
+
+. if c(filename)=="~/database/DHS/world_childsmall1.dta" {
+.         cap gen year=yearint
+.         replace year=1993 if id2=="bd3"
+.         replace year=1996 if id2=="bd1"
+.         replace year=1994 if id2=="bo3"
+.         replace year=2003 if id2=="bo4"
+.         replace year=1992 if id2=="bf1"
+.         replace year=1998 if id2=="bf2"
+.         replace year=1996 if id2=="td1"
+.         replace year=2005 if id2=="co5"
+.         replace year=1998 if id2=="ci1"
+.         replace year=1992 if id2=="eg2"
+.         replace year=1995 if id2=="eg3"
+.         replace year=1993 if id2=="gh3"
+.         replace year=1998 if id2=="gh4"
+.         replace year=1994 if id2=="ht1"
+.         replace year=2005 if id2=="hn1"
+.         replace year=1999 if id2=="ia2"
+.         replace year=2004 if id2=="ls1"
+.         replace year=2004 if id2=="md3"
+.         replace year=2004 if id2=="mw1"
+.         replace year=1995 if id2=="ml2"
+.         replace year=2003 if id2=="ma3"
+.         replace year=2003 if id2=="mz2"
+.         replace year=1997 if id2=="nc1"
+.         replace year=1991 if id2=="pk1"
+.         replace year=1992 if id2=="sn3"
+.         replace year=1992 if id2=="tz3"
+.         replace year=2004 if id2=="tz2"
+.         replace year=2000 if id2=="ug3"
+.         replace year=1996 if id2=="zm2"
+.         replace year=2001 if id2=="zm3"
+. 
+.         *replace country="CongoBr" if country==" "
+.         *replace country="Cote D Ivoire" if country==" "
+.         *replace country="Cote D Ivoire" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         *replace country="DominicanRepublic" if country==" "
+.         
+. 
+.         gen income_status=      "LOWERMIDDLE"   if country=="Albania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Armenia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Azerbaijan"
+.         replace income_status=  "LOWINCOME"     if country=="Bangladesh"
+.         replace income_status=  "LOWINCOME"     if country=="Benin"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Brazil"
+.         replace income_status=  "LOWINCOME"     if country=="Burkina Faso"
+.         replace income_status=  "LOWINCOME"     if country=="Burundi"
+.         replace income_status=  "LOWINCOME"     if country=="Cambodia"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cape-Verde"
+.         replace income_status=  "LOWINCOME"     if country=="CAR"
+.         replace income_status=  "LOWINCOME"     if country=="Chad"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
+.         replace income_status=  "LOWINCOME"     if country=="Comoros"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Congo-Brazzaville"
+.         replace income_status=  "LOWINCOME"     if country=="Congo"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cote d'Ivoire"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Dominican Republic"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
+.         replace income_status=  "LOWINCOME"     if country=="Eritrea"
+.         replace income_status=  "LOWINCOME"     if country=="Ethiopia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Gabon"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guatemala"
+.         replace income_status=  "LOWINCOME"     if country=="Guinea"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guyana"
+.         replace income_status=  "LOWINCOME"     if country=="Haiti"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
+.         replace income_status=  "LOWERMIDDLE"   if country=="India"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Jordan"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
+.         replace income_status=  "LOWINCOME"     if country=="Kenya"
+.         replace income_status=  "LOWINCOME"     if country=="Kyrgyz Republic"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
+.         replace income_status=  "LOWINCOME"     if country=="Liberia"
+.         replace income_status=  "LOWINCOME"     if country=="Madagascar"
+.         replace income_status=  "LOWINCOME"     if country=="Malawi"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Maldives"
+.         replace income_status=  "LOWINCOME"     if country=="Mali"
+.         replace income_status=  "LOWINCOME"     if country=="Mauritania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Moldova"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
+.         replace income_status=  "LOWINCOME"     if country=="Mozambique"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
+.         replace income_status=  "LOWINCOME"     if country=="Nepal"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
+.         replace income_status=  "LOWINCOME"     if country=="Niger"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Paraguay"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Peru"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
+.         replace income_status=  "LOWINCOME"     if country=="Rwanda"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Samoa"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sao-Tome-and-Principe"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
+.         replace income_status=  "LOWINCOME"     if country=="Sierra-Leone"
+.         replace income_status=  "UPPERMIDDLE"   if country=="South Africa"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sri Lanka"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sudan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Swaziland"
+.         replace income_status=  "LOWINCOME"     if country=="Tanzania"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Timor-Leste"
+.         replace income_status=  "LOWINCOME"     if country=="Togo"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkmenistan"
+.         replace income_status=  "LOWINCOME"     if country=="Uganda"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ukraine"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Uzbekistan"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Yemen"
+.         replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
+.         replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
+. }
+
+. 
+. else {
+.         *THIS IS NOT NECESSARY FOR THE MERGE.  THIS WAS FOR A SEPERATE VARIABLE.
+.         gen income_status=      "LOWERMIDDLE"   if country=="Albania"
+(6739974 missing values generated)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Armenia"
+(30030 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Azerbaijan"
+(13579 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Bangladesh"
+(204065 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Benin"
+(96992 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
+(161533 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Brazil"
+(53289 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Burkina-Faso"
+(141748 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Burundi"
+(36445 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Cambodia"
+(119068 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
+(101794 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cape-Verde"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="CAR"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Chad"
+(49254 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
+(234450 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Comoros"
+(7923 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Congo-Brazzaville"
+(48785 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Congo-Democratic-Republic"
+(29648 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Cote-d-Ivoire"
+(75234 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Dominican-Republic"
+(173346 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
+(295304 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Eritrea"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Ethiopia"
+(129672 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Gabon"
+(40224 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
+(67845 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guatemala"
+(53511 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Guinea"
+(50385 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Guyana"
+(15879 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Haiti"
+(94229 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
+(99511 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="India"
+(807586 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
+(547344 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Jordan"
+(126116 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
+(14980 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Kenya"
+(101588 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Kyrgyz-Republic"
+(8784 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
+(29226 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Liberia"
+(39451 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Madagascar"
+(110046 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Malawi"
+(165221 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Maldives"
+(20190 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mali"
+(153781 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mauritania"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Moldova"
+(9911 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
+(80786 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Mozambique"
+(101514 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
+(48129 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Nepal"
+(111268 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
+(71164 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Niger"
+(89033 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
+(180419 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
+(66766 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Paraguay"
+(15365 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Peru"
+(190190 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
+(127612 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Rwanda"
+(109900 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Samoa"
+(0 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sao-Tome-and-Principe"
+(7627 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
+(146673 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Sierra-Leone"
+(21261 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="South-Africa"
+(23010 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sri-Lanka"
+(17705 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Sudan"
+(25805 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Swaziland"
+(11477 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Tanzania"
+(165382 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Timor-Leste"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Togo"
+(37310 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
+(60121 real changes made)
+.         replace income_status=  "UPPERMIDDLE"   if country=="Turkmenistan"
+(0 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Uganda"
+(121217 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Ukraine"
+(8009 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Uzbekistan"
+(9663 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
+(29918 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Yemen"
+(29940 real changes made)
+.         replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
+(92343 real changes made)
+.         replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
+(82360 real changes made)
+. }
+
+. *THIS COMES FROM WORLD BANK ATLAS METHOD (http://data.worldbank.org/about/country-classifications)
+. *ACTUAL CLASSIFICATION IS HERE: (http://data.worldbank.org/about/country-classifications/country-and-lending-gr
+> oups#Low_income)
+. 
+. 
+end of do-file
+
+. 
+. gen income="low" if income_status=="LOWINCOME"
+(4375203 missing values generated)
+
+. replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
+(4275163 real changes made)
+
+. 
+. ********************************************************************************
+. *** (6) Keep required variables.  Save data as working directory
+. ********************************************************************************
+. keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /*
+> */ four_plus five_plus twin_two_fam twin_three_fam twin_four_fam twin_five_fam /*
+> */ id attendance educ school_zscore highschool noeduc infantmortality          /*
+> */ childmortality gender educf educfyrs_sq educf_0 educf_1_4 educf_5_6         /*
+> */ educf_7_10 educf_11plus twind twin twind100 malec height weightk bmi poor1  /*
+> */ age agemay agesq magesq sweight country _cou _year twinfamily twin_bord     /*
+> */ twin_bord_fam nummultiple finaltwinfamily idealnumkids lastbirth wantedbirth/*
+> */ idealfam quant_exceed exceeder twinexceeder twinexceedfamily twin_undesired /*
+> */ twin_desired twinexceed singlexceed twinattain desiredfert_region           /*
+> */ desiredfert_ethnic income _merge
+
+.  
+. 
+. save $PATH/Data/DHS_twins, replace
+file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
+
+. 
+end of do-file
+
+. do Twin_Regressions.do
+
+. /* Regressions 3.01              damiancclarke             yyyy-mm-dd:2013-04-15
+> *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
+> */
+. 
+. /* This file contains all regression results that are being used in the Twin 
+> Instrument paper.  These include
+>         - Summary.xls (sum stats)
+>         - Summary_Birthorder.xls
+>    - Twin_Predict.xls
+>    - ...
+> 
+> This do file uses as input the data file DHS_Twins, which is generated by the
+> file Twin_Setup.do.  Currently it includes all DHS files available up until 
+> October 2013.  Files are downloaded and imported to Stata using the files 
+> DHS_Import.py and DHS_Multicountry.do.
+> 
+> Last edit:
+> * December 17th, 2013: considerable rewrite based on comments in 22 Nov email.
+> Can revert by going back to git commit Nov 11 2013.
+> * September 12th, 2013: Address Paul Dev's comment about treatment
+> * August 5th, 2013: Update figures and tables based on Sonia's comme-
+> nts on early draft.
+> */
+. 
+. 
+. clear all
+
+. version 11.2
+
+. cap log close
