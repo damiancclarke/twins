@@ -172,8 +172,8 @@ local fert 2
 gen twin_bord=bord-twin+1 if twin>0
 
 foreach num in two three four five {
-	gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'  
-	gen `num'_plus_withtwin=(`num'_plus==1|twin_bord==`fert')
+	gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'
+	gen `num'_plus_twins=((bord>=1&bord<=`fert')&fert>=`fert')|twin_bord==`fert'
 	replace `num'_plus=0 if twin!=0
 	gen twin`num'=(twin==1 & bord==`fert')|(twin==2 & bord==`fert'+1)
 	bys id: egen twin_`num'_fam=max(twin`num')
@@ -303,10 +303,10 @@ lab var two_plus "First born child in families with at least two births"
 lab var three_plus "1,2 born children in families with at least 3 births"
 lab var four_plus "1,2,3 born children in families with at least 4 births"
 lab var five_plus "1,2,3,4 born children in families with at least 5 births"
-*lab var two_plus_withtwin "First born child in families with at least two births"
-*lab var three_plus_withtwin "1,2 born children in families with at least 3 births"
-*lab var four_plus_withtwin "1,2,3 born children in families with at least 4 births"
-*lab var five_plus_withtwin "1,2,3,4 born children in families with at least 5 births"
+lab var two_plus_twins "1,2 born children in families with >=2 births"
+lab var three_plus_twins "1,2,3 born children in families with >=3 births"
+lab var four_plus_twins "1,2,3,4 born children in families with >=4 births"
+lab var five_plus_twins "1-5 born children in families with >=5 births"
 lab var twin_two_fam "Twin birth at second birth"
 lab var twin_three_fam "twin birth at third birth"
 lab var twin_four_fam "twin birth at fourth birth"
@@ -385,8 +385,9 @@ replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
 *** (6) Keep required variables.  Save data as working file.
 ********************************************************************************
 keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /*
-*/ four_plus five_plus twin_two_fam twin_three_fam twin_four_fam twin_five_fam /*
-*/ id attendance educ school_zscore highschool noeduc infantmortality          /*
+*/ four_plus five_plus two_plus_twins three_plus_twins four_plus_twins         /*
+*/ five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id  /*
+*/ attendance educ school_zscore highschool noeduc infantmortality             /* 
 */ childmortality gender educf educfyrs_sq educf_0 educf_1_4 educf_5_6         /*
 */ educf_7_10 educf_11plus twind twin twind100 malec height weightk bmi poor1  /*
 */ age agemay agesq magesq sweight country _cou _year twinfamily twin_bord     /*

@@ -1,0 +1,49 @@
+Hi Sonia,
+
+Now that all these regressions have finished running, my comments are below.
+The general impression is that there is *some* evidence that there may be a Q-Q
+tradeoff, but that this is still somewhat weak.  The inclusion of education and
+health controls helps.  When including twins there is major evidence in favour
+of Q-Q (in line with Rosenzweig & Zhang), but this isn't really surprising.  
+Finally, the desired threshold regressions are very noisy - I think because of
+ the selection into the threshold group.
+
+More detailed comments on each specification are below.  These are all 
+extensions of the original table 14. 
+
+Base Q-Q:
+	> Test for 4 variables (school zscore, Pr(no educ), child mortality, infant
+		mortality)
+	> In every case (48 regs), the sequential addition of education and health 
+		controls moves coefficients more in the direction of a Q-Q tradeoff
+	> Frequently though, the difference is not significant
+	> A number of times the Q-Q tradeoff *does* turn up when adding additional
+	  controls (particularly the case for Z-Score, which is I think our variable
+	  with most variation
+	> First stage of twin on fertility is about 0.8 for twin on 2nd birth to 0.9
+		for twin on 5th birth.  This is higher than Angrist et al (0.5-0.6 on 2 and
+		3 in Israel), and slightly higher than Black et al (0.7-0.8 on 2,3 in 
+		Norway 1986-2000)
+
+Base Q-Q with twins:
+	> Same pattern as above, but find a considerable Q-Q tradeoff in most cases, 
+		and this is most apparent when controlling for maternal health and 
+		education
+	> First stage is essentially the same as above (same sample plus twins and 
+		next child in singleton families
+
+Base Q-Q by income level:
+	> Doesn't add that much really.  Hard to see much of a difference between 
+		either low or middle income and the base model
+	> First stage is higher in low income countries, but this is no longer the
+		case when conditioning on education and maternal health
+
+Q-Q with interaction for desired
+	> A lot going on.  
+	> For low fertility (2+) fert*threshold actually makes kids better
+	> For higher fertility, fert*threshold does find Q-Q tradeoff
+	> This is a selected sample, as threshold is only switched on for those who
+		wanted 2 (or 3 or 4 or 5) kids, while comparison is with all families
+	> This also turns up in first stage.  For 2+ group, twin*threshold is 
+		negative, for 3+, about same as rest, and for 5+ is considerably greater
+		than 1

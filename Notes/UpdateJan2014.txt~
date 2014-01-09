@@ -1,0 +1,44 @@
+************************************************************************
+TABLES:
+> `Typical' Q-Q IV setup, adding socioeconomic and then health controls
+> Re-estimating `Typical' table above for:
+  	- low income countries
+	- middle income countries
+> Interaction of fertility with twin taking family over desired level
+> Above, but estimating only for those who desire same family size
+> Re-estimate these for:
+  	- low income countries
+	- middle income countries
+
+
+
+************************************************************************
+
+Each file has 48 rows.  The first 12 rows correspond to 2+ estimates,
+the second 12 to 3+, the third 12 to 4+ and the final 12 to 5+. Within
+each of these rows of 12, we are estimating for four different outcome
+
+
+01-12 Two Plus
+      01-03 School Z-Score
+      04-06 No Education
+      07-09 Child Mortality
+      10-12 Infant Mortality
+
+13-24 Three Plus
+      13-15 School Z-Score
+      16-18 No Education
+      19-21 Child Mortality
+      22-24 Infant Mortality
+
+25-36 Four Plus
+      25-27 School Z-Score
+      28-30 No Education
+      31-33 Child Mortality
+      34-36 Infant Mortality
+
+37-48 Five Plus
+      37-39 School Z-Score
+      40-42 No Education
+      43-45 Child Mortality
+      46-48 Infant Mortality

@@ -1,0 +1,87 @@
+Q1) Coefficient on mother's age
+    > I made a very silly mistake that's managed to go through
+      on a global that was defined a long time ago...
+    > Here mother's age was age at time of survey so is
+      clearly not the variable that we want.  I've corrected
+      this and all results in terms of health and educ are
+      similar
+    > We're not currently controling for bord in these regressions.
+      In the past we've discussed whether to do this and decided
+      not to.  I have run in the past with bord and things are
+      similar.  I can rerun very quickly if you think this is best.
+
+Q2) Constant and points re twin regression
+    > Twin is rescaled as 0 or 100 here. 
+    > We have retained only twins in all regressions throughout results
+    > It's a base case for as you say BMI, height, educ, but also
+      a base omitted country.  We are including country fixed effects,
+      so I'm not sure how well we can interpret this.
+
+Q3) Anemic variable in Chile and drugs.
+    > Yes this is counterintuitive.   CHECK
+    > Yes, drugs is an indicator for recreational drug taking (or reporting
+      this to surveyers).  There are two levels, as women are asked to classify
+      as infrequently or frequently.  For interest, in Chile this drug 
+      consumption is overwhelmingly likely to be marijuana, but could also be 
+      base paste.
+
+(Q4) You have phrased Altonji exactly correctly.  A value of 2 is actually
+a quite similar number to that which they found in their catholic schools
+paper I think, and which they cast as quite strong evidence in favour of an
+effect.  I guess each case is idiosyncratic as it depends on how well we think 
+that our observable variables can explain the outcome variable.
+
+(Q5) The first stage and second stage come from ivreg2, so are defined in 
+exactly the same way and with the same controls.  All the controls are exactly 
+the same throughout the entire do file. 
+
+(Q6) I have 4+, 5+ and up to 7+ saved on my computer.  I'll send them through.
+
+(Q7) Re the Conley stuff.
+     > Yes, estimated gamma from twin is estimated as specified on Conley p. 1
+       and is as you say.
+     > My notation below was sloppy.  The value for beta just refers to the
+       "true" value for gamma listed above.  This gives us some idea about
+       how the instrument might be slightly incorrect, which we then feed into
+       Conley's method.  The values 0.5, 1, 1.5, 2 are just arbitrary multipliers.
+       While we expect that just using the "true" value estimated is a pretty good
+       guess of what the inconsistency *may* be, I then use a value to see what
+       would happen if this estimate of gamma was 1/2, 1, ... times the estimated
+       value.
+
+       Conley et al have a series of graphs where they draw confidence intervals
+       over a range of values.  If you see the one on the right hand side where
+       the confidence interval is flat above and slopes down below, you can think
+       of these confidence intervals as what you would see if we just estimated
+       at all points between 0 and 2 rather than just .5,1,1.5,2.
+
+       The numbers from the table are estimated by making some assumptions about
+       how plausibly exogenous our instrument is.  If we think that twins are a
+       perfect instrument, then including twins in:  
+       	       school zscore = beta*fert + gamma*twins
+       should lead to a gamma of zero.  Imagine for now that we think that the
+       worst possible gamma if twins were quite a bad instrument is 0.2 (ie being
+       from a twin family gives you .2sd in the schooling distribution).  The, 
+       Conley's UCI approach says that we should estimate the 2sls estimate of
+       our equation for the range of values [0, 0.2].  We will know then that
+       the true confidence interval of our estimate on fertility lies within
+       the union of all confidence intervals of these estimates.
+
+       In this case all that's left to us is to define what the maximum gamma
+       is (above the arbitrary 0.2 I said).  You suggested that we get this
+       by actually estimating the above regression.  In the table above this
+       is the first rows of the table (0.0587 for 2+).  If we just use 0.0587
+       as our maximum gamma then this is 1*0.0587, so our union of CIs for all
+       estimates is [-0.1341, 0.0120].  We are thus 95% sure that the effect of
+       fertility on school zscore lies between these values.  The uppermost value
+       is the upper bound for the case where gamma=0, and the lowermost is the 
+       lower bound for the case where gamma=0.0587.
+       
+       Rather than just calculate for the one value I calculated for four possible
+       maximum gammas.  These are just 0.5*0.0587, 1*0.0587, 1.5*0.0587 and
+       2*0.0587.  If you joined each of the upper and lower bound points they
+       would look something like the graph on the right of figure XX in Conley et
+       al's paper.
+
+
+
