@@ -1,0 +1,212 @@
+-----------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Log/globalDescriptives.txt
+  log type:  text
+ opened on:   3 Feb 2014, 16:33:14
+
+. use "$Data/DHS_twins", clear
+
+. 
+. keep if _merge==3
+(2828789 observations deleted)
+
+. drop if bmi>50|height>240|height<80
+(1649304 observations deleted)
+
+. gen split=1 if bmi<20
+(1706885 missing values generated)
+
+. replace split=0 if bmi>=25
+(701715 real changes made)
+
+. drop if split==.
+(1005170 observations deleted)
+
+. 
+. ********************************************************************************
+. * (2) Generate twin birth variables and ratios
+. ********************************************************************************
+. replace bord=twin_bord if twin_bord!=.
+(12486 real changes made)
+
+. foreach num of numlist 1(1)5 {
+  2.         gen twin`num'=1 if twind==1&bord==`num'
+  3.         replace twin`num'=0 if twind==0&bord==`num'
+  4. }
+(1265416 missing values generated)
+(318134 real changes made)
+(1264811 missing values generated)
+(277959 real changes made)
+(1265075 missing values generated)
+(209948 real changes made)
+(1265780 missing values generated)
+(148244 real changes made)
+(1266517 missing values generated)
+(103316 real changes made)
+
+. 
+. collapse twin1 twin2 twin3 twin4 twin5 [pw=sweight], by(_cou split)
+
+. reshape wide twin*, i(_cou) j(split)
+(note: j = 0 1)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                      120   ->      60
+Number of variables                   7   ->      11
+j variable (2 values)             split   ->   (dropped)
+xij variables:
+                                  twin1   ->   twin10 twin11
+                                  twin2   ->   twin20 twin21
+                                  twin3   ->   twin30 twin31
+                                  twin4   ->   twin40 twin41
+                                  twin5   ->   twin50 twin51
+-----------------------------------------------------------------------------
+
+. 
+. foreach num of numlist 1(1)5 {
+  2.         gen twinratio`num'=twin`num'0/twin`num'1
+  3. }
+(7 missing values generated)
+(6 missing values generated)
+(5 missing values generated)
+(10 missing values generated)
+(12 missing values generated)
+
+. 
+. egen twinratio=rowmean(twinratio*)
+
+. 
+. ********************************************************************************
+. * (3) Summarise as map
+. ********************************************************************************
+. decode _cou, gen(id)
+
+. replace id="Burkina Faso" if id=="Burkina-Faso"
+(1 real change made)
+
+. replace id="Central African Republic" if id=="Central-African-Republic"
+(1 real change made)
+
+. replace id="Congo" if id=="Congo-Brazzaville"
+(1 real change made)
+
+. replace id="Democratic Republic of the Congo" if id=="Congo-Democratic-Republic"
+id was str25 now str32
+(1 real change made)
+
+. replace id="Cote d'Ivoire" if id=="Cote-d-Ivoire"
+(1 real change made)
+
+. replace id="Dominican Republic" if id=="Dominican-Republic"
+(1 real change made)
+
+. replace id="Kyrgyzstan" if id=="Kyrgyz-Republic"
+(1 real change made)
+
+. replace id="Republic of Moldova" if id=="Moldova"
+(1 real change made)
+
+. replace id="Sao Tome and Principe" if id=="Sao-Tome-and-Principe"
+(1 real change made)
+
+. replace id="Sierra Leone" if id=="Sierra-Leone"
+(1 real change made)
+
+. replace id="United Republic of Tanzania" if id=="Tanzania"
+(1 real change made)
+
+. rename id NAME
+
+. 
+. merge 1:1 NAME using $Map/world_data, gen(_worldmerge)
+NAME was str32 now str41
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           186
+        from master                         0  (_worldmerge==1)
+        from using                        186  (_worldmerge==2)
+
+    matched                                60  (_worldmerge==3)
+    -----------------------------------------
+
+. 
+. spmap twinratio using $Map/world_coordinates, id(_ID) fcolor(Greens)
+
+. graph export $Out/ratio.eps, as(eps) replace
+(file ~/investigacion/Activa/Twins/Results/Sum/ratio.eps written in EPS format)
+
+. 
+end of do-file
+
+. use $MAP/world_data
+no; data in memory would be lost
+r(4);
+
+. use $MAP/world_data, clear
+file /world_data.dta not found
+r(601);
+
+. use $Map/world_data, clear
+
+. d
+
+Contains data from ~/computacion/StataPrograms/worldstat/Shapefiles/World/world_data.dta
+  obs:           246                          
+ vars:            12                          23 Oct 2012 07:09
+ size:        19,680                          
+-----------------------------------------------------------------------------------------------------------------
+              storage  display     value
+variable name   type   format      label      variable label
+-----------------------------------------------------------------------------------------------------------------
+FIPS            str2   %9s                    
+ISO2            str2   %9s                    
+ISO3            str3   %9s                    
+UN              int    %10.0g                 
+NAME            str41  %41s                   
+AREA            long   %10.0g                 
+POP2005         long   %10.0g                 
+REGION          int    %10.0g                 
+SUBREGION       int    %10.0g                 
+LON             double %10.0g                 
+LAT             double %10.0g                 
+_ID             int    %12.0g                 
+-----------------------------------------------------------------------------------------------------------------
+Sorted by:  _ID
+
+. tab NAME
+
+                                   NAME |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+                            Afghanistan |          1        0.41        0.41
+                                Albania |          1        0.41        0.81
+                                Algeria |          1        0.41        1.22
+                         American Samoa |          1        0.41        1.63
+                                Andorra |          1        0.41        2.03
+                                 Angola |          1        0.41        2.44
+                               Anguilla |          1        0.41        2.85
+                             Antarctica |          1        0.41        3.25
+                    Antigua and Barbuda |          1        0.41        3.66
+                              Argentina |          1        0.41        4.07
+                                Armenia |          1        0.41        4.47
+                                  Aruba |          1        0.41        4.88
+                              Australia |          1        0.41        5.28
+                                Austria |          1        0.41        5.69
+                             Azerbaijan |          1        0.41        6.10
+                                Bahamas |          1        0.41        6.50
+                                Bahrain |          1        0.41        6.91
+                             Bangladesh |          1        0.41        7.32
+                               Barbados |          1        0.41        7.72
+                                Belarus |          1        0.41        8.13
+                                Belgium |          1        0.41        8.54
+                                 Belize |          1        0.41        8.94
+                                  Benin |          1        0.41        9.35
+--Break--
+r(1);
+
+. exity
+unrecognized command:  exity
+r(199);
+
+. exit, clear

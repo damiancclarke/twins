@@ -1,0 +1,49 @@
+----------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Results/Sum/Med/TwinStats.txt
+  log type:  text
+ opened on:  21 Mar 2014, 08:17:31
+.         sum birthweight premature antenatal csection breastfeed infantmort /*
+>         */ childmort educ school_zscore noeduc highschool malec if twind==0
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ birthweight |    531020    3187.346    632.6284        501       5499
+   premature |    172299    .0223275    .1477467          0          1
+antenatalv~s |    941622    4.088521    3.481058          0         20
+    csection |   1063192    .0732088     .260479          0          1
+  breastfeed |   1058024    14.10083    9.117714          0         47
+-------------+--------------------------------------------------------
+infantmort~y |   3575793    .0092066    .0955085          0          1
+childmorta~y |   2649717    .0168875    .1288498          0          1
+        educ |   3772448    2.582705    3.631531          0         23
+school_zsc~e |   2393790    .0005431    1.000275  -9.999701   41.22732
+      noeduc |   2193941    .1453344    .3524377          0          1
+-------------+--------------------------------------------------------
+  highschool |   1413658    .4566974    .4981215          0          1
+       malec |   3847827    .5223987    .4994981          0          1
+.         sum birthweight premature antenatal csection breastfeed infantmort /*
+>         */ childmort educ school_zscore noeduc highschool malec if twind==1
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+ birthweight |     13688     2491.28    661.7089        544       5454
+   premature |      3412    .0911489    .2878629          0          1
+antenatalv~s |     15699    4.562584    3.832252          0         20
+    csection |     24976    .1585122    .3652279          0          1
+  breastfeed |     22359    12.96731    9.566971          0         47
+-------------+--------------------------------------------------------
+infantmort~y |     69679    .0500294    .2180072          0          1
+childmorta~y |     49585    .0752849    .2638531          0          1
+        educ |     74726    2.138988    3.302581          0         19
+school_zsc~e |     44383   -.0292939    .9632208  -8.221428   10.27097
+      noeduc |     40170    .1624098    .3688309          0          1
+-------------+--------------------------------------------------------
+  highschool |     24737    .3989975    .4897021          0          1
+       malec |     76132    .5049519    .4999788          0          1
+.         log close
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Results/Sum/Med/TwinStats.txt
+  log type:  text
+ closed on:  21 Mar 2014, 08:17:34
+----------------------------------------------------------------------------------------------------------------

@@ -24,7 +24,7 @@ set maxvar 20000
 ****(1) Globals and locals
 ********************************************************************************
 global PATH "~/investigacion/Activa/Twins"
-global DATA "~/database/DHS/DHS_Data"
+global DATA "~/database/DHS/XDHS_Data"
 global LOG "$PATH/Log"
 global TEMP "$PATH/Temp"
 
@@ -42,10 +42,11 @@ foreach num of numlist 1(1)7 {
 	use $DATA/World_BR_p`num', clear
 
 	keep _cou _year caseid v000-v026 v101 v106 v107 v130 v131 v133 v136 v137 /*
-	*/ v149 v150 v151 v152 v190 v191 v201 v202 v203 v204 v205 v206 v207 v208 /*
+ 	*/ v149 v150 v151 v152 v190 v191 v201 v202 v203 v204 v205 v206 v207 v208 /*
 	*/ v209 v211 v212 v213 v228 v229 v230 v437 v438 v445 v457 v463a v481 v501/*
 	*/ v504 v602 v605 v715 v701 v730 bord b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11/*
-	*/ b12 b13 b14 b15 b16 v613 v614 m19 m19a v367 v312 v364
+	*/ b12 b13 b14 b15 b16 v613 v614 m19 m19a v367 v312 v364 m4 m5 m8 m9 m10 /*
+	*/ m12 m14 m15 m16 m17 m18 m19 m19a
 	
 	cap rename v010 year_birth
 	cap rename v012 agemay
@@ -70,7 +71,10 @@ foreach num of numlist 1(1)7 {
 	cap rename b4 sex
 	cap rename b5 child_alive
 	cap rename b8 age 
-
+	cap rename b11 birthspacing
+	cap rename v715 educp
+	cap rename v701 educp_level
+	
 	replace age=floor(v007-child_yob+(v006-b1/12)) if age==.
 
 
@@ -81,7 +85,7 @@ foreach num of numlist 1(1)7 {
 	replace relationship=5 if v150==3|v150==4|v150==11
 	replace relationship=8 if v150==6|v150==7
 	replace relationship=10 if v150==8|v150==10|v150==12|v150==5
-	
+
 	egen id=concat(_cou _year v001 v002)
 
 	save $TEMP/BR`num', replace
@@ -152,7 +156,6 @@ replace child_yob=child_yob+2000 if child_yob<=2
 replace year_birth=year_birth+1900 if year_birth<100
 
 save $PATH/Data/DHS_twins, replace
-
 ********************************************************************************
 *** (3) Setup Variables which are used in TwinRegression
 ********************************************************************************
@@ -231,6 +234,8 @@ gen twind=1 if twin>=1&twin!=.
 replace twind=0 if twin==0
 gen twind100=twin*100
 gen malec=(gender=="M")
+
+replace educp=. if educp>25
 
 replace height=height/10
 replace weight=weight/10
@@ -327,6 +332,8 @@ lab var educf_1_4 "Mother has 1-4 years of education (binary)"
 lab var educf_5_6 "Mother has 5-6 years of education (binary)"
 lab var educf_7_10 "Mother has 7-10 years of education (binary)"
 lab var educf_11plus "Mother has 11+ years of education (binary)"
+lab var educp "Partner's years of education"
+lab var educp_level "Partner's education level"
 lab var twind "Child is a twin (binary)"
 lab var twin "Child is a twin (0-4) for no, twin, triplet, ... "
 lab var twind100 "Child is twin (binary*100)"
@@ -362,7 +369,9 @@ lab var singlexceed "Single birth causes parents to exceed optimal size"
 lab var twinattain "Twin birth causes parents to attain optimal size"
 lab var desiredfert_region "Average desired family size by (subcountry) region"
 lab var desiredfert_ethnic "Average desired family size by ethnicity"
-
+lab var birthspacing "Time between child and previous birth (in months)"
+lab var wealth "Wealth quartile based on observed assets"
+lab var childageatdeath "Age of child (years) at death"
 
 lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
 lab val idealfam ideal
@@ -387,14 +396,14 @@ replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
 keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /*
 */ four_plus five_plus two_plus_twins three_plus_twins four_plus_twins         /*
 */ five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id  /*
-*/ attendance educ school_zscore highschool noeduc infantmortality             /* 
+*/ attendance educ school_zscore highschool noeduc infantmortality wealth      /* 
 */ childmortality gender educf educfyrs_sq educf_0 educf_1_4 educf_5_6         /*
-*/ educf_7_10 educf_11plus twind twin twind100 malec height weightk bmi poor1  /*
-*/ age agemay agesq magesq sweight country _cou _year twinfamily twin_bord     /*
-*/ twin_bord_fam nummultiple finaltwinfamily idealnumkids lastbirth wantedbirth/*
-*/ idealfam quant_exceed exceeder twinexceeder twinexceedfamily twin_undesired /*
-*/ twin_desired twinexceed singlexceed twinattain desiredfert_region           /*
-*/ desiredfert_ethnic income contracep_intent _merge
- 
+*/ educf_7_10 educf_11plus educp educp_level twind twin twind100 malec height  /*
+*/ weightk bmi poor1 age agemay agesq magesq sweight country _cou _year        /*
+*/ twinfamily twin_bord twin_bord_fam nummultiple finaltwinfamily idealnumkids /*
+*/ lastbirth wantedbirth idealfam quant_exceed exceeder twinexceeder           /*
+*/ twinexceedfamily twin_undesired twin_desired twinexceed singlexceed         /*
+*/ twinattain desiredfert_region desiredfert_ethnic income contracep_intent    /*
+*/ _merge birthspacing m* childageatdeath child_alive
 
 save $PATH/Data/DHS_twins, replace

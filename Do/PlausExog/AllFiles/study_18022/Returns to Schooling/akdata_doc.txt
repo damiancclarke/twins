@@ -1,0 +1,10 @@
+documentation for akdata.txt
+
+5 columns
+
+col no   variable
+1	log(wage)
+2	educ
+3	years (0-9)
+4	state (0-50)
+5	quarter (0-3)

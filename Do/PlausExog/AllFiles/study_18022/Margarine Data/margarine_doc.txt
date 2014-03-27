@@ -1,0 +1,19 @@
+documentation for margarine.txt
+
+log(share)
+log(price)
+log(wholesale price)
+BB dummy
+IC dummy 
+PA dummy 
+SH dummy
+BB feature
+IC feature
+PA feature
+SH feature
+BB display
+IC display
+PA display
+SH display
+ 
+

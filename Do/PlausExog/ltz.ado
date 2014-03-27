@@ -1,5 +1,3 @@
-
-
 ************************************************************************/
 * ltz.ado                                                            */
 *
@@ -85,8 +83,11 @@ local i=`i'+1;
 mat vecaccum a = `const' `instlist' `if' `in';
 mat MZZ = MZZ\a;
 
+*	mat list MZZ;
+	mat list MZX;
+	
 mat V = e(V)+inv(MZX'*inv(MZZ)*MZX)*MZX'*`omega'*MZX*inv(MZX'*inv(MZZ)*MZX);
-
+*mat list V;
 mat b = e(b)-(inv(MZX'*inv(MZZ)*MZX)*MZX'*`mu')';
 
 	mat cv=-invnormal((1-`level')/2);

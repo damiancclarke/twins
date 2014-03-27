@@ -1,0 +1,74 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}/home/damiancclarke/investigacion/Activa/Twins/Results/Sum/Desired.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}21 Mar 2014, 14:12:23
+{com}.         foreach num of numlist -1 0 1 {c -(}
+{txt}  2{com}.                 sum fert idealnumkids agemay educf height bmi educ school_zscore /*
+>                 */ noeduc highschool infantmortality childmortality agefirstbirth /*
+>                 */ motherage lowinc if idealfam==`num'
+{txt}  3{com}.         {c )-}
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}fert {c |}{res}   1598770    4.079945    2.620856          1         29
+{txt}idealnumkids {c |}{res}   1160306     5.72843    3.034867          2         24
+{txt}{space 6}agemay {c |}{res}   1598770    31.87976    8.102884         13         54
+{txt}{space 7}educf {c |}{res}   1597871    4.160632    4.586618          0         25
+{txt}{space 6}height {c |}{res}    914113    157.1522    7.217771         80      230.5
+{txt}{hline 13}{c +}{hline 56}
+{space 9}bmi {c |}{res}    911057     22.9942    4.561722      12.01         50
+{txt}{space 8}educ {c |}{res}    802188    3.312725    3.667734          0         22
+{txt}school_zsc~e {c |}{res}    801745   -.0474209    1.014646  -9.999701   41.22732
+{txt}{space 6}noeduc {c |}{res}    717768    .2140636    .4101714          0          1
+{txt}{space 2}highschool {c |}{res}    423081    .3831725    .4861604          0          1
+{txt}{hline 13}{c +}{hline 56}
+infantmort~y {c |}{res}   1430930    .0110215    .1044032          0          1
+{txt}childmorta~y {c |}{res}    920271    .0234105    .1512034          0          1
+{txt}agefirstbi~h {c |}{res}   1589701    19.50834    3.948606          6         48
+{txt}{space 3}motherage {c |}{res}   1598770    24.68008    5.945691          1         54
+{txt}{space 6}lowinc {c |}{res}   1598770    .3996954    .4898358          0          1
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}fert {c |}{res}    833935    3.784367    2.002621          1         18
+{txt}idealnumkids {c |}{res}    833935    3.784367    2.002621          1         18
+{txt}{space 6}agemay {c |}{res}    833935    33.96521    7.394566         12         54
+{txt}{space 7}educf {c |}{res}    833442    5.689403    4.859847          0         25
+{txt}{space 6}height {c |}{res}    471084    155.3756    7.009008       83.6      205.4
+{txt}{hline 13}{c +}{hline 56}
+{space 9}bmi {c |}{res}    469914    23.89503    5.076219      12.04         50
+{txt}{space 8}educ {c |}{res}    533940    4.556014    3.951196          0         21
+{txt}school_zsc~e {c |}{res}    533691    .1612837    .9751256  -8.601399   31.53682
+{txt}{space 6}noeduc {c |}{res}    486200    .0927499    .2900819          0          1
+{txt}{space 2}highschool {c |}{res}    308847    .5426765    .4981762          0          1
+{txt}{hline 13}{c +}{hline 56}
+infantmort~y {c |}{res}    781150    .0048493    .0694676          0          1
+{txt}childmorta~y {c |}{res}    589014    .0086161    .0924222          0          1
+{txt}agefirstbi~h {c |}{res}    833935    20.03998    3.860201          8         47
+{txt}{space 3}motherage {c |}{res}    833935    25.01241    5.618972          2         52
+{txt}{space 6}lowinc {c |}{res}    833935    .2655962    .4416504          0          1
+
+{txt}    Variable {c |}       Obs        Mean    Std. Dev.       Min        Max
+{hline 13}{c +}{hline 56}
+{space 8}fert {c |}{res}   1488582    6.119256    2.433216          1         22
+{txt}idealnumkids {c |}{res}   1488582    3.254931     1.63031          0         15
+{txt}{space 6}agemay {c |}{res}   1488582    37.28622    6.665408         14         54
+{txt}{space 7}educf {c |}{res}   1487647    3.748185     4.12867          0         25
+{txt}{space 6}height {c |}{res}    894394    154.6087    7.050037         80      208.5
+{txt}{hline 13}{c +}{hline 56}
+{space 9}bmi {c |}{res}    891942     23.8616    5.312938      12.03         50
+{txt}{space 8}educ {c |}{res}   1101146    4.359994     3.82002          0         23
+{txt}school_zsc~e {c |}{res}   1100955    -.043542    .9922353  -9.428455   33.93504
+{txt}{space 6}noeduc {c |}{res}   1028469    .1228233    .3282345          0          1
+{txt}{space 2}highschool {c |}{res}    705381    .4612741    .4984984          0          1
+{txt}{hline 13}{c +}{hline 56}
+infantmort~y {c |}{res}   1430884    .0116795    .1074388          0          1
+{txt}childmorta~y {c |}{res}   1188051    .0182778    .1339544          0          1
+{txt}agefirstbi~h {c |}{res}   1488582    18.83852     3.33777          6         42
+{txt}{space 3}motherage {c |}{res}   1488582    26.77069    6.277296          1         53
+{txt}{space 6}lowinc {c |}{res}   1488582    .3116704    .4631761          0          1
+{com}.         cap log close
+{smcl}
+{com}{sf}{ul off}

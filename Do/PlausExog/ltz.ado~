@@ -1,5 +1,3 @@
-
-
 ************************************************************************/
 * ltz.ado                                                            */
 *
@@ -11,6 +9,7 @@
 *			(endogenouslist covariatelist=instrumentlist covariatelist) 
 *			[if] [in], [level()] [cluster()] [robust]*/
 ************************************************************************/
+cap program drop ltz
 program define ltz
 #delimit ;
 

@@ -25,14 +25,14 @@ quietly ivreg `Y' `0', `robust' cl(`cluster');
 
 local instlist `inst';
 local indeplist `e(instd)';
-local indeplist2 `e(insts)';
+local indeplist2 `e(insts)';  //Full lists of exog, endog, insts
 
-local inst : word count of `instlist';
+local inst : word count of `instlist'; 
 local xreg : word count of `indeplist';
 local xreg2: word count of `indeplist2';
 local xreg =`xreg'-1;
 local xreg2=`xreg2'-1;
-local inst=`inst'-1;
+local inst=`inst'-1; //counts number of each
 
 local a=1;
 
@@ -55,7 +55,7 @@ while `a'<=`xreg'{;
 local instlist `e(insts)';
 local indeplist `e(instd)';
 
-
+	 
 local w=1;
 while `w'<`inst'+1{;
 local gamma`w'=.;
@@ -86,14 +86,14 @@ local gamma`w'=`g`w'min'+((`g`w'max'-`g`w'min')/(`k'-1))*`a`w'';
 
 local w = `w'-1;
 
-}; 
+}; //Breaks down min and max gamma into grid
 
 display `gamma1';
 display `gamma2';
 display `gamma3';
 
 quietly{;
-tempvar Y_G cumsum;
+	tempvar Y_G cumsum;
        	
 	local r=1;
 	
@@ -109,14 +109,12 @@ tempvar Y_G cumsum;
 
 	gen `Y_G'=`Y'-`cumsum';
 
-};
+}; //TAKES THE GAMMA*Z AWAY FROM Y
 
-
-quietly{;
+quietly{;	
 /*IV REGRESSION STEP*/
-
 	ivreg `Y_G' `0' `if' `in' , `robust' cl(`cluster');
-	
+
 	mat b2SLS=e(b);
 	mat cov2SLS=e(V);
 
@@ -145,7 +143,8 @@ local z=`z'+1;
 
 
 local v=`v'+1;
-};
+};//  HERE WE ARE GRIDDING OVER EACH POSSIBLE OUTCOME
+* SO HAVE VARIOUS GAMMA COMBINATIONS...	  
 
 /*Output in display window*/
 
@@ -163,7 +162,6 @@ di
 "--------" _col(13) "-----------" _col(29) "-----------";
 
 local z=1;
-
 while `z'<=`xreg'{;
 	
 	di "`ind`z''" _col(13)  `l`z''  _col(29)   `u`z'';

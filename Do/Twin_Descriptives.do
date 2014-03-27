@@ -25,11 +25,11 @@ local trend 0
 local med 1
 local final 0
 
-cap ssc install distplot
+*cap ssc install distplot
 ********************************************************************************
 *** (2) Initialise
 ********************************************************************************
-log using "$LOGS/Twin_Descriptives.txt", text replace
+*log using "$LOGS/Twin_Descriptives.txt", text replace
 use "$DATA/DHS_twins"
 
 keep if _merge==3
@@ -119,6 +119,8 @@ restore
 *** (4) Descriptives
 ***     (a) Birthweight
 ***     (b) Breastfeeding
+***     (c) General comparison
+***     (d) Reported size at birth
 ********************************************************************************
 if `med'==1 {
 	cap mkdir "$RESL/Med/"
@@ -127,8 +129,6 @@ if `med'==1 {
 	gen breastfeed=m5 if m5<48
 	replace breastfeed=0 if m5==94
 
-	
-	/*
 	byhist m19, by(twind) frac tw(scheme(s1color))
 	graph export "$RESL/Med/Birthweight.eps", as(eps) replace
 
@@ -141,18 +141,66 @@ if `med'==1 {
 	replace childageatdeath=100 if child_alive==1
 	distplot2 line childageatdeath, by(twind)
 	graph export "$RESL/Med/Survival.eps", as(eps) replace	
-	*/
 
 	replace m16=. if m16>1
 	replace m14=. if m14>20
 	replace m17=. if m17>1
+	rename m19 birthweight
+	rename m16 premature
+	rename m14 antenatalvisits
+	rename m17 csection
 	
-	estpost tabstat m19 m16 m14 m17 breastfeed infantmort childmort educ /*
-	*/ school_zscore noeduc highschool malec, by(twind) statistics(mean sd) /*
-	*/ columns(statistics) listwise
+*	estpost tabstat m19 m16 m14 m17 breastfeed infantmort childmort educ /*
+*	*/ school_zscore noeduc highschool malec, by(twind) statistics(mean sd) /*
+*	*/ columns(statistics) listwise
 
-	esttab, main(mean) aux(sd) nostar unstack /*
-	*/ noobs nonote nomtitle nonumber replace
+*	esttab, main(mean) aux(sd) nostar unstack /*
+*	*/ noobs nonote nomtitle nonumber replace
+
+	log using "$RESL/Med/TwinStats.txt", text replace
+	sum birthweight premature antenatal csection breastfeed infantmort /*
+	*/ childmort educ school_zscore noeduc highschool malec if twind==0
+	sum birthweight premature antenatal csection breastfeed infantmort /*
+	*/ childmort educ school_zscore noeduc highschool malec if twind==1
+	log close
+
+	log using "$RESL/Med/TwinStats_inc.txt", text replace
+	foreach inc in low mid {
+		sum birthweight premature antenatal csection breastfeed infantmort /*
+		*/ childmort educ school_zscore noeduc highschool malec if /*
+		*/ twind==0&income=="`inc'"
+		sum birthweight premature antenatal csection breastfeed infantmort /*
+		*/ childmort educ school_zscore noeduc highschool malec if /*
+		*/ twind==1&income=="`inc'"
+	}
+	log close
+	
+	gen size=m18 if m18<=5
+	gen yestwin=1 if twind==1
+	gen notwin=1 if twind==0
+	collapse (sum) yestwin notwin, by(size)
+	drop if size==.
+	replace size=9 if size==1
+	replace size=8 if size==2
+	replace size=7 if size==3
+	replace size=6 if size==4
+	replace size=size-4
+	label def sizes 1 "Very Small" 2 "Small" 3 "Average" 4 "Large" 5 "Very Large"
+	label values size sizes 
+	sum yestwin
+	replace yestwin=yestwin/(5*r(mean))
+	sum notwin
+	replace notwin=notwin/(5*r(mean))
+	
+   #delimit ;
+	graph bar notwin yestwin, over(size) bargap(-20)
+	  legend( label(1 "Singletons") label(2 "Twins") )
+	  ytitle("Proportion of Children") scheme(s1color)
+	  title("Reported Child Size") subtitle("Twins and Non-twins")
+	  blabel(bar, position(inside) format(%9.2f) color(white)) ;
+   #delimit cr
+	graph export "$RESL/Med/Size.eps", as(eps) replace		
+	
 }
 ********************************************************************************
 *** (X) Finalising

@@ -1,0 +1,20 @@
+Probability of Giving Birth to Twins (DHS)
+	est1	est2	est3	est4	est5
+	b/se	b/se	b/se	b/se	b/se
+Age	-1.242***	-1.133***	-1.367***	-1.214***	-1.365***
+	(0.038)	(0.057)	(0.051)	(0.043)	(0.083)
+Age Squared	0.009***	0.005***	0.012***	0.008***	0.011***
+	(0.001)	(0.001)	(0.001)	(0.001)	(0.001)
+Age First Birth	0.894***	0.950***	0.859***	0.900***	0.941***
+	(0.015)	(0.024)	(0.019)	(0.017)	(0.032)
+Education (years)	0.130***	0.154***	0.133***	0.167***	0.040
+	(0.016)	(0.030)	(0.019)	(0.019)	(0.028)
+Education squared	0.001	-0.004	-0.000	-0.001	0.004**
+	(0.001)	(0.003)	(0.001)	(0.001)	(0.002)
+Height	0.060***	0.062***	0.058***	0.066***	0.040***
+	(0.004)	(0.006)	(0.005)	(0.005)	(0.006)
+BMI	0.048***	0.059***	0.046***	0.050***	0.042***
+	(0.006)	(0.011)	(0.007)	(0.007)	(0.009)
+r2	0.02	0.02	0.02	0.02	0.02
+N	2271991	923607	1342903	1660246	611745
+Notes: All specifications include a full set of year of birth and  country dummies, and are estimated as linear probability models.  Twin is multiplied by 100 for presentation.  Height is measured in cm  and BMI is weight in kg divided by height in cm squared.

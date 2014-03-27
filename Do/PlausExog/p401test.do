@@ -44,4 +44,11 @@ uci net_tfa (p401 i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol
 	col marr twoearn db pira hown), inst(e401) g1min(-10000) g1max(10000) 
 	grid(2) level(.95) robust; 	 
 
+dis "DCC's versions";
+plausexog uci net_tfa i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col
+  marr twoearn db pira hown (p401  = e401), gmin(-10000) gmax(10000) 
+	grid(2) level(.95) robust;
 
+plausexog ltz net_tfa i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col
+  marr twoearn db pira hown (p401  = e401), omega(omega_eta) mu(mu_eta)
+  grid(2) level(.95) robust;

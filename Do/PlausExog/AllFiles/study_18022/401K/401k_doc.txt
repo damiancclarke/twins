@@ -1,0 +1,6 @@
+documentation on 401K data:
+col
+1 	y	net financial assets
+2 	x	401K participation
+3	z	401K eligibility
+4-20	w	various demos etc

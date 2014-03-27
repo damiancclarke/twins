@@ -1,0 +1,45 @@
+================================================================================
+TO DO February 2014: Twins
+================================================================================
+
+ECONOMICS
+(1)  Implement Conley et al IV bounds alternative estimations (2-4)
+     > Should actually re-write Stata routines.  Current versions on Conley's
+       site do not work in many cases
+(2)  Comprehensive test for balance between treatment and control              X
+     > do files exist, remake source and add further vars		                   X
+     > Full description, 10/01 email from Sonia	     			                     X
+(3)  Re-run all main tests including bord dummies (a-la Black et al)	         X
+(4)  Control for birth-spacing (RZ is reference, plus point from Sonia's notes)X
+(5)  Make table for IMR placebo equation, add column for birth-spacing controls
+(6)  Show results for twins themselves
+(7)  Test whether crossing desired threshold by parity depends upon Xs				 X
+     > Point from Sonia's email (10/01) should be incorporated: F test of jointX 
+	 vars																																				 X
+(8)  Look particularly at families in bottom wealth quintil/quartile?          X
+     > Problem is that this isn't recorded for many DHS                        X
+     > Still, can probably do given sample-size (checked, actually about 1/2)	 X
+(9)  Policy experiments to see Q-Q in a particular case (ie school construction)
+(10) Check to see if Angrist et al and Black et al uploaded data to JoLE, QJE
+     > Not on Angrist data archive
+     > JOLE says that yes, but can't find where to download
+     > Can't find on QJE either...
+     > As Sonia says, we can request from authors when sending a draft
+(11) Think about sex-selection instrument??  Black et al don't like it...
+(12) Discuss Cheti Nicoletti's email - run these tests?
+
+================================================================================
+SCIENCE
+(1)  Add IFLS regression...
+(2)  Can we get UK/Denmark data (Sonia)
+(3)  Comprehensive summary statistics on twins across low-/high-income countries
+     > This is a really nice point!  (From Sonia's notes)
+     > Include prevalance, bwt, IMR, trends over time
+(4) Add antenatal care/midwife in mother's region to twin regressions
+
+This paper is something that is perhaps best with 2 datasets, or at most 3.  I
+guess this is why we are thinking DHS + Norway/USA etc.  If we have relatively
+few words and want to say something like (a) twins look like the following (show
+sum stats), (b) twins depend upon family characteristics, and (c) twins matter
+as they have effect on (global) family outcomes, then this is already *a lot* in
+not many words and restriction on number of figures/tables...

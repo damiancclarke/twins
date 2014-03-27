@@ -1,0 +1,3 @@
+/home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/Balance.txt
+/home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/TwoPlus.txt
+/home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/ThreePlus.txt
