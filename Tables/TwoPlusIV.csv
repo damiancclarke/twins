@@ -1,0 +1,41 @@
+;Base;;;
+;Controls;Socioec;Health;Obs.
+Pre-Twins 
+;;;;
+All Families 
+Fertility;0.002;-0.023;-0.025;258,243
+         ;(0.027);(0.025);(0.025);
+;;;;
+All Families (bord dummies) 
+Fertility;0.002;-0.023;-0.025;258,243
+         ;(0.027);(0.025);(0.025);
+;;;;
+Low-Income Countries 
+Fertility;0.023;0.012;0.009;156,847
+         ;(0.032);(0.029);(0.029);
+;;;;
+Middle-Income Countries 
+Fertility;-0.057;-0.084*;-0.085*;101,396
+         ;(0.050);(0.045);(0.045);
+;;;;
+Desired-Threshold 
+Fertility;0.001;-0.030;-0.031;258,243
+         ;(0.032);(0.028);(0.028);
+Fertility*desire;-0.000;0.006;0.005;
+         ;(0.014);(0.014);(0.014);
+Twins and Pre-Twins 
+;;;;
+All Families 
+Fertility;-0.033;-0.078***;-0.083***;505,373
+         ;(0.023);(0.020);(0.019);
+;;;;
+All Families (bord dummies) 
+Fertility;-0.024;-0.061***;-0.065***;505,373
+         ;(0.024);(0.020);(0.020);
+First Stage (Pre-Twins) 
+;;;;
+All Families 
+Twins;0.788***;0.839***;0.841***;258,243
+         ;(0.031);(0.028);(0.028);
+NOTES: Two-plus refers to all first-born children in families with two or more children.  Each cell presents the coefficient of a 2SLS regression where fertility is instrumented by twinning at birth order two.  Base controls include age, mother's age, and mother's age at birth fixed effects plus country and year-of-birth FEs.  Standard errors are clustered by mother. 
+* p<0.1, ** p<0.05, *** p<0.01

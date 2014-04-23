@@ -1,0 +1,38 @@
+\begin{table}[htpb!]							
+\caption{Probability of Giving Birth to Multiple Children (Chile)}							
+\label{tab:twinreg2}							
+\begin{center}							
+\begin{tabular}{lclc} \hline							
+	&	(1)	&		&		\\
+VARIABLES	&	twin	&		&		\\ \hline
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\							
+Mother age birth	&	0.00451***	&	Preg Normal Weight	&	0.00820**	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.00129)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00417)	\end{footnotesize} \\
+Mother's Age$^2$	&	-7.38e-05***	&	Preg Overweight	&	0.0110**	\\
+	\vspace{4pt} & \begin{footnotesize}	(2.23e-05)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00490)	\end{footnotesize} \\
+Indigenous	&	-0.0111***	&	Preg Obese	&	-0.00908	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.00384)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00695)	\end{footnotesize} \\
+Poor	&	0.00903**	&	Preg Anemia	&	0.00854*	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.00421)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00481)	\end{footnotesize} \\
+Meduc Preschool	&	-0.0106	&	Preg No Checkup	&	-0.0174***	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.0136)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00668)	\end{footnotesize} \\
+Meduc Primary	&	0.00572	&	Preg Smoked	&	-0.00611	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.0135)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00400)	\end{footnotesize} \\
+Meduc Secondary1	&	0.00885	&	Preg drugs 1	&	-0.00157	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.0136)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.0160)	\end{footnotesize} \\
+Meduc Secondary2	&	0.00738	&	Preg drugs 2	&	-0.0184***	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.0133)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00352)	\end{footnotesize} \\
+Meduc Technical1	&	0.0126	&	Preg alcohol 1	&	-0.00151	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.0144)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00549)	\end{footnotesize} \\
+Meduc Technical2	&	0.0152	&	Preg alcohol 2	&	-0.0185***	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.0145)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00296)	\end{footnotesize} \\
+Meduc Tertiary1	&	0.0182	&	Preg public hosp.	&	-0.0117***	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.0145)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00351)	\end{footnotesize} \\
+Meduc Tertiary2	&	0.0251*	&	Rural	&	-7.58e-05	\\
+	\vspace{4pt} & \begin{footnotesize}	(0.0150)	\end{footnotesize} & \begin{footnotesize}		\end{footnotesize} & \begin{footnotesize}	(0.00450)	\end{footnotesize} \\
+\vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\							\\
+Constant	&	-0.0394	&	Observations	&	14,900 \\
+	\vspace{4pt} & \begin{footnotesize}	(0.0270)	\end{footnotesize} & \begin{footnotesize}	R-squared	\end{footnotesize} & \begin{footnotesize}	0.005	\end{footnotesize}\\ \midrule
+\multicolumn{4}{p{11cm}}{\begin{footnotesize}Notes to table: Data comes from the Encuesta Longitudinal de Primera Infancia (ELPI) from Chile.  Education at each level are dummy variables, ‘no education’ is the omitted base. Regional controls and child age fixed effects are omitted for clarity.  Heteroscedasticity robust standard errors are presented in parenthesis. *** p$<$0.01, ** p$<$0.05, * p$<$0.1\end{footnotesize}} \\ \bottomrule
+\end{tabular}\end{center}\end{table}							
+

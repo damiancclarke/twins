@@ -111,12 +111,10 @@ quietly{;
 
 }; //TAKES THE GAMMA*Z AWAY FROM Y
 
-
-quietly{;
+quietly{;	
 /*IV REGRESSION STEP*/
-
 	ivreg `Y_G' `0' `if' `in' , `robust' cl(`cluster');
-	
+
 	mat b2SLS=e(b);
 	mat cov2SLS=e(V);
 

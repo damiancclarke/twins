@@ -1,0 +1,34 @@
+\begin{table}[htpb!]							
+\caption{Twin versus Non-Twin Descriptives}		
+\label{tab:twinDesc}	
+\begin{center}
+\begin{tabular}{lccccc} \toprule
+\textbf{Variable} &   \textbf{Obs.} & \textbf{Mean} & \textbf{Std. Dev.} &  \textbf{Min} &  \textbf{Max} \\ \midrule
+\multicolumn{6}{l}{\textsc{Non-Twins}} \\
+Birthweight &    531020 &   3187.346 &   632.6284  &      501  &     5499\\
+Premature &    172299  &  0.0223 &    0.1477 &          0   &       1\\
+Antenatal Checks &    941622  &  4.088 &    3.481 &          0  &       20\\
+Caesarean &   1063192  &  0.0732 &     0.260 &          0        &  1\\
+Breastfeeding &   1058024  &  14.100 &    9.117 &          0     &    47\\
+Infant Mortality &   3575793 &   0.009 &    0.0955 &          0  &        1\\
+Child Mortality &   2649717  &  0.0168 &    0.1288 &          0   &       1\\
+Education &   3772448 &   2.582 &    3.631 &          0       &  23\\
+School Z-Score &   2393790  &  0.000 &    1.000 &  -9.999701 &  41.227 \\
+No Educ. &   2193941  &  0.1453 &    0.3524 &          0      &    1\\
+High School &   1413658  &  0.4567 &    0.4981 &          0     &     1\\
+Male &   3847827  &  0.5223 &   0.4994 &          0        &  1\\ \midrule
+\multicolumn{6}{l}{\textsc{Twins}} \\
+Birthweight &     13688  &   2491.28  &  661.708 &       544  &     5454\\
+Premature &      3412  &  0.0911 &    .2878 &          0     &     1\\
+Antenatal Checks &     15699  &  4.5625 &    3.832 &          0 &        20\\
+Caesarean &     24976  &  0.1585 &    0.3652 &          0        &  1\\
+Breastfeeding &     22359  &  12.967 &    9.566 &          0     &    47\\
+Infant Mortality &     69679  &  0.0500 &    0.2180 &          0   &       1\\
+Child Mortality &     49585  &  0.0752 &    0.2638 &          0     &     1\\
+Education &     74726 &   2.138 &    3.302 &          0       &  19\\
+School Z-Score &     44383  & -0.0292 &    0.963 &  -8.221  & 10.271 \\
+No Educ. &     40170   & 0.1624  &   0.3688 &          0       &   1\\
+High School &     24737   & 0.3989 &    0.4897 &          0     &     1\\
+Male &     76132  &  0.5049 &    0.4999 &        0       &   1\\ \bottomrule
+\multicolumn{6}{p{8cm}}{\textsc{Notes:}} \\
+\end{tabular}\end{center}\end{table}

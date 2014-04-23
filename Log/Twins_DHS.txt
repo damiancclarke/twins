@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twins_DHS.txt
   log type:  text
- opened on:  19 Mar 2014, 18:37:04
+ opened on:   3 Apr 2014, 06:38:06
 
 . ********************************************************************************
 . *** (2) Take necessary variables from BR (mother births) and PR (household me-
@@ -19,7 +19,7 @@
 >         */ v209 v211 v212 v213 v228 v229 v230 v437 v438 v445 v457 v463a v481 v501/*
 >         */ v504 v602 v605 v715 v701 v730 bord b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11/*
 >         */ b12 b13 b14 b15 b16 v613 v614 m19 m19a v367 v312 v364 m4 m5 m8 m9 m10 /*
->         */ m12 m14 m15 m16 m17 m18 m19 m19a
+>         */ m12 m14 m15 m16 m17 m18 m19 m19a m2a m2b m2n
   4.         
 .         cap rename v010 year_birth
   5.         cap rename v012 agemay
@@ -47,22 +47,26 @@
  27.         cap rename b11 birthspacing
  28.         cap rename v715 educp
  29.         cap rename v701 educp_level
- 30.         
+ 30.         cap rename m14 antenatal
+ 31.         cap rename m2a prenate_doc
+ 32.         cap rename m2b prenate_nurse
+ 33.         cap rename m2n prenate_none
+ 34.         
 .         replace age=floor(v007-child_yob+(v006-b1/12)) if age==.
- 31. 
+ 35. 
 . 
 .         **The following lines correct for the fact that we only observe each births'
 .         **mothers' relationship to the household head.  In this way, if the mother 
 .         **is the wife, the birth must be the child of the household head.
 .         gen relationship=3 if v150==1|v150==2|v150==9
- 32.         replace relationship=5 if v150==3|v150==4|v150==11
- 33.         replace relationship=8 if v150==6|v150==7
- 34.         replace relationship=10 if v150==8|v150==10|v150==12|v150==5
- 35. 
+ 36.         replace relationship=5 if v150==3|v150==4|v150==11
+ 37.         replace relationship=8 if v150==6|v150==7
+ 38.         replace relationship=10 if v150==8|v150==10|v150==12|v150==5
+ 39. 
 .         egen id=concat(_cou _year v001 v002)
- 36. 
+ 40. 
 .         save $TEMP/BR`num', replace
- 37. }
+ 41. }
 (139917 real changes made)
 (162393 missing values generated)
 (74778 real changes made)
@@ -284,6 +288,7 @@ v003 was byte now int
 (label m8 already defined)
 (label m5 already defined)
 (label m4 already defined)
+(label m2n already defined)
 (label b16 already defined)
 (label b13 already defined)
 (label b9 already defined)
@@ -334,6 +339,7 @@ v003 was byte now int
 (label m8 already defined)
 (label m5 already defined)
 (label m4 already defined)
+(label m2n already defined)
 (label b16 already defined)
 (label b13 already defined)
 (label b9 already defined)
@@ -388,6 +394,7 @@ v003 was byte now int
 (label m8 already defined)
 (label m5 already defined)
 (label m4 already defined)
+(label m2n already defined)
 (label b16 already defined)
 (label b13 already defined)
 (label b9 already defined)
@@ -442,6 +449,9 @@ v003 was byte now int
 (label m8 already defined)
 (label m5 already defined)
 (label m4 already defined)
+(label m2n already defined)
+(label m2b already defined)
+(label m2a already defined)
 (label b15 already defined)
 (label b14 already defined)
 (label b13 already defined)
@@ -509,6 +519,9 @@ v003 was byte now int
 (label m8 already defined)
 (label m5 already defined)
 (label m4 already defined)
+(label m2n already defined)
+(label m2b already defined)
+(label m2a already defined)
 (label b16 already defined)
 (label b15 already defined)
 (label b13 already defined)
@@ -576,6 +589,7 @@ v003 was byte now int
 (label m8 already defined)
 (label m5 already defined)
 (label m4 already defined)
+(label m2n already defined)
 (label b16 already defined)
 (label b13 already defined)
 (label b9 already defined)
@@ -680,7 +694,6 @@ v003 was byte now int
 . save $PATH/Data/DHS_twins, replace
 file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
-. 
 . ********************************************************************************
 . *** (3) Setup Variables which are used in TwinRegression
 . ********************************************************************************
@@ -705,7 +718,7 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
 . 
 . gen twin_bord=bord-twin+1 if twin>0
-(6597251 missing values generated)
+(6597245 missing values generated)
 
 . 
 . foreach num in two three four five {
@@ -719,9 +732,9 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
   9.         local ++fert
  10. }
 (13542 real changes made)
-(34245 real changes made)
-(47194 real changes made)
-(52317 real changes made)
+(34246 real changes made)
+(47202 real changes made)
+(52325 real changes made)
 
 . 
 . 
@@ -730,13 +743,13 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . ********************************************************************************
 . *** Attendance (attend_year==2 is sometimes)
 . gen attendance=0 if attend_year==0
-(5626466 missing values generated)
+(5626472 missing values generated)
 
 . replace attendance=1 if attend_year==2
-(493836 real changes made)
+(493833 real changes made)
 
 . replace attendance=2 if attend_year==1
-(394486 real changes made)
+(394494 real changes made)
 
 . replace attendance=. if age<6
 (763384 real changes made, 763384 to missing)
@@ -744,7 +757,7 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . 
 . *** Z-Score
 . replace educ=. if educ>25 // come back here when compiling summary stats.
-(13323 real changes made, 13323 to missing)
+(13327 real changes made, 13327 to missing)
 
 . bys _cou age: egen sd_educ=sd(educ)
 (209305 missing values generated)
@@ -753,33 +766,33 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 (198354 missing values generated)
 
 . gen school_zscore=(educ-mean_educ)/sd_educ
-(4053285 missing values generated)
+(4053293 missing values generated)
 
 . replace school_zscore=. if age<6
-(261290 real changes made, 261290 to missing)
+(261289 real changes made, 261289 to missing)
 
 . 
 . *** Highschool
 . gen highschool=1 if (educlevel==2|educlevel==3)&age>=11
-(6097264 missing values generated)
+(6097271 missing values generated)
 
 . replace highschool=0 if (educlevel==0|educlevel==1)&age>=11
-(782911 real changes made)
+(782913 real changes made)
 
 . 
 . *** No Educ
 . gen noeduc=1 if educlevel==0&age>6
-(6427369 missing values generated)
+(6427434 missing values generated)
 
 . replace noeduc=0 if (educlevel==1|educlevel==2|educlevel==3)&age>6
-(1908732 real changes made)
+(1908784 real changes made)
 
 . 
 . *** Health
 . gen childsurvive=child_alive
 
 . gen childageatdeath=b7/12
-(5878336 missing values generated)
+(5878361 missing values generated)
 
 . gen infantmortality=childageatdeath<=1
 
@@ -803,7 +816,7 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
 . 
 . gen educfyrs_sq=educf*educf
-(2077 missing values generated)
+(2076 missing values generated)
 
 . gen educf_0=educf==0
 
@@ -816,10 +829,10 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . gen educf_11plus=educf>10
 
 . gen twind=1 if twin>=1&twin!=.
-(6597251 missing values generated)
+(6597245 missing values generated)
 
 . replace twind=0 if twin==0
-(6597251 real changes made)
+(6597245 real changes made)
 
 . gen twind100=twin*100
 
@@ -827,20 +840,33 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
 . 
 . replace educp=. if educp>25
-(188513 real changes made, 188513 to missing)
+(188548 real changes made, 188548 to missing)
 
 . 
 . replace height=height/10
 height was int now float
-(3711914 real changes made)
+(3711913 real changes made)
 
 . replace weight=weight/10
 weightk was int now float
-(3711880 real changes made)
+(3711879 real changes made)
 
 . replace bmi=bmi/100
 bmi was int now float
-(3709360 real changes made)
+(3709358 real changes made)
+
+. replace antenatal=. if antenatal>20
+(20105 real changes made, 20105 to missing)
+
+. gen antenateDummy=antenatal!=0 if antenatal!=.
+(5615617 missing values generated)
+
+. foreach var of varlist prenate_doc prenate_nurse prenate_none {
+  2.         replace `var'=. if `var'==9
+  3. }
+(1103 real changes made, 1103 to missing)
+(1103 real changes made, 1103 to missing)
+(817 real changes made, 817 to missing)
 
 . 
 . gen poor1=wealth==1
@@ -849,29 +875,686 @@ bmi was int now float
 
 . gen magesq=agemay*agemay
 
-. a
-unrecognized command:  a
-r(199);
+. 
+. *** General variables (country year)
+. rename _cou country
+
+. rename v005 sweight
+
+. encode country, gen(_cou)
+
+. 
+. ********************************************************************************
+. *** (3D) Twin variables
+. ********************************************************************************
+. bys id: egen twinfamily=max(twin)
+
+. bys id: egen twin_bord_fam=max(twin_bord)
+(6291225 missing values generated)
+
+. bys id: egen nummultiple=max(twin)
+
+. gen finaltwin=(fert==bord)&twind==1
+
+. bys id: egen finaltwinfamily=max(finaltwin)
+
+. replace finaltwinfamily=0 if finaltwinfamily==.
+(0 real changes made)
+
+. 
+. 
+. ********************************************************************************
+. *** (3E) Fertility variables
+. ********************************************************************************
+. gen idealnumkids=v613 if v613<25
+(814032 missing values generated)
+
+. gen lastbirth=fert==bord&twin==0
+
+. replace lastbirth=1 if (twin_bord==(fert-1))&nummultiple==2
+(52886 real changes made)
+
+. replace lastbirth=1 if (twin_bord==(fert-2))&nummultiple==3
+(980 real changes made)
+
+. replace lastbirth=1 if (twin_bord==(fert-3))&nummultiple==4
+(40 real changes made)
+
+. 
+. gen wantedbirth=bord<=idealnumkids
+
+. gen idealfam=0 if idealnumkids==fert
+(5451192 missing values generated)
+
+. replace idealfam=1 if idealnumkids<fert
+(2764182 real changes made)
+
+. replace idealfam=-1 if idealnumkids>fert
+(2687010 real changes made)
+
+. 
+. gen quant_exceed=fert-idealnumkids
+(814032 missing values generated)
+
+. gen exceeder=1 if bord-idealnumkids==1
+(6248751 missing values generated)
+
+. gen twinexceeder=exceeder==1&(twin==2|twin==3|twin==4)
+
+. bys id: egen twinexceedfamily=max(twinexceeder)
+
+. gen tu=twin_bord>=idealnumkids
+
+. gen td=twin_bord>=idealnumkids
+
+. bys id: egen twin_undesired=max(tu)
+
+. bys id: egen twin_desired=max(td)
+
+. drop td tu
+
+. 
+. *Twins born on final birth causing parents to exceed desired family size
+. gen twinexceed=finaltwinfamily==1&idealfam==1
+
+. gen singlexceed=finaltwinfamily==0&idealfam==1
+
+. gen twinattain=finaltwinfamily==1&idealfam==0
+
+. 
+. **Generate sub-region (and ethnicity) specific desired fertility
+. bys _cou v101: egen desiredfert_region=mean(idealnumkids)
+(11677 missing values generated)
+
+. bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
+(9925 missing values generated)
+
+. 
+. 
+. ********************************************************************************
+. *** (4) Labels
+. ********************************************************************************
+. lab var year_birth "Mother's year of birth"
+
+. lab var religion "Reported religion"
+
+. lab var fert "Total number of children in the family"
+
+. lab var bord "Child's birth order"
+
+. lab var agefirstbirth "Mother's age at first birth"
+
+. lab var child_yob "Child's year of birth"
+
+. lab var two_plus "First born child in families with at least two births"
+
+. lab var three_plus "1,2 born children in families with at least 3 births"
+
+. lab var four_plus "1,2,3 born children in families with at least 4 births"
+
+. lab var five_plus "1,2,3,4 born children in families with at least 5 births"
+
+. lab var two_plus_twins "1,2 born children in families with >=2 births"
+
+. lab var three_plus_twins "1,2,3 born children in families with >=3 births"
+
+. lab var four_plus_twins "1,2,3,4 born children in families with >=4 births"
+
+. lab var five_plus_twins "1-5 born children in families with >=5 births"
+
+. lab var twin_two_fam "Twin birth at second birth"
+
+. lab var twin_three_fam "twin birth at third birth"
+
+. lab var twin_four_fam "twin birth at fourth birth"
+
+. lab var twin_five_fam "twin birth at fifth birth"
+
+. lab var id "Unique family identifier"
+
+. lab var attendance "child attends school (1=sometimes, 2=always)"
+
+. lab var educ "Years of education (child)"
+
+. lab var school_zscore "Standardised educ attainment compared to country cohort"
+
+. lab var highschool "Attends or attended highschool (>=12 years)"
+
+. lab var noeduc "No education (>7 years)"
+
+. lab var infantmortality "child died before 1 year of age"
+
+. lab var childmortality "child died before 5 years of age"
+
+. lab var gender "string variable: F or M"
+
+. lab var educf "Mother's years of education"
+
+. lab var educfyrs_sq "Mother's years of education squared"
+
+. lab var educf_0 "Mother has 0 years of education (binary)"
+
+. lab var educf_1_4 "Mother has 1-4 years of education (binary)"
+
+. lab var educf_5_6 "Mother has 5-6 years of education (binary)"
+
+. lab var educf_7_10 "Mother has 7-10 years of education (binary)"
+
+. lab var educf_11plus "Mother has 11+ years of education (binary)"
+
+. lab var educp "Partner's years of education"
+
+. lab var educp_level "Partner's education level"
+
+. lab var twind "Child is a twin (binary)"
+
+. lab var twin "Child is a twin (0-4) for no, twin, triplet, ... "
+
+. lab var twind100 "Child is twin (binary*100)"
+
+. lab var malec "Child is a boy"
+
+. lab var height "height in centimetres"
+
+. lab var weightk "Weight in kilograms"
+
+. lab var bmi "Body Mass Index (weight in kilos squared/height in cm)"
+
+. lab var antenatal "Number of antenatal check-ups for mother"
+
+. lab var antenateDummy "Antenatal checkup (binary)"
+
+. lab var prenate_doc "Prenatal care by doctor"
+
+. lab var prenate_nurse "Prenatal care by nurse"
+
+. lab var prenate_none "No prenatal care"
+
+. lab var poor1 "In lowest asset quintile"
+
+. lab var age "Child's age in years"
+
+. lab var agemay "Mother's age in years"
+
+. lab var agesq "Child's age squared"
+
+. lab var magesq "Mother's age squared"
+
+. lab var sweight "Sample weight (from DHS)"
+
+. lab var country "Coutry name"
+
+. lab var _cou "country (numeric code)"
+
+. lab var twinfamily "At least one twin birth in family"
+
+. lab var twin_bord "Birth order when twins occur (for twins only)"
+
+. lab var twin_bord_fam "Birth order when twins occur (for whole family)"
+
+. lab var nummultiple "0 if singleton family, 1 if twins, 2 if triplets, ..."
+
+. lab var finaltwinfamily "The family had twins at their final birth"
+
+. lab var idealnumkids "Ideal number of children reported (truncate at 25)"
+
+. lab var lastbirth "Child is family's last birth (singleton or both twins)"
+
+. lab var wantedbirth "Birth occurs before optimal target"
+
+. lab var idealfam "Has family obtained ideal size? (negative implies < ideal)"
+
+. lab var quant_exceed "Difference between total births and desired births"
+
+. lab var exceeder "1 if child causes family to exceed optimal size"
+
+. lab var twinexceeder "Twin birth causes parents to exceed optimal size"
+
+. lab var twinexceedfamily "Family exceeds desired N and twin caused exceed"
+
+. lab var twin_undesired "Family has had twins, and twins were >desired births"
+
+. lab var twin_desired "Family has had twins, and twins were <=desired births"
+
+. lab var twinexceed "Twin birth causes parents to exceed optimal size"
+
+. lab var singlexceed "Single birth causes parents to exceed optimal size"
+
+. lab var twinattain "Twin birth causes parents to attain optimal size"
+
+. lab var desiredfert_region "Average desired family size by (subcountry) region"
+
+. lab var desiredfert_ethnic "Average desired family size by ethnicity"
+
+. lab var birthspacing "Time between child and previous birth (in months)"
+
+. lab var wealth "Wealth quartile based on observed assets"
+
+. lab var childageatdeath "Age of child (years) at death"
+
+. 
+. lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
+
+. lab val idealfam ideal
+
+. 
+. replace age=age+100 if age<0
+(5537 real changes made)
+
+. ********************************************************************************
+. *** (5) Create country income levels and weight variables
+. ********************************************************************************
+. replace country="CAR" if v000=="CF3" & _cou==.
+(0 real changes made)
+
+. replace _cou=10 if v000=="CF3" & _cou==.
+(0 real changes made)
+
+. replace country="Zimbabwe" if v000=="ZW6" & _cou==.
+(0 real changes made)
+
+. replace _cou=69 if v000=="ZW6" & _cou==.
+(0 real changes made)
+
+. 
+. do $PATH/Do/countrynaming
+
+. ********************************************************************************
+. global IncData "~/investigacion/Activa/Twins/Data"
+
+. 
+. local oldway 0
+
+. local file incomestatus.dta
+
+. local incomes 480 545 580 610 635 675 695 725 765 785 785 760 755 755 745 735 /*
+> */ 765 825 875 905 935 975 995 1005 1025 1035
+
+. 
+. 
+. if `oldway'==0 {
+.         gen WBcountry=subinstr(country, "-", " ", .)
+.         replace WBcountry="Congo, Dem. Rep." if WBcountry=="Congo Democratic Republic"
+(29648 real changes made)
+.         replace WBcountry="Cote d'Ivoire" if WBcountry=="Cote d Ivoire"
+(75234 real changes made)
+.         replace WBcountry="Egypt, Arab Rep." if WBcountry=="Egypt"
+(295304 real changes made)
+.         replace WBcountry="Yemen, Rep." if WBcountry=="Yemen"
+(29940 real changes made)
+.         destring _year, replace
+_year has all characters numeric; replaced as int
+.         
+.         merge m:1 WBcountry _year using "$IncData/`file'", gen(_incmerge)
+WBcountry was str25 now str30
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                       149,629
+        from master                   144,241  (_incmerge==1)
+        from using                      5,388  (_incmerge==2)
+
+    matched                         6,608,507  (_incmerge==3)
+    -----------------------------------------
+.         replace inc_status="LM" if WBcountry=="Brazil" & _year==1986
+(12356 real changes made)
+.         replace inc_status="LM" if WBcountry=="Colombia" & _year==1986
+(11622 real changes made)
+.         replace inc_status="LM" if WBcountry=="Congo Brazzaville"
+(48785 real changes made)
+.         replace inc_status="LM" if WBcountry=="Dominican Republic" & _year==1986        
+(20151 real changes made)
+.         replace inc_status="LM" if WBcountry=="El Salvador" & _year==1985
+(6383 real changes made)
+.         replace inc_status="L" if WBcountry=="Liberia" & _year==1986
+(17264 real changes made)
+.         replace inc_status="L" if WBcountry=="Senegal" & _year==1986
+(14389 real changes made)
+.         replace inc_status="LM" if WBcountry=="Peru" & _year==1986
+(13291 real changes made)
+.         tostring _year
+must specify either generate or replace option
+r(198);
+. }
+r(198);
+
+end of do-file
+r(198);
 
 end of do-file
 
-r(199);
+r(198);
 
-. do Twin_Setup
+. tostring _year, replace
+_year was int now str4
 
-. * Twin_Setup 2.00                damiancclarke                            yyyy-mm-dd:2013-11-22    
-. *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
-. *
-. /* This is has been a pretty major refactorisation of the previous twin setup
-> file.  To rollback to the previous one, return to the git commit made on Nov 11
-> 2013.  Here we are redefining to only look at reduced form and IV with treament
-> as described in Black et al, Angrist et al, and also to interact with desired
-> family size.  Our principal specification for desired is:
-> 
-> quality_{ij}=\beta_0+\beta_1*fert_{j}+\beta_2*fert*desired_{j}+X'\beta+u_{ij}
-> 
-> 
+. lookfor inc
+
+              storage  display     value
+variable name   type   format      label      variable label
+-----------------------------------------------------------------------------------------------------------------
+inc_status      str2   %9s                    
+_incmerge       byte   %23.0g      _merge     
+
+. tab inc_status
+
+ inc_status |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         .. |        392        0.01        0.01
+          H |      1,374        0.02        0.03
+          L |  4,021,506       59.51       59.53
+         LM |  2,535,569       37.52       97.05
+         UM |    199,295        2.95      100.00
+------------+-----------------------------------
+      Total |  6,758,136      100.00
+
+. count
+6758136
+
+. tab _inc
+
+              _incmerge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+        master only (1) |    144,241        2.13        2.13
+         using only (2) |      5,388        0.08        2.21
+            matched (3) |  6,608,507       97.79      100.00
+------------------------+-----------------------------------
+                  Total |  6,758,136      100.00
+
+. tab inc_status if _inc!=2
+
+ inc_status |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          L |  4,020,224       59.53       59.53
+         LM |  2,534,179       37.53       97.06
+         UM |    198,345        2.94      100.00
+------------+-----------------------------------
+      Total |  6,752,748      100.00
+
+. keep if _incmerge!=2
+(5388 observations deleted)
+
+. keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus four_plus five_plus two_plus_twi
+> ns three_plus_twins four_plus_twins five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id 
+> attendance educ school_zscore highschool noeduc infantmortality wealth childmortality gender educf educfyrs_sq 
+> educf_0 educf_1_4 educf_5_6 educf_7_10 educf_11plus educp educp_level twind twin twind100 malec height weightk 
+> bmi poor1 age agemay agesq magesq sweight country _cou _year twinfamily twin_bord twin_bord_fam nummultiple fin
+> altwinfamily idealnumkids lastbirth wantedbirth idealfam quant_exceed exceeder twinexceeder twinexceedfamily tw
+> in_undesired twin_desired twinexceed singlexceed twinattain desiredfert_region desiredfert_ethnic income contra
+> cep_intent _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy prenate_doc prenate_nurse
+>  prenate_none
+variable income not found
+r(111);
+
+. keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus four_plus five_plus two_plus_twi
+> ns three_plus_twins four_plus_twins five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id 
+> attendance educ school_zscore highschool noeduc infantmortality wealth childmortality gender educf educfyrs_sq 
+> educf_0 educf_1_4 educf_5_6 educf_7_10 educf_11plus educp educp_level twind twin twind100 malec height weightk 
+> bmi poor1 age agemay agesq magesq sweight country _cou _year twinfamily twin_bord twin_bord_fam nummultiple fin
+> altwinfamily idealnumkids lastbirth wantedbirth idealfam quant_exceed exceeder twinexceeder twinexceedfamily tw
+> in_undesired twin_desired twinexceed singlexceed twinattain desiredfert_region desiredfert_ethnic inc_status co
+> ntracep_intent _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy prenate_doc prenate_n
+> urse prenate_none
+
+. count
+6752748
+
+. d
+
+Contains data from ~/investigacion/Activa/Twins/Data/DHS_twins.dta
+  obs:     6,752,748                          
+ vars:            97                          3 Apr 2014 06:46
+ size: 2,424,236,532                          
+-----------------------------------------------------------------------------------------------------------------
+              storage  display     value
+variable name   type   format      label      variable label
+-----------------------------------------------------------------------------------------------------------------
+age             byte   %8.0g       hv105      Child's age in years
+educ            byte   %8.0g       hv108      Years of education (child)
+country         str25  %25s                   Coutry name
+_year           str4   %9s                    
+sweight         long   %12.0g                 Sample weight (from DHS)
+year_birth      int    %8.0g                  Mother's year of birth
+agemay          byte   %8.0g                  Mother's age in years
+religion        byte   %8.0g       v130       Reported religion
+educf           byte   %8.0g       v133       Mother's years of education
+wealth          byte   %8.0g       v190       Wealth quartile based on observed assets
+fert            byte   %8.0g                  Total number of children in the family
+agefirstbirth   byte   %8.0g                  Mother's age at first birth
+contracep_int~t byte   %8.0g       v364       contraceptive use and intention
+weightk         float  %8.0g                  Weight in kilograms
+height          float  %8.0g                  height in centimetres
+bmi             float  %8.0g       LABV       Body Mass Index (weight in kilos squared/height in cm)
+educp_level     byte   %8.0g       v701       Partner's education level
+educp           byte   %8.0g       LABM       Partner's years of education
+bord            byte   %8.0g                  Child's birth order
+twin            byte   %8.0g       b0         Child is a twin (0-4) for no, twin, triplet, ...
+child_yob       int    %8.0g                  Child's year of birth
+child_alive     byte   %8.0g       LABH       child is alive
+birthspacing    int    %8.0g                  Time between child and previous birth (in months)
+prenate_doc     byte   %8.0g       LABH       Prenatal care by doctor
+prenate_nurse   byte   %8.0g       LABH       Prenatal care by nurse
+prenate_none    byte   %8.0g       m2n        No prenatal care
+m4              byte   %8.0g       m4         duration of breastfeeding
+m5              byte   %8.0g       m5         months of breastfeeding
+m8              byte   %8.0g       m8         duration of abstinence
+m9              byte   %8.0g       LABM       months of abstinence
+m10             byte   %8.0g       m10        wanted pregnancy when became pregnant
+antenatal       byte   %8.0g       m14        Number of antenatal check-ups for mother
+m15             byte   %8.0g       m15        place of delivery
+m17             byte   %8.0g       LABH       delivery by caesarean section
+m18             byte   %8.0g       m18        size of child at birth
+m19             int    %8.0g       m19        birth weight in kilograms (3 decimals)
+m19a            byte   %8.0g       m19a       weight at birth/recall
+m12             byte   %8.0g       m12        antenatal card for pregnancy
+m16             byte   %8.0g       m16        premature birth
+_merge          byte   %23.0g      _merge     
+id              str57  %57s                   Unique family identifier
+twin_bord       float  %9.0g                  Birth order when twins occur (for twins only)
+two_plus        float  %9.0g                  First born child in families with at least two births
+two_plus_twins  float  %9.0g                  1,2 born children in families with >=2 births
+twin_two_fam    float  %9.0g                  Twin birth at second birth
+three_plus      float  %9.0g                  1,2 born children in families with at least 3 births
+three_plus_tw~s float  %9.0g                  1,2,3 born children in families with >=3 births
+twin_three_fam  float  %9.0g                  twin birth at third birth
+four_plus       float  %9.0g                  1,2,3 born children in families with at least 4 births
+four_plus_twins float  %9.0g                  1,2,3,4 born children in families with >=4 births
+twin_four_fam   float  %9.0g                  twin birth at fourth birth
+five_plus       float  %9.0g                  1,2,3,4 born children in families with at least 5 births
+five_plus_twins float  %9.0g                  1-5 born children in families with >=5 births
+twin_five_fam   float  %9.0g                  twin birth at fifth birth
+attendance      float  %9.0g                  child attends school (1=sometimes, 2=always)
+mean_educ       float  %9.0g                  
+school_zscore   float  %9.0g                  Standardised educ attainment compared to country cohort
+highschool      float  %9.0g                  Attends or attended highschool (>=12 years)
+noeduc          float  %9.0g                  No education (>7 years)
+childageatdeath float  %9.0g                  Age of child (years) at death
+infantmortality float  %9.0g                  child died before 1 year of age
+childmortality  float  %9.0g                  child died before 5 years of age
+gender          str1   %9s                    string variable: F or M
+educfyrs_sq     float  %9.0g                  Mother's years of education squared
+educf_0         float  %9.0g                  Mother has 0 years of education (binary)
+educf_1_4       float  %9.0g                  Mother has 1-4 years of education (binary)
+educf_5_6       float  %9.0g                  Mother has 5-6 years of education (binary)
+educf_7_10      float  %9.0g                  Mother has 7-10 years of education (binary)
+educf_11plus    float  %9.0g                  Mother has 11+ years of education (binary)
+twind           float  %9.0g                  Child is a twin (binary)
+twind100        float  %9.0g                  Child is twin (binary*100)
+malec           float  %9.0g                  Child is a boy
+antenateDummy   float  %9.0g                  Antenatal checkup (binary)
+poor1           float  %9.0g                  In lowest asset quintile
+agesq           float  %9.0g                  Child's age squared
+magesq          float  %9.0g                  Mother's age squared
+_cou            long   %25.0g      _cou       country (numeric code)
+twinfamily      float  %9.0g                  At least one twin birth in family
+twin_bord_fam   float  %9.0g                  Birth order when twins occur (for whole family)
+nummultiple     float  %9.0g                  0 if singleton family, 1 if twins, 2 if triplets, ...
+finaltwinfamily float  %9.0g                  The family had twins at their final birth
+idealnumkids    float  %9.0g                  Ideal number of children reported (truncate at 25)
+lastbirth       float  %9.0g                  Child is family's last birth (singleton or both twins)
+wantedbirth     float  %9.0g                  Birth occurs before optimal target
+idealfam        float  %19.0g      ideal      Has family obtained ideal size? (negative implies < ideal)
+quant_exceed    float  %9.0g                  Difference between total births and desired births
+exceeder        float  %9.0g                  1 if child causes family to exceed optimal size
+twinexceeder    float  %9.0g                  Twin birth causes parents to exceed optimal size
+twinexceedfam~y float  %9.0g                  Family exceeds desired N and twin caused exceed
+twin_undesired  float  %9.0g                  Family has had twins, and twins were >desired births
+twin_desired    float  %9.0g                  Family has had twins, and twins were <=desired births
+twinexceed      float  %9.0g                  Twin birth causes parents to exceed optimal size
+singlexceed     float  %9.0g                  Single birth causes parents to exceed optimal size
+twinattain      float  %9.0g                  Twin birth causes parents to attain optimal size
+desiredfert_r~n float  %9.0g                  Average desired family size by (subcountry) region
+desiredfert_e~c float  %9.0g                  Average desired family size by ethnicity
+inc_status      str2   %9s                    
+-----------------------------------------------------------------------------------------------------------------
+Sorted by:  
+     Note:  dataset has changed since last saved
+
+. save $PATH/Data/DHS_twins, replace
+file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
+
+. lookfor ante
+
+              storage  display     value
+variable name   type   format      label      variable label
+-----------------------------------------------------------------------------------------------------------------
+m10             byte   %8.0g       m10        wanted pregnancy when became pregnant
+antenatal       byte   %8.0g       m14        Number of antenatal check-ups for mother
+m12             byte   %8.0g       m12        antenatal card for pregnancy
+antenateDummy   float  %9.0g                  Antenatal checkup (binary)
+wantedbirth     float  %9.0g                  Birth occurs before optimal target
+
+. tab antenat
+antenat ambiguous abbreviation
+r(111);
+
+. tab antenatal
+
+Number of antenatal |
+      check-ups for |
+             mother |      Freq.     Percent        Cum.
+--------------------+-----------------------------------
+no antenatal visits |    244,318       21.49       21.49
+                  1 |     53,580        4.71       26.20
+                  2 |     99,453        8.75       34.94
+                  3 |    168,312       14.80       49.74
+                  4 |    134,592       11.84       61.58
+                  5 |     99,807        8.78       70.36
+                  6 |     93,934        8.26       78.62
+                  7 |     67,087        5.90       84.52
+                  8 |     56,323        4.95       89.47
+                  9 |     50,837        4.47       93.94
+                 10 |     25,066        2.20       96.15
+                 11 |      7,225        0.64       96.78
+                 12 |     14,046        1.24       98.02
+                 13 |      3,705        0.33       98.34
+                 14 |      3,497        0.31       98.65
+                 15 |      5,613        0.49       99.14
+                 16 |      2,615        0.23       99.37
+                 17 |        594        0.05       99.43
+                 18 |      3,041        0.27       99.69
+                 19 |        292        0.03       99.72
+                 20 |      3,194        0.28      100.00
+--------------------+-----------------------------------
+              Total |  1,137,131      100.00
+
+. lookfor prent
+
+. lookfor pren 
+
+              storage  display     value
+variable name   type   format      label      variable label
+-----------------------------------------------------------------------------------------------------------------
+prenate_doc     byte   %8.0g       LABH       Prenatal care by doctor
+prenate_nurse   byte   %8.0g       LABH       Prenatal care by nurse
+prenate_none    byte   %8.0g       m2n        No prenatal care
+
+. clear
+
+. set obs 100
+obs was 0, now 100
+
+. gen y=rnormal
+rnormal not found
+r(111);
+
+. gen y=rnormal()
+
+. gen x=rnormal()
+
+. gen z=rnormal()
+
+. eststo: reg y x
+
+      Source |       SS       df       MS              Number of obs =     100
+-------------+------------------------------           F(  1,    98) =    2.27
+       Model |   2.5315741     1   2.5315741           Prob > F      =  0.1348
+    Residual |  109.109877    98  1.11336609           R-squared     =  0.0227
+-------------+------------------------------           Adj R-squared =  0.0127
+       Total |  111.641451    99  1.12769142           Root MSE      =  1.0552
+
+------------------------------------------------------------------------------
+           y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           x |   .1643349   .1089817     1.51   0.135    -.0519357    .3806056
+       _cons |   .0130942   .1058396     0.12   0.902    -.1969409    .2231294
+------------------------------------------------------------------------------
+(est1 stored)
+
+. eststo: reg y z
+
+      Source |       SS       df       MS              Number of obs =     100
+-------------+------------------------------           F(  1,    98) =    1.01
+       Model |  1.13447374     1  1.13447374           Prob > F      =  0.3183
+    Residual |  110.506977    98  1.12762222           R-squared     =  0.0102
+-------------+------------------------------           Adj R-squared =  0.0001
+       Total |  111.641451    99  1.12769142           Root MSE      =  1.0619
+
+------------------------------------------------------------------------------
+           y |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+           z |  -.1012984    .100992    -1.00   0.318    -.3017137     .099117
+       _cons |   .0128015   .1068809     0.12   0.905    -.1993002    .2249031
+------------------------------------------------------------------------------
+(est2 stored)
+
+. estout est1 est2 using test.txt, keep(x z)
+file test.txt already exists
+r(602);
+
+. estout est1 est2 using test.txt, keep(x z) replace
+(output written to test.txt)
+
+. pwd
+/home/damiancclarke/investigacion/Activa/Twins/Do
+
+. do Twin_Regressions.do
+
+. /* Regressions 3.01              damiancclarke             yyyy-mm-dd:2013-04-15
+> *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 > */
+. 
+. /* This file contains all regression results that are being used in the Twin 
+> Instrument paper.  These include
+>         - Summary.xls (sum stats)
+>         - Summary_Birthorder.xls
+>    - Twin_Predict.xls
+>    - ...
+> 
+> This do file uses as input the data file DHS_Twins, which is generated by the
+> file Twin_Setup.do.  Currently it includes all DHS files available up until 
+> October 2013.  Files are downloaded and imported to Stata using the files 
+> DHS_Import.py and DHS_Multicountry.do.
+> 
+> Last edit:
+> * December 17th, 2013: considerable rewrite based on comments in 22 Nov email.
+> Can revert by going back to git commit Nov 11 2013.
+> * September 12th, 2013: Address Paul Dev's comment about treatment
+> * August 5th, 2013: Update figures and tables based on Sonia's comme-
+> nts on early draft.
+> */
+. 
+. *** ADD CODE WHICH POOLS PLUS GROUPS (a la Angrist et al. JOLE)
 . 
 . clear all
 

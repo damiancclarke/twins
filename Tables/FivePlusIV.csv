@@ -1,0 +1,41 @@
+;Base;;;
+;Controls;Socioec;Health;Obs.
+Pre-Twins 
+;;;;
+All Families 
+Fertility;-0.015;-0.011;-0.022;359,164
+         ;(0.022);(0.021);(0.020);
+;;;;
+All Families (bord dummies) 
+Fertility;-0.015;-0.013;-0.024;359,164
+         ;(0.022);(0.020);(0.020);
+;;;;
+Low-Income Countries 
+Fertility;0.000;-0.005;-0.017;237,694
+         ;(0.026);(0.024);(0.023);
+;;;;
+Middle-Income Countries 
+Fertility;-0.047;-0.019;-0.028;121,470
+         ;(0.040);(0.039);(0.039);
+;;;;
+Desired-Threshold 
+Fertility;0.003;0.004;-0.006;359,164
+         ;(0.024);(0.022);(0.022);
+Fertility*desire;-0.020**;-0.018**;-0.018**;
+         ;(0.009);(0.008);(0.008);
+Twins and Pre-Twins 
+;;;;
+All Families 
+Fertility;-0.019;-0.032*;-0.042**;462,413
+         ;(0.020);(0.019);(0.019);
+;;;;
+All Families (bord dummies) 
+Fertility;-0.015;-0.018;-0.028;462,413
+         ;(0.021);(0.019);(0.019);
+First Stage (Pre-Twins) 
+;;;;
+All Families 
+Twins;0.863***;0.850***;0.855***;359,164
+         ;(0.016);(0.015);(0.015);
+NOTES: Five-plus refers to all first- to fourth-born children in families with five or more children.  Each cell presents the coefficient of a 2SLS regression where fertility is instrumented by twinning at birth order five.  Base controls include age, mother's age, and mother's age at birth fixed effects plus country and year-of-birth FEs.  Standard errors are clustered by mother. 
+* p<0.1, ** p<0.05, *** p<0.01

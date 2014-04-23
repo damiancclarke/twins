@@ -28,7 +28,6 @@ global DATA "~/database/DHS/XDHS_Data"
 global LOG "$PATH/Log"
 global TEMP "$PATH/Temp"
 
-/*
 cap mkdir $PATH/Temp
 
 log using "$LOG/Twins_DHS.txt", text replace
@@ -47,7 +46,7 @@ foreach num of numlist 1(1)7 {
 	*/ v209 v211 v212 v213 v228 v229 v230 v437 v438 v445 v457 v463a v481 v501/*
 	*/ v504 v602 v605 v715 v701 v730 bord b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11/*
 	*/ b12 b13 b14 b15 b16 v613 v614 m19 m19a v367 v312 v364 m4 m5 m8 m9 m10 /*
-	*/ m12 m14 m15 m16 m17 m18 m19 m19a
+	*/ m12 m14 m15 m16 m17 m18 m19 m19a m2a m2b m2n
 	
 	cap rename v010 year_birth
 	cap rename v012 agemay
@@ -75,6 +74,10 @@ foreach num of numlist 1(1)7 {
 	cap rename b11 birthspacing
 	cap rename v715 educp
 	cap rename v701 educp_level
+	cap rename m14 antenatal
+	cap rename m2a prenate_doc
+	cap rename m2b prenate_nurse
+	cap rename m2n prenate_none
 	
 	replace age=floor(v007-child_yob+(v006-b1/12)) if age==.
 
@@ -157,7 +160,6 @@ replace child_yob=child_yob+2000 if child_yob<=2
 replace year_birth=year_birth+1900 if year_birth<100
 
 save $PATH/Data/DHS_twins, replace
-*/
 ********************************************************************************
 *** (3) Setup Variables which are used in TwinRegression
 ********************************************************************************
@@ -242,6 +244,11 @@ replace educp=. if educp>25
 replace height=height/10
 replace weight=weight/10
 replace bmi=bmi/100
+replace antenatal=. if antenatal>20
+gen antenateDummy=antenatal!=0 if antenatal!=.
+foreach var of varlist prenate_doc prenate_nurse prenate_none {
+	replace `var'=. if `var'==9
+}
 
 gen poor1=wealth==1
 gen agesq=age*age
@@ -343,6 +350,11 @@ lab var malec "Child is a boy"
 lab var height "height in centimetres"
 lab var weightk "Weight in kilograms"
 lab var bmi "Body Mass Index (weight in kilos squared/height in cm)"
+lab var antenatal "Number of antenatal check-ups for mother"
+lab var antenateDummy "Antenatal checkup (binary)"
+lab var prenate_doc "Prenatal care by doctor"
+lab var prenate_nurse "Prenatal care by nurse"
+lab var prenate_none "No prenatal care"
 lab var poor1 "In lowest asset quintile"
 lab var age "Child's age in years"
 lab var agemay "Mother's age in years"
@@ -389,8 +401,8 @@ replace _cou=69 if v000=="ZW6" & _cou==.
 
 do $PATH/Do/countrynaming
 
-gen income="low" if income_status=="LOWINCOME"
-replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
+*gen income="low" if income_status=="LOWINCOME"
+*replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
 
 ********************************************************************************
 *** (6) Keep required variables.  Save data as working file.
@@ -405,7 +417,8 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ twinfamily twin_bord twin_bord_fam nummultiple finaltwinfamily idealnumkids /*
 */ lastbirth wantedbirth idealfam quant_exceed exceeder twinexceeder           /*
 */ twinexceedfamily twin_undesired twin_desired twinexceed singlexceed         /*
-*/ twinattain desiredfert_region desiredfert_ethnic income contracep_intent    /*
-*/ _merge birthspacing m* childageatdeath child_alive
+*/ twinattain desiredfert_region desiredfert_ethnic inc_stat contracep_intent  /*
+*/ _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy  /*
+*/ prenate_doc prenate_nurse prenate_none
 
-save $PATH/Data/DHS_twins, replace
+save "$PATH/Data/DHS_twins", replace

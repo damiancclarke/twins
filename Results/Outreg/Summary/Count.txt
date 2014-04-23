@@ -1,0 +1,6 @@
+Number of Countries & 39&39  & 28&28  \\
+Number of Children &2,231,845 &45,654 &1,614,358 &29,430 \\
+Number of Mothers &875,680 &12,816 &653,867 &8,707 \\
+Fraction Twin & \multicolumn{2}{c}{  0.0200}& \multicolumn{2}{c}{  0.0179 }\\
+& \multicolumn{2}{c}{( 0.1402)}& \multicolumn{2}{c}{( 0.1326)}\\
+3,921,287

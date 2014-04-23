@@ -1,0 +1,153 @@
+{smcl}
+{* abril 16, 2014 @ 13:31:42}{...}
+{hi:help plausexog}{right:see also: {helpb ivregress}}
+{hline}
+
+{title:Title}
+
+{p 4 4 2}{hi:plausexog} {hline 2} Stata implementation of IV estimation under flexible (plausibly exogenous) conditions
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:plausexog} {it:method} {it:depvar} [{it:{help varlist:varlist1}}]
+{cmd:(}{it:{help varlist:varlist2}} {cmd:=}
+         {it:{help varlist:varlist_iv}}{cmd:)} {ifin} {weight}
+[{cmd:,} {it:options}]
+
+
+
+{synoptset 22}{...}
+{synopthdr:method}
+{synoptline}
+{synopt:{opt uci}} Union of confidence intervals{p_end}
+{synopt:{opt ltz}} Local to Zero approach {p_end}
+{synoptline}
+
+{synoptset 22 tabbed}{...}
+{synopthdr}
+{synoptline}
+{synopt :{opt level(#)}}set confidence level; default is {cmd:level(0.95)}{p_end}
+{synopt :{opth vce(vcetype)}}{it:vcetype} may be {opt un:adjusted},
+ {opt r:obust}, or {opt cl:uster} {it:clustvar}{p_end}
+
+{syntab :uci}
+{synopt:{opth gmin(numlist)}}Minimum gamma for plausibly exogneous variable(s){p_end}
+{synopt:{opth gmax(numlist)}}Maximum gamma for plausibly exogneous variable(s){p_end}
+{synopt :{opt grid(#)}}Specifies number of points (in [gmin, gmax]) at which to
+calculate bounds; default is {cmd:level(2)}{p_end}
+
+{syntab :ltz}
+{synopt:{opt mu(string)}}Vector specifying mean of prior for support of gamma{p_end}
+{synopt:{opt omega(string)}}Matrix specifying variance-covariance for support of gamma{p_end}
+
+{syntab :Graphing}
+{synopt:{opth gra:ph(varname)}}{p_end}
+{synopt: {opt graphopts(string)}}Overrides default graph options (ie title, axis labels){p_end}
+{p2coldent:* {opt graphmu(namelist)}}List of names of mu vectors for which graph should be plotted {p_end}
+{p2coldent:* {opt graphom:ega(namelist)}}List of names of omega matrices corresponding to each point on the graph{p_end}
+{p2coldent:* {opt graphodelta(numlist)}}List of values to characterise each distribution on the graph (x axis values).  If symmetric distribution is assumed, delta=gamma {p_end}
+
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}* These options must be specified only when graphing with the {cmd:ltz} option.{p_end}
+
+
+
+{title: Description}
+
+{pstd}
+{cmd:plausexog} implements "Plausibly Exogenous" estimation developed by Conley et
+al. (2012).  This allows for inference using instrumental variable estimation in
+situations where the exclusion restriction need not hold precisely.  A comprehensive
+description of this method of inference is provided in
+{browse "http://ideas.repec.org/a/tpr/restat/v94y2012i1p260-272.html":{it: Conley et al (2012)}}.
+
+{pstd}
+Briefly, consider a {help depvar:dependent variable} {it:y}, a set of exogenous
+variables {it:X1}, a set of endogenous variables {it:X2} (together referred to as
+{it:X}), and a set of instrumental variables {it:Z}.  Standard IV estimation requires
+that gamma=0 in the following equation:
+
+{p 8 12 2}y_i = {bind:X_i * Beta} + {bind:Z_i * gamma} + u_i
+
+{pstd}
+However, using {cmd:plausexog}, the restriction that gamma=0 can be relaxed, and
+replaced with the assumption that gamma is close to, but not necessarily equal to,
+zero.  This assumption about gamma can take a number of forms: either the support
+of gamma can be assumed, or distributional assumptions (about gamma's mean and
+variance) can be made.  The first assumption is more conservative but generally
+will lead to wider bounds on the estimated coefficients on {it:X2}.
+
+{pstd}
+The first of these methods is referred to as the {bf:union of confidence interval}
+approach (UCI) and the user need simply specify the maximum and minimum value which
+gamma can take.  These values can be either symmetrical or non-symmetrical around
+zero.  The second method: the {bf:local to zero} approach requires the specification
+of a vector of means and a variance-covariance matrix which descripes the prior
+belief about the distribution of gamma.  Once again this can either be symmetrical
+around zero (for example by specifying a normal distribution centred at zero, or
+non-symmetrical around zero (for example by specififying a uniform U[0,G]
+distribution, where G is some scalar reflecting the maximum believed deviation
+from zero).
+
+{pstd}
+{cmd:plausexog} can return results in various ways.  By default it returns an output
+(stored as a matrix) presenting upper and lower bounds (and point estimates where
+appropriate), however also can return scalars for the upper and lower bound on
+each endogenous variable. Graphical results can also be automatically generated
+which display confidence intervals and point estimates under various assumptions
+about the support or distribution of gamma.
+
+
+{title: Examples}
+
+
+{pstd}Setup{p_end}
+{phang2}{cmd:. webuse set http://users.ox.ac.uk/~ball3491/}{p_end}
+{phang2}{cmd:. webuse Conleyetal2012}{p_end}
+{phang2}{cmd:. local xvar i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr twoearn db pira hown}{p_end}
+
+{pstd} Run union of confidence interval (UCI) estimation with Conley et al's REStat data{p_end}
+{phang2}{cmd:. plausexog uci net_tfa `xvar' (p401 = e401), gmin(-10000) gmax(10000) grid(2) level(.95) vce(robust)}{p_end}
+
+{pstd} Run local to zero (LTZ) estimation with Conley et al's REStat data{p_end}
+{phang2}{cmd:. matrix omega_eta = J(19,19,0)}{p_end}
+{phang2}{cmd:. matrix omega_eta[1,1] = 5000^2}{p_end}
+{phang2}{cmd:. matrix mu_eta = J(19,1,0)}{p_end}
+{phang2}{cmd:. plausexog ltz net_tfa `xvar' (p401 = e401), omega(omega_eta) mu(mu_eta) level(.95) vce(robust)}{p_end}
+
+{pstd} Run local to zero (LTZ) estimation and graph output as per Conley et al. (figure 2){p_end}
+        {cmd:. foreach num of numlist 1(1)5 {c -(}}
+              {cmd:matrix om`num' = J(19,19,0)}
+              {cmd:matrix om`num'[1,1] = ((`num'/5)*10000/sqrt(12))^2}
+              {cmd:matrix mu`num' = J(19,1,0)}
+              {cmd:matrix mu`num'[1,1] = (`num'/5)*10000/2}
+              {cmd:local d`num' = (`num'/5)*10000}
+          {cmd:{c )-}}
+{phang2}{cmd:. plausexog ltz net_tfa `xvar' (p401 = e401), omega(omega_eta) mu(mu_eta) level(.95) vce(robust) graph(p401) graphomega(om1 om2 om3 om4 om5) graphmu(mu1 mu2 mu3 mu4 mu5) graphdelta(`d1' `d2' `d3' `d4' `d5')}{p_end}
+
+{title: Saved results}
+
+{pstd}
+{cmd:plausexog} saves the following in {cmd:e()}:
+
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2: Scalars}{p_end}
+{synopt:{cmd:e(lb_endogname)}}Lower bound estimate for each (plausibly) instrumented variable{p_end}
+{synopt:{cmd:e(ub_endogname)}}Upper bound estimate for each (plausibly) instrumented variable{p_end}
+
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2: Matrices}{p_end}
+{synopt:{cmd:e(b)}}Coefficient vector under plausible exogeneity{p_end}
+{synopt:{cmd:e(V)}}Variance-covariance matrix of the estimators under plausible exogeneity{p_end}
+{p2colreset}{...}
+
+
+
+{title:References}
+{marker Conetal}{...}
+{phang}
+Conley, T. G., Hansen, C. B., and Rossi, P. E. 2012. Plausibly Exogenous.
+{it:The Review of Economics and Statistics} 94(1): 260-272.

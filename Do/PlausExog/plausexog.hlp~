@@ -1,0 +1,90 @@
+{smcl}
+{* abril 16, 2014 @ 10:04:05}{...}
+{hi:help plausexog}{right:see also: {helpb ivregress}}
+{hline}
+
+{title:Title}
+
+{p 4 4 2}{hi:plausexog} {hline 2} Stata implementation of IV estimation under flexible (plausibly exogenous) conditions
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:plausexog} {it:method} {it:depvar} [{it:{help varlist:varlist1}}]
+{cmd:(}{it:{help varlist:varlist2}} {cmd:=}
+         {it:{help varlist:varlist_iv}}{cmd:)} {ifin} {weight}
+[{cmd:,} {it:options}]
+
+
+
+{synoptset 22}{...}
+{synopthdr:method}
+{synoptline}
+{synopt:{opt uci}} Union of confidence intervals{p_end}
+{synopt:{opt ltz}} Local to Zero approach {p_end}
+{synoptline}
+
+{synoptset 22 tabbed}{...}
+{synopthdr}
+{synoptline}
+{synopt :{opt level(#)}}set confidence level; default is {cmd:level(0.95)}{p_end}
+{synopt :{opth vce(vcetype)}}{it:vcetype} may be {opt un:adjusted},
+ {opt r:obust}, or {opt cl:uster} {it:clustvar}{p_end}
+
+{syntab :uci}
+{synopt:{opth gmin(numlist)}}Minimum gamma for plausibly exogneous variable(s){p_end}
+{synopt:{opth gmax(numlist)}}Maximum gamma for plausibly exogneous variable(s){p_end}
+{synopt :{opt grid(#)}}Specifies number of points (in [gmin, gmax]) at which to
+calculate bounds; default is {cmd:level(2)}{p_end}
+
+{syntab :ltz}
+{synopt:{opt mu(string)}}Vector specifying mean of prior for support of gamma{p_end}
+{synopt:{opt omega(string)}}Matrix specifying variance-covariance for support of gamma{p_end}
+
+{syntab :Graphing}
+{synopt:{opth gra:ph(varname)}}{p_end}
+{synopt: {opt graphopts(string)}}Overrides default graph options (ie title, axis labels){p_end}
+{p2coldent:* {opt graphmu(namelist)}}List of names of mu vectors for which graph should be plotted {p_end}
+{p2coldent:* {opt graphom:ega(namelist)}}List of names of omega matrices corresponding to each point on the graph{p_end}
+{p2coldent:* {opt graphodelta(numlist)}}List of values to characterise each distribution on the graph (x axis values).  If symmetric distribution is assumed, delta=gamma {p_end}
+
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}* These options must be specified only when graphing with the {cmd:ltz} option.{p_end}
+
+
+
+{title: Description}
+
+{pstd}
+{cmd:plausexog} implements "Plausibly Exogenous" estimation developed by Conley et al. (2012).
+
+
+{title: Examples}
+
+
+
+{title: Saved results}
+
+{pstd}
+{cmd:plausexog} saves the following in {cmd:e()}:
+
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2: Scalars}{p_end}
+{synopt:{cmd:e(lb_endogname)}}Lower bound estimate for each (plausibly) instrumented variable{p_end}
+{synopt:{cmd:e(ub_endogname)}}Upper bound estimate for each (plausibly) instrumented variable{p_end}
+
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2: Matrices}{p_end}
+{synopt:{cmd:e(b)}}Coefficient vector under plausible exogeneity{p_end}
+{synopt:{cmd:e(V)}}Variance-covariance matrix of the estimators under plausible exogeneity{p_end}
+{p2colreset}{...}
+
+
+
+{title:References}
+{marker Conetal}{...}
+{phang}
+Conley, T. G., Hansen, C. B., and Rossi, P. E. 2012. Plausibly Exogenous.
+{it:The Review of Economics and Statistics} 94(1): 260-272.

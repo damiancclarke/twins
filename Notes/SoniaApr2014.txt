@@ -1,0 +1,23 @@
+A  i feel we don't "sell" our desired fertility idea this way. since any effects we see emerge from the lower middle income group, we should repeat the desired fertility interaction for this group.  maybe we have to do the interaction for each group and for pre-twins. in other words, ratehr than present desired fertility as one row of the table, why not repeat the table with the desired fert interaction. it is too many tables so one set (either the set with or without desired fert, we will decide based on results) should go in the appendix.
+
+B since our results indicate an important diff in qq tradeoffs by income level we need the list of countries in teh appendix table to be arranged by these groups. or maybe you made these gruops cutting across countries? if you did we may have to address some issues about how the 1st principal component for wealth is constructed to be comparable across coutnries. i am sorry to make more work but in this case i suggest trying to produce results by mother's education. to decide the groups, i'd need to see a tab of mother's educ by level and year. 
+
+C   the tables need notes indicating how income cuts are defined, how 2+ 3+ are defined, what the sample is, basically everything that makes reading the table self contained. in notes to table, in row of table or in separate table of summ stats we need mean (s.d.) of all vars used in the analysis. maybe these are all there, i didnt check but if we show coefs for an income or gender subs ample then the reader needs mean (s.d.) for that subsample to read the coefs properly.
+
+another 2 tables we def want to add are
+
+(1) the 1st stage of the IV, 
+this is important. see Angrist Lavy for a template. we need the 1st stage corresponding to every 2nd stage we show ie for 2+, 3+ etc, for different income levels, with and without desired fert interaction, etc. to make it presentable, maybe put the main 1st stage in one table and all the others in an appendix with subpanels in a table, i leave presentation to your judgement.
+
+(2) the more recent investigation you did of whether we can assume that the deviation of actual from desired fertility is exogenous even if desired fert is not.
+i dont remember exactly how i'd asked you to run this before.
+thinking quickly now i suggest showing 2 cols, one with each of these dep vars: (a) desired fertility and (b) actual minus desired fert (both are as recorded at survey date)
+on the RHS put all of the Xs that you have in the twin-predictor eqs. our point is whether these X's predict a) or b). If they do then these vars are potentially endogenous in the sense that if some observed X's are corr with them then some unobservables may also be corr with them in the Altonji spirit. So if you could present these cols with an Altonji statistic that would be good. 
+We discussed this for something else (what was it we discussed it for?) but the basic model will have no controls and then you add controls and see how beta changes, so then you can compute Altonji. correct? alternatively teh basic model could have just age controls, i prefer this, age is a fundamental correction. the other X's can be the additional controls.
+
+because 1st stage and desired fertility runs were in our tables but have now dropped out, i feel there may be other tables you created which have dropped out but i dont remember any others myself. would you check over your folder to see if there was anything else we discussed/estimated?
+
+once we have our set of tables, the immediate next step is to check the 3 main related papers to see if there is anythign they do/suggest that we shd be doing. let's come to this. all best, and many thanks,s
+
+
+

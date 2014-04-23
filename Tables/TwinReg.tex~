@@ -1,0 +1,36 @@
+\begin{table}[htpb!] 
+\caption{Probability of Giving Birth to Twins} \label{TWINtab:twinreg1} 
+\begin{center}\begin{tabular}{lccccc} \toprule 
+&(1)&(2)&(3)&(4)&(5)\\ 
+Twin*100&All&\multicolumn{2}{c}{Income}&\multicolumn{2}{c}{Time}\\ 
+ \cmidrule(r){3-4} \cmidrule(r){5-6} 
+&&Low inc&Middle inc&1990-2011&1972-1989\\ \midrule 
+\begin{footnotesize}\end{footnotesize}& 
+\begin{footnotesize}\end{footnotesize}& 
+\begin{footnotesize}\end{footnotesize}& 
+\begin{footnotesize}\end{footnotesize}& 
+\begin{footnotesize}\end{footnotesize}& 
+\begin{footnotesize}\end{footnotesize}\\ 
+Probability of Giving Birth to Twins (DHS)\\
+&est1&est2&est3&est4&est5\\
+&b/se&b/se&b/se&b/se&b/se\\
+Age&0.494***&0.606***&0.395***&0.590***&0.173***\\
+&(0.026)&(0.039)&(0.036)&(0.030)&(0.064)\\
+Age Squared&-0.006***&-0.008***&-0.005***&-0.008***&-0.000\\
+&(0.000)&(0.001)&(0.001)&(0.001)&(0.001)\\
+Age First Birth&-0.051***&-0.083***&-0.024**&-0.050***&-0.050***\\
+&(0.008)&(0.013)&(0.010)&(0.009)&(0.015)\\
+Education (years)&0.027*&0.077**&0.021&0.043**&-0.009\\
+&(0.016)&(0.031)&(0.019)&(0.019)&(0.028)\\
+Education squared&-0.001&-0.008***&-0.000&-0.002&0.002\\
+&(0.001)&(0.003)&(0.001)&(0.001)&(0.002)\\
+Height&0.057***&0.062***&0.052***&0.063***&0.038***\\
+&(0.004)&(0.006)&(0.005)&(0.005)&(0.007)\\
+BMI&0.050***&0.067***&0.046***&0.046***&0.056***\\
+&(0.006)&(0.011)&(0.007)&(0.007)&(0.009)\\
+r2&0.01&0.01&0.01&0.01&0.00\\
+N&2271991&923607&1342903&1660246&611745\\
+\multicolumn{6}{p{10cm}}{\begin{footnotesize}\textsc{Notes:}{ All specifications include a full set of year of birth and  country dummies, and are estimated as linear probability models.  Twin is multiplied by 100 for presentation.  Height is measured in cm  and BMI is weight in kg divided by height in cm squared.\\
+$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01 
+\end{footnotesize}}\\ \bottomrule \normalsize\end{tabular} 
+\end{center}\end{table} 

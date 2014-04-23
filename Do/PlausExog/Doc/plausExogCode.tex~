@@ -1,0 +1,209 @@
+\documentclass{article}[11pt] % can change class to book, report, letter, etc
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{appendix}
+\usepackage[english]{babel}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage[usenames, dvipsnames]{color}
+\usepackage{cool}
+\usepackage[justification=centering]{caption}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{etex}
+\usepackage{framed}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{lastpage}
+\usepackage{lineno}
+\usepackage{natbib}
+\usepackage{pictex}
+\usepackage{placeins}
+\usepackage{setspace}
+\usepackage{soul}
+\usepackage{subfigure}
+\usepackage{subfloat}
+\usepackage{textcomp}
+\usepackage{tikz}
+\usepackage{upquote}
+\usepackage{verbatim}
+
+\bibliographystyle{abbrvnat}
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+\setlength\topmargin{-0.375in}
+\setlength\textheight{8.5in}
+\setlength\textwidth{6.25in}
+\setlength\oddsidemargin{0.1in}
+\setlength\evensidemargin{-0.35in}
+\setlength\parindent{0.25in}
+\setlength\parskip{0.25in}
+
+
+
+\title{Example of Extended Conley et al.\ Stata code}
+\author{Damian Clarke\thanks{Contact \href{mailto:damian.clarke@economics.ox.ac.uk}
+{damian.clarke@economics.ox.ac.uk}.}}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+\begin{spacing}{1.35}
+The following describes an extended version of the Stata code from Conely et al's
+(2012) REStat paper on plausibly exogenous IV estimation.  The heart of the code
+comes from the excellent implementations on Christian Hansen's site, with a number of 
+additional elements. These elements have no major effect on functionality however 
+the code now includes extensive error capture, the option to work with missing 
+observations and factor variables, and the inclusion of automatic graphing to allow 
+for the generation of figures such as Conley et al.'s figures 1 and 2.  A Stata help 
+file has also been written describing how to run the code, the return values issued, 
+and a number of examples based on the ``Plausibly Exogenous'' dataset.
+
+The code---an ado file called \texttt{plausexog.ado} and \texttt{plausexog.hlp}---largely
+follows the syntax in the original Hansen code, however some slight tweaks have been
+incorporated to include additional options, and to fall precisely in line with the 
+syntax for Stata's inbuilt \texttt{ivregress} command.   The \texttt{plausexog} code
+uses Stata's \texttt{ivregress} command rather than the (no longer documented) 
+\texttt{ivreg}.  This has a very slight effect on the confidence intervals produced as
+Stata's old command resulted in (very) slightly wider confidence intervals than 
+\texttt{ivregress}\footnote{For example, the following gives identical point estimates
+but different confidence intervals while in theory it is 2sls estimation in each case:\\
+\texttt{. clear all}\\
+\texttt{. set obs 1000}\\
+\texttt{. gen y=rnormal()}\\
+\texttt{. gen x=rnormal()}\\
+\texttt{. gen z=rnormal()}\\
+\texttt{. ivreg y (x=z)}\\
+\texttt{. ivregress 2sls y (x=z)}
+}.  As \texttt{ivreg} is no longer documented (and standard error
+calculation is compiled code), it is not entirely clear why this is so, but given
+the small magnitude of the difference I suspect this may be a degree of freedom 
+correction not incorporated into \texttt{ivreg}.
+
+Below I provide three brief examples of the functionality of \texttt{plausexog}.  These
+are (in order) the union of confidence approach using the 401(k) data, the local-to-zero
+approach with the same data, and finally an example with graphical output.  Full details
+of syntax and so forth are available in the help file if interested.
+
+\section{Union of Confidence Interval Example (plus setup)}
+\end{spacing}
+\begin{spacing}{1}
+\begin{verbatim}
+.  webuse set http://users.ox.ac.uk/~ball3491/
+(prefix now "http://users.ox.ac.uk/~ball3491")
+.  webuse Conleyetal2012
+.  local xvar i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr twoearn 
+>  db pira hown
+.  plausexog uci net_tfa `xvar' (p401  = e401), gmin(-10000) gmax(10000) 
+>  grid(2) level(.95) vce(robust);
+
+Estimating Conely et al.'s uci method
+Exogenous variables: i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr
+ twoearn db pira hown
+Endogenous variables: p401
+Instruments: e401
+
+
+Conley et al (2012)'s UCI results                     Number of obs =     9915
+------------------------------------------------------------------------------
+Variable    Lower Bound     Upper Bound
+------------------------------------------------------------------------------
+i2          -521.86846      2458.0638
+i3          -104.87266      4488.6619
+i4          2312.9554       8309.6845
+i5          6354.6884       14456.23
+i6          17131.861       26601.305
+i7          49954.621       74997.276
+age         -2923.7451      -696.17742
+age2        14.900429       42.438197
+fsize       -1471.6129      20.443792
+hs          181.41554       5334.5844
+smcol       -656.13757      6145.4425
+col         1187.9477       9119.9383
+marr        622.05162       8280.6488
+twoearn     -19344.348      -10750.815
+db          -5695.9016      186.59616
+pira        27566.006       35785.257
+hown        2473.4966       5931.7854
+p401        -4886.9191      31332.203
+_cons       -1781.7058      39584.939
+------------------------------------------------------------------------------
+\end{verbatim}
+
+
+\section{Local to Zero Approach (symmetrical around zero, normality)}
+\begin{verbatim}
+. matrix omega_eta = J(19,19,0)
+
+. matrix omega_eta[1,1] = 5000^2
+
+. matrix mu_eta = J(19,1,0)
+
+. plausexog ltz net_tfa `xvar' (p401 = e401), omega(omega_eta) mu(mu_eta) 
+> level(.95) vce(robust)
+
+Estimating Conely et al.'s ltz method
+Exogenous variables: i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr 
+  twoearn db pira hown
+Endogenous variables: p401
+Instruments: e401
+
+
+Conley et al. (2012)'s LTZ results                    Number of obs =      9915
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        p401 |   13222.14   7423.859     1.78   0.075    -1328.353    27772.64
+          i2 |   962.1541   702.5647     1.37   0.171    -414.8473    2339.156
+          i3 |   2190.277   1006.502     2.18   0.030     217.5697    4162.983
+          i4 |   5313.626   1423.773     3.73   0.000     2523.082     8104.17
+          i5 |   10400.47    2018.09     5.15   0.000     6445.082    14355.85
+          i6 |   21859.43   2245.767     9.73   0.000     17457.81    26261.05
+          i7 |   62464.83   5893.325    10.60   0.000     50914.12    74015.53
+         age |  -1811.558   537.0111    -3.37   0.001    -2864.081   -759.0358
+        age2 |   28.68893   6.718589     4.27   0.000     15.52074    41.85712
+       fsize |  -724.4649   378.4223    -1.91   0.056    -1466.159    17.22925
+          hs |   2761.253   1245.912     2.22   0.027     319.3096    5203.196
+       smcol |   2750.739   1646.118     1.67   0.095    -475.5927     5977.07
+         col |   5161.979   1929.035     2.68   0.007     1381.139    8942.818
+        marr |   4453.186   1855.549     2.40   0.016      816.376    8089.996
+     twoearn |  -15051.59   2126.671    -7.08   0.000    -19219.79   -10883.39
+          db |   -2750.19   1240.347    -2.22   0.027    -5181.226   -319.1539
+        pira |   31667.72    1766.43    17.93   0.000     28205.58    35129.86
+        hown |   4200.889   775.1211     5.42   0.000     2681.679    5720.098
+       _cons |   18929.86    9784.79     1.93   0.053     -247.981    38107.69
+------------------------------------------------------------------------------
+
+\end{verbatim}
+
+
+\section{Local to Zero Approach with Graphing (uniform positive)}
+\begin{verbatim}
+. foreach num of numlist 0(1)5 {
+      matrix om`num' = J(19,19,0)
+      matrix om`num'[1,1] = ((`num'/5)*10000/sqrt(12))^2
+      matrix mu`num' = J(19,1,0)
+      matrix mu`num'[1,1] = (`num'/5)*10000/2
+      local d`num' = (`num'/5)*10000
+  }
+
+. qui plausexog ltz net_tfa `xvar' (p401 = e401), omega(omega_eta) mu(mu_eta)
+> level(.95) vce(robust) graph(p401) graphomega(om0 om1 om2 om3 om4 om5)
+> graphmu(mu0 mu1 mu2 mu3 mu4 mu5) graphdelta(`d0' `d1' `d2' `d3' `d4' `d5')
+
+\end{verbatim} 
+
+\begin{figure}[htpb]
+\begin{center}
+\includegraphics[scale=0.89]{ConleyetalLTZ.eps}
+\caption{Automatically produced graph (as per Conely et al figure 2)}
+\label{fig:LTZ}
+\end{center}
+\end{figure}
+
+
+
+\end{spacing}
+\end{document}

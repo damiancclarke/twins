@@ -1,0 +1,41 @@
+\begin{table}[htbp]\centering
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\caption{Test of Balance of Observables: Twins versus Non-twins \label{TWINtab:comp}}
+\vspace{5mm}
+\begin{tabular}{l*{1}{ccc}}
+\toprule
+                    &        mu\_1&        mu\_2&      d/d\_se         \\
+\midrule
+Total Fertilty      &       4.090&       6.540&      -2.450\sym{***}\\
+                    &            &            &    (0.0176)         \\
+Desired Fertility   &       3.922&       5.141&      -1.218\sym{***}\\
+                    &            &            &    (0.0199)         \\
+Age First Birth     &       19.49&       19.12&       0.367\sym{***}\\
+                    &            &            &    (0.0307)         \\
+Mother's Education  &       4.867&       3.770&       1.097\sym{***}\\
+                    &            &            &    (0.0375)         \\
+Father's Education  &       6.183&       5.176&       1.007\sym{***}\\
+                    &            &            &    (0.0410)         \\
+Mother's Height     &       155.6&       157.5&      -1.887\sym{***}\\
+                    &            &            &    (0.0559)         \\
+Pr(BMI $<$ 18.5)    &       0.113&      0.0950&      0.0184\sym{***}\\
+                    &            &            &   (0.00251)         \\
+Mother's Age        &       25.34&       27.38&      -2.039\sym{***}\\
+                    &            &            &    (0.0396)         \\
+Child Mortality     &     0.00792&      0.0216&     -0.0136\sym{***}\\
+                    &            &            &  (0.000543)         \\
+Infant Mortality    &     0.00500&      0.0158&     -0.0108\sym{***}\\
+                    &            &            &  (0.000406)         \\
+Wealth Quintile 1   &       0.203&       0.236&     -0.0326\sym{***}\\
+                    &            &            &   (0.00321)         \\
+Wealth Quintile 2   &       0.200&       0.214&     -0.0149\sym{***}\\
+                    &            &            &   (0.00318)         \\
+Wealth Quintile 3   &       0.198&       0.196&     0.00118         \\
+                    &            &            &   (0.00317)         \\
+Wealth Quintile 4   &       0.196&       0.193&     0.00332         \\
+                    &            &            &   (0.00316)         \\
+Wealth Quintile 5   &       0.203&       0.160&      0.0430\sym{***}\\
+                    &            &            &   (0.00319)         \\
+\bottomrule
+\end{tabular}
+\end{table}

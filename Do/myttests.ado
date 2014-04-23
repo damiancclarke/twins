@@ -1,6 +1,6 @@
 capt prog drop myttests
 
-*! version 1.0.0  enero 10, 2014 @ 15:49:46
+*! version 1.0.0  abril 3, 2014 @ 10:51:57
 program myttests, eclass
 	version 8
 	syntax varlist [if] [in], by(varname) [ * ]

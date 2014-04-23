@@ -1,0 +1,95 @@
+\documentclass{article}[11pt,subeqn]
+
+\title{The Twin Instrument\footnote{We are grateful to Paul Devereux, James Fenske, 
+Atheen Venkataramani, Cheti Nicoletti WHO ELSE and seminar audiences at CMPO Bristol, 
+ESPE, NEUDC, CSAE, and The University of Essex for helpful comments.}}
+\author{Sonia Bhalotra\thanks{The University of Essex.  Contact: srbhal@essex.ac.uk} 
+\and Damian Clarke\thanks{The University of Oxford.  Contact: damian.clarke@economics.ox.ac.uk}}
+\date{\today}
+
+\usepackage[capposition=top]{floatrow}
+\usepackage{url}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{rotating}
+\usepackage{dcolumn}
+\usepackage{color}
+\pagecolor{white}
+\usepackage{pdfpages}
+\usepackage{lastpage}
+\usepackage{lscape}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{breqn}
+\usepackage{appendix}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{multirow}
+
+
+\usepackage{wrapfig}
+\usepackage{blindtext}
+
+\setlength\topmargin{-0.375in}
+\setlength\textheight{8.8in}
+\setlength\textwidth{5.8in}
+\setlength\oddsidemargin{0.4in}
+\setlength\evensidemargin{-0.5in}
+\setlength\parindent{0.25in}
+\setlength\parskip{0.25in}
+
+\newcommand{\person}{we\ }
+\newcommand{\Person}{We\ }
+
+\bibliographystyle{abbrvnat}
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\usepackage{changepage}% http://ctan.org/pkg/changepage
+\makeatletter
+\newenvironment{chapabstract}{%
+    \begin{center}%
+      \bfseries Abstract
+    \end{center}}%
+   {\par}
+\makeatother
+
+
+\newcommand{\twinfolder}{./../../../Twins}
+\newcommand{\biblioinc}{\newpage \bibliography{./../../Document/ThesisRefs}}
+
+\begin{document}
+\begin{spacing}{1.4}
+
+\maketitle
+
+
+
+\newpage
+\section*{Figures}
+\input{\twinfolder/Figures/Figures.tex}
+\clearpage
+
+\section*{Tables}
+\input{\twinfolder/Tables/Tables.tex}
+\newpage
+
+\bibliography{./BiBBase1}
+
+\newpage
+\appendix
+\section*{Appendices}
+
+\section{Appendix Tables}
+\input{\twinfolder/Tables/Appendix_Tables.tex}
+
+
+\end{spacing}
+\end{document}

@@ -1,0 +1,12 @@
+CURRENT RESULTS ARE STORED UNDER THE GLOBAL HEADING Tables:
+
+"~/investigacion/Activa/Twins/Results/Outreg"
+
+Categories:
+
+> Summary
+	+ Sum
+	+ Ideal
+	+ Health
+	+ A
+> Twin

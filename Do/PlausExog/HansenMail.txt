@@ -1,0 +1,40 @@
+Dear Professor Hansen,
+
+I write regarding the excellent code you and your coauthors make available on your
+site as a companion to your 'Plausibly Exogenous' inference paper.  With a coauthor 
+(Sonia Bhalotra frome Essex), we have used this in some ongoing work, and it has 
+proven to be very useful!
+
+In the work we're doing we've been working with quite a large dataset, so I've made 
+a number of tweaks to your original code.  Essentially this is error capture and 
+adding in a number of more general Stata features such as the possiblity to work with
+factor variables and so forth.  I've also added in the possibility to automatically 
+make graphs (like the figures 1 and 2 in your REStat paper showing confidence intervals
+based on a range of gammas, plus comprehensive documentation.
+
+I wonder if this is something that you would be interested in sharing with other
+Stata users who would like to use the code?  Given that the crux of the code was
+what you and your coauthors wrote, I of course wouldn't want to share it without 
+your participation as it is clearly yours.  Given that this type of inference has 
+a very wide range of applications I suspect that it is something that many Stata 
+users would find useful and perhaps these additional features make adoption a little 
+bit simpler.  As I suspect you already know, Stata has an online repository called
+the ssc (like R's CRAN) where code like this can be housed and accessed directly
+from the Stata command line.
+
+Do you think this is something that you and coauthors would be interested in putting
+up together?  Obviously full credit would be given to you and it would of course be 
+clear to users that the intellectual heavy lifting is all yours!!
+
+Anyway, in case you are interested I'm attaching here a zipped folder with the
+code plus documentation (a Stata help file), and a short pdf which demonstrates
+how this works (essentially similar to your uci.ado and ltz.ado with some augmentations)
+plus the graphical output which can be automatically produced.
+
+With kind regards,
+
+Damian Clarke
+
+PS - I haven't cc'd your coauthors to avoid congesting email inboxes.  If you think
+they would be interested of course feel free to forward!
+

@@ -1,0 +1,7 @@
+UCI:;gamma in [0,delta];LTZ:;gamma ~ U(0,delta) 
+;Lower Bound;Upper Bound;Lower Bound;Upper Bound;
+Two Plus;-0.1827;0.0173;-0.1584;-0.0008;
+Three Plus;-0.1659;-0.0019;-0.1485;-0.0155;
+Four Plus;-0.1486;-0.0062;-0.1332;-0.0186;
+Five Plus;-0.1329;0.0203;-0.1182;0.0076;
+NOTES: This table presents upper and lower bounds of a 95\% confidence interval for the effects of family size on (standardised) children's education attainment. These are estimated by the methodology of \citet{Conleyetal2012}  under various priors about the direct effect that being from a twin family has on educational outcomes (gamma). In the UCI (union of confidence interval) approach, it is assumed the true gamma\in[0,\delta], while in the LTZ (local to zero) approach it is assumed that gamma\sim U(0,\delta).  In each case $\delta$ is estimated by including twinning in the first stage  equation and observing the effect size $\hat\gamma$.  Estimated $\hat\gamma$'s are (respectively for two plus to five plus):   0.1077, 0.0931, 0.0810, 0.0870.
