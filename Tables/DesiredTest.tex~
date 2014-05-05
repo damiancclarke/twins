@@ -1,8 +1,7 @@
 \begin{table}[htpb!]
 \caption{Desired Fertility and Observable Characteristics}
-\begin{tabular}{lccc} \hline
- & (1) & (2) & (3) \\
-VARIABLES & Desired & Shortfall & Twin \\
+\begin{tabular}{lccc} \hline\hline
+& Desired & Shortfall & Twin \\
 & fertility & & threshold \\ \hline
 \vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
 Mother's Age & 0.0700*** & 0.255*** & 0.0869  \\
@@ -24,6 +23,9 @@ Constant & 4.996*** & 4.389*** & 1.580 \\
 \vspace{4pt} & \begin{footnotesize}\end{footnotesize} & \begin{footnotesize}\end{footnotesize} \\
 Observations & 2,086,040 & 2,086,040 & 138,014 \\
  $R^2$ & 0.457 & 0.384 & 0.052 \\ \hline
-\multicolumn{4}{p{10cm}}{\begin{footnotesize} \textsc{Notes:} ADD NOTE HERE. *** p$<$0.01, ** p$<$0.05, * p$<$0.1}\end{footnotesize}} \\
+\multicolumn{4}{p{11.2cm}}{\begin{footnotesize} \textsc{Notes:}  All regressions are at the level of the mother.  Desired fertility is total number 
+of births reported by mother as desired at the time of the survey.  Shortfall represents the difference between total desired fertility and actual 
+births.  Twin threshold takes the value of 1 if twins in a twin family cause families to exceed their total desired fertility, and 0 if twins do 
+not cause families to exceed their desired fertility. *** p$<$0.01, ** p$<$0.05, * p$<$0.1\end{footnotesize}} \\ \hline
 \end{tabular}
 \end{table}

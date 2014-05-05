@@ -24,9 +24,17 @@
 
 \begin{figure}[htpb!]
 \begin{center}
+\caption{Ideal and Actual Fertility}
+\label{TWINfig:idealactual}
+\includegraphics[scale=0.92]{\twinfolder/Figures/idealfam_fert.eps} 
+\end{center}
+\end{figure}
+
+\begin{figure}[htpb!]
+\begin{center}
 \caption{Relaxing Strict Exogeneity (two plus)}
 \label{TWINfig:ltz2}
-\includegraphics[scale=0.92]{\twinfolder/Figures/LTZ_two.eps}
+\includegraphics[scale=0.89]{\twinfolder/Figures/LTZ_two.eps}
 \vspace{-8mm}
 \floatfoot{Note to figure: See note to Figure \ref{TWINfig:ltz3}}
 \end{center}
@@ -36,14 +44,14 @@
 \begin{center}
 \caption{Relaxing Strict Exogeneity (three plus)}
 \label{TWINfig:ltz3}
-\includegraphics[scale=0.92]{\twinfolder/Figures/LTZ_three.eps} 
+\includegraphics[scale=0.89]{\twinfolder/Figures/LTZ_three.eps} 
 \floatfoot{Note to figure: Confidence intervals and point estimates are calculated
 according to \citet{Conleyetal2012}.  Estimates reflect a range of priors regarding
 the validity of the exclusion restriction required to consistently estimate 
 $\hat\beta_{fert}$ using twinning in a 2SLS framework.  The local to zero (LTZ) 
 approach applied here assumes that $\gamma$, the sign on the instrument when included
 in the first stage, is distributed $\gamma\sim U(0,\delta)$.  Further discussion 
-is provided in the body of the text and table \ref{tabTWIN:Conley}.}
+is provided in the body of the text and table \ref{TWINtab:Conley}.}
 \end{center}
 \end{figure}
 

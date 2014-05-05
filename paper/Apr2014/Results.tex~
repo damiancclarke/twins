@@ -1,0 +1,8 @@
+\subsection{Twin Exogeneity}
+\input{./Results/TwinExogeneity.tex}
+
+\subsection{Twinning and Quantity-Quality}
+\input{./Results/TwinQQ.tex}
+
+\subsection{Estimating Q-Q Bounds}
+\input{./Results/Bounds.tex}

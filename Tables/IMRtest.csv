@@ -7,4 +7,4 @@ Treated (4+);-0.634***;-0.620***;443165
 ;(0.066);(0.066);
 Treated (5+);-0.423***;-0.412***;382405
 ;(0.139);(0.139);
-NOTES: * p<0.1, ** p<0.05, *** p<0.01 
+NOTES: The sample for these regressions consist of all children who have been entirely exposed to the risk of infant mortality (ie those over 1 year of age). Subsamples 2+, 3+, 4+ and 5+ are generated to allow comparison of children born at similar birth orders.  For a full description of these groups see the the body of the paper or notes to tables 5, 6, 12 or 13 respectively. Treated=1 refers to children who are born before a twin while Treated=0 refers to children of similar birth orders not born before a twin.  Base and S+H controls are described in table 5.* p<0.1, ** p<0.05, *** p<0.01 

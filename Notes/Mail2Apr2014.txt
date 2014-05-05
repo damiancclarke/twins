@@ -1,0 +1,151 @@
+hi Damian
+i've only just read over the tables you sent me, should have done this earlier. a few clarifications below. i think you (like me) are away this weekend but would you be able to work up a new draft by early next week? I can work on it a bit on Tue/Wed and then i speak on Thur. the main thing will be to clearly define all samples (and any selection on child age or anything else) and to write up effect sizes in the 1st and 2nd stage and to explain the Conley method and results. When writing use AngristLavy as a guide. since the draft exists hopefully it is not a lot extra. you can insert the tables pdf you already have at end of new draft. i hope to be able to sit down with Paul Dev and take him thro tables. let's see if we have time and if he remains open.
+
+i'd like to explore desired fert a bit more so i wanted to see the eqs including (fertility*desired) for these variations: low vs middle income looking at (pretwins only) and (pretwins +twins)
+
+pasted from earlier em- please could i have detailed desc stats on desired fertility.
+in particular, i want a table which shows the (percentage of all families with a twin birth) and the (% of all twin-families in which the birth of twins takes the family over desired fertility)
+       i want this displayed for all the samples we use ie
+(a) the full sample and (b) the 2+, 3+, 4+ etc slices of the full sample 
+(c) the low income and mid income samples and
+(d) the 2+ 3+ etc slides of these income-strata samples
+if i have forgotten another sample then pl add it too!
+   the idea is to describe how important the distinction of twins occuring before/after des fert is.
+    i think it is in the final tables you sent but in case not we also need the descriptives we had before showing the distribution of desired fertility in the data overlaid with the distribution of actual fert.
+
+as an introductory motivation slide i'd like to report trends in education and fertility in our developing country sample. could you use our estimation sample- i suggest using child file for educ and mother file for fertility.
+Using this, plot (a) education years (b) educ zscore against child birth cohort being clear in Notes whether this is years achieved by children age 6-18 on average.
+Similarly plot #births against birth year (is this ok or are there DHS-retrospective data biases in interpreting this as a fertility trend)
+It is worth doing these 3 plots for (a) all (b) low inc and (c) mid income countries
+The big pic q would be something like "Fert is declining, educ is rising, does fert decline contribute to rising educ"? Or if fert is in fact not declining v much then the spin would be "Fert is not declining and educ is rising, is this evidence against the qq tradeoff , of course not really since fert may influence educ but other (ss side) factors may be driving the current rise.
+
+pasted from an earlier em: could  you find and highlight a few high-impact top-journal papers in econ and psychology (i know econ so you need to just find psychology or other areas where the use of twins is important) that rely on twins for identif.
+
+adding new dhs is good, small changes in coef that don't totally alter the story are fine.,
+
+i will paste tables from the xls sheet into slides on Tue AM.
+please could you add the Scotland and Chile table to the xls you are preparing?
+
+in summ stats, mean (zscore educ) is not zero. why is this. as you say in interpreting coef we take mean to be zero. Since this is our dep var it needs a clear def.
+can you remind me if you calc zscore by taking away country-mean for each age eg for age 6, age 7 etc one at a time (averaged over all years) and dividing by country s.d. for that age (calculated as s.d. over time or if not what is the source of variation?). ie which mean and s.d. do you adjust by and do they have subscript (c) or (ct)?
+
+in summ stats (actual births>desired) is 0.455 in 1st column. does this mean that 45.5% of families have actual>desired?
+
+in summ stats "birth order twin" in low income countries has mean 4.6. Does this mean that twins on average occur at 4th or 5th birth order?
+
+after the Jan Essex talk we discussed adding bord so we can comment on Black et al.
+
+But at the time we also discussed controlling for b-spacing (ref rozensweig) because twins have 0 birth spacing and it may be that close birth spacing lowers child quality rather than twins. did you ever test how IV results change if you control for b-spacing? i wouldnt want it at all to be in our main set of controls because b-spacing is endogenous, being a version of fertility.
+
+T9 is disappointing: desired fert is clearly an endogenous variable. I don't suppose there is anything we can do but i will discuss it with Paul Dev. You were going to check mother v child data and old code just in case...?
+
+overweight is defined as BMI>25.
+ many thx, s
+
+================================================================================================
+================================================================================================    ​
+================================================================================================
+================================================================================================
+================================================================================================
+    hi Damian
+    sorry it has taken me so long, it is because i knew i had to spend a while typing this up!
+    here are some reactions to the recent twins pdf.
+    now that i've written them up i wish i'd done this in word so i could format it properly for you but have to rush now sorry do ask if ia m unclear
+    For all tables- check notes, often not complete or consistent.
+    In notes indicate sample used, cohort range, which DHS survey years, any restrictions. indicate when sample changes.
+    Are s.e always clustered by mother?
+    ​Yes​
+
+ 
+
+    ​​
+    For entire analysis, i was just rethinking age controls as they are important.
+    Age of woman at survey date and age at first birth together imply child age
+    ​
+    So i suggest replacing age of woman at survey date with birth year of woman.
+    So controls will be (birth yr of woman, woman's age at 1st birth, child age). together these will imply survey year (ie dont need to control for survey year but  need to note this in the text.
+    H
+    ​ave discussed this in other email and agree on controls.​
+     
+
+    T9: shows desired fert and (actual minus desired fert) are correlated with mother charactersitcs. so this is bad news. i thought we had a better result earlier? Pl could you clarify exact defs in notes to this table of the 3 dep vars, not sure how you define shortfall and twin-threshold.
+    T55&6: main results- 2nd stage of IV- starting here as this is the core table-
+    Clarify that in T5, outcomes are for first born children. correct? State this in table notes. similarly for T6. 
+    It is unclear whether estimates from Row 3 onwards (low/ middle etc) are with or without bord?
+    ​ Without bord.  Generally this doesn't make too much of a difference.  Have added clarification to note.​
+    Let's show interaction with desired fert with/without bord and for low and middle income ie let's create a new panel of the table (landscape it) which repeats the entire table with the desired fert interac thrown in.
+    ​ Desired fertility seems to work quite well in middle income in terms of signs/magnitudes, but it is never significant (in all of the tests)...  I can add this panel to the table, but it doesn't really tell us very much in support of finding a Q-Q tradeoff.​
+    In the Essex jan talk we had one significant coef on the interaction with desired, we lost it, worth checking why?
+
+​Some small changes from presentation at Essex (see slide 30 from Sonia's presentation).  This is due to inclusion of two further (2012) DHS surveys which became available.  I accidentally remade the source data using new DHS data so sample changed a little bit.  I won't do this again so we don't see any more changes in coefficients.  In any case, the significant coefficient was on middle income countries.  The low/mid distinction has changed as the old one was very crude.​
+
+    interaaction in T5 has wrong sign, could you check data and code for desired fert just in case?
+    Interpreting coef - see T6- 1st row, coef of -0.042. If mean of dep var is about 0.02 does this mean that an additional child lowers z-score by >200%? seems too large, maybe i am mis interpreting.?
+
+​Mean of depv (zscore) should be 0, and sd should be 1 (right?).  In this case a reduction of 0.042 implies -4.2% of a standard deviation which seems reasonable to me.​
+ 
+
+    Now 1st row has sig coef in col 2 and 3 (nice) but what changed, we didnt have this earlier?
+
+​Some small changes from presentation at Essex (-0.038** to -0.042** for 3+).  This is due to inclusion of two further (2012) DHS surveys which became available.  I accidentally remade the source data using new DHS data so sample changed a little bit.  I won't do this again so we don't see any more changes in coefficients.
+
+    Can you add a new table for 4+ with similar structure?
+
+​Have added tables for 4+ and 5+ in appendix tables.​
+ 
+ 
+
+    High priority- i thought we had these ready but they are not in pdf- we need to show 1st stage eqs.
+    style of angrist lavy.
+    structure should match main IV results ie need to show with/out bord, low and middle inc, with/out interaction of desired fert etc. just as suggested above.
+
+​Yes, this is included now. [***ADD TABLE NUMBER HERE]​
+ 
+
+    T4 OLS table shd be consistent with IV table.
+    so show (a) interaction with desired threshold
+    (b) show pretwins vs (pretwins and twins)
+    is this interpretation of coef correct- col. 3, row-1, coef -0.075.
+    i look in T1 for mean of d.v. (z score ed) and found this to be ~0.02.
+    So does the coef tell us that 1 additional child lowers the z-score from the mean of 0.02 to -0.055 (ie adding -0.075 to the mean score 0.02)? I have a feeling this is not right- can you check and tell me?
+    ​I think this is clear from the previous discussion...  The effect sizes are interpreted as standard deviations so -0.055 implies that an additional birth reduces education by 5.5% of a standard deviation.​
+
+ 
+
+    Table 7 i need to read Conley again but in case you know offhand -we need to clarify in notes to table and for ourselves how exactly gamma and delta are defined. And check whether these bounds are meant to be compared with OLS beta or IV beta?
+
+​These bounds are interpreted compared to IV beta (Altonji on the other hand is based on OLS).​
+ 
+​ Gamma should be interpreted as describing our prior belief of the sign on twins (the instrument) in the first stage.  In this sense at the point where gamma=0 this is precisely the IV estimate.  Delta describes the maximum gamma that we allow in our calculations (for example, what would happen if we thought that gamma was distributed according to a uniform distribution between say 0 and 0.5?  In this case delta=0.5.)  I think this should all be made clear in either the text or as an appendix.  In the end I had to nearly completely re-write the Conley et al code and made this into a Stata ado so can describe in an appendix and say that it is made available perhaps. ​
+
+    T8: interesting f-m difference. to test if it is significant we need to run a case in which we interact all RHS vars with gender so the t test on the interaction gives us a test of significance.
+    Since desired fert is often related to gender of children, repeat T8 using format of T5 ie do it with desired interaction and for low/middle income and for pretwin vs pretwin+twin outcomes. this is equal to repeating T5,6 by gender. 
+         So one way to limit the # cols is to add a gender interaction eq as the last col of T5 and 6. for the gender interaction you can use just the final column with all controls? or if it easier just make an extended T8. if tables are in xls we can cut a column from one table and add it to another table later.
+        Awkward to list #obs in notes to table 8, better to add a row to the table
+    T1- 
+    are these means from child or mother level data? clarify in notes. let me know what you think is the best match to regressions but off the cuff i think we should either use mother-level data for all stats 
+    ( i think this is better but please check/think as you are at the helm) or use mother-level data for mother stats and child level data for child stats.
+    Add a 5th col showing mean (sd) for full sample (single+twin, low+middle income). we need this to interpret coefs in regs on full sample.
+    Drop row-1 showing birth order (it is v similar to fertility and we never use the continuous var in our regs).
+    Just above "mother char", add a row showing birth order of the twins for the twin families ie col. 2 and 4 will have values, 1 and 3 blank
+    Under Mother char, add summ stats for (desired fert> threshold fert)
+    for consistency replace "Ideal fam size" with "Desired fam size"
+    Childrens outcomes: clarify is those summ stats are for pre-twins or all children? i suggest producing those stats for pre-twins in col. 1 and 3 and for twins in col. 2 and 4; what do you think?
+    T2-
+    mother and father educ values look inconsistent with means in T1? twin moth and fath should be more not less educ?
+    as in T1 indicate in notes whether you use mother or child level data to conduct tests of balance. here i would use mother-level data.
+    You have a bunch of vars below mother-height which should be in T1 -?
+    vars in T1 and T2 shd be matched eg BMI in T1 should be pr(low BMI) as in T2. 
+    in fact i suggest that in T1 and T2 and in regresssions we omit the normal bmi category and include/show low-bmi and high-bmi (obese)
+    let's not use #antenatal checks at indiv level as it is very endogenous. either use some indicator of antenantal care availability at psu or distt level or just drop it
+    T3 title Test of hypothesis that women who bear twins have better prior health
+    notes shd define "treated 2+" etc, and should explain how sample for these regs is constructed, which cohorts are incl, and refer another table for what base and +S&H means.
+    Prob (twin) by birth order (fig 1) - create histogram so can read off prob for 1, 2, 3..etc
+    Similarly fig 2: histogram showing % families of each type (twin/ not) with 1, 2, 3.. births.
+    Fig 30 don't code "up to god " and "non numeric" as 10+. Drop these. Make a category 9+ which are genuine 9+s
+    Revisit Chile eq for pr(twin) on our slides. 
+    add clear notes on variable definitions in that table; add table of mean (sd) for those vars
+    Present the vars in tables in 2 sets: those determined before conception eg height of woman and those after eg smoking.
+    many thanks damian. s
+
+

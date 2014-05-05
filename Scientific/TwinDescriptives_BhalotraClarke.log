@@ -1,6 +1,5 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  9 APR 2014 11:19
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  29 APR 2014 11:42
 entering extended mode
- \write18 enabled.
  %&-line parsing enabled.
 **TwinDescriptives_BhalotraClarke.tex
 (./TwinDescriptives_BhalotraClarke.tex
@@ -451,11 +450,13 @@ Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 )
+
+Package epstopdf Warning: Shell escape feature is not enabled.
+
 Package grfext Info: Graphics extension search list:
 (grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 433.
-
 (/usr/share/texmf-texlive/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2009/10/26 v1.1 Configuration of epstopdf for TeX Live
 )))
@@ -642,7 +643,7 @@ Missing character: There is no ™ in font cmr8!
 
 ] [5]
 
-LaTeX Warning: Float too large for page by 59.16278pt on input line 42.
+LaTeX Warning: Float too large for page by 35.16278pt on input line 33.
 
 [6])) AED: lastpage setting LastPage (./TwinDescriptives_BhalotraClarke.aux) ) 
 Here is how much of TeX's memory you used:
@@ -652,7 +653,7 @@ Here is how much of TeX's memory you used:
  8836 multiletter control sequences out of 15000+50000
  11798 words of font info for 46 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 41i,13n,38p,629b,476s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 41i,13n,38p,616b,476s stack positions out of 5000i,500n,10000p,200000b,50000s
 <
 /usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texli
@@ -664,7 +665,7 @@ usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/tex
 mf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fo
 nts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-texlive/fonts/type1/pu
 blic/amsfonts/cm/cmsy8.pfb>
-Output written on TwinDescriptives_BhalotraClarke.pdf (6 pages, 177925 bytes).
+Output written on TwinDescriptives_BhalotraClarke.pdf (6 pages, 177880 bytes).
 PDF statistics:
  92 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

@@ -1,37 +1,41 @@
 ;Low Income;;Middle Income; 
-; Single ; Twins ; Single ; Twins 
-FERTILITY ; ; ; ; 
-Birth Order;3.019;4.357;2.903;3.845;2.997;
-;(2.005);(2.311);(2.014);(2.253);(2.022);
-Fertility;5.478;7.027;5.161;6.121;5.383;
-;(2.477);(2.630);(2.597);(2.747);(2.538);
-Ideal Family Size;4.610;5.395;3.822;4.256;4.324;
-;(2.786);(3.050);(2.349);(2.594);(2.663);
-Fraction Twin ;;   0.0200;;   0.0179 
-;; (0.1402);; (0.1326)
+; Single ; Twins ; Single ; Twins; All 
+FERTILITY ; ; ; ; ; 
+Fertility;4.782;6.982;4.338;6.185;4.664;
+;(2.345);(2.570);(2.358);(2.731);(2.388);
+Desired Family Size;4.358;5.365;3.598;4.288;4.094;
+;(2.651);(3.016);(2.239);(2.631);(2.545);
+Fraction Twin ;;   0.0200;;   0.0179  ;;  0.0191
+;; (0.1402);; (0.1326) ;; (0.1370)
+Birth Order Twin ;;    4.664;;    4.016 ;;   4.410
+;; (2.465);; (2.374);; (2.450)
 MOTHER'S CHARACTERISTICS 
- Age;36.98;38.44;38.05;39.47;37.42;
-;(6.406);(6.129);(6.263);(5.887);(6.370);
-Education;3.072;3.165;5.641;5.789;4.048;
-;(3.987);(3.984);(4.773);(5.029);(4.481);
-Height;155.5;157.6;155.4;157.3;155.5;
-;(7.110);(7.104);(7.014);(6.866);(7.078);
-BMI;22.25;22.97;27.10;27.55;24.10;
-;(4.390);(4.611);(5.431);(5.763);(5.358);
+ Age;35.73;38.30;36.82;39.45;36.19;
+;(6.746);(6.189);(6.665);(5.944);(6.735);
+Education;3.395;3.038;6.214;5.602;4.437;
+;(4.191);(3.916);(4.837);(5.001);(4.645);
+Height;155.3;157.4;155.5;157.1;155.5;
+;(7.103);(7.163);(7.012);(6.945);(7.076);
+BMI;22.21;22.87;26.80;27.47;23.94;
+;(4.338);(4.560);(5.311);(5.769);(5.230);
+Pr(BMI)<18.5;0.175;0.132;0.0257;0.0246;0.119;
+;(0.380);(0.338);(0.158);(0.155);(0.323);
+Actual Births>Desired;0.455;0.637;0.452;0.649;0.458;
+;(0.498);(0.481);(0.498);(0.477);(0.498);
 CHILDREN'S OUTCOMES 
- Education (Years);3.642;3.134;5.200;4.840;4.224;
-;(3.553);(3.261);(3.810);(3.718);(3.727);
-Education (Z-Score);0.0264;-0.0127;0.0106;-0.0298;0.0197;
-;(0.979);(0.948);(0.975);(0.978);(0.977);
-No Education (Percent);0.198;0.224;0.0732;0.0863;0.151;
-;(0.399);(0.417);(0.260);(0.281);(0.358);
-Infant Mortality;0.0165;0.0937;0.00660;0.0386;0.0138;
-;(0.127);(0.291);(0.0810);(0.193);(0.117);
-Child Mortality;0.0249;0.110;0.00859;0.0419;0.0199;
-;(0.156);(0.313);(0.0923);(0.200);(0.140);
+ Education (Years);3.379;3.094;4.667;4.835;3.857;
+;(3.241);(3.210);(3.358);(3.674);(3.348);
+Education (Z-Score);0.0666;-0.0322;0.0614;-0.0383;0.0624;
+;(0.875);(0.913);(0.840);(0.949);(0.864);
+No Education (Percent);0.194;0.231;0.0737;0.0878;0.149;
+;(0.355);(0.410);(0.233);(0.272);(0.322);
+Infant Mortality;0.0120;0.0953;0.00440;0.0400;0.0107;
+;(0.0769);(0.274);(0.0439);(0.180);(0.0763);
+Child Mortality;0.0210;0.118;0.00670;0.0465;0.0174;
+;(0.111);(0.307);(0.0592);(0.198);(0.104);
 
-Number of Countries ; 39;39  ; 28;28  
-Number of Children ;2,231,845 ;45,654 ;1,614,358 ;29,430 
-Number of Mothers ;875,680 ;12,816 ;653,867 ;8,707 
+Number of Countries ; 40;40  ; 28;28  ; 68 
+Number of Children ;2,231,844 ;45,654 ;1,614,358 ;29,430 ; 3,921,286 
+Number of Mothers ;875,519 ;12,976 ;653,931 ;8,643 ; 1,586,899 
 
-NOTES:  Group means are presented with standard deviation below in parenthesis.  Education is reported as years total attained, attendance is a binary variable indicating current attendance status.  Infant mortality refers to the proportion of children who die before 1 year of age, while child mortality refers to the proportion who die before 5 years.  Maternal height is reported in cm.  Summary statistics are for the full sample of 3,921,287 children.  For a full list of country and years of survey, see appendix table \ref{TWINtab:countries}.
+NOTES:  Group means are presented with standard deviation below in parenthesis.  Education is reported as total years attained, and Z-score presents educational attainment relative to country and cohort (mean 0, std deviation 1).  Infant mortality refers to the proportion of children who die before 1 year of age,  while child mortality refers to the proportion who die before 5 years.  Maternal height is reported in cm, and BMI is weight in kg over height in metres squared.  Summary statistics are for the full sample of 1,586,899 mothers responding to any publicly available DHS survey.  For a full list of country and years of survey, see appendix table 10.

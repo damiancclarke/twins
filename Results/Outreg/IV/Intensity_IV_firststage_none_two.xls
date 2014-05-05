@@ -1,0 +1,24 @@
+	f8school_zscorefert
+	b/se
+Male Child	-0.095***
+	(0.006)
+motherage	0.454***
+	(0.031)
+motheragesq	-0.016***
+	(0.001)
+motheragecub	0.000***
+	(0.000)
+Age First Birth	-0.118***
+	(0.005)
+Mother's Education	-0.090***
+	(0.002)
+Mother's Education Squared	0.002***
+	(0.000)
+Height	-0.003***
+	(0.001)
+BMI	-0.019***
+	(0.001)
+twin_two_fam	0.746***
+	(0.031)
+r2	0.43
+N	203948

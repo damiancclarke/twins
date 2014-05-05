@@ -35,7 +35,7 @@ Fertility;-0.024;-0.061***;-0.065***;505,373
 First Stage (Pre-Twins) 
 ;;;;
 All Families 
-Twins;0.788***;0.839***;0.841***;258,243
-         ;(0.031);(0.028);(0.028);
-NOTES: Two-plus refers to all first-born children in families with two or more children.  Each cell presents the coefficient of a 2SLS regression where fertility is instrumented by twinning at birth order two.  Base controls include age, mother's age, and mother's age at birth fixed effects plus country and year-of-birth FEs.  Standard errors are clustered by mother. 
+Twins;0.798***;0.839***;0.841***;258,243
+         ;(0.030);(0.028);(0.028);
+NOTES: Two-plus refers to all first-born children in families with two or more children.  Each cell presents the coefficient of a 2SLS regression where fertility is instrumented by twinning at birth order two.  Base controls include child age, mother's age, and mother's age at birth fixed effects plus country and year-of-birth FEs.  The sample is made up of all children aged between 6-18 years from families in the DHS who fulfill two-plus requirements. Birth order dummies are included only if explicitly stated.  First-stage results in the final panel correspond to the second stage in row 1.  Full first stage results for each row are available in table 15. Standard errors are clustered by mother. 
 * p<0.1, ** p<0.05, *** p<0.01

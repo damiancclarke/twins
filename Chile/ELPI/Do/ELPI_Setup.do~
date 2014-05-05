@@ -1,6 +1,17 @@
 * ELPI_Setup 1.00                dh:2012-07-23                  Damian C. Clarke
 *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 *
+/*
+This file takes data from the Encuesta Longitudinal de Primera Infancia (Chile)
+and runs regressions analysing the likelihood of twinning based on a mother's
+characteristics and behaviours.
+
+Version history
+2014-04-30: Re-order regression for pre/during behaviour.
+2012-07-23: Initial file.  DCC
+*/
+
+
 clear all
 version 11
 cap log close
@@ -10,11 +21,26 @@ set mem 100m
 *GLOBALS & LOCALS
 global PATH "~/investigacion/Activa/Twins/Chile/ELPI"
 global DATA "~/database/ELPI/Base"
-global COMPUTER "damiancclarke"
 global DO "$PATH/Do"
 global LOG "$PATH/Log"
+global RESULTS "~/investigacion/Activa/Twins/Scientific/Results"
 
 log using "$LOG/ELPI_Setup.txt", text replace
+
+local initialreg 0
+local cleanreg 1
+
+
+local base m_age_birth m_age_sq indigenous 
+local tc_educ i.mother_educ
+local twincontrols_1 poor i.mother_educ i.nutritionPre pregAnemia  /*
+*/ pregNoAttention pregSmoked i.pregDrugs i.pregAlcohol pregPublicHosp
+local twincontrols_2 poor mother_educ i.nutritionPre pregAnemia  /*
+*/ pregNoAttention pregSmoked i.pregDrugs i.pregAlcohol pregPublicHosp
+local region i.region i.age rural
+
+local w [pw=fexp_enc]
+local c if a16==13
 
 ********************************************************************************
 *** (1) Create relevant vars from Hogar database
@@ -49,10 +75,19 @@ label def educ_lab 1 "None" 2 "Pre-school" 3 "Primary" ///
 label val educ educ_lab
 gen mateduc=educ if a16==1
 bys folio: egen mother_educ=mean(mateduc)
-gen educ1_4=(mother_educ==3)
-gen educ5_6=(mother_educ==4)
-gen educ7_10=(mother_educ==5|mother_educ==6)
-gen educ11plus=(mother_educ>7&mother_educ!=.)
+gen primary=educ<4&educ!=1
+gen secondary=(educ>=5&educ<=7)
+gen tertiary=(educ>7&educ!=.)
+
+gen MP=primary if a16==1
+gen MS=secondary if a16==1
+gen MT=tertiary if a16==1
+
+bys folio: egen Mprimary=max(MP)
+by folio: egen Msecondary=max(MS)
+by folio: egen Mtertiary=max(MT)
+
+
 
 *Gen family income, replacing for ranges
 gen family_income=d11m
@@ -73,6 +108,9 @@ drop family_income
 
 gen ypc=family_inc/tot_per
 
+gen incomepc=ypc/10000
+gen incomepc2=incomepc^2
+
 rename a18 sex
 gen indigenous=(a23!=10&a23!=99)
 
@@ -89,8 +127,8 @@ label var mother_educ "Maternal education (of followed child)"
 
 
 keep folio a16 a19 orden tot_per d11m fexp_hog fert birthorder mother_age /*
-*/ m_age_birth educ family_inc sex indigenous child ypc mother_educ m_age_sq/*
-*/ educ1_4 educ5_6 educ7_10 educ11plus
+*/ m_age_birth educ family_inc sex indigenous child ypc mother_educ m_age_sq /*
+*/ Mprimary Msecondary Mtertiary incomepc*
 
 ********************************************************************************
 *** (2) Create relevant vars from Entrevistada database
@@ -98,81 +136,110 @@ keep folio a16 a19 orden tot_per d11m fexp_hog fert birthorder mother_age /*
 merge m:1 folio using $DATA/Entrevistada
 
 gen twin=(a03!=5)
-*gen child=1 if a16==6 | a16==13
 sort folio a03 child a19
 bys folio: gen agedif=a19[_n+1]-a19[_n] 
 replace agedif=agedif*child
 gen agedif2=agedif[_n-1]
 replace agedif2=agedif2*child
 
-rename g01 preg_No_attention 
-replace preg_No_attention=. if preg_No_attention==9
-rename g02 preg_numcontrols
-replace preg_numcontrols=. if preg_numcontrols==9
-gen preg_anemia=(g03_08==8)
 
-replace g05b=. if g05b>4
-rename g05b preg_nutrition
+
+gen pregNoAttention = g01
+gen pregNumControls = g02
+gen pregAnemia = (g03_08==8)
+gen pregDiabetes = g03_07==7
+gen pregCondPhysical = g03_13!=13
+gen pregCondPsychological = g04a_9!=9
+gen pregDepression = g04a_1==1
+gen pregNutrition = g06a
+gen pregLowWeight = g06a==1
+gen pregObese = g06a==4
+gen pregSmoked = g07a==1
+gen pregSmokedQuant = g07b
+gen pregDrugs=g11b
+gen pregAlcohol=g09
+gen pregHosp=g16==1
+gen pregPrivateHosp=g16==3
+gen lowWeightPre = g05b==1
+gen obesePre = g05b==4
+gen nutritionPre = g05b
+
+gen poor =ypc<32000
+gen age = a19
+gen rural = area
+
+replace nutritionPre = . if nutritionPre>4
+replace pregNutrition = . if pregNutrition>4
+replace pregNoAttention = . if pregNoAttention==9
+replace pregNumControls = . if pregNumControls==9
+replace pregSmokedQuant = 0 if pregSmokedQuant==.
+replace pregSmokedQuant = . if pregSmokedQuant==999
+replace pregDrugs=. if pregDrugs==8
+replace pregAlcohol=. if pregAlcohol==8
+
+
 label def nutr 1 "Low weight" 2 "Normal" 3 "Overweight" 4 "Obese"  
-label val preg_nutrition nutr
-replace g06a=. if g06a>4
-rename g06a preg_nutrition_dur
-label val preg_nutrition_dur nutr
+label val pregNutrition nutr
+label val nutritionPre nutr
 
-gen preg_smoked=g07a==1
-gen preg_drugs=g11b
-replace preg_drugs=. if preg_drugs==8
 
-gen preg_alcohol=g09
-replace preg_alcohol=. if preg_alcohol==8
 
-gen preg_publichosp=g16==1
-
-label var preg_No_attention "Mother received no medical attention during pregnancy"
-label var preg_numcontrols "Number of pregnancy controls"
-label var preg_anemia "Mother suffered from Anemia during pregnancy"
-label var preg_nutrition "Mother's nutritional status before pregnancy"
-label var preg_nutrition_dur "Mother's nutritional status during pregnancy"
-
-gen poor=ypc<32000
-rename a19 age
-rename area rural
-
+label var pregNoAttention "Mother received no medical attention during pregnancy"
+label var pregNumControls "Number of pregnancy controls"
+label var pregAnemia "Mother suffered from Anemia during pregnancy"
+label var pregCondPhysical "Suffered from a physical condition during pregnancy"
+label var pregCondPsych "Suffered from a psychological condition during pregnancy"
+label var pregNutrition "Mother's nutritional status during pregnancy"
+label var nutritionPre "Mother's nutritional status before pregnancy"
+label var pregSmoked "Mother smoked during pregnancy (binary)"
+label var pregSmokedQuant "Quantity cigarettes smoked per month during pregnancy"
+label var pregDrugs "Mother consumed recreational drugs during pregnancy"
+label var pregAlcohol "Mother consumed alcohol during pregnancy"
+label var pregHosp "Birth took place in public hospital"
+label var pregPrivateHosp "Birth took place in private system"
 
 ********************************************************************************
-*** (3) Run twin predict regressions
+*** (3a) Run twin predict regressions: crude used in early presentations
 ********************************************************************************
-***(A) LOCALS FOR VARIABLES
-local twincontrols_typical m_age_birth m_age_sq indigenous 
-local tc_educ i.mother_educ
-local twincontrols_1 poor educ1_4 educ5_6 educ7_10 educ11plus i.preg_nutrition preg_anemia preg_No_attention /*
-*/ preg_smoked i.preg_drugs i.preg_alcohol preg_publichosp
-local twincontrols_2 poor educ1_4 educ5_6 educ7_10 educ11plus i.preg_nutrition preg_anemia preg_No_attention /*
-*/ preg_smoked i.preg_drugs i.preg_alcohol preg_publichosp
-local region i.region i.age rural //note here controlling for age controls for year of birth
+if `initialreg'==1 {
+	reg twin `base' `region' `c' `w'
+	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel replace
 
-***(B) REGRESSIONS
-reg twin `twincontrols_typical' `region' if a16==13 [pw=fexp_enc]
-outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel replace
+	reg twin `base' `twincontrols_2' `region' `c' `w'
+	outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
 
-reg twin `twincontrols_typical' `twincontrols_2' `region' if a16==13 [pw=fexp_enc]
-outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+	reg twin `base' `twincontrols_1' `region' if `c' `w'
+	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
 
-reg twin `twincontrols_typical' `twincontrols_1' `region' if a16==13 [pw=fexp_enc]
-outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+	reg twin i.birthorder `base' `region' `c' `w'
+	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel
 
-reg twin i.birthorder `twincontrols_typical' `region' if a16==13 [pw=fexp_enc]
-outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel
+	reg twin i.birthorder `base' `twincontrols_2' `region' `c' `w'
+	outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
 
-reg twin i.birthorder `twincontrols_typical' `twincontrols_2' `region' if a16==13 [pw=fexp_enc]
-outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
-
-reg twin i.birthorder `twincontrols_typical' `twincontrols_1' `region' if a16==13 [pw=fexp_enc]
-outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+	reg twin i.birthorder `base' `twincontrols_1' `region' `c' `w'
+	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
 
 
-sum birthorder `twincontrols_typical' fert poor mother_educ preg_nutrition age rural /*
-*/ preg_nutrition preg_nutrition_dur preg_anemia preg_No_attention preg_smoked preg_drugs /*
-*/ preg_alcohol preg_publichosp if a16==13
- 
- 
+	sum birthorder `base' fert poor mother_educ preg_nutrition age rural /*
+	*/ preg_nutrition preg_nutrition_dur preg_anemia preg_No_attention   /*
+	*/ preg_smoked preg_drugs preg_alcohol preg_publichosp if a16==13
+} 
+
+********************************************************************************
+*** (3b) Updated output (pre versus during)
+********************************************************************************
+fvexpand Msecondary Mtertiary incomepc* lowWeightPre obesePre
+local prePreg `r(varlist)'
+fvexpand pregNoAt pregDiab pregDepr pregLowW pregObese pregSmoked i.pregDru /*
+*/ i.pregAlc pregPub 
+local preg `r(varlist)'
+
+if `cleanreg'==1 {
+	replace twin=twin*100
+	eststo: reg twin `base' `region' `prePreg' `preg' `c' `w'
+	estout est1 using "$RESULTS/twinELPI.xls", keep(`prePreg' `preg') replace /*
+	*/ cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
+	*/ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
+
+}

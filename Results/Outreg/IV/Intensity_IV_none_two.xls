@@ -1,0 +1,24 @@
+	est4
+	b/se
+fert	-0.037
+	(0.035)
+Male Child	-0.029***
+	(0.006)
+motherage	0.023
+	(0.031)
+motheragesq	0.004***
+	(0.001)
+motheragecub	-0.000***
+	(0.000)
+Age First Birth	-0.080***
+	(0.006)
+Mother's Education	0.114***
+	(0.004)
+Mother's Education Squared	-0.004***
+	(0.000)
+Height	0.004***
+	(0.000)
+BMI	0.017***
+	(0.001)
+r2	0.17
+N	203948

@@ -1,0 +1,850 @@
+-----------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twin_Regressions.log
+  log type:  text
+ opened on:  30 Apr 2014, 10:59:23
+
+. use "$Data/DHS_twins", clear
+
+. 
+. gen motherage    = agemay - age
+
+. gen motheragesq  = motherage^2
+
+. gen motheragecub = motherage^3
+
+. gen mage3        = agemay^3
+
+. 
+. gen antesq = antenatal^2
+(5615617 missing values generated)
+
+. 
+. replace bmi=. if bmi>50
+(68238 real changes made, 68238 to missing)
+
+. replace height=. if height>240
+(56041 real changes made, 56041 to missing)
+
+. replace height=. if height<80
+(3690 real changes made, 3690 to missing)
+
+. replace educ=. if age<6
+(1408116 real changes made, 1408116 to missing)
+
+. replace educ=. if educ>25
+(0 real changes made)
+
+. replace educf=. if educf>25
+(2569 real changes made, 2569 to missing)
+
+. replace birthspacing=. if birthspacing<8|birthspacing==999
+(3107 real changes made, 3107 to missing)
+
+. 
+. gen bmi_sq=bmi*bmi
+(3111628 missing values generated)
+
+. gen height_sq=height*height
+(3100566 missing values generated)
+
+. gen underweight=1 if bmi<=18.5
+(6300142 missing values generated)
+
+. replace underweight=0 if bmi>18.5 & bmi!=.
+(3188514 real changes made)
+
+. 
+. drop if twinfamily>2
+(6757 observations deleted)
+
+. keep if _merge==3
+(2824705 observations deleted)
+
+. 
+. tab _cou, gen(_country)
+
+   country (numeric code) |      Freq.     Percent        Cum.
+--------------------------+-----------------------------------
+                  Albania |      9,852        0.25        0.25
+                  Armenia |     23,119        0.59        0.84
+               Azerbaijan |     10,099        0.26        1.10
+               Bangladesh |    138,845        3.54        4.64
+                    Benin |     50,921        1.30        5.94
+                  Bolivia |     90,337        2.30        8.24
+                   Brazil |     26,480        0.68        8.92
+             Burkina-Faso |     80,844        2.06       10.98
+                  Burundi |     17,179        0.44       11.42
+                 Cambodia |     78,393        2.00       13.42
+                 Cameroon |     57,922        1.48       14.89
+ Central-African-Republic |      8,424        0.21       15.11
+                     Chad |     31,870        0.81       15.92
+                 Colombia |    153,340        3.91       19.83
+                  Comoros |      4,405        0.11       19.94
+        Congo-Brazzaville |     24,200        0.62       20.56
+Congo-Democratic-Republic |     17,942        0.46       21.02
+            Cote-d-Ivoire |     37,865        0.97       21.98
+       Dominican-Republic |     85,859        2.19       24.17
+                    Egypt |    190,129        4.85       29.02
+                 Ethiopia |     77,034        1.96       30.99
+                    Gabon |     19,164        0.49       31.47
+                    Ghana |     29,402        0.75       32.22
+                Guatemala |     26,389        0.67       32.90
+                   Guinea |     26,887        0.69       33.58
+                   Guyana |      9,787        0.25       33.83
+                    Haiti |     54,833        1.40       35.23
+                 Honduras |     64,405        1.64       36.87
+                    India |    494,736       12.62       49.49
+                Indonesia |    370,438        9.45       58.94
+                   Jordan |    104,264        2.66       61.60
+               Kazakhstan |     10,902        0.28       61.87
+                    Kenya |     41,113        1.05       62.92
+          Kyrgyz-Republic |      6,260        0.16       63.08
+                  Lesotho |     19,628        0.50       63.58
+                  Liberia |      9,946        0.25       63.84
+               Madagascar |     66,478        1.70       65.53
+                   Malawi |     94,897        2.42       67.95
+                 Maldives |     11,367        0.29       68.24
+                     Mali |     81,284        2.07       70.31
+                  Moldova |      7,146        0.18       70.50
+                  Morocco |     38,863        0.99       71.49
+               Mozambique |     51,801        1.32       72.81
+                  Namibia |     22,202        0.57       73.38
+                    Nepal |     62,324        1.59       74.96
+                Nicaragua |     45,936        1.17       76.14
+                    Niger |     47,656        1.22       77.35
+                  Nigeria |     94,681        2.41       79.77
+                 Pakistan |     49,895        1.27       81.04
+                 Paraguay |      9,839        0.25       81.29
+                     Peru |    109,120        2.78       84.07
+              Philippines |     92,995        2.37       86.44
+                   Rwanda |     72,571        1.85       88.29
+    Sao-Tome-and-Principe |      4,549        0.12       88.41
+                  Senegal |     74,161        1.89       90.30
+             Sierra-Leone |     10,632        0.27       90.57
+             South-Africa |     12,962        0.33       90.90
+                Swaziland |      5,874        0.15       91.05
+                 Tanzania |     95,811        2.44       93.50
+                     Togo |     11,893        0.30       93.80
+                   Turkey |     37,920        0.97       94.77
+                   Uganda |     52,893        1.35       96.12
+                  Ukraine |      6,037        0.15       96.27
+               Uzbekistan |      7,962        0.20       96.47
+                  Vietnam |     25,392        0.65       97.12
+                    Yemen |     20,806        0.53       97.65
+                   Zambia |     52,383        1.34       98.99
+                 Zimbabwe |     39,743        1.01      100.00
+--------------------------+-----------------------------------
+                    Total |  3,921,286      100.00
+
+. tab year_birth, gen(_yb)
+
+   Mother's |
+    year of |
+      birth |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       1936 |          2        0.00        0.00
+       1937 |        144        0.00        0.00
+       1938 |        100        0.00        0.01
+       1939 |        135        0.00        0.01
+       1940 |        483        0.01        0.02
+       1941 |      2,362        0.06        0.08
+       1942 |      5,898        0.15        0.23
+       1943 |      9,495        0.24        0.47
+       1944 |     12,172        0.31        0.79
+       1945 |     18,005        0.46        1.24
+       1946 |     20,965        0.53        1.78
+       1947 |     25,219        0.64        2.42
+       1948 |     29,939        0.76        3.19
+       1949 |     35,612        0.91        4.09
+       1950 |     47,380        1.21        5.30
+       1951 |     46,309        1.18        6.48
+       1952 |     59,824        1.53        8.01
+       1953 |     61,353        1.56        9.57
+       1954 |     72,246        1.84       11.42
+       1955 |     80,632        2.06       13.47
+       1956 |     89,398        2.28       15.75
+       1957 |     98,399        2.51       18.26
+       1958 |    109,060        2.78       21.04
+       1959 |    113,116        2.88       23.93
+       1960 |    138,348        3.53       27.46
+       1961 |    121,382        3.10       30.55
+       1962 |    145,480        3.71       34.26
+       1963 |    143,180        3.65       37.91
+       1964 |    146,013        3.72       41.64
+       1965 |    151,848        3.87       45.51
+       1966 |    143,507        3.66       49.17
+       1967 |    137,996        3.52       52.69
+       1968 |    149,392        3.81       56.50
+       1969 |    135,645        3.46       59.96
+       1970 |    151,622        3.87       63.82
+       1971 |    125,341        3.20       67.02
+       1972 |    133,678        3.41       70.43
+       1973 |    122,687        3.13       73.56
+       1974 |    111,645        2.85       76.40
+       1975 |    113,008        2.88       79.29
+       1976 |    102,695        2.62       81.90
+       1977 |     91,007        2.32       84.23
+       1978 |     89,800        2.29       86.52
+       1979 |     78,236        2.00       88.51
+       1980 |     81,442        2.08       90.59
+       1981 |     62,749        1.60       92.19
+       1982 |     60,517        1.54       93.73
+       1983 |     51,968        1.33       95.06
+       1984 |     42,771        1.09       96.15
+       1985 |     37,072        0.95       97.09
+       1986 |     30,893        0.79       97.88
+       1987 |     22,241        0.57       98.45
+       1988 |     19,675        0.50       98.95
+       1989 |     12,831        0.33       99.28
+       1990 |     10,953        0.28       99.56
+       1991 |      7,160        0.18       99.74
+       1992 |      5,037        0.13       99.87
+       1993 |      2,793        0.07       99.94
+       1994 |      1,482        0.04       99.98
+       1995 |        674        0.02       99.99
+       1996 |        245        0.01      100.00
+       1997 |         25        0.00      100.00
+------------+-----------------------------------
+      Total |  3,921,286      100.00
+
+. tab age, gen(_age)
+
+Child's age |
+   in years |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |    278,322        7.10        7.10
+          1 |    249,311        6.36       13.46
+          2 |    236,581        6.03       19.49
+          3 |    233,634        5.96       25.45
+          4 |    226,103        5.77       31.21
+          5 |    216,076        5.51       36.72
+          6 |    231,904        5.91       42.64
+          7 |    211,026        5.38       48.02
+          8 |    208,222        5.31       53.33
+          9 |    182,900        4.66       57.99
+         10 |    202,331        5.16       63.15
+         11 |    161,842        4.13       67.28
+         12 |    182,634        4.66       71.94
+         13 |    159,152        4.06       76.00
+         14 |    150,462        3.84       79.83
+         15 |    133,418        3.40       83.24
+         16 |    119,198        3.04       86.28
+         17 |     99,881        2.55       88.82
+         18 |     96,338        2.46       91.28
+         19 |     66,765        1.70       92.98
+         20 |     68,469        1.75       94.73
+         21 |     44,762        1.14       95.87
+         22 |     42,741        1.09       96.96
+         23 |     30,728        0.78       97.74
+         24 |     24,235        0.62       98.36
+         25 |     22,087        0.56       98.92
+         26 |     13,366        0.34       99.27
+         27 |      9,762        0.25       99.51
+         28 |      7,419        0.19       99.70
+         29 |      3,902        0.10       99.80
+         30 |      4,172        0.11       99.91
+         31 |      1,380        0.04       99.94
+         32 |      1,096        0.03       99.97
+         33 |        494        0.01       99.99
+         34 |        262        0.01       99.99
+         35 |        187        0.00      100.00
+         36 |         62        0.00      100.00
+         37 |         29        0.00      100.00
+         38 |         13        0.00      100.00
+         39 |          5        0.00      100.00
+         40 |          9        0.00      100.00
+         41 |          2        0.00      100.00
+         42 |          3        0.00      100.00
+         44 |          1        0.00      100.00
+------------+-----------------------------------
+      Total |  3,921,286      100.00
+
+. tab contracep_intent, gen(_contracep)
+
+contraceptive use and intention |      Freq.     Percent        Cum.
+--------------------------------+-----------------------------------
+            using modern method |  1,404,428       36.16       36.16
+       using traditional method |    318,282        8.20       44.36
+non-user - intends to use later |    940,878       24.23       68.58
+         does not intend to use |  1,220,152       31.42      100.00
+                  never had sex |          1        0.00      100.00
+--------------------------------+-----------------------------------
+                          Total |  3,883,741      100.00
+
+. tab bord, gen(_bord)
+
+    Child's |
+birth order |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |  1,003,729       25.60       25.60
+          2 |    863,495       22.02       47.62
+          3 |    651,989       16.63       64.24
+          4 |    465,964       11.88       76.13
+          5 |    329,421        8.40       84.53
+          6 |    230,147        5.87       90.40
+          7 |    154,868        3.95       94.35
+          8 |     99,667        2.54       96.89
+          9 |     59,588        1.52       98.41
+         10 |     33,380        0.85       99.26
+         11 |     16,615        0.42       99.68
+         12 |      7,609        0.19       99.88
+         13 |      2,876        0.07       99.95
+         14 |      1,169        0.03       99.98
+         15 |        475        0.01       99.99
+         16 |        198        0.01      100.00
+         17 |         60        0.00      100.00
+         18 |         19        0.00      100.00
+         19 |         10        0.00      100.00
+         20 |          6        0.00      100.00
+         21 |          1        0.00      100.00
+------------+-----------------------------------
+      Total |  3,921,286      100.00
+
+. local base malec _country* _yb* _age* _contracep* `add'
+
+. 
+. foreach ado in ivreg2 outreg2 estout ranktest mat2txt {
+  2.         cap which `ado'
+  3.         if _rc!=0 ssc install `ado'
+  4. }
+
+. 
+. *bys desiredfert_region: egen antenatalregion=mean(antenatal)
+. *rename antenatal antenatal_ind
+. *rename antenatalregion antenatal
+. 
+. *******************************************************************************
+. *** (2) Summary Stats
+. *******************************************************************************
+. if `sumstats'==1 {
+. 
+.         if c(os)=="Windows" local format png
+.         else if c(os)=="Unix" local format eps
+. 
+.         ***************************************************************************
+.         *** (2a) Graphical
+.         *** graph 1: total births by family type (twins vs non-twins)
+.         *** graph 2: total births by family type for families who exceed desired
+.         *** graph 3: Proportion of twins by birth order
+.         *** graph 4: Desired family size
+.         *** graphs 5-7: Desired family size by mother's characteristics
+.         ***************************************************************************
+.         if `graphs'==1 {
+.         twoway kdensity fert if twinfamily>0&twinfamily!=., lpattern(dash) bw(2) || ///
+>           kdensity fert if twinfamily==0, bw(2) scheme(s1color) ytitle("Density") ///
+>           legend(label(1 "Twin Family") label(2 "Singleton Family")) ///
+>           title("Total births by Family Type") xtitle("total children ever born") 
+.         graph save "$Graphs/`famsize'", replace
+.         graph export "$Graphs/`famsize'.`format'", as(`format') replace
+. 
+. 
+.         twoway kdensity fert if twinfamily>0&twinfamily!=. & fert > idealnumkids, ///
+>           bw(2) lpattern(dash) || kdensity fert if twinfamily==0 & ///
+>           fert > idealnumkids & twin_bord >= idealnumkids, bw(2) scheme(s1color) ///
+>           legend(label(1 "Twin Family") label(2 "Singleton Family")) ///
+>           ytitle("Density") title("Total births by Family Type") ///
+>           xtitle("total children ever born") ///
+>           subtitle("For families who exceed desired family size")
+.         graph save "$Graphs/`famsize_e'", replace
+.         graph export "$Graphs/`famsize_e'.`format'", as(`format') replace
+. 
+.         
+.         local note1 "Single births are 1-frac(twins). "
+.         local note2 "Total fraction of twins is represented by the solid line."
+.         local gnote "`note1' `note2'"
+.         sum twind
+.         local twinave=r(mean)   
+.         preserve
+.         collapse twind [pw=sweight], by(bord)
+.         gen twinave=`twinave'   
+.         line twind bord if bord<11, lpattern(dash) title("Twinning by birth order") ///
+>           ytitle("Fraction twins") xtitle("Birth Order") yline(0.0189) ///
+>           note(`gnote') scheme(s1color)
+.         graph save "$Graphs/`twinbord'", replace
+.         graph export "$Graphs/`twinbord'.`format'", as(`format') replace
+. 
+.         twoway bar twind bord if bord<11 || ///
+>         line twinave bord if bord<11, title("Twinning by birth order") ///
+>           ytitle("Fraction twins") xtitle("Birth Order")  ///
+>           note(`gnote') scheme(s1color)
+.         graph save "$Graphs/`twinbord'_hist", replace
+.         graph export "$Graphs/`twinbord'_hist.`format'", as(`format') replace
+.         restore
+. 
+.         
+.         local n1 "Total sample of families is 1,586,899.  2.61% of families report "
+.         local n2 "'up to god', and 4.39% provide"
+.         local n3 "a non-numeric response. These are omitted here."      
+.         preserve
+.         collapse idealnumkids [pw=sweight], by(id)
+.         gen idealnum=idealnumkids if idealnumkids<=9
+.         replace idealnum=9 if idealnumkids>10 & idealnumkids<=30
+.         lab def n 0 "0" 1 "1" 2 "2" 3 "3" 4 "4" 5 "5" 6 "6" 7 "7" 8 "8" 9 "9+"
+.         lab val idealnum n
+.         hist idealnum,  note("`n1' `n2'" "`n3'") frac scheme(s1color) ///
+>           xtitle("Ideal Family Size") title("Self Reported Ideal Family Size") ///
+>           xla(0/9, valuelabel) bcolor(navy)
+.         graph save "$Graphs/`idealfam'", replace
+.         graph export "$Graphs/`idealfam'.`format'", as(`format') replace
+.         restore
+. 
+.         
+.         foreach c of varlist agemay agefirstbirth fert {
+  2.                 preserve
+  3.                 if `"`c'"'=="agemay" {
+  4.                         local cond agemay>=15&agemay<=45
+  5.                         local char "Age of mother at time of question"
+  6.                 }
+  7.                 else if `"`c'"'=="agefirstbirth" {
+  8.                         local cond agefirstbirth>=15&agefirstbirth<45
+  9.                         local char "Age of Mother at First birth"
+ 10.                 }
+ 11.                 else if `"`c'"'=="fert"{
+ 12.                         local cond fert<=10
+ 13.                         local char "Total births at time of question"
+ 14.                 }
+ 15.                 bys id: gen num=_n
+ 16.                 keep if num==1
+ 17.                 collapse idealnumkids [pw=sweight], by(`c')
+ 18.                 line idealnumkids `c' if `cond', title("Ideal Family Size by `char'") ///
+>                   scheme(s1color) xtitle("`char'") ytitle("Average Desired Family Size")
+ 19.            graph save "$Graphs/idealfam_`c'", replace
+ 20.            graph export "$Graphs/idealfam_`c'.`format'", as(`format') replace
+ 21.                 restore
+ 22.         }
+.         }
+. 
+.         ***************************************************************************
+.         *** (2b) Tables
+.         ***************************************************************************
+.         * (A) By twins
+.         local opts cells("count mean sd min max")
+.         
+.         gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
+.         replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
+.         replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
+.         replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
+.         encode cat, gen(catnum)
+.         
+.         local numkids "Number of Children"
+.         local nummothers "Number of Mothers"
+.         local numcountry "Number of Countries"
+.         foreach num of numlist 1(1)4 {
+  2.                 cap drop count
+  3.                 gen count = 1
+  4.                 replace count=. if catnum!=`num'
+  5.                 foreach var of local sumstats {
+  6.                         replace count=. if `var'==.
+  7.                 }
+  8.                 count if count==1
+  9.                 local kk = "`: display %9.0fc r(N)'"
+ 10. 
+.                 local numkids "`numkids' `sep'" "`kk'"
+ 11. 
+.                 bys id: gen n=_n
+ 12.                 count if count==1&n==1
+ 13.                 local mm = "`: display %9.0fc r(N)'"
+ 14.                 local nummothers "`nummothers' `sep'" "`mm'"
+ 15.                 drop n
+ 16. 
+.                 bys _cou: gen n=_n
+ 17.                 count if count==1&n==1
+ 18.                 if `num'==1|`num'==3 {
+ 19.                         local numcountry "`numcountry' `sep' `r(N)'`sep'`r(N)' "
+ 20.                 }
+ 21.                 drop n
+ 22.         }
+. 
+.         count
+.         local kidcount = "`: display %9.0fc r(N)'"
+.         sum twind
+.         scalar at = "`: display %7.4f r(mean)'"
+.         scalar as = "`: display %7.4f r(sd)'"   
+.         sum twind if inc_status=="L"
+.         scalar lt = "`: display %7.4f r(mean)'"
+.         scalar ls = "`: display %7.4f r(sd)'"
+.         sum twind if inc_status!="L"
+.         scalar mt = "`: display %7.4f r(mean)'"
+.         scalar ms = "`: display %7.4f r(sd)'"
+. 
+.         sum bord if twind==1
+.         scalar abm = "`: display %7.3f r(mean)'"
+.         scalar abs = "`: display %7.3f r(sd)'"
+.         sum bord if twind==1 & inc_status=="L"
+.         scalar lbm = "`: display %7.3f r(mean)'"
+.         scalar lbs = "`: display %7.3f r(sd)'"
+.         sum bord if twind==1 &  inc_status!="L"
+.         scalar mbm = "`: display %7.3f r(mean)'"
+.         scalar mbs = "`: display %7.3f r(sd)'"
+. 
+.         
+.         preserve
+.         gen exceedfam=idealfam==1
+.         collapse $sumstats, by(id cat)
+.         count
+.         local mothercount = "`: display %9.0fc r(N)'"
+. 
+.         file open resfile using "$Tables/Summary/Count.txt", write replace
+.         file write resfile "`numcountry' & 68 \\" _n
+.         file write resfile "`numkids' & `kidcount' \\" _n
+.         file write resfile "`nummothers' & `mothercount' \\" _n
+.         file write resfile "Fraction Twin & \multicolumn{2}{c}{ `=scalar(lt)'" ///
+>           "}& \multicolumn{2}{c}{ `=scalar(mt)' } & `=scalar(at)'\\" _n
+.         file write resfile "& \multicolumn{2}{c}{(`=scalar(ls)')" ///
+>           "}& \multicolumn{2}{c}{(`=scalar(ms)')} & (`=scalar(as)')\\" _n
+.         file write resfile "Birth Order Twin & \multicolumn{2}{c}{ `=scalar(lbm)'" ///
+>           "}& \multicolumn{2}{c}{ `=scalar(mbm)' }& `=scalar(abm)'\\" _n
+.         file write resfile "& \multicolumn{2}{c}{(`=scalar(lbs)')" ///
+>           "}& \multicolumn{2}{c}{(`=scalar(mbs)')}& (`=scalar(abs)')\\" _n
+.         file write resfile "`mothercount'"
+.         file close resfile
+. 
+.         
+.         estpost tabstat $sumstats, by(cat) statistics(mean sd) listwise ///
+>          columns(statistics)
+.         esttab using "$Tables/Summary/`Sum'.txt", replace main(mean) aux(sd) /*
+>         */ nostar unstack noobs nonote nomtitle nonumber
+.         restore
+. 
+.         preserve
+.         decode _cou, gen(WBcountry)
+.         gen colvar=inc_status=="L"
+.         collapse colvar, by(WBcountry _year)
+.         gen income="Low" if colvar==1
+.         replace income="Middle" if colvar==0
+.         drop colvar
+.         order WBcountry income _year
+.         sort WBc _year
+.         outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
+.         restore
+. }
+
+. 
+. if `sumstats2'==1 {
+. 
+.         *****************************************************************************
+.         *** (2d) Descriptive of desired
+.         *****************************************************************************
+.         estpost tab idealfam `cond'
+
+    idealfam |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+<_ideal_nu~r |   1415984   41.98673   41.98673 
+Ideal_number |    730603   21.66383   63.65056 
+>_than_ide~r |   1225869   36.34944        100 
+-------------+---------------------------------
+       Total |   3372456        100            
+.         esttab using "$Tables/Summary/Ideal.xls", cells("b pct") replace
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+.         estpost tab idealfam `cond'&twinfam==0
+
+    idealfam |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+<_ideal_nu~r |   1354369   42.52897   42.52897 
+Ideal_number |    705292    22.1471   64.67606 
+>_than_ide~r |   1124919   35.32394        100 
+-------------+---------------------------------
+       Total |   3184580        100            
+.         esttab using "$Tables/Summary/Ideal.xls", cells("b pct") append
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+.         estpost tab idealfam `cond'&twinfam>=1
+
+    idealfam |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+<_ideal_nu~r |     61615   32.79557   32.79557 
+Ideal_number |     25311   13.47218   46.26775 
+>_than_ide~r |    100950   53.73225        100 
+-------------+---------------------------------
+       Total |    187876        100            
+.         esttab using "$Tables/Summary/Ideal.xls", cells("b pct") append
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+.         foreach num in `gplus' {
+  2.                 estpost tab idealnumkids `cond'&`num'_plus==1&twin_`num'_fam==0
+  3.                 esttab using "$Tables/Summary/Ideal.xls", cells("b pct") append
+  4. 
+.                 estpost tab idealnumkids `cond'&`num'_plus==1&twin_`num'_fam==1
+  5.                 esttab using "$Tables/Summary/Ideal.xls", cells("b pct") append
+  6.         }
+
+idealnumkids |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+           0 |      4481    .836307    .836307 
+           1 |     14243   2.658228   3.494535 
+           2 |    168352   31.42021   34.91475 
+           3 |    114762   21.41849   56.33324 
+           4 |    114966   21.45657   77.78981 
+           5 |     42552   7.941651   85.73146 
+           6 |     37037   6.912364   92.64382 
+           7 |      9895   1.846744   94.49056 
+           8 |     11106   2.072757   96.56332 
+           9 |      2016   .3762542   96.93958 
+          10 |     11940    2.22841   99.16799 
+          11 |       290   .0541239   99.22211 
+          12 |      2497   .4660251   99.68813 
+          13 |       175    .032661    99.7208 
+          14 |       190   .0354605   99.75626 
+          15 |       657   .1226185   99.87887 
+          16 |        62   .0115713   99.89045 
+          17 |        24   .0044792   99.89493 
+          18 |        21   .0039193   99.89884 
+          19 |         5   .0009332   99.89978 
+          20 |       518   .0966764   99.99645 
+          21 |         5   .0009332   99.99739 
+          22 |         2   .0003733   99.99776 
+          23 |         6   .0011198   99.99888 
+          24 |         6   .0011198        100 
+-------------+---------------------------------
+       Total |    535808        100            
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+
+idealnumkids |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+           0 |        32   .6341657   .6341657 
+           1 |       147   2.913199   3.547364 
+           2 |      1232   24.41538   27.96274 
+           3 |       952   18.86643   46.82917 
+           4 |      1131   22.41379   69.24296 
+           5 |       552   10.93936   80.18232 
+           6 |       476   9.433214   89.61554 
+           7 |       136   2.695204   92.31074 
+           8 |       153   3.032105   95.34285 
+           9 |        22   .4359889   95.77883 
+          10 |       168    3.32937    99.1082 
+          11 |         6   .1189061   99.22711 
+          12 |        22   .4359889    99.6631 
+          13 |         2   .0396354   99.70273 
+          14 |         3    .059453   99.76219 
+          15 |         5   .0990884   99.86128 
+          17 |         1   .0198177   99.88109 
+          20 |         5   .0990884   99.98018 
+          22 |         1   .0198177        100 
+-------------+---------------------------------
+       Total |      5046        100            
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+
+idealnumkids |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+           0 |      6106   .8548887   .8548887 
+           1 |     14718   2.060637   2.915526 
+           2 |    152814   21.39518   24.31071 
+           3 |    156358   21.89137   46.20207 
+           4 |    173185   24.24728   70.44936 
+           5 |     70797   9.912145    80.3615 
+           6 |     66900   9.366534   89.72803 
+           7 |     18657   2.612129   92.34016 
+           8 |     21050   2.947168   95.28733 
+           9 |      3891   .5447711    95.8321 
+          10 |     21633   3.028793    98.8609 
+          11 |       585   .0819047    98.9428 
+          12 |      4557   .6380164   99.58082 
+          13 |       324   .0453626   99.62618 
+          14 |       361   .0505429   99.67672 
+          15 |      1188   .1663295   99.84305 
+          16 |       111   .0155409   99.85859 
+          17 |        44   .0061604   99.86475 
+          18 |        46   .0064404   99.87119 
+          19 |        11   .0015401   99.87273 
+          20 |       877    .122787   99.99552 
+          21 |         8   .0011201   99.99664 
+          22 |         6     .00084   99.99748 
+          23 |        10   .0014001   99.99888 
+          24 |         8   .0011201        100 
+-------------+---------------------------------
+       Total |    714245        100            
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+
+idealnumkids |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+           0 |        78   .9741476   .9741476 
+           1 |       130   1.623579   2.597727 
+           2 |      1501    18.7461   21.34382 
+           3 |      1254    15.6613   37.00512 
+           4 |      2013    25.1405   62.14562 
+           5 |       885   11.05283   73.19845 
+           6 |      1039   12.97615    86.1746 
+           7 |       275   3.434495   89.60909 
+           8 |       351   4.383664   93.99276 
+           9 |        83   1.036593   95.02935 
+          10 |       306   3.821656   98.85101 
+          11 |         7   .0874235   98.93843 
+          12 |        52   .6494317   99.58786 
+          13 |         2   .0249781   99.61284 
+          14 |         2   .0249781   99.63782 
+          15 |        15   .1873361   99.82515 
+          18 |         1   .0124891   99.83764 
+          20 |        13   .1623579        100 
+-------------+---------------------------------
+       Total |      8007        100            
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+
+idealnumkids |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+           0 |      6331   .9316459   .9316459 
+           1 |      8786   1.292914    2.22456 
+           2 |    120126   17.67729   19.90185 
+           3 |    102266   15.04908   34.95092 
+           4 |    181399   26.69399   61.64491 
+           5 |     77153   11.35354   72.99845 
+           6 |     83751   12.32448   85.32293 
+           7 |     24839   3.655213   88.97815 
+           8 |     29203   4.297403   93.27555 
+           9 |      5762   .8479141   94.12346 
+          10 |     28709   4.224708   98.34817 
+          11 |       878   .1292031   98.47737 
+          12 |      6281   .9242881   99.40166 
+          13 |       432   .0635715   99.46523 
+          14 |       519   .0763741   99.54161 
+          15 |      1637   .2408947    99.7825 
+          16 |       163   .0239865   99.80649 
+          17 |        58   .0085351   99.81502 
+          18 |        59   .0086822   99.82371 
+          19 |        15   .0022073   99.82591 
+          20 |      1155   .1699654   99.99588 
+          21 |         9   .0013244    99.9972 
+          22 |         2   .0002943    99.9975 
+          23 |         6   .0008829   99.99838 
+          24 |        11   .0016187        100 
+-------------+---------------------------------
+       Total |    679550        100            
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+
+idealnumkids |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+           0 |        89   1.000787   1.000787 
+           1 |        92   1.034522   2.035309 
+           2 |      1153   12.96525   15.00056 
+           3 |      1331   14.96683   29.96739 
+           4 |      1980    22.2647   52.23209 
+           5 |      1209   13.59496   65.82705 
+           6 |      1243   13.97729   79.80434 
+           7 |       459   5.161363    84.9657 
+           8 |       515   5.791072   90.75677 
+           9 |        93   1.045766   91.80254 
+          10 |       524   5.892275   97.69482 
+          11 |         5    .056224   97.75104 
+          12 |       116   1.304397   99.05544 
+          13 |         7   .0787136   99.13415 
+          14 |         5    .056224   99.19037 
+          15 |        31   .3485888   99.53896 
+          20 |        41   .4610368        100 
+-------------+---------------------------------
+       Total |      8893        100            
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+
+idealnumkids |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+           0 |      5983   1.045374   1.045374 
+           1 |      5477   .9569637   2.002338 
+           2 |     78536   13.72213   15.72447 
+           3 |     87856   15.35056   31.07502 
+           4 |    125465   21.92176   52.99678 
+           5 |     73598   12.85934   65.85612 
+           6 |     80188   14.01077    79.8669 
+           7 |     27972   4.887382   84.75428 
+           8 |     33668    5.88261   90.63689 
+           9 |      7127   1.245258   91.88215 
+          10 |     33129   5.788434   97.67058 
+          11 |      1122   .1960404   97.86662 
+          12 |      7426   1.297501   99.16412 
+          13 |       542   .0947004   99.25882 
+          14 |       640   .1118234   99.37064 
+          15 |      1951   .3408867   99.71153 
+          16 |       185    .032324   99.74385 
+          17 |        54   .0094351   99.75329 
+          18 |        63   .0110076    99.7643 
+          19 |        25   .0043681   99.76867 
+          20 |      1300   .2271413   99.99581 
+          21 |         5   .0008736   99.99668 
+          22 |         1   .0001747   99.99685 
+          23 |         4   .0006989   99.99755 
+          24 |        14   .0024461        100 
+-------------+---------------------------------
+       Total |    572331        100            
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+
+idealnumkids |      e(b)     e(pct)  e(cumpct) 
+-------------+---------------------------------
+           0 |        88   1.018872   1.018872 
+           1 |        69   .7988885   1.817761 
+           2 |       880   10.18872   12.00648 
+           3 |      1077   12.46961   24.47609 
+           4 |      1870   21.65104   46.12713 
+           5 |       836   9.679287   55.80641 
+           6 |      1521   17.61028    73.4167 
+           7 |       451   5.221721   78.63842 
+           8 |       672   7.780479    86.4189 
+           9 |       197   2.280885   88.69978 
+          10 |       706   8.174135   96.87391 
+          11 |        22   .2547181   97.12863 
+          12 |       158   1.829339   98.95797 
+          13 |        12   .1389371   99.09691 
+          14 |        12   .1389371   99.23585 
+          15 |        30   .3473428   99.58319 
+          16 |         7   .0810467   99.66424 
+          17 |         3   .0347343   99.69897 
+          18 |         3   .0347343    99.7337 
+          20 |        23   .2662962        100 
+-------------+---------------------------------
+       Total |      8637        100            
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/Ideal.xls)
+. 
+.         local t=2       
+.         foreach n in `gplus' {
+  2.                 gen threshold`n'=(twin_`n'_fam==1 & idealnumkids==`t')
+  3.                 replace threshold`n'=. if twin_`n'_fam==0
+  4.                 local ++t
+  5.         }
+(3883350 real changes made, 3883350 to missing)
+(3882037 real changes made, 3882037 to missing)
+(3885712 real changes made, 3885712 to missing)
+(3890532 real changes made, 3890532 to missing)
+.         gen threshold2_5=1 if thresholdtwo==1|thresholdthree==1|thresholdfour==1|/*
+>         */thresholdfive==1
+(3901399 missing values generated)
+.         replace threshold2_5=0 if thresholdtwo==0|thresholdthree==0|/*
+>         */thresholdfour==0|thresholdfive==0
+(120496 real changes made)
+. 
+.         estpost tabstat threshold2_5 thresholdt* thresholdfour thresholdfive, /*
+>         */ by(inc_status) statistics(mean sd) listwise columns(statistics)
+no observations
+r(2000);
+.         esttab using "$Tables/Summary/Threshold.txt", replace main(mean) aux(sd) /*
+>         */ nostar unstack noobs nonote nomtitle nonumber
+. 
+.    *****************************************************************************
+.         *** (2e) Descriptive of maternal health
+.         *****************************************************************************   
+.         if `graphs2'==1 {
+.                 preserve
+.                 collapse height weightk bmi [pw=sweight] `cond', by(id)
+.                 hist weightk if weightk>30&weightk<200, frac scheme(s1color) ///
+>                   xtitle("Weight in kg") title("Mother's Weight at time of Survey")
+.                 graph export "$Graphs/MotherWeight.eps", as(eps) replace
+.                 hist height, frac scheme(s1color) ///
+>                   xtitle("Height in cm") title("Mother's Height at time of Survey")
+.                 graph export "$Graphs/MotherHeight.eps", as(eps) replace
+.                 hist bmi, frac scheme(s1color) ///
+>                   xtitle("BMI") title("Mother's BMI at time of Survey") ///
+>                   note("BMI is experessed as weight in kg squared/height in km")
+.                 graph export "$Graphs/MotherBMI.eps", as(eps) replace
+.                 restore
+.         }       
+. 
+.         gen lowheight=height<157.48
+.         replace lowheight=. if height==.
+.         gen lowweight=bmi<18.5
+.         replace lowweight=. if bmi==.
+.         
+.         estpost tab lowheight `cond'
+.         esttab using "$Tables/Summary/Health.xls", cells("b pct") replace
+.         estpost tab lowweight `cond'
+.         esttab using "$Tables/Summary/Health.xls", cells("b pct") append
+. }
+r(2000);
+
+end of do-file
+
+r(2000);
+
