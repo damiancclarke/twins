@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twin_Regressions.log
   log type:  text
- opened on:   5 May 2014, 16:10:55
+ opened on:   6 May 2014, 00:24:39
 
 . use "$Data/DHS_twins", clear
 
@@ -53,6 +53,9 @@
 
 . replace underweight=0 if bmi>18.5 & bmi!=.
 (3188514 real changes made)
+
+. if `sumstats'==1 save "$Data/DHS_twins_full.dta", replace
+file ~/investigacion/Activa/Twins/Data/DHS_twins_full.dta saved
 
 . 
 . drop if twinfamily>2
@@ -321,9 +324,171 @@ birth order |      Freq.     Percent        Cum.
 . 
 .         if c(os)=="Windows" local format png
 .         else if c(os)=="Unix" local format eps
-. 
 .         ***************************************************************************
-.         *** (2a) Graphical
+.         *** (2a) Tables
+.         ***************************************************************************
+.         * (A) By twins
+.         local opts cells("count mean sd min max")
+.         /*
+>         gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
+>         replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
+>         replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
+>         replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
+>         encode cat, gen(catnum)
+>         
+>         local numkids "Number of Children"
+>         local nummothers "Number of Mothers"
+>         local numcountry "Number of Countries"
+>         foreach num of numlist 1(1)4 {
+>                 cap drop count
+>                 gen count = 1
+>                 replace count=. if catnum!=`num'
+>                 foreach var of local sumstats {
+>                         replace count=. if `var'==.
+>                 }
+>                 count if count==1
+>                 local kk = "`: display %9.0fc r(N)'"
+> 
+>                 local numkids "`numkids' `sep'" "`kk'"
+> 
+>                 bys id: gen n=_n
+>                 count if count==1&n==1
+>                 local mm = "`: display %9.0fc r(N)'"
+>                 local nummothers "`nummothers' `sep'" "`mm'"
+>                 drop n
+> 
+>                 bys _cou: gen n=_n
+>                 count if count==1&n==1
+>                 if `num'==1|`num'==3 {
+>                         local numcountry "`numcountry' `sep' `r(N)'`sep'`r(N)' "
+>                 }
+>                 drop n
+>         }
+> 
+>         count
+>         local kidcount = "`: display %9.0fc r(N)'"
+>         sum twind
+>         scalar at = "`: display %7.4f r(mean)'"
+>         scalar as = "`: display %7.4f r(sd)'"   
+>         sum twind if inc_status=="L"
+>         scalar lt = "`: display %7.4f r(mean)'"
+>         scalar ls = "`: display %7.4f r(sd)'"
+>         sum twind if inc_status!="L"
+>         scalar mt = "`: display %7.4f r(mean)'"
+>         scalar ms = "`: display %7.4f r(sd)'"
+> 
+>         sum bord if twind==1
+>         scalar abm = "`: display %7.3f r(mean)'"
+>         scalar abs = "`: display %7.3f r(sd)'"
+>         sum bord if twind==1 & inc_status=="L"
+>         scalar lbm = "`: display %7.3f r(mean)'"
+>         scalar lbs = "`: display %7.3f r(sd)'"
+>         sum bord if twind==1 &  inc_status!="L"
+>         scalar mbm = "`: display %7.3f r(mean)'"
+>         scalar mbs = "`: display %7.3f r(sd)'"
+> 
+> 
+>         preserve
+>         gen exceedfam=idealfam==1
+>         collapse $sumstatsM, by(id cat)
+>         count
+>         local mothercount = "`: display %9.0fc r(N)'"
+> 
+>         file open resfile using "$Tables/Summary/Count.txt", write replace
+>         file write resfile "`numcountry' & 68 \\" _n
+>         file write resfile "`numkids' & `kidcount' \\" _n
+>         file write resfile "`nummothers' & `mothercount' \\" _n
+>         file write resfile "Fraction Twin & \multicolumn{2}{c}{ `=scalar(lt)'" ///
+>           "}& \multicolumn{2}{c}{ `=scalar(mt)' } & `=scalar(at)'\\" _n
+>         file write resfile "& \multicolumn{2}{c}{(`=scalar(ls)')" ///
+>           "}& \multicolumn{2}{c}{(`=scalar(ms)')} & (`=scalar(as)')\\" _n
+>         file write resfile "Birth Order Twin & \multicolumn{2}{c}{ `=scalar(lbm)'" ///
+>           "}& \multicolumn{2}{c}{ `=scalar(mbm)' }& `=scalar(abm)'\\" _n
+>         file write resfile "& \multicolumn{2}{c}{(`=scalar(lbs)')" ///
+>           "}& \multicolumn{2}{c}{(`=scalar(mbs)')}& (`=scalar(abs)')\\" _n
+>         file write resfile "`mothercount'"
+>         file close resfile
+>         
+>         estpost tabstat $sumstatsM, by(cat) statistics(mean sd) listwise ///
+>          columns(statistics)
+>         esttab using "$Tables/Summary/`Sum'.txt", replace main(mean) aux(sd) /*
+>         */ nostar unstack noobs nonote nomtitle nonumber
+>         restore
+> 
+>         preserve
+>         decode _cou, gen(WBcountry)
+>         gen colvar=inc_status=="L"
+>         collapse colvar, by(WBcountry _year)
+>         gen income="Low" if colvar==1
+>         replace income="Middle" if colvar==0
+>         drop colvar
+>         order WBcountry income _year
+>         sort WBc _year
+>         outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
+>         restore
+>         */
+.         preserve
+.         use "$Data/DHS_twins_full.dta", clear
+.         gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
+(2831387 missing values generated)
+.         replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
+(98863 real changes made)
+.         replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
+(2675884 real changes made)
+.         replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
+(56640 real changes made)
+.         encode cat, gen(catnum)
+.         estpost tabstat $sumstatsC, by(cat) statistics(mean sd) listwise ///
+>          columns(statistics)
+
+Summary statistics: mean sd
+     for variables: educ school_zscore noeduc infantmortality childmortality
+  by categories of: cat
+
+         cat |   e(mean)      e(sd) 
+-------------+----------------------
+Low Inc, S~n |                      
+        educ |  3.660039   3.576488 
+school_zsc~e | -.0084276   1.001491 
+      noeduc |  .2065683   .4048432 
+infantmort~y |  .0157899   .1246618 
+childmorta~y |  .0239234   .1528108 
+-------------+----------------------
+Low Inc, T~n |                      
+        educ |  3.203751   3.293244 
+school_zsc~e | -.0156318    .963431 
+      noeduc |  .2221156   .4156775 
+infantmort~y |  .0916903   .2885946 
+childmorta~y |  .1077863    .310117 
+-------------+----------------------
+Mid Inc, S~e |                      
+        educ |  5.444587   3.867097 
+school_zsc~e |  .0119413   .9979765 
+      noeduc |   .064855     .24627 
+infantmort~y |   .009464   .0968216 
+childmorta~y |  .0122249   .1098883 
+-------------+----------------------
+Mid Inc, T~n |                      
+        educ |  5.042507   3.759832 
+school_zsc~e | -.0427581   .9867795 
+      noeduc |  .0785874   .2691017 
+infantmort~y |  .0496993   .2173294 
+childmorta~y |  .0534725   .2249803 
+-------------+----------------------
+Total        |                      
+        educ |  4.446445   3.810359 
+school_zsc~e |  .0001443   .9995148 
+      noeduc |  .1437655   .3508518 
+infantmort~y |  .0140677   .1177703 
+childmorta~y |  .0199004   .1396579 
+.         esttab using "$Tables/Summary/`SumC'.txt", replace main(mean) aux(sd) /*
+>         */ nostar unstack noobs nonote nomtitle nonumber
+(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/Summary/SummaryChild.txt not found)
+(output written to ~/investigacion/Activa/Twins/Results/Outreg/Summary/SummaryChild.txt)
+.         clear
+.         restore
+.         ***************************************************************************
+.         *** (2b) Graphical
 .         *** graph 1: total births by family type (twins vs non-twins)
 .         *** graph 2: total births by family type for families who exceed desired
 .         *** graph 3: Proportion of twins by birth order
@@ -425,110 +590,6 @@ birth order |      Freq.     Percent        Cum.
  28.                 restore
  29.         }
 .         }
-. 
-.         ***************************************************************************
-.         *** (2b) Tables
-.         ***************************************************************************
-.         * (A) By twins
-.         local opts cells("count mean sd min max")
-.         
-.         gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
-.         replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
-.         replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
-.         replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
-.         encode cat, gen(catnum)
-.         
-.         local numkids "Number of Children"
-.         local nummothers "Number of Mothers"
-.         local numcountry "Number of Countries"
-.         foreach num of numlist 1(1)4 {
-  2.                 cap drop count
-  3.                 gen count = 1
-  4.                 replace count=. if catnum!=`num'
-  5.                 foreach var of local sumstats {
-  6.                         replace count=. if `var'==.
-  7.                 }
-  8.                 count if count==1
-  9.                 local kk = "`: display %9.0fc r(N)'"
- 10. 
-.                 local numkids "`numkids' `sep'" "`kk'"
- 11. 
-.                 bys id: gen n=_n
- 12.                 count if count==1&n==1
- 13.                 local mm = "`: display %9.0fc r(N)'"
- 14.                 local nummothers "`nummothers' `sep'" "`mm'"
- 15.                 drop n
- 16. 
-.                 bys _cou: gen n=_n
- 17.                 count if count==1&n==1
- 18.                 if `num'==1|`num'==3 {
- 19.                         local numcountry "`numcountry' `sep' `r(N)'`sep'`r(N)' "
- 20.                 }
- 21.                 drop n
- 22.         }
-. 
-.         count
-.         local kidcount = "`: display %9.0fc r(N)'"
-.         sum twind
-.         scalar at = "`: display %7.4f r(mean)'"
-.         scalar as = "`: display %7.4f r(sd)'"   
-.         sum twind if inc_status=="L"
-.         scalar lt = "`: display %7.4f r(mean)'"
-.         scalar ls = "`: display %7.4f r(sd)'"
-.         sum twind if inc_status!="L"
-.         scalar mt = "`: display %7.4f r(mean)'"
-.         scalar ms = "`: display %7.4f r(sd)'"
-. 
-.         sum bord if twind==1
-.         scalar abm = "`: display %7.3f r(mean)'"
-.         scalar abs = "`: display %7.3f r(sd)'"
-.         sum bord if twind==1 & inc_status=="L"
-.         scalar lbm = "`: display %7.3f r(mean)'"
-.         scalar lbs = "`: display %7.3f r(sd)'"
-.         sum bord if twind==1 &  inc_status!="L"
-.         scalar mbm = "`: display %7.3f r(mean)'"
-.         scalar mbs = "`: display %7.3f r(sd)'"
-. 
-.         
-.         preserve
-.         gen exceedfam=idealfam==1
-.         collapse $sumstats, by(id cat)
-.         count
-.         local mothercount = "`: display %9.0fc r(N)'"
-. 
-.         file open resfile using "$Tables/Summary/Count.txt", write replace
-.         file write resfile "`numcountry' & 68 \\" _n
-.         file write resfile "`numkids' & `kidcount' \\" _n
-.         file write resfile "`nummothers' & `mothercount' \\" _n
-.         file write resfile "Fraction Twin & \multicolumn{2}{c}{ `=scalar(lt)'" ///
->           "}& \multicolumn{2}{c}{ `=scalar(mt)' } & `=scalar(at)'\\" _n
-.         file write resfile "& \multicolumn{2}{c}{(`=scalar(ls)')" ///
->           "}& \multicolumn{2}{c}{(`=scalar(ms)')} & (`=scalar(as)')\\" _n
-.         file write resfile "Birth Order Twin & \multicolumn{2}{c}{ `=scalar(lbm)'" ///
->           "}& \multicolumn{2}{c}{ `=scalar(mbm)' }& `=scalar(abm)'\\" _n
-.         file write resfile "& \multicolumn{2}{c}{(`=scalar(lbs)')" ///
->           "}& \multicolumn{2}{c}{(`=scalar(mbs)')}& (`=scalar(abs)')\\" _n
-.         file write resfile "`mothercount'"
-.         file close resfile
-. 
-.         
-.         estpost tabstat $sumstats, by(cat) statistics(mean sd) listwise ///
->          columns(statistics)
-.         esttab using "$Tables/Summary/`Sum'.txt", replace main(mean) aux(sd) /*
->         */ nostar unstack noobs nonote nomtitle nonumber
-.         restore
-. 
-.         preserve
-.         decode _cou, gen(WBcountry)
-.         gen colvar=inc_status=="L"
-.         collapse colvar, by(WBcountry _year)
-.         gen income="Low" if colvar==1
-.         replace income="Middle" if colvar==0
-.         drop colvar
-.         order WBcountry income _year
-.         sort WBc _year
-.         outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
-.         restore
 . }
 
 . 
@@ -613,12 +674,9 @@ birth order |      Freq.     Percent        Cum.
 . if `trends'==1 {
 .         cap drop income
 .         gen income="low" if inc_status=="L"
-(1643788 missing values generated)
 .         replace income="mid" if inc_status!="L"
-(1643788 real changes made)
 . 
-. 
-.         foreach inc in /*all*/ low mid {
+.         foreach inc in all low mid {
   2.                 if "`inc'"=="all" local cex
   3.                 else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"        
   4.                 **************************************************************************
@@ -630,7 +688,7 @@ birth order |      Freq.     Percent        Cum.
   7.                 sort child_yob
   8.                 twoway line educ child_yob, /* 
 >                 */ title("Average years of Education by Birth Cohort") scheme(s1color) /*
->                 */ xtitle("DHS Birth Cohort")
+>                 */ xtitle("DHS Birth Cohort") ytitle("Years of Education")
   9.                 graph export "$Graphs/eductrend_kids_`inc'.eps", as(eps) replace
  10.                 restore
  11. 
@@ -642,14 +700,14 @@ birth order |      Freq.     Percent        Cum.
  16.                 sort year_birth
  17.                 twoway line educf year_birth if year_birth>=1940&year_birth<1997, /* 
 >                 */ title("Average years of Education by Birth Cohort") scheme(s1color) /*
->                 */ xtitle("DHS Birth Cohort")
+>                 */ xtitle("DHS Birth Cohort") ytitle("Years of Education")
  18.                 graph export "$Graphs/eductrend_`inc'.eps", as(eps) replace
  19.                 restore
  20. 
 .                 
 .                 foreach aa of numlist 0 35 {
- 21.                         if `aa'==0 local title "Fertility for all women"
- 22.                         if `aa'==35 local title "Fertility for women aged 35+"
+ 21.                         if `aa'==0 local title "Fertility (All women)"
+ 22.                         if `aa'==35 local title "Fertility (Women aged 35+)"
  23.                         preserve
  24.                         keep `cond'&agemay>`aa'`cex'
  25.                         bys id: gen keepcrit=_n
@@ -658,41 +716,11 @@ birth order |      Freq.     Percent        Cum.
  28.                         sort year_birth
  29.                         twoway line fert year_bi, lpattern(dash) || line idealnumkids year_birth, /*
 >                         */ scheme(s1color) legend(label(1 "Fertility per Woman") /*
->                         */ label(2 "Desired Fertility")) title(`title')
+>                         */ label(2 "Desired Fertility")) title(`title') ytitle("Births per Woman")
  30.                         graph export "$Graphs/ferttrend_`aa'_`inc'.eps", as(eps) replace
  31.                         restore
  32.                 }
  33.         }
-(3766524 observations deleted)
-(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Graphs/eductrend_kids_low.eps not found)
-(file ~/investigacion/Activa/Twins/Results/Graphs/eductrend_kids_low.eps written in EPS format)
-(1959894 observations deleted)
-(1154032 observations deleted)
-(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Graphs/eductrend_low.eps not found)
-(file ~/investigacion/Activa/Twins/Results/Graphs/eductrend_low.eps written in EPS format)
-(1959894 observations deleted)
-(1154032 observations deleted)
-(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Graphs/ferttrend_0_low.eps not found)
-(file ~/investigacion/Activa/Twins/Results/Graphs/ferttrend_0_low.eps written in EPS format)
-(3173389 observations deleted)
-(487229 observations deleted)
-(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Graphs/ferttrend_35_low.eps not found)
-(file ~/investigacion/Activa/Twins/Results/Graphs/ferttrend_35_low.eps written in EPS format)
-(3781126 observations deleted)
-(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Graphs/eductrend_kids_mid.eps not found)
-(file ~/investigacion/Activa/Twins/Results/Graphs/eductrend_kids_mid.eps written in EPS format)
-(2510222 observations deleted)
-(797651 observations deleted)
-(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Graphs/eductrend_mid.eps not found)
-(file ~/investigacion/Activa/Twins/Results/Graphs/eductrend_mid.eps written in EPS format)
-(2510222 observations deleted)
-(797651 observations deleted)
-(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Graphs/ferttrend_0_mid.eps not found)
-(file ~/investigacion/Activa/Twins/Results/Graphs/ferttrend_0_mid.eps written in EPS format)
-(3301745 observations deleted)
-(381432 observations deleted)
-(note: file /home/damiancclarke/investigacion/Activa/Twins/Results/Graphs/ferttrend_35_mid.eps not found)
-(file ~/investigacion/Activa/Twins/Results/Graphs/ferttrend_35_mid.eps written in EPS format)
 . }
 
 . 
@@ -1202,13 +1230,17 @@ birth order |      Freq.     Percent        Cum.
 . **** (8) IV with twin threshold
 . ********************************************************************************
 . if `desire'==1 {
+.         *gen idealbarrier=floor(idealnumkids)
+.         gen idealbarrier=floor(desiredfert_region)
+. 
 .         local endog fert fertXthreshold
+. 
 .         cap drop income
 .         gen income="low" if inc_status=="L"
 .         replace income="mid" if inc_status!="L"
 . 
 .         
-.         foreach inc in all /*low mid*/ {
+.         foreach inc in all low mid {
   2.                 if "`inc'"=="all" local cex
   3.                 else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
   4. 
@@ -1223,40 +1255,43 @@ birth order |      Freq.     Percent        Cum.
  11.                         local c  `cond'&`n'_plus==1 `cex'
  12.                         local ce `cond'&`n'_plus==1&e(sample) `cex'
  13. 
-.                         gen threshold=(twin_`n'_fam==1 & idealnumkids==`t')
- 14.                         gen fertXthreshold=fert*threshold
- 15.                         gen desired=idealnumkids<=`t'
- 16.                         
+.                         preserve
+ 14.                         keep `c'
+ 15.                         gen threshold=(twin_`n'_fam==1 & idealbarrier==`t')
+ 16.                         gen fertXthreshold=fert*threshold
+ 17.                         gen desired=idealbarrier<=`t'
+ 18.                         
 .                         cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
- 17.                         local insts twin_`n'_fam twin`n'Xthreshold
- 18. 
+ 19.                         local insts twin_`n'_fam twin`n'Xthreshold
+ 20. 
 .                         foreach y of varlist $outcomes {
- 19.                                 eststo: ivreg2 `y' `base' $age $S $H desired (`endog' = `insts') /*
+ 21.                                 eststo: ivreg2 `y' `base' $age $S $H desired (`endog' = `insts') /*
 >                                 */ `wt' `c', `se' savefirst savefp(f`n3')
- 20.                                 eststo: ivreg2 `y' `base' $age $S desired (`endog' = `insts') /*
+ 22.                                 eststo: ivreg2 `y' `base' $age $S desired (`endog' = `insts') /*
 >                                 */ `wt' `ce', `se' savefirst savefp(f`n2')
- 21.                                 eststo: ivreg2 `y' `base' desired (`endog' = `insts') /*
+ 23.                                 eststo: ivreg2 `y' `base' desired (`endog' = `insts') /*
 >                                 */ `wt' `ce', `se' savefirst savefp(f`n1')
- 22. 
+ 24. 
 .                                 local estimates `estimates' est`n3' est`n2' est`n1'
- 23.                                 local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
- 24.                 
+ 25.                                 local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+ 26.                 
 .                                 local n1=`n1'+3
- 25.                                 local n2=`n2'+3
- 26.                                 local n3=`n3'+3
- 27.                         }
- 28.                         local ++t
- 29.                         drop threshold fertXthreshold desired
- 30.                 }
- 31. 
+ 27.                                 local n2=`n2'+3
+ 28.                                 local n3=`n3'+3
+ 29.                         }
+ 30.                         local ++t
+ 31.                         drop threshold fertXthreshold desired
+ 32.                         restore
+ 33.                 }
+ 34. 
 .                 estout `estimates' using "$Tables/IV/`IVdes'_`inc'_`births'.xls", replace ///
 >                  keep(fert fertXthreshold malec $age $S $H) `estopt' `varlab'
- 32. 
+ 35. 
 .                 estout `firststage' using "$Tables/IV/`IVdes1'_`inc'_`births'.xls", replace ///
 >                  keep(twin* malec $age $S $H) `estopt' `varlab'
- 33.         
+ 36.         
 .                 estimates clear
- 34.         }
+ 37.         }
 . }
 
 . 
@@ -1737,3 +1772,4 @@ birth order |      Freq.     Percent        Cum.
 . 
 end of do-file
 
+. exit, clear

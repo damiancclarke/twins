@@ -1,6 +1,6 @@
-Number of Countries & 40&40  & 28&28  & 68 \\
+Number of Countries & 39&39  & 28&28  & 67 \\
 Number of Children &2,231,844 &45,654 &1,614,358 &29,430 & 3,921,286 \\
-Number of Mothers &875,694 &12,801 &653,972 &8,602 & 1,586,899 \\
+Number of Mothers &875,587 &12,908 &653,969 &8,605 & 1,586,899 \\
 Fraction Twin & \multicolumn{2}{c}{  0.0200}& \multicolumn{2}{c}{  0.0179 } &  0.0191\\
 & \multicolumn{2}{c}{( 0.1402)}& \multicolumn{2}{c}{( 0.1326)} & ( 0.1370)\\
 Birth Order Twin & \multicolumn{2}{c}{   4.664}& \multicolumn{2}{c}{   4.016 }&   4.410\\

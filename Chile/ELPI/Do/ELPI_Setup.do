@@ -237,8 +237,8 @@ local preg `r(varlist)'
 
 if `cleanreg'==1 {
 	replace twin=twin*100
-	eststo: reg twin `base' `region' `prePreg' `preg' `c' `w'
-	estout est1 using "$RESULTS/twinELPI.xls", keep(`prePreg' `preg') replace /*
+	eststo: reg twin `region' `prePreg' `preg' `base' `c' `w'
+	estout est1 using "$RESULTS/twinELPI.xls", keep(`prePreg' `preg' `base') replace /*
 	*/ cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 	*/ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
 

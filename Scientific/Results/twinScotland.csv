@@ -1,0 +1,53 @@
+multiplelbirths = (1 if multiple births for all births surviving 1 year)*1000,
+,(5)
+Years included,2008-2012
+,
+age mother,-0.337
+,(0.400)
+age mother 2,0.020***
+,(0.007)
+married (omitted cat: not married),3.272***
+,(0.878)
+separated/widowed,1.63
+,(1.607)
+marital status not known,1.646***
+,(0.627)
+index of deprivation 2nd quintile (omitted 1st quintile),-1.628**
+,(0.958)
+index of deprivation 3rd quintile,-0.188
+,(0.967)
+index of deprivation 4th quintile,-0.421
+,(0.934)
+index of deprivation 5th quintile,-1.132
+,(0.920)
+index of deprivation not known,1.895
+,(4.851)
+diabetes (omitted: no diabetes diagnosed),1.98
+,(2.448)
+diabetes status not known,-0.464
+,(1.480)
+maternal height in cm,0.306***
+,(0.044)
+maternal bmi overweight (omitted: below 25),-0.092
+,(0.643)
+maternal bmi obese,1.350**
+,(0.746)
+maternal bmi not known,5.504***
+,(1.843)
+current smoker (omitted: never smoked),0.001
+,(0.669)
+previous smoker,1.717**
+,(0.877)
+smoking status not known,3.543
+,(2.334)
+alcohol per week: one or two units per week  (omitted: no alcohol intake),-4.498*
+,(1.935)
+alcohol per week: 3 or more units per week,-3.030*
+,(1.543)
+alcohol per week: not known,-2.048***
+,(0.669)
+Observations,193254
+R-squared,0,003
+F-test (health variables),7,197
+p-value,0,000
+mean dep. variable,14,46

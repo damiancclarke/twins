@@ -5,7 +5,7 @@ Atheen Venkataramani and Cheti Nicoletti,  [WHO ELSE TO ADD?] along with seminar
 audiences and discussants at CMPO Bristol, 
 ESPE, NEUDC, CSAE, and The University of Essex for helpful comments.  We make full data and
 source code available for examination and replication.  This is available at
-\url{https://bitbucket.org/damiancclarke/twins}.}}
+\texttt{https://bitbucket.org/damiancclarke/twins}.}}
 \author{Sonia Bhalotra\thanks{The University of Essex.  Contact: srbhal@essex.ac.uk} 
 \and Damian Clarke\thanks{The University of Oxford.  Contact: damian.clarke@economics.ox.ac.uk}}
 \date{\today}
@@ -29,6 +29,9 @@ source code available for examination and replication.  This is available at
 \usepackage{natbib}
 \bibliographystyle{abbrvnat}
 \bibpunct{(}{)}{;}{a}{,}{,}
+
+\usepackage{caption}
+\usepackage{subcaption}
 
 \usepackage{epsfig}
 \usepackage{epstopdf}

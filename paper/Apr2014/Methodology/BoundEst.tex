@@ -1,0 +1,57 @@
+%*******************************************************************************
+%Description of methodology of \citet{Altonjietal2005} perhaps?
+
+In the previous subsection, Q-Q estimation using twins is motivated in equations 
+(\ref{TWINeqn:secondstage}) and (\ref{TWINeqn:firststage}).  Consistent IV
+estimation imposes the (strong) prior belief that twin births can be excluded 
+from the second stage equation, or that the sign of $\gamma$ in the following 
+is equal to zero:
+\begin{equation}
+\label{TWINeqn:Conley}
+Quality_{ij}=\beta fert_j + \gamma twin_j + u_{ij}.
+\end{equation}
+As we discuss above, this will not be the case if maternal health controls 
+omitted from (\ref{TWINeqn:secondstage}) are correlated with both the 
+likelihood of taking twin conceptions to term, and with eventual measures of 
+child quality.
+
+However, even in cases such as this where we are not confident that $\gamma=0$,
+we can still estimate bounds on the Q-Q tradeoff if we are confident in making
+some statement of prior belief about the distribution from which $\gamma$ is 
+drawn.  \citet{Conleyetal2012} describe such a process, which they refer to as 
+\emph{plausible exogeneity}.  We invoke this terminology here, and refer to 
+twins as a plausibly exogenous event, implying that we have reason to believe 
+that $\gamma$ may be close to, but not necessarily precisely equal to, zero.
+
+In this paper we estimate $\beta$ under a range of assumptions regarding the
+true nature of $\gamma$.  Firstly we estimate $\beta$ by simply assuming a
+support assumption for $\gamma$: specifically that $\gamma$ falls between 0 
+(implying instrumental validuty) and some (positive) number $\delta$:
+\begin{equation}
+\label{TWINeqn:uci}
+\gamma \in [0,\delta ].
+\end{equation}
+This is a relatively weak assumption, however, as \citet{Conleyetal2012} show,
+it allows for us to recover a `union of confidence intervals' (hereafter UCI) 
+for estimates of $\beta$ over the entire support of $\gamma$.  We also estimate 
+by imposing a stronger prior: specifically we fully specify the distribution of
+$\gamma$ as:
+\begin{equation}
+\label{TWINeqn:ltz}
+\gamma \sim U(0,\delta).
+\end{equation}
+This stronger assumption allows for a tighter estimate of the bounds on $\beta$.
+\citet{Conleyetal2012} provide a full derivation of this result, and we follow
+them in referring to this as a local-to-zero (LTZ) approximation.
+
+Assumptions (\ref{TWINeqn:uci}) and (\ref{TWINeqn:ltz}) depend upon the values
+of $\delta$ which we believe hold in the case of twinning and the Q-Q equation.
+As such, we estimate both specifications over a wide range of values for 
+$\delta$, however our preferred values (those which we present in tables in this 
+paper) are that $\gamma \in [0,2\hat\gamma]$ and $\gamma \sim U(0,2\hat\gamma)$.
+We thus first estimate $\hat\gamma$ by running the structural equation 
+(\label{TWINeqn:Conley}), and then plug these estimates back into the 
+\citeauthor{Conleyetal2012} plausibly exogenous approach to estimate bounds for
+$\beta$.
+
+%*******************************************************************************

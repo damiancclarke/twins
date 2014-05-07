@@ -43,8 +43,8 @@ global Source "$Base/Do"
 
 * VARIABLES
 global outcomes school_zscore
-global sumstats /*bord*/ fert idealnumkids agemay educf height bmi underweight /*
-*/ exceedfam educ school_zscore noeduc infantmortality childmortality
+global sumstatsM fert idealnumkids agemay educf height bmi underweight exceedfam
+global sumstatsC educ school_zscore noeduc infantmortality childmortality
 global twinpredict motherage motheragesq agefirstbirth educf educfyrs_sq /*
 */ height bmi i.child_yob i._cou 
 global twinout motherage motheragesq agefirstbirth educf educfyrs_sq height bmi
@@ -88,6 +88,7 @@ else if `"`births'"'=="space" {
 
 * FILE NAMES
 local Sum      Summary
+local SumC     SummaryChild
 local SumBord  Summary_Birthorder
 local TwinPred Twin_Predict
 local IVb      Base_IV
@@ -102,8 +103,8 @@ local IVgend   Gender_IV
 local IVgend1  Gender_IV_firststage
 local IVgendi  GenderAll_IV
 local IVgendi1 GenderAll_IV_firststage
-local IVdes    Desire_IV
-local IVdes1   Desire_IV_firststage
+local IVdes    Desire_IV_reg
+local IVdes1   Desire_IV_firststage_reg
 local IVdesS   Desire_IV_sep
 local IVdesS1  Desire_IV_sep_firststage
 local IVpref   PrefThreshold_IV
@@ -129,11 +130,11 @@ local sep "&"
 
 
 *SWITCHES (1 if run, else not run)
-local sumstats 1.3
+local sumstats 1.1
   local graphs 1.3
 local sumstats2 1.4
   local graphs2 0
-local trends 1.01
+local trends 1.2
 local twin 4
 local ols 3
 local IV 0
@@ -143,13 +144,13 @@ local income 0
 local wealth 0
 local gender 0
 local genderint 2
-local desire 7
+local desire 1.1
 local desire_sep 0
 local pref 0
 local new 0
 local twinoccur_ols 0
 local twinoccur_iv 0
-local conley 0
+local conley 1
 local thresholdtest 1.5
 local balance 4
 local intense 8
@@ -179,6 +180,7 @@ gen bmi_sq=bmi*bmi
 gen height_sq=height*height
 gen underweight=1 if bmi<=18.5
 replace underweight=0 if bmi>18.5 & bmi!=.
+if `sumstats'==1 save "$Data/DHS_twins_full.dta", replace
 
 drop if twinfamily>2
 keep if _merge==3
@@ -206,9 +208,124 @@ if `sumstats'==1 {
 
 	if c(os)=="Windows" local format png
 	else if c(os)=="Unix" local format eps
-
 	***************************************************************************
-	*** (2a) Graphical
+	*** (2a) Tables
+	***************************************************************************
+	* (A) By twins
+	local opts cells("count mean sd min max")
+
+	gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
+	replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
+	replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
+	replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
+	encode cat, gen(catnum)
+	
+	local numkids "Number of Children"
+	local nummothers "Number of Mothers"
+	local numcountry "Number of Countries"
+	foreach num of numlist 1(1)4 {
+		cap drop count
+		gen count = 1
+		replace count=. if catnum!=`num'
+		foreach var of local sumstats {
+			replace count=. if `var'==.
+		}
+		count if count==1
+		local kk = "`: display %9.0fc r(N)'"
+
+		local numkids "`numkids' `sep'" "`kk'"
+
+		bys id: gen n=_n
+		count if count==1&n==1
+		local mm = "`: display %9.0fc r(N)'"
+		local nummothers "`nummothers' `sep'" "`mm'"
+		drop n
+
+		bys _cou: gen n=_n
+		count if count==1&n==1
+		if `num'==1|`num'==3 {
+			local numcountry "`numcountry' `sep' `r(N)'`sep'`r(N)' "
+		}
+		drop n
+	}
+
+	count
+	local kidcount = "`: display %9.0fc r(N)'"
+	sum twind
+	scalar at = "`: display %7.4f r(mean)'"
+	scalar as = "`: display %7.4f r(sd)'"	
+	sum twind if inc_status=="L"
+	scalar lt = "`: display %7.4f r(mean)'"
+	scalar ls = "`: display %7.4f r(sd)'"
+	sum twind if inc_status!="L"
+	scalar mt = "`: display %7.4f r(mean)'"
+	scalar ms = "`: display %7.4f r(sd)'"
+
+	sum bord if twind==1
+	scalar abm = "`: display %7.3f r(mean)'"
+	scalar abs = "`: display %7.3f r(sd)'"
+	sum bord if twind==1 & inc_status=="L"
+	scalar lbm = "`: display %7.3f r(mean)'"
+	scalar lbs = "`: display %7.3f r(sd)'"
+	sum bord if twind==1 &  inc_status!="L"
+	scalar mbm = "`: display %7.3f r(mean)'"
+	scalar mbs = "`: display %7.3f r(sd)'"
+
+
+	preserve
+	gen exceedfam=idealfam==1
+	collapse $sumstatsM, by(id cat)
+	count
+	local mothercount = "`: display %9.0fc r(N)'"
+
+	file open resfile using "$Tables/Summary/Count.txt", write replace
+	file write resfile "`numcountry' & 67 \\" _n
+	file write resfile "`numkids' & `kidcount' \\" _n
+	file write resfile "`nummothers' & `mothercount' \\" _n
+	file write resfile "Fraction Twin & \multicolumn{2}{c}{ `=scalar(lt)'" ///
+	  "}& \multicolumn{2}{c}{ `=scalar(mt)' } & `=scalar(at)'\\" _n
+	file write resfile "& \multicolumn{2}{c}{(`=scalar(ls)')" ///
+	  "}& \multicolumn{2}{c}{(`=scalar(ms)')} & (`=scalar(as)')\\" _n
+	file write resfile "Birth Order Twin & \multicolumn{2}{c}{ `=scalar(lbm)'" ///
+	  "}& \multicolumn{2}{c}{ `=scalar(mbm)' }& `=scalar(abm)'\\" _n
+	file write resfile "& \multicolumn{2}{c}{(`=scalar(lbs)')" ///
+	  "}& \multicolumn{2}{c}{(`=scalar(mbs)')}& (`=scalar(abs)')\\" _n
+	file write resfile "`mothercount'"
+	file close resfile
+	
+	estpost tabstat $sumstatsM, by(cat) statistics(mean sd) listwise ///
+	 columns(statistics)
+	esttab using "$Tables/Summary/`Sum'.txt", replace main(mean) aux(sd) /*
+	*/ nostar unstack noobs nonote nomtitle nonumber
+	restore
+
+	preserve
+	decode _cou, gen(WBcountry)
+	gen colvar=inc_status=="L"
+	collapse colvar, by(WBcountry _year)
+	gen income="Low" if colvar==1
+	replace income="Middle" if colvar==0
+	drop colvar
+	order WBcountry income _year
+	sort WBc _year
+	outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
+	restore
+
+	preserve
+	use "$Data/DHS_twins_full.dta", clear
+	gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
+	replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
+	replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
+	replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
+	encode cat, gen(catnum)
+	estpost tabstat $sumstatsC, by(cat) statistics(mean sd) listwise ///
+	 columns(statistics)
+	esttab using "$Tables/Summary/`SumC'.txt", replace main(mean) aux(sd) /*
+	*/ nostar unstack noobs nonote nomtitle nonumber
+	clear
+	restore
+	***************************************************************************
+	*** (2b) Graphical
 	*** graph 1: total births by family type (twins vs non-twins)
 	*** graph 2: total births by family type for families who exceed desired
 	*** graph 3: Proportion of twins by birth order
@@ -310,110 +427,6 @@ if `sumstats'==1 {
 		restore
 	}
 	}
-
-	***************************************************************************
-	*** (2b) Tables
-	***************************************************************************
-	* (A) By twins
-	local opts cells("count mean sd min max")
-	
-	gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
-	replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
-	replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
-	replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
-	encode cat, gen(catnum)
-	
-	local numkids "Number of Children"
-	local nummothers "Number of Mothers"
-	local numcountry "Number of Countries"
-	foreach num of numlist 1(1)4 {
-		cap drop count
-		gen count = 1
-		replace count=. if catnum!=`num'
-		foreach var of local sumstats {
-			replace count=. if `var'==.
-		}
-		count if count==1
-		local kk = "`: display %9.0fc r(N)'"
-
-		local numkids "`numkids' `sep'" "`kk'"
-
-		bys id: gen n=_n
-		count if count==1&n==1
-		local mm = "`: display %9.0fc r(N)'"
-		local nummothers "`nummothers' `sep'" "`mm'"
-		drop n
-
-		bys _cou: gen n=_n
-		count if count==1&n==1
-		if `num'==1|`num'==3 {
-			local numcountry "`numcountry' `sep' `r(N)'`sep'`r(N)' "
-		}
-		drop n
-	}
-
-	count
-	local kidcount = "`: display %9.0fc r(N)'"
-	sum twind
-	scalar at = "`: display %7.4f r(mean)'"
-	scalar as = "`: display %7.4f r(sd)'"	
-	sum twind if inc_status=="L"
-	scalar lt = "`: display %7.4f r(mean)'"
-	scalar ls = "`: display %7.4f r(sd)'"
-	sum twind if inc_status!="L"
-	scalar mt = "`: display %7.4f r(mean)'"
-	scalar ms = "`: display %7.4f r(sd)'"
-
-	sum bord if twind==1
-	scalar abm = "`: display %7.3f r(mean)'"
-	scalar abs = "`: display %7.3f r(sd)'"
-	sum bord if twind==1 & inc_status=="L"
-	scalar lbm = "`: display %7.3f r(mean)'"
-	scalar lbs = "`: display %7.3f r(sd)'"
-	sum bord if twind==1 &  inc_status!="L"
-	scalar mbm = "`: display %7.3f r(mean)'"
-	scalar mbs = "`: display %7.3f r(sd)'"
-
-	
-	preserve
-	gen exceedfam=idealfam==1
-	collapse $sumstats, by(id cat)
-	count
-	local mothercount = "`: display %9.0fc r(N)'"
-
-	file open resfile using "$Tables/Summary/Count.txt", write replace
-	file write resfile "`numcountry' & 68 \\" _n
-	file write resfile "`numkids' & `kidcount' \\" _n
-	file write resfile "`nummothers' & `mothercount' \\" _n
-	file write resfile "Fraction Twin & \multicolumn{2}{c}{ `=scalar(lt)'" ///
-	  "}& \multicolumn{2}{c}{ `=scalar(mt)' } & `=scalar(at)'\\" _n
-	file write resfile "& \multicolumn{2}{c}{(`=scalar(ls)')" ///
-	  "}& \multicolumn{2}{c}{(`=scalar(ms)')} & (`=scalar(as)')\\" _n
-	file write resfile "Birth Order Twin & \multicolumn{2}{c}{ `=scalar(lbm)'" ///
-	  "}& \multicolumn{2}{c}{ `=scalar(mbm)' }& `=scalar(abm)'\\" _n
-	file write resfile "& \multicolumn{2}{c}{(`=scalar(lbs)')" ///
-	  "}& \multicolumn{2}{c}{(`=scalar(mbs)')}& (`=scalar(abs)')\\" _n
-	file write resfile "`mothercount'"
-	file close resfile
-
-	
-	estpost tabstat $sumstats, by(cat) statistics(mean sd) listwise ///
-	 columns(statistics)
-	esttab using "$Tables/Summary/`Sum'.txt", replace main(mean) aux(sd) /*
-	*/ nostar unstack noobs nonote nomtitle nonumber
-	restore
-
-	preserve
-	decode _cou, gen(WBcountry)
-	gen colvar=inc_status=="L"
-	collapse colvar, by(WBcountry _year)
-	gen income="Low" if colvar==1
-	replace income="Middle" if colvar==0
-	drop colvar
-	order WBcountry income _year
-	sort WBc _year
-	outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
-	restore
 }
 
 if `sumstats2'==1 {
@@ -498,8 +511,7 @@ if `trends'==1 {
 	gen income="low" if inc_status=="L"
 	replace income="mid" if inc_status!="L"
 
-
-	foreach inc in /*all*/ low mid {
+	foreach inc in all low mid {
 		if "`inc'"=="all" local cex
 		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"	
 		**************************************************************************
@@ -1043,13 +1055,17 @@ if `genderint'==1 {
 **** (8) IV with twin threshold
 ********************************************************************************
 if `desire'==1 {
+	*gen idealbarrier=floor(idealnumkids)
+	gen idealbarrier=floor(desiredfert_region)
+
 	local endog fert fertXthreshold
+
 	cap drop income
 	gen income="low" if inc_status=="L"
 	replace income="mid" if inc_status!="L"
 
 	
-	foreach inc in all /*low mid*/ {
+	foreach inc in all low mid {
 		if "`inc'"=="all" local cex
 		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
 
@@ -1064,9 +1080,11 @@ if `desire'==1 {
 			local c  `cond'&`n'_plus==1 `cex'
 			local ce `cond'&`n'_plus==1&e(sample) `cex'
 
-			gen threshold=(twin_`n'_fam==1 & idealnumkids==`t')
+			preserve
+			keep `c'
+			gen threshold=(twin_`n'_fam==1 & idealbarrier==`t')
 			gen fertXthreshold=fert*threshold
-			gen desired=idealnumkids<=`t'
+			gen desired=idealbarrier<=`t'
 			
 			cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
 			local insts twin_`n'_fam twin`n'Xthreshold
@@ -1088,6 +1106,7 @@ if `desire'==1 {
 			}
 			local ++t
 			drop threshold fertXthreshold desired
+			restore
 		}
 
 		estout `estimates' using "$Tables/IV/`IVdes'_`inc'_`births'.xls", replace ///

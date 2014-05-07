@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  29 APR 2014 11:42
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  5 MAY 2014 23:28
 entering extended mode
  %&-line parsing enabled.
 **TwinDescriptives_BhalotraClarke.tex
@@ -631,43 +631,39 @@ cientific/Figures/Birthweight_op-eps-converted-to.pdf> <./../../Twins/Scientifi
 c/Figures/Size-eps-converted-to.pdf>]
 (./../../Twins/Scientific/Tables/Tables.tex
 (./../../Twins/Scientific/Tables/SumStats.tex)
-(./../../Twins/Scientific/Tables/TwinRegChile.tex
-Missing character: There is no â in font cmr8!
-Missing character: There is no € in font cmr8!
-Missing character: There is no ˜ in font cmr8!
-Missing character: There is no â in font cmr8!
-Missing character: There is no € in font cmr8!
-Missing character: There is no ™ in font cmr8!
-)
 (./../../Twins/Scientific/Tables/TwinReg.tex [4
 
-] [5]
+]
 
 LaTeX Warning: Float too large for page by 35.16278pt on input line 33.
 
-[6])) AED: lastpage setting LastPage (./TwinDescriptives_BhalotraClarke.aux) ) 
+[5]) (./../../Twins/Scientific/Tables/ChileTwin.tex)
+(./../../Twins/Scientific/Tables/ScotlandTwin.tex))
+AED: lastpage setting LastPage [6
+
+
+] [7] (./TwinDescriptives_BhalotraClarke.aux) ) 
 Here is how much of TeX's memory you used:
- 5717 strings out of 493848
- 79882 string characters out of 1152823
- 162503 words of memory out of 3000000
- 8836 multiletter control sequences out of 15000+50000
+ 5721 strings out of 493848
+ 80000 string characters out of 1152823
+ 158511 words of memory out of 3000000
+ 8837 multiletter control sequences out of 15000+50000
  11798 words of font info for 46 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 41i,13n,38p,616b,476s stack positions out of 5000i,500n,10000p,200000b,50000s
-<
-/usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
-texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texli
-ve/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-texlive/fonts/t
-ype1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/
-amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
-cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17.pfb></
-usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/tex
-mf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fo
-nts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texmf-texlive/fonts/type1/pu
-blic/amsfonts/cm/cmsy8.pfb>
-Output written on TwinDescriptives_BhalotraClarke.pdf (6 pages, 177880 bytes).
+ 41i,13n,38p,636b,476s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-texlive/fonts/
+type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/publi
+c/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/
+cm/cmcsc10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.p
+fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-tex
+live/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texmf-texlive/fonts/t
+ype1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/a
+msfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
+cmsy6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on TwinDescriptives_BhalotraClarke.pdf (7 pages, 180106 bytes).
 PDF statistics:
- 92 PDF objects out of 1000 (max. 8388607)
+ 97 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

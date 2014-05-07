@@ -1,8 +1,8 @@
-----------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
        log:  /home/damiancclarke/investigacion/Activa/Twins/Chile/ELPI/Log/ELPI_Setup.txt
   log type:  text
- opened on:  30 Apr 2014, 17:44:25
+ opened on:   5 May 2014, 21:32:16
 
 . 
 . local initialreg 0
@@ -416,7 +416,7 @@
 . if `cleanreg'==1 {
 .         replace twin=twin*100
 (2028 real changes made)
-.         eststo: reg twin `base' `region' `prePreg' `preg' `c' `w'
+.         eststo: reg twin `region' `prePreg' `preg' `base' `c' `w'
 (sum of wgt is   8.2110e+05)
 
 Linear regression                                      Number of obs =   14268
@@ -429,10 +429,6 @@ Linear regression                                      Number of obs =   14268
                 |               Robust
            twin |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 ----------------+----------------------------------------------------------------
-    m_age_birth |   .4098142   .1325711     3.09   0.002     .1499576    .6696708
-       m_age_sq |  -.0067035   .0023002    -2.91   0.004    -.0112122   -.0021947
-     indigenous |   -1.02711   .3947497    -2.60   0.009    -1.800871   -.2533492
-                |
          region |
              2  |   .2926842   1.151014     0.25   0.799    -1.963455    2.548823
              3  |   .4944153   1.453046     0.34   0.734    -2.353745    3.342576
@@ -478,10 +474,13 @@ pregNoAttention |  -1.031101    .966134    -1.07   0.286     -2.92485    .862647
              3  |  -1.890846   .2902931    -6.51   0.000    -2.459858   -1.321834
                 |
        pregHosp |   .9390577   .3439964     2.73   0.006     .2647797    1.613336
+    m_age_birth |   .4098142   .1325711     3.09   0.002     .1499576    .6696708
+       m_age_sq |  -.0067035   .0023002    -2.91   0.004    -.0112122   -.0021947
+     indigenous |   -1.02711   .3947497    -2.60   0.009    -1.800871   -.2533492
           _cons |  -2.945253   2.503163    -1.18   0.239     -7.85178    1.961273
 ---------------------------------------------------------------------------------
 (est1 stored)
-.         estout est1 using "$RESULTS/twinELPI.xls", keep(`prePreg' `preg') replace /*
+.         estout est1 using "$RESULTS/twinELPI.xls", keep(`prePreg' `preg' `base') replace /*
 >         */ cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 >         */ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
 (output written to ~/investigacion/Activa/Twins/Scientific/Results/twinELPI.xls)
@@ -491,3 +490,4 @@ pregNoAttention |  -1.031101    .966134    -1.07   0.286     -2.92485    .862647
 . 
 end of do-file
 
+. exit, clear

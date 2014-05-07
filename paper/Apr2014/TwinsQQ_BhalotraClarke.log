@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  5 MAY 2014 14:13
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  6 MAY 2014 19:04
 entering extended mode
  %&-line parsing enabled.
 **TwinsQQ_BhalotraClarke.tex
@@ -403,6 +403,23 @@ Package: natbib 2009/07/16 8.31 (PWD, AO)
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count139
 )
+(/usr/share/texmf-texlive/tex/latex/caption/caption.sty
+Package: caption 2009/10/09 v3.1k Customizing captions (AR)
+\c@ContinuedFloat=\count140
+Package caption Info: float package is loaded.
+Package caption Info: floatrow package is loaded.
+Package caption Info: longtable package is loaded.
+
+(/usr/share/texmf-texlive/tex/latex/caption/ltcaption.sty
+Package: ltcaption 2008/03/28 v1.2 longtable captions (AR)
+)
+Package caption Info: rotating package is loaded.
+)
+(/usr/share/texmf-texlive/tex/latex/caption/subcaption.sty
+Package: subcaption 2008/08/31 v1.0b Adding subcaptions (AR)
+\c@subfigure=\count141
+\c@subtable=\count142
+)
 (/usr/share/texmf-texlive/tex/latex/graphics/epsfig.sty
 Package: epsfig 1999/02/16 v1.7a (e)psfig emulation (SPQR)
 \epsfxsize=\dimen166
@@ -466,7 +483,7 @@ File: epstopdf-sys.cfg 2009/10/26 v1.1 Configuration of epstopdf for TeX Live
 (/usr/share/texmf-texlive/tex/latex/wrapfig/wrapfig.sty
 \wrapoverhang=\dimen169
 \WF@size=\dimen170
-\c@WF@wrappedlines=\count140
+\c@WF@wrappedlines=\count143
 \WF@box=\box45
 \WF@everypar=\toks30
 Package: wrapfig 2003/01/31  v 3.6
@@ -477,28 +494,28 @@ Package: blindtext 2009/06/14 V1.9b blindtext-Package
 (/usr/share/texmf-texlive/tex/latex/tools/xspace.sty
 Package: xspace 2006/05/08 v1.12 Space after command names (DPC,MH)
 )
-\c@blindtext=\count141
-\c@Blindtext=\count142
-\blind@countxx=\count143
-\blindtext@numBlindtext=\count144
-\blind@countyy=\count145
-\c@blindlist=\count146
-\c@blindlistlevel=\count147
-\c@blindlist@level=\count148
-\blind@listitem=\count149
-\c@blind@listcount=\count150
-\c@blind@levelcount=\count151
-\blind@mathformula=\count152
-\blind@Mathformula=\count153
+\c@blindtext=\count144
+\c@Blindtext=\count145
+\blind@countxx=\count146
+\blindtext@numBlindtext=\count147
+\blind@countyy=\count148
+\c@blindlist=\count149
+\c@blindlistlevel=\count150
+\c@blindlist@level=\count151
+\blind@listitem=\count152
+\c@blind@listcount=\count153
+\c@blind@levelcount=\count154
+\blind@mathformula=\count155
+\blind@Mathformula=\count156
 )
 (/usr/share/texmf-texlive/tex/latex/changepage/changepage.sty
 Package: changepage 2009/10/20 v1.0c check page and change page layout
-\c@cp@cntr=\count154
-\cp@tempcnt=\count155
+\c@cp@cntr=\count157
+\cp@tempcnt=\count158
 )
 (./TwinsQQ_BhalotraClarke.aux
 
-LaTeX Warning: Label `TWINeqn:IVbias' multiply defined.
+LaTeX Warning: Label `TWINeqn:Conley' multiply defined.
 
 
 LaTeX Warning: Label `TWINtab:sumstats' multiply defined.
@@ -506,65 +523,109 @@ LaTeX Warning: Label `TWINtab:sumstats' multiply defined.
 )
 \openout1 = `TwinsQQ_BhalotraClarke.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 73.
+LaTeX Font Info:    ... okay on input line 73.
 Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: wrapfig package is loaded.
 Package caption Info: End \AtBeginDocument code.
  (/usr/share/texmf-texlive/tex/latex/floatrow/fr-longtable.sty
 Package: fr-longtable 2007/11/28 v0.1b (beta) floatrow: additions for longtable
 
 \flrow@LT@lasthead=\box46
 \flrow@LT@prelastfoot=\box47
-\c@FBLTpage=\count156
+\c@FBLTpage=\count159
 )
 (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count157
+\scratchcounter=\count160
 \scratchdimen=\dimen171
 \scratchbox=\box48
-\nofMPsegments=\count158
-\nofMParguments=\count159
+\nofMPsegments=\count161
+\nofMParguments=\count162
 \everyMPshowfont=\toks31
-\MPscratchCnt=\count160
+\MPscratchCnt=\count163
 \MPscratchDim=\dimen172
-\MPnumerator=\count161
+\MPnumerator=\count164
 \everyMPtoPDFconversion=\toks32
 ) ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+msa on input line 73.
+LaTeX Font Info:    Try loading font information for U+msa on input line 76.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 73.
+LaTeX Font Info:    Try loading font information for U+msb on input line 76.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-Underfull \hbox (badness 10000) in paragraph at lines 75--90
+Underfull \hbox (badness 10000) in paragraph at lines 78--93
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 92--93
+Underfull \hbox (badness 10000) in paragraph at lines 95--96
 
  []
 
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./Introduction.tex)
-(./TwinLiterature.tex) (./Data.tex) (./Methodology.tex) (./Results.tex
-(./Results/TwinExogeneity.tex) [2] (./Results/TwinQQ.tex) (./Results/Bounds.txt
-)) (./Conclusion.tex) [3] (./../../../Twins/Figures/Figures.tex
+(./TwinLiterature.tex) (./Data.tex) (./Methodology.tex (./Methodology/QQ.tex
+[2]) (./Methodology/BoundEst.tex [3])) (./Results.tex
+(./Results/TwinExogeneity.tex) (./Results/TwinQQ.tex) (./Results/Bounds.txt))
+(./Conclusion.tex) [4] (./../../../Twins/Figures/Figures.tex
+Package epstopdf Info: Source file: <./../../../Twins/Figures/ferttrend_35_all.
+eps>
+(epstopdf)                    date: 2014-05-05 16:33:03
+(epstopdf)                    size: 15844 bytes
+(epstopdf)             Output file: <./../../../Twins/Figures/ferttrend_35_all-
+eps-converted-to.pdf>
+(epstopdf)                    date: 2014-05-05 16:37:53
+(epstopdf)                    size: 8585 bytes
+(epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/fe
+rttrend_35_all-eps-converted-to.pdf ./../../../Twins/Figures/ferttrend_35_all.e
+ps>
+(epstopdf)             \includegraphics on input line 5.
+Package epstopdf Info: Output file is already uptodate.
+
+<./../../../Twins/Figures/ferttrend_35_all-eps-converted-to.pdf, id=31, 397.485
+pt x 289.08pt>
+File: ./../../../Twins/Figures/ferttrend_35_all-eps-converted-to.pdf Graphic fi
+le (type pdf)
+
+<use ./../../../Twins/Figures/ferttrend_35_all-eps-converted-to.pdf>
+Overfull \hbox (1.08295pt too wide) in paragraph at lines 5--6
+ [][] 
+ []
+
+Package epstopdf Info: Source file: <./../../../Twins/Figures/eductrend_all.eps
+>
+(epstopdf)                    date: 2014-05-05 16:31:39
+(epstopdf)                    size: 13302 bytes
+(epstopdf)             Output file: <./../../../Twins/Figures/eductrend_all-eps
+-converted-to.pdf>
+(epstopdf)                    date: 2014-05-05 16:37:53
+(epstopdf)                    size: 7472 bytes
+(epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/ed
+uctrend_all-eps-converted-to.pdf ./../../../Twins/Figures/eductrend_all.eps>
+(epstopdf)             \includegraphics on input line 11.
+Package epstopdf Info: Output file is already uptodate.
+
+<./../../../Twins/Figures/eductrend_all-eps-converted-to.pdf, id=32, 397.485pt 
+x 289.08pt>
+File: ./../../../Twins/Figures/eductrend_all-eps-converted-to.pdf Graphic file 
+(type pdf)
+ <use ./../../../Twins/Figures/eductrend_all-eps-converted-to.pdf>
 Package epstopdf Info: Source file: <./../../../Twins/Figures/twinbybord.eps>
 (epstopdf)                    date: 2014-04-26 17:07:13
 (epstopdf)                    size: 14061 bytes
@@ -574,10 +635,10 @@ nverted-to.pdf>
 (epstopdf)                    size: 7694 bytes
 (epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/tw
 inbybord-eps-converted-to.pdf ./../../../Twins/Figures/twinbybord.eps>
-(epstopdf)             \includegraphics on input line 5.
+(epstopdf)             \includegraphics on input line 28.
 Package epstopdf Info: Output file is already uptodate.
 
-<./../../../Twins/Figures/twinbybord-eps-converted-to.pdf, id=27, 397.485pt x 2
+<./../../../Twins/Figures/twinbybord-eps-converted-to.pdf, id=33, 397.485pt x 2
 89.08pt>
 File: ./../../../Twins/Figures/twinbybord-eps-converted-to.pdf Graphic file (ty
 pe pdf)
@@ -591,10 +652,10 @@ rted-to.pdf>
 (epstopdf)                    size: 12173 bytes
 (epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/fa
 msize-eps-converted-to.pdf ./../../../Twins/Figures/famsize.eps>
-(epstopdf)             \includegraphics on input line 13.
+(epstopdf)             \includegraphics on input line 36.
 Package epstopdf Info: Output file is already uptodate.
 
-<./../../../Twins/Figures/famsize-eps-converted-to.pdf, id=28, 397.485pt x 289.
+<./../../../Twins/Figures/famsize-eps-converted-to.pdf, id=34, 397.485pt x 289.
 08pt>
 File: ./../../../Twins/Figures/famsize-eps-converted-to.pdf Graphic file (type 
 pdf)
@@ -609,10 +670,10 @@ converted-to.pdf>
 (epstopdf)                    size: 7699 bytes
 (epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/id
 ealfamsize-eps-converted-to.pdf ./../../../Twins/Figures/idealfamsize.eps>
-(epstopdf)             \includegraphics on input line 21.
+(epstopdf)             \includegraphics on input line 44.
 Package epstopdf Info: Output file is already uptodate.
 
-<./../../../Twins/Figures/idealfamsize-eps-converted-to.pdf, id=29, 397.485pt x
+<./../../../Twins/Figures/idealfamsize-eps-converted-to.pdf, id=35, 397.485pt x
  289.08pt>
 File: ./../../../Twins/Figures/idealfamsize-eps-converted-to.pdf Graphic file (
 type pdf)
@@ -627,10 +688,10 @@ Package epstopdf Info: Source file: <./../../../Twins/Figures/idealfam_fert.eps
 (epstopdf)                    size: 7671 bytes
 (epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/id
 ealfam_fert-eps-converted-to.pdf ./../../../Twins/Figures/idealfam_fert.eps>
-(epstopdf)             \includegraphics on input line 29.
+(epstopdf)             \includegraphics on input line 52.
 Package epstopdf Info: Output file is already uptodate.
 
-<./../../../Twins/Figures/idealfam_fert-eps-converted-to.pdf, id=30, 397.485pt 
+<./../../../Twins/Figures/idealfam_fert-eps-converted-to.pdf, id=36, 397.485pt 
 x 289.08pt>
 File: ./../../../Twins/Figures/idealfam_fert-eps-converted-to.pdf Graphic file 
 (type pdf)
@@ -644,10 +705,10 @@ rted-to.pdf>
 (epstopdf)                    size: 8317 bytes
 (epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/LT
 Z_two-eps-converted-to.pdf ./../../../Twins/Figures/LTZ_two.eps>
-(epstopdf)             \includegraphics on input line 37.
+(epstopdf)             \includegraphics on input line 60.
 Package epstopdf Info: Output file is already uptodate.
 
-<./../../../Twins/Figures/LTZ_two-eps-converted-to.pdf, id=31, 397.485pt x 289.
+<./../../../Twins/Figures/LTZ_two-eps-converted-to.pdf, id=37, 397.485pt x 289.
 08pt>
 File: ./../../../Twins/Figures/LTZ_two-eps-converted-to.pdf Graphic file (type 
 pdf)
@@ -661,44 +722,49 @@ verted-to.pdf>
 (epstopdf)                    size: 8289 bytes
 (epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/LT
 Z_three-eps-converted-to.pdf ./../../../Twins/Figures/LTZ_three.eps>
-(epstopdf)             \includegraphics on input line 47.
+(epstopdf)             \includegraphics on input line 70.
 Package epstopdf Info: Output file is already uptodate.
 
-<./../../../Twins/Figures/LTZ_three-eps-converted-to.pdf, id=32, 397.485pt x 28
+<./../../../Twins/Figures/LTZ_three-eps-converted-to.pdf, id=38, 397.485pt x 28
 9.08pt>
 File: ./../../../Twins/Figures/LTZ_three-eps-converted-to.pdf Graphic file (typ
 e pdf)
- <use ./../../../Twins/Figures/LTZ_three-eps-converted-to.pdf>) [4 <./../../../
-Twins/Figures/twinbybord-eps-converted-to.pdf> <./../../../Twins/Figures/famsiz
-e-eps-converted-to.pdf>] [5 <./../../../Twins/Figures/idealfamsize-eps-converte
-d-to.pdf> <./../../../Twins/Figures/idealfam_fert-eps-converted-to.pdf>] [6 <./
-../../../Twins/Figures/LTZ_two-eps-converted-to.pdf> <./../../../Twins/Figures/
-LTZ_three-eps-converted-to.pdf>] (./../../../Twins/Tables/Tables.tex
+ <use ./../../../Twins/Figures/LTZ_three-eps-converted-to.pdf>) [5 <./../../../
+Twins/Figures/ferttrend_35_all-eps-converted-to.pdf> <./../../../Twins/Figures/
+eductrend_all-eps-converted-to.pdf> <./../../../Twins/Figures/twinbybord-eps-co
+nverted-to.pdf>] [6 <./../../../Twins/Figures/famsize-eps-converted-to.pdf> <./
+../../../Twins/Figures/idealfamsize-eps-converted-to.pdf>] [7 <./../../../Twins
+/Figures/idealfam_fert-eps-converted-to.pdf> <./../../../Twins/Figures/LTZ_two-
+eps-converted-to.pdf>] [8 <./../../../Twins/Figures/LTZ_three-eps-converted-to.
+pdf>] (./../../../Twins/Tables/Tables.tex
 (./../../../Twins/Tables/Summary.tex)
 (./../../../Twins/Tables/Balance_mother.tex)
-(./../../../Twins/Tables/IMRtest.tex) (./../../../Twins/Tables/OLS.tex [7
+(./../../../Twins/Tables/IMRtest.tex) (./../../../Twins/Tables/OLS.tex [9
 
 ]
-[8] [9]
+[10] [11]
 
-LaTeX Warning: Float too large for page by 45.8869pt on input line 33.
+LaTeX Warning: Float too large for page by 37.61693pt on input line 33.
 
-[10]) (./../../../Twins/Tables/TwoPlusIV.tex
+[12]) (./../../../Twins/Tables/TwoPlusIV.tex
 
-LaTeX Warning: Float too large for page by 16.73247pt on input line 46.
+LaTeX Warning: Float too large for page by 10.40694pt on input line 46.
 
 ) (./../../../Twins/Tables/ThreePlusIV.tex
 
-LaTeX Warning: Float too large for page by 16.73247pt on input line 46.
+LaTeX Warning: Float too large for page by 10.40694pt on input line 46.
+
+) (./../../../Twins/Tables/FourPlusIV.tex
+
+LaTeX Warning: Float too large for page by 10.40694pt on input line 46.
 
 ) (./../../../Twins/Tables/Conley.tex) (./../../../Twins/Tables/Gender.tex))
-[11] [12] [13] (./TwinsQQ_BhalotraClarke.bbl) [14
+[13] [14] [15] [16] (./TwinsQQ_BhalotraClarke.bbl) [17
 
 
 
 ]
 (./../../../Twins/Tables/Appendix_Tables.tex
-(./../../../Twins/Tables/DesiredTest.tex [15])
 (./../../../Twins/Tables/Countries.tex
 Underfull \hbox (badness 10000) in paragraph at lines 74--74
 []|\OT1/cmr/m/sc/8 Notes: \OT1/cmr/m/n/8 Coun-try in-come sta-tus is based upon
@@ -717,36 +783,32 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--74
 ST.xls (con-sulted 1 April,
  []
 
-[16]) (./../../../Twins/Tables/TwinReg.tex [17]
+[18]) (./../../../Twins/Tables/TwinReg.tex [19]
 
-LaTeX Warning: Float too large for page by 35.16278pt on input line 33.
+LaTeX Warning: Float too large for page by 28.2739pt on input line 33.
 
-[18]) (./../../../Twins/Tables/FourPlusIV.tex
+[20]) (./../../../Twins/Tables/FivePlusIV.tex
 
-LaTeX Warning: Float too large for page by 16.73247pt on input line 46.
-
-) (./../../../Twins/Tables/FivePlusIV.tex
-
-LaTeX Warning: Float too large for page by 16.73247pt on input line 46.
+LaTeX Warning: Float too large for page by 10.40694pt on input line 46.
 
 ) (./../../../Twins/Tables/GenderIV.tex)
-(./../../../Twins/Tables/firstStage.tex [19] [20] [21]
+(./../../../Twins/Tables/firstStage.tex [21] [22]
 
-LaTeX Warning: Float too large for page by 49.27942pt on input line 39.
+LaTeX Warning: Float too large for page by 56.6169pt on input line 39.
 
-[22])) AED: lastpage setting LastPage (./TwinsQQ_BhalotraClarke.aux)
+[23])) AED: lastpage setting LastPage (./TwinsQQ_BhalotraClarke.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 5845 strings out of 493848
- 82298 string characters out of 1152823
- 177360 words of memory out of 3000000
- 8885 multiletter control sequences out of 15000+50000
+ 6361 strings out of 493848
+ 91621 string characters out of 1152823
+ 191857 words of memory out of 3000000
+ 9388 multiletter control sequences out of 15000+50000
  14818 words of font info for 57 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 41i,16n,38p,1016b,514s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 41i,16n,42p,1016b,559s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
 re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-te
 xlive/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf-texlive/fonts/
@@ -765,9 +827,9 @@ ts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf-texlive/fonts/type1/pub
 lic/amsfonts/cm/cmsy8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti9.p
 fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on TwinsQQ_BhalotraClarke.pdf (22 pages, 332124 bytes).
+Output written on TwinsQQ_BhalotraClarke.pdf (23 pages, 350727 bytes).
 PDF statistics:
- 197 PDF objects out of 1000 (max. 8388607)
+ 213 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

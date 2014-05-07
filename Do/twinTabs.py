@@ -23,7 +23,7 @@ base = 'Base_IV_none.xls'
 bord = 'Base_IV_bord.xls'
 lowi = 'Income_IV_low_none.xls'
 midi = 'Income_IV_mid_none.xls'
-thre = 'Desire_IV_all_none.xls'
+thre = 'Desire_IV_reg_all_none.xls'
 twIV = 'Base_IV_twins_none.xls'
 tbIV = 'Base_IV_twins_bord.xls'
 gend = ['Gender_IV_F_none.xls','Gender_IV_M_none.xls']
@@ -35,12 +35,13 @@ fbor = 'Base_IV_firststage_bord.xls'
 flow = 'Income_IV_firststage_low_none.xls'
 fmid = 'Income_IV_firststage_mid_none.xls'
 ftwi = 'Base_IV_twins_firststage_none.xls'
-fdes = 'Desire_IV_firststage_all_none.xls'
+fdes = 'Desire_IV_firststage_reg_all_none.xls'
 
 ols  = "QQ_ols_none.txt"
 bala = "Balance_mother.tex"
 twin = "Twin_Predict_none.xls"
 summ = "Summary.txt"
+sumc = "SummaryChild.txt"
 coun = "Count.txt"
 dhss = "Countries.txt"
 
@@ -221,7 +222,7 @@ for i in ['Two', 'Three', 'Four', 'Five']:
 
     if ftype=='tex':
         IVf.write("\\begin{table}[!htbp] \\centering \n"
-        "\\caption{Instrumental Variables Estimates: "+i+" Plus} \\vspace{4mm} \n"
+        "\\caption{Instrumental Variables Estimates: "+i+" Plus} \n"
         "\\label{TWINtab:IV"+i+"plus} \n"
         "\\begin{tabular}{lcccc} \\toprule \\toprule \n")
 
@@ -251,7 +252,7 @@ for i in ['Two', 'Three', 'Four', 'Five']:
     +dd+dd+dd+dd+ls+"\n"
     +mc1+twid[0]+mcbf+"Desired-Threshold"+mc2+ls+" \n"
     "Fertility"+dd+TB5[0][0]+dd+TB5[0][1]+dd+TB5[0][2]+
-    dd+format(float(TN5[0][2]), "n")+ls+"\n"
+    dd+format(float(TN1[0][2]), "n")+ls+"\n"
     "         "+dd+TS5[0][0]+dd+TS5[0][1]+dd+TS5[0][2]+dd+ls+ "\n"
     +lname+dd+TB5[1][0]+dd+TB5[1][1]+dd+TB5[1][2]+dd+ls+"\n"
     "         "+dd+TS5[1][0]+dd+TS5[1][1]+dd+TS5[1][2]+dd+ls+"\n"+mr
@@ -354,7 +355,7 @@ OLSf = open(Tables+'OLS.'+end, 'w')
 
 if ftype=='tex':
     OLSf.write("\\begin{landscape}\\begin{table}[!htbp] \\centering \n"
-    "\\caption{OLS Estimates of the Q-Q Trade-off} \n \\vspace{4mm}"
+    "\\caption{OLS Estimates of the Q-Q Trade-off} \n "
     "\\label{TWINtab:OLS} \n"
     "\\begin{tabular}{lcccccc} \\toprule \\toprule \n")
 
@@ -423,7 +424,7 @@ for i,line in enumerate(bali):
     if ftype=='tex' or i>6:
         line = line.replace("&", dd)
         line = line.replace("\\\\", ls)
-        line = line.replace("\\begin{tabular}", "\\vspace{5mm}\\begin{tabular}")
+#        line = line.replace("\\begin{tabular}", "\\vspace{5mm}\\begin{tabular}")
         line = line.replace("\\toprule", "\\toprule\\toprule & Non-Twin & Twin & Diff.\\\\")
         line = line.replace("mu\_1", "Family")
         line = line.replace("mu\_2", "Family")
@@ -531,6 +532,7 @@ for i,line in enumerate(counti):
 print nk
 
 summi = open(Results2+"Summary/"+summ, 'r')
+summc = open(Results2+"Summary/"+sumc, 'r')
 summo = open(Tables+"Summary."+end, 'w')
 
 if ftype=='tex':
@@ -561,22 +563,33 @@ for i,line in enumerate(summi):
         line = line.replace("bmi"            , "BMI"                    )
         line = line.replace("underweight"    , "Pr(BMI)$<$18.5"         )
         line = line.replace("exceedfam"      , "Actual Births$>$Desired")
+
+        line = line.replace("Age", 
+        addL[3]+ addL[4]+addL[5]+ addL[6]+
+        "\\textsc{Mother's Characteristics}&&&&&\\\\ Age\n")
+
+
+        if ftype=='csv':
+            line=line.replace("\\textsc{Mother's Characteristics}&&&&&\\\\ Age\n",
+            'MOTHER\'S CHARACTERISTICS \n Age')
+            line=line.replace("$","")
+
+        summo.write(line+'\n')
+for i,line in enumerate(summc):
+    if i>2 and i%3!=2:
+        line=re.sub(r"\s+", dd, line)
+        line=re.sub(r"&$", ls+ls, line)
+        #line=re.sub(r"&(\d+.\d+)&$", ls+ls, line)
         line = line.replace("noeduc"         , "No Education (Percent)" )
         line = line.replace("educ"           , "Education (Years)"      )
         line = line.replace("school_zsc~e"   , "Education (Z-Score)"    )
         line = line.replace("infantmort~y"   , "Infant Mortality"       )
         line = line.replace("childmorta~y"   , "Child Mortality"        )
 
-        line = line.replace("Age", 
-        addL[3]+ addL[4]+addL[5]+ addL[6]+
-        "\\textsc{Mother's Characteristics}&&&&&\\\\ Age\n")
-
         line = line.replace("Education (Years)", 
         "\\textsc{Children's Outcomes}&&&&&\\\\ Education (Years)\n")
 
         if ftype=='csv':
-            line=line.replace("\\textsc{Mother's Characteristics}&&&&&\\\\ Age\n",
-            'MOTHER\'S CHARACTERISTICS \n Age')
             line=line.replace("\\textsc{Children's Outcomes}&&&&&\\\\ Education (Years)\n",
             'CHILDREN\'S OUTCOMES \n Education (Years)')
             line=line.replace("$","")
@@ -612,7 +625,7 @@ conlo = open(Tables+"Conley."+end, 'w')
 
 if ftype=='tex':
     conlo.write("\\begin{table}[htpb!]\\caption{`Plausibly Exogenous' Bounds} \n"
-    "\\label{TWINtab:Conley}\\vspace{-5mm}\\begin{center}\\begin{tabular}{lcccc}\n"
+    "\\label{TWINtab:Conley}\\begin{center}\\begin{tabular}{lcccc}\n"
     "\\toprule \\toprule \n"
     "&\\multicolumn{2}{c}{UCI: $\\gamma\\in [0,\\delta]$}"
     "&\\multicolumn{2}{c}{LTZ: $\\gamma \\sim U(0,\\delta)$}\\\\ \n" 
@@ -722,7 +735,7 @@ Ns = Ns + format(float(FN[0][8]),"n")+', '+format(float(MN[0][8]),"n")
 
 if ftype=='tex':
     gendo.write("\\begin{table}[htpb!]\\caption{Q-Q IV Estimates by Gender} \n"
-    "\\label{TWINtab:gend}\\vspace{-5mm}\\begin{center}\\begin{tabular}{lcccccccc}\n"
+    "\\label{TWINtab:gend}\\begin{center}\\begin{tabular}{lcccccccc}\n"
     "\\toprule \\toprule \n"
     "&\\multicolumn{4}{c}{Females}""&\\multicolumn{4}{c}{Males}\\\\ \n" 
     "\\cmidrule(r){2-5} \\cmidrule(r){6-9} \n" 
@@ -773,7 +786,7 @@ imrto = open(Tables+"IMRtest."+end, 'w')
 if ftype=='tex':
     imrto.write("\\begin{table}[htpb!]\n"
     "\\caption{Test of hypothesis that women who bear twins have better prior health}"
-    "\\label{TWINtab:IMR}\\vspace{-5mm}\\begin{center}\\begin{tabular}{lccc}\n"
+    "\\label{TWINtab:IMR}\\begin{center}\\begin{tabular}{lccc}\n"
     "\\toprule \\toprule \n"
     "\\textsc{Infant Mortality Rate}& Base & +S\\&H & Observations \\\\ \\midrule \n"
     "\\begin{footnotesize}\\end{footnotesize}& \n"
@@ -825,7 +838,7 @@ os.chdir(Results)
 
 if ftype=='tex':
     fstao.write("\\begin{landscape}\\begin{table}[htpb!]"
-    "\\caption{First Stage Results} \n\\label{TWINtab:FS}\\vspace{-5mm}"
+    "\\caption{First Stage Results} \n\\label{TWINtab:FS}"
     "\\begin{center}\\begin{tabular}{lccccccccc}\n\\toprule \\toprule \n"
     "&\\multicolumn{3}{c}{2+}&\\multicolumn{3}{c}{3+}&\\multicolumn{3}{c}{4+}"
     "\\\\ \\cmidrule(r){2-4} \\cmidrule(r){5-7} \\cmidrule(r){8-10} \n"
@@ -944,7 +957,7 @@ B14, S14, N14 = plustable(genf, 1, 5,"twin_four_fam",'normal',1000)
 if ftype=='tex':
     genio.write("\\begin{table}[!htbp] \\centering \n"
     "\\caption{Instrumental Variables Estimates: Female and Male Children} \n"
-    "\\vspace{4mm}\\label{TWINtab:IVgend} \n"
+    "\\label{TWINtab:IVgend} \n"
     "\\begin{tabular}{lcccccc} \\toprule \\toprule \n"
     "&\\multicolumn{3}{c}{Females}""&\\multicolumn{3}{c}{Males}\\\\ \n" 
     "\\cmidrule(r){2-4} \\cmidrule(r){5-7} \n" 
