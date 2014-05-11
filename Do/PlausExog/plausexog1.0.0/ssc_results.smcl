@@ -1,0 +1,213 @@
+{smcl}
+
+{txt}{net "from http://repec.org/bocode":SSC} Stata modules created or revised 2014-04-09 to 2014-05-09
+{hline}
+
+{net "describe http://repec.org/bocode/q/qv":QV}
+{txt} module to compute quasi-variances
+{txt} Authors: Aspen Chen       Req: Stata version 11
+{txt} Created: 2014-05-07
+
+{net "describe http://repec.org/bocode/n/npseries":NPSERIES}
+{txt} module to perform Nonparametric Power Series Estimation
+{txt} Authors: Boris Kaiser       Req: Stata version 12.1
+{txt} Created: 2014-05-06
+
+{net "describe http://repec.org/bocode/s/sepscatter":SEPSCATTER}
+{txt} module to draw scatter (or other twoway) plots separated by a third variable  
+{txt} Authors: Nicholas J. Cox       Req: Stata version 8.2
+{txt} Created: 2014-05-06
+
+{net "describe http://repec.org/bocode/m/miinc":MIINC}
+{txt} module to conduct multi-model inference using information criteria 
+{txt} Authors: Joseph N. Luchman       Req: Stata version 12.1
+{txt} Created: 2014-05-06
+
+{net "describe http://repec.org/bocode/s/smcl2do":SMCL2DO}
+{txt} module to convert log files to do-files in a robust fashion
+{txt} Authors: Bill Rising       Req: Stata version 11.2
+{txt} Created: 2014-05-06
+
+{net "describe http://repec.org/bocode/t/testcase":TESTCASE}
+{txt} module to provide a code-testing framework for Mata
+{txt} Authors: James Fiedler       Req: Stata version 12
+{txt} Created: 2014-05-06
+
+{net "describe http://repec.org/bocode/p/pvw":PVW}
+{txt} module to perform predictive value weighting for covariate misclassification in logistic regression
+{txt} Authors: Jonathan Bartlett       Req: Stata version 11
+{txt} Created: 2014-05-06
+
+{net "describe http://repec.org/bocode/s/spechist":SPECHIST}
+{txt} module to produce specific histograms for continuous variables
+{txt} Authors: Alfonso Sanchez-Penalver       Req: Stata version 8
+{txt} Created: 2014-05-06
+
+{net "describe http://repec.org/bocode/c/combineplot":COMBINEPLOT}
+{txt} module to combine similar univariate or bivariate plots for different variables
+{txt} Authors: Nicholas J. Cox       Req: Stata version 8.2
+{txt} Created: 2014-04-29
+
+{net "describe http://repec.org/bocode/m/miparallel":MIPARALLEL}
+{txt} module to perform parallel estimation for multiple imputed datasets
+{txt} Authors: Timothy Mak       Req: Stata version 12 and parallel from SSC (q.v.)
+{txt} Revised: 2014-04-29
+
+{net "describe http://repec.org/bocode/u/unemp":UNEMP}
+{txt} module module to compute aggregate households employment deprivation (or unemployment) measures
+{txt} Authors: Carlos Gradin       Req: Stata version 7
+{txt} Created: 2014-04-25
+
+{net "describe http://repec.org/bocode/c/ctreatreg":CTREATREG}
+{txt} module for estimating dose-response models under exogenous and endogenous treatment
+{txt} Authors: Giovanni Cerulli       Req: Stata version 11
+{txt} Created: 2014-04-24
+
+{net "describe http://repec.org/bocode/c/crossplot":CROSSPLOT}
+{txt} module for scatter (or other twoway) plots for each y vs each x variable
+{txt} Authors: Nicholas J. Cox       Req: Stata version 8
+{txt} Revised: 2014-04-29
+
+{net "describe http://repec.org/bocode/t/tex3pt":TEX3PT}
+{txt} module to produce LaTeX documents from estout with threeparttable
+{txt} Authors: Derek Wolfson       Req: Stata version 12 and estout package (q.v.)
+{txt} Revised: 2014-04-18
+
+{net "describe http://repec.org/bocode/g/glmdeco":GLMDECO}
+{txt} module to compute Detailed Decomposition of Average Outcome Differentials in Generalized Linear Models
+{txt} Authors: Boris Kaiser       Req: Stata version 10
+{txt} Created: 2014-04-13
+
+{net "describe http://repec.org/bocode/g/gvselect":GVSELECT}
+{txt} module to perform best subsets variable selection
+{txt} Authors: Charles Lindsey  Simon Sheather       Req: Stata version 11.2
+{txt} Created: 2014-04-13
+
+{net "describe http://repec.org/bocode/t/treatoprobit":TREATOPROBIT}
+{txt} module to estimate a treatment effects model for a binary endogenous treatment on an ordered outcome
+{txt} Authors: Christian Gregory       Req: Stata version 10
+{txt} Revised: 2014-05-06
+
+{net "describe http://repec.org/bocode/d/dqd":DQD}
+{txt} module to compute treatment effects under alternative Parallel-q assumptions
+{txt} Authors: Ricardo Mora  Iliana Reggio       Req: Stata version 11
+{txt} Revised: 2014-04-25
+
+{net "describe http://repec.org/bocode/c/combomarginsplot":COMBOMARGINSPLOT}
+{txt} module to combine the saved results from multiple calls to margins into one marginsplot
+{txt} Authors: Nick Winter       Req: Stata version 12
+{txt} Revised: 2014-04-16
+
+{net "describe http://repec.org/bocode/o/orth_out":ORTH_OUT}
+{txt} module to automate and export summary stats/orthogonality tables 
+{txt} Authors: Joe Long       Req: Stata version 12
+{txt} Revised: 2014-05-06
+
+{net "describe http://repec.org/bocode/e/er":ER}
+{txt} module to compute Esteban and Ray measure of polarization
+{txt} Authors: Carlos Gradin       Req: Stata version 7
+{txt} Revised: 2014-04-09
+
+{net "describe http://repec.org/bocode/r/rq":RQ}
+{txt} module to compute Reynal-Querol index of ethnic polarization
+{txt} Authors: Carlos Gradin       Req: Stata version 7
+{txt} Revised: 2014-04-09
+
+{net "describe http://repec.org/bocode/m/mimrgns":MIMRGNS}
+{txt} module to run margins after mi estimate
+{txt} Authors: Daniel Klein       Req: Stata version 11.2
+{txt} Revised: 2014-04-23
+
+{net "describe http://repec.org/bocode/i/ipdmetan":IPDMETAN}
+{txt} module for performing two-stage IPD meta-analysis 
+{txt} Authors: David Fisher       Req: Stata version 10 
+{txt} Revised: 2014-04-16
+
+{net "describe http://repec.org/bocode/d/dmout":DMOUT}
+{txt} module to create difference-in-means tables
+{txt} Authors: Michael Barker       Req: Stata version 10 
+{txt} Revised: 2014-04-23
+
+{net "describe http://repec.org/bocode/g/graphlog":GRAPHLOG}
+{txt} module to convert log files to PDF documents with embedded graphs using LaTeX
+{txt} Authors: Martin Rune Hansen       Req: Stata version 12.1 
+{txt} Revised: 2014-04-18
+
+{net "describe http://repec.org/bocode/p/psacalc":PSACALC}
+{txt} module to calculate treatment effects or bounds under proportional selection of observables and unobservables
+{txt} Authors: Emily Oster       Req: Stata version 12
+{txt} Revised: 2014-05-04
+
+{net "describe http://repec.org/bocode/s/surveybias":SURVEYBIAS}
+{txt} module to compute the B and B_w multinomial accuracy measures for polling bias
+{txt} Authors:  Kai Arzheimer       Req: Stata version 11
+{txt} Revised: 2014-04-09
+
+{net "describe http://repec.org/bocode/s/stns":STNS}
+{txt} module for estimation of net survival
+{txt} Authors:  Michel Grzebyk   Isabelle Urmès       Req: Stata version 11
+{txt} Revised: 2014-04-18
+
+{net "describe http://repec.org/bocode/x/xtsemipar":XTSEMIPAR}
+{txt} module to compute Semiparametric Fixed-Effects Estimator of Baltagi and Li 
+{txt} Authors: Vincenzo Verardi  François Libois       Req: Stata version 10.1
+{txt} Revised: 2014-04-29
+
+{net "describe http://repec.org/bocode/s/segregation":SEGREGATION}
+{txt} module to compute segregation indices
+{txt} Authors: Carlos Gradin       Req: Stata version 10 and matsort from SSC
+{txt} Revised: 2014-04-09
+
+{net "describe http://repec.org/bocode/r/robumeta":ROBUMETA}
+{txt} module to perform robust variance estimation in meta-regression with dependent effect size estimates
+{txt} Authors: Eric C. Hedberg       Req: Stata version 11.1
+{txt} Revised: 2014-04-23
+
+{net "describe http://repec.org/bocode/x/xtdolshm":XTDOLSHM}
+{txt} module to perform panel data cointegration 
+{txt} Authors: Diallo Ibrahima Amadou       Req: Stata version 10 and ltimbimata from SSC (q.v.)
+{txt} Revised: 2014-04-27
+
+{net "describe http://repec.org/bocode/g/grstest":GRSTEST}
+{txt} module to implement the Gibbons et al. (1989) test in a single-factor or multi-factor setting 
+{txt} Authors: Rajesh Tharyan       Req: Stata version 9
+{txt} Revised: 2014-04-29
+
+{net "describe http://repec.org/bocode/c/cmp":CMP}
+{txt} module to implement conditional (recursive) mixed process estimator
+{txt} Authors: David Roodman       Req: Stata version 10.1 and package ghk2 (q.v.); version 11 to use factor variables
+{txt} Revised: 2014-04-25
+
+{net "describe http://repec.org/bocode/i/isopoverty":ISOPOVERTY}
+{txt} module to generate data for Inequality-Poverty and Iso-Poverty curves
+{txt} Authors: Joao Pedro Azevedo  Samuel Franco       Req: Stata version 8.1
+{txt} Revised: 2014-05-04
+
+{net "describe http://repec.org/bocode/p/plotmatrix":PLOTMATRIX}
+{txt} module to plot values of a matrix as different coloured blocks 
+{txt} Authors: Adrian Mander       Req: Stata version 10.1
+{txt} Revised: 2014-04-25
+
+{net "describe http://repec.org/bocode/x/xtabond2":XTABOND2}
+{txt} module to extend xtabond dynamic panel data estimator 
+{txt} Authors: David Roodman       Req: Stata version 7.0 (with 21jun2002 update); version 9.0 for Mata version
+{txt} Revised: 2014-05-01
+
+{net "describe http://repec.org/bocode/f/fsum":FSUM}
+{txt} module to generate and format summary statistics
+{txt} Authors: Fred Wolfe       Req: Stata version 8.2
+{txt} Revised: 2014-05-06
+
+{net "describe http://repec.org/bocode/p/parmest":PARMEST}
+{txt} module to create new data set with one observation per parameter of most recent model
+{txt} Authors: Roger Newson       Req: Stata version 11.0
+{txt} Revised: 2014-04-13
+
+{net "describe http://repec.org/bocode/s/somersd":SOMERSD}
+{txt} module to calculate Kendall's tau-a, Somers' D and median differences
+{txt} Authors: Roger Newson       Req: Stata 12.0
+{txt} Revised: 2014-05-06
+
+{hline}
+{txt} End of recent additions and updates
+

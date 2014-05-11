@@ -1,1 +1,68 @@
-Discuss OLS table, IV table, ...
+%********************************************************************************
+As is typically found in empirical studies of the Q-Q tradeoff, correlations 
+between family size and child outcome variables are negative, and strongly 
+significant. Table \ref{TWINtab:OLS} shows OLS estimates of child `quality' on
+total fertility. These results suggest that an additional sibling is associated
+with an approximatelty 0.1 sd decrease in standardised schooling outcomes.
+
+
+Of course, this empirically observed relationship between an individual's sibship 
+size and their measured `quality' does not necessarily imply that such a 
+trade-off exists if parental decisions regarding the production of child quality 
+and quantity are jointly made and possibly influenced by unobserved factors 
+\citep{BeckerTomes1976}.  Principally here we are concerned with unobserved 
+parental behaviours which may favour both lower family size and higher child 
+quality. \citet{Qian2009} suggests that such a mechanism will exist where parents 
+who value education more highly also decide to have less children.  The OLS 
+results are consistent with such a result, as the inclusion of maternal education 
+and maternal health controls---likely correlated with desires for smaller 
+family size and higher investments per child---reduce the magnitude of this 
+observed tradeoff.
+
+%********************************************************************************
+\subsubsection{Q-Q Tradeoff: Estimates Using Twin Births}
+Rather than focusing on OLS estimates which are likely to be biased, we turn 
+to estimates which rely on twin births to identify the Q-Q tradeoff.  As we 
+outline in section \ref{TWINsscn:twinRes}, the assumption of `as good as random' 
+twin births is unlikely to hold, even when conditioning on the augmented set of 
+controls proposed in (\ref{TWINeqn:twinreg}).  If this is the case, we will be 
+unable to consistently estimate $\beta$ using twin births.  
+
+However, it is likely that the $\beta$ that we estimate using twin births will 
+provide us with a strict lower bound of the magnitude of the Q-Q trade-off. 
+Given that we expect that the bias in this estimate is due to those mothers who 
+invest more in their children in utero (or with greater initial health endowments) 
+being more likely to give birth to twins (and hence having larger family sizes), 
+and at the same time we expect healthier mothers to invest more in their children
+after birth resulting in higher quality children, then relegating health 
+variables to the error term will result in a positive bias on the fertility 
+coefficient.  In order to determine the effect that these omitted variables have 
+on estimates of the Q-Q trade-off, we turn to results for equation
+(\ref{TWINeqn:secondstage}), both omitting and not omitting maternal health and
+socioeconomic variables.
+
+The main specification is presented in row one of tables 
+\ref{TWINtab:IVTwoplus}-\ref{TWINtab:IVFourplus}.  These results suggest that
+the inclusion of maternal health and socioeconomic controls may be of 
+considerable importance.  In each case (for 2+, 3+ and 4+ groups), the base
+case which includes no twin predictor variables as controls results in an 
+insignificant (and at times weakly positive) coefficient on fertility.  However,
+once including the full set of health and socioeconomic variables, this 
+coefficient becomes significantly more negative, resulting (at least in the
+3+ and 4+ case) in point estimates of around $-3$ to $-4$\% of a standard deviation
+in standardised educational attainment.  Further, these results hold even when
+controlling for birth order effects, as can be seen in row 2 of the table.
+
+These results are heterogeneous across birth orders, country income level, and
+gender of the affected child (discussion of these latter two groups will be
+delayed until the following subsection.)  The magnitude and significance of the 
+results is lowest when considering the effect on the first-born child of moving 
+from two to three births (the 2+ group), and higher when considering moving from
+three to four births.  \texttt{comment re budget constraint???}
+
+Turning to our second innovation, we are able to examine the effect of an
+additional birth which takes families above their desired fertility threshold
+by interacting the twin instrument with a desired-fertility variable. [EXPLAIN
+AND INTERPRET DESIRED FERTILITY RESULTS FROM TABLES 5-7 (row labelled Desired-%
+Threshold).]   
+

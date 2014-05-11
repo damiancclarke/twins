@@ -300,6 +300,8 @@ gen singlexceed=finaltwinfamily==0&idealfam==1
 gen twinattain=finaltwinfamily==1&idealfam==0
 
 **Generate sub-region (and ethnicity) specific desired fertility
+bys _cou v001: egen desiredfert_cluster=mean(idealnumkids)
+bys _cou _year v001: egen desiredfert_clusterYEAR=mean(idealnumkids)
 bys _cou v101: egen desiredfert_region=mean(idealnumkids)
 bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
 
@@ -381,6 +383,7 @@ lab var twin_desired "Family has had twins, and twins were <=desired births"
 lab var twinexceed "Twin birth causes parents to exceed optimal size"
 lab var singlexceed "Single birth causes parents to exceed optimal size"
 lab var twinattain "Twin birth causes parents to attain optimal size"
+lab var desiredfert_cluster "Average desired family size by DHS cluster"
 lab var desiredfert_region "Average desired family size by (subcountry) region"
 lab var desiredfert_ethnic "Average desired family size by ethnicity"
 lab var birthspacing "Time between child and previous birth (in months)"
@@ -419,6 +422,6 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ twinexceedfamily twin_undesired twin_desired twinexceed singlexceed         /*
 */ twinattain desiredfert_region desiredfert_ethnic inc_stat contracep_intent  /*
 */ _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy  /*
-*/ prenate_doc prenate_nurse prenate_none
+*/ prenate_doc prenate_nurse prenate_none WBcountry v001 desiredfert_cluster
 
 save "$PATH/Data/DHS_twins", replace

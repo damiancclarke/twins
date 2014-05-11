@@ -1,0 +1,537 @@
+-----------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Do/PlausExog/betaTest.txt
+  log type:  text
+ opened on:   9 May 2014, 13:22:38
+
+. 
+. ********************************************************************************
+. *** (1) UCI Tests that should run
+. ***     (a) Typical UCI
+. ***     (b) Typical UCI with n>2 grid points rather than 2
+. ***     (c) Change level
+. ***     (d) Typical UCI robust ses
+. ***     (e) Typical UCI cluster ses
+. ***     (f) combining above
+. ***     (g) graphing
+. ***     (h) graphing special
+. ********************************************************************************
+. if `uciwork'==1 {
+. plausexog uci net_tfa `x' (p401=e401), gmin(-10000) gmax(10000)
+. plausexog uci net_tfa `x' (p401=e401), gmin(-10000) gmax(10000) grid(10)
+. plausexog uci net_tfa `x' (p401=e401), gmin(-10000) gmax(10000) level(0.90)
+. plausexog uci net_tfa `x' (p401=e401), gmin(-10000) gmax(10000) vce(robust)
+. 
+. qui gen cvar=runiform()
+. foreach num of numlist 1(1)100 {
+  2.         qui replace cvar=`num' if cvar>=(`num'-1)/100&cvar<`num'/100
+  3. }
+. 
+. plausexog uci net_tfa `x' (p401=e401), gmin(-10000) gmax(10000) vce(cluster cvar)
+. plausexog uci net_tfa `x' (p401=e401), gmin(-10000) gmax(10000) grid(10) /*
+> */ level(0.9) vce(cluster cvar)
+. 
+. plausexog uci net_tfa `x' (p401=e401), gmin(-10000) gmax(10000) graph(p401)
+. graph export "$GRA/UCIbase.eps", as(eps) replace
+. plausexog uci net_tfa `x' (p401=e401), gmin(-10000) gmax(10000) graph(p401) /*
+> */ graphopts(yline(0) xtitle("{stSymbol: d}") ytitle("{stSymbol: b}"))
+. graph export "$GRA/UCIzeroline.eps", as(eps) replace
+. 
+. plausexog uci net_tfa `x' i.cvar (p401=e401), gmin(-10000) gmax(10000)
+. }
+
+. 
+. ********************************************************************************
+. *** (2) LTZ Tests that should run
+. ***     (a) Typical LTZ
+. ***     (b) Change level
+. ***     (c) graphing
+. ***     (g) graphing special
+. ********************************************************************************
+. if `ltzwork'==1 {
+. matrix omega_eta = J(19,19,0)
+. matrix omega_eta[1,1] = 5000^2
+. matrix mu_eta = J(19,1,0)
+. plausexog ltz net_tfa `x' (p401 = e401), omega(omega_eta) mu(mu_eta)
+. plausexog ltz net_tfa `x' (p401 = e401), omega(omega_eta) mu(mu_eta) level(0.9)
+.         
+. foreach num of numlist 1(1)5 {
+  2.         matrix om`num' = J(19,19,0)
+  3.         matrix om`num'[1,1] = ((`num'/5)*10000/sqrt(12))^2
+  4.         matrix mu`num' = J(19,1,0)
+  5.         matrix mu`num'[1,1] = (`num'/5)*10000/2
+  6.         local d`num' = (`num'/5)*10000
+  7. }
+. plausexog ltz net_tfa `x' (p401 = e401), omega(omega_eta) mu(mu_eta) /*
+> */ graph(p401) graphomega(om1 om2 om3 om4 om5) graphmu(mu1 mu2 mu3 mu4 mu5) /*
+> */ graphdelta(`d1' `d2' `d3' `d4' `d5')
+. graph export "$GRA/LTZbase.eps", as(eps) replace
+. 
+. plausexog ltz net_tfa `x' (p401 = e401), omega(omega_eta) mu(mu_eta) /*
+> */ graph(p401) graphomega(om1 om2 om3 om4 om5) graphmu(mu1 mu2 mu3 mu4 mu5) /*
+> */ graphdelta(`d1' `d2' `d3' `d4' `d5') graphopts(yline(0) /*
+> */ xtitle("{stSymbol: d}") ytitle("{stSymbol: b}"))
+. graph export "$GRA/LTZzeroline.eps", as(eps) replace
+. 
+. }
+
+. 
+. 
+. ********************************************************************************
+. *** (3) UCI LTZ various instruments
+. ********************************************************************************
+. if `various'==1 {
+. gen p401a=p401+rnormal()
+. gen e401a=e401+rnormal()
+. matrix omega_eta = J(20,20,0)
+. matrix omega_eta[1,1] = 5000^2
+. matrix mu_eta = J(20,1,0)
+. 
+. plausexog uci net_tfa `x' (p401*=e401*), gmin(-10000 0) gmax(10000 0)
+Estimating Conely et al.'s uci method
+Exogenous variables: i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr twoearn db pira hown
+Endogenous variables: p401 p401a
+Instruments: e401 e401a
+
+
+Conley et al (2012)'s UCI results                     Number of obs =      9915
+------------------------------------------------------------------------------
+Variable    Lower Bound     Upper Bound
+------------------------------------------------------------------------------
+i2          -6159.9478      13042.138
+i3          -4647.546       10774.776
+i4          -1977.1968      13404.318
+i5          2752.3101       22129.253
+i6          13260.296       30295.657
+i7          52541.697       77399.031
+age         -3299.8         -582.35097
+age2        13.944631       44.090492
+fsize       -1881.4232      902.51684
+hs          -2211.7659      8062.2963
+smcol       -3329.7233      8124.8579
+col         -1076.6906      11069.323
+marr        -8272.5482      10935.263
+twoearn     -21110.551      -2832.3872
+db          -7203.3481      1220.1083
+pira        27080.738       36346.178
+hown        542.49674       10056.867
+p401        -82006.494      206288.26
+p401a       -180108.79      79873.478
+_cons       -7027.5071      49932.09
+------------------------------------------------------------------------------
+. plausexog uci net_tfa `x' (p401=e401*), gmin(-10000 0) gmax(10000 0)
+Estimating Conely et al.'s uci method
+Exogenous variables: i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr twoearn db pira hown
+Endogenous variables: p401
+Instruments: e401 e401a
+
+
+Conley et al (2012)'s UCI results                     Number of obs =      9915
+------------------------------------------------------------------------------
+Variable    Lower Bound     Upper Bound
+------------------------------------------------------------------------------
+i2          -4241.7396      6155.0937
+i3          -3361.0212      7730.0223
+i4          -417.61805      11032.068
+i5          4303.19         16508.476
+i6          15428.216       28301.048
+i7          54409.338       70532.191
+age         -2811.8482      -813.2832
+age2        17.312245       40.088935
+fsize       -1652.5782      201.75723
+hs          -1090.7437      6605.3524
+smcol       -1521.8167      7014.638
+col         587.7101        9727.0516
+marr        612.72091       8286.1561
+twoearn     -18354.616      -11742.056
+db          -6004.7593      497.94896
+pira        28033.095       35307.917
+hown        1329.0435       7077.8249
+p401        -4724.894       31169.468
+_cons       -2142.7516      40044.112
+------------------------------------------------------------------------------
+. plausexog ltz net_tfa `x' (p401*=e401*), omega(omega_eta) mu(mu_eta)
+Estimating Conely et al.'s ltz method
+Exogenous variables: i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr twoearn db pira hown
+Endogenous variables: p401 p401a
+Instruments: e401 e401a
+
+
+Conley et al. (2012)'s LTZ results                    Number of obs =    9915
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        p401 |   63107.13   66893.34     0.94   0.345    -68001.42    194215.7
+       p401a |  -49311.22   65746.37    -0.75   0.453    -178171.7    79549.29
+          i2 |   3503.516   4855.984     0.72   0.471    -6014.038    13021.07
+          i3 |   3118.261   3767.216     0.83   0.408    -4265.348    10501.87
+          i4 |   5769.018   3820.874     1.51   0.131    -1719.757    13257.79
+          i5 |   12369.96   4877.969     2.54   0.011      2809.32    21930.61
+          i6 |   21717.41   4175.026     5.20   0.000     13534.51    29900.31
+          i7 |   64886.15   5823.839    11.14   0.000     53471.63    76300.66
+         age |  -1931.492   660.8515    -2.92   0.003    -3226.737   -636.2465
+        age2 |   28.91049   7.380846     3.92   0.000      14.4443    43.37668
+       fsize |  -491.5276   704.0123    -0.70   0.485    -1871.366    888.3111
+          hs |   2962.341   2554.353     1.16   0.246    -2044.099     7968.78
+       smcol |   2438.647   2830.732     0.86   0.389    -3109.485    7986.779
+         col |   5039.902   3003.372     1.68   0.093    -846.5991     10926.4
+        marr |   1400.629   4772.619     0.29   0.769    -7953.533    10754.79
+     twoearn |  -12037.79   4568.619    -2.63   0.008    -20992.12   -3083.459
+          db |  -2964.663   1878.261    -1.58   0.114    -6645.986    716.6612
+        pira |   31684.45   2029.275    15.61   0.000     27707.14    35661.76
+        hown |   5266.201    2308.91     2.28   0.023     740.8201    9791.581
+       _cons |   21253.16   13737.29     1.55   0.122     -5671.44    48177.76
+------------------------------------------------------------------------------
+. plausexog ltz net_tfa `x' (p401=e401*), omega(omega_eta) mu(mu_eta)
+Estimating Conely et al.'s ltz method
+Exogenous variables: i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr twoearn db pira hown
+Endogenous variables: p401
+Instruments: e401 e401a
+
+
+Conley et al. (2012)'s LTZ results                    Number of obs =    9915
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        p401 |   13226.02    7403.52     1.79   0.074    -1284.611    27736.65
+          i2 |   961.9588   2593.427     0.37   0.711    -4121.066    6044.983
+          i3 |   2189.898   2655.203     0.82   0.410    -3014.205    7394.001
+          i4 |   5312.952   2813.021     1.89   0.059    -200.4684    10826.37
+          i5 |   10399.59   3064.076     3.39   0.001     4394.113    16405.07
+          i6 |    21858.3   3111.319     7.03   0.000     15760.23    27956.38
+          i7 |   62463.45   3626.587    17.22   0.000     55355.47    69571.43
+         age |  -1811.593   478.4311    -3.79   0.000    -2749.301   -873.8854
+        age2 |    28.6894   5.501525     5.21   0.000     17.90661    39.47219
+       fsize |   -724.451   471.0172    -1.54   0.124    -1647.628    198.7258
+          hs |   2761.161   1894.248     1.46   0.145    -951.4961    6473.818
+       smcol |   2750.661    2088.09     1.32   0.188     -1341.92    6843.241
+         col |   5161.933   2236.489     2.31   0.021     778.4945    9545.371
+        marr |    4453.22   1858.582     2.40   0.017     810.4655    8095.974
+     twoearn |  -15051.63   1620.531    -9.29   0.000    -18227.82   -11875.45
+          db |  -2750.619   1396.494    -1.97   0.049    -5487.697    -13.5413
+        pira |   31667.47   1531.167    20.68   0.000     28666.44     34668.5
+        hown |   4200.676   1358.373     3.09   0.002     1538.314    6863.038
+       _cons |   18930.39   9989.572     1.90   0.058    -648.8109    38509.59
+------------------------------------------------------------------------------
+.         
+. foreach num of numlist 1(1)5 {
+  2.         matrix om`num' = J(20,20,0)
+  3.         matrix om`num'[1,1] = ((`num'/5)*10000/sqrt(12))^2
+  4.         matrix mu`num' = J(20,1,0)
+  5.         matrix mu`num'[1,1] = (`num'/5)*10000/2
+  6.         local d`num' = (`num'/5)*10000
+  7. }
+. plausexog ltz net_tfa `x' (p401* = e401*), omega(omega_eta) mu(mu_eta) /*
+> */ graph(p401) graphomega(om1 om2 om3 om4 om5) graphmu(mu1 mu2 mu3 mu4 mu5) /*
+> */ graphdelta(`d1' `d2' `d3' `d4' `d5')
+Estimating Conely et al.'s ltz method
+Exogenous variables: i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr twoearn db pira hown
+Endogenous variables: p401 p401a
+Instruments: e401 e401a
+
+
+Conley et al. (2012)'s LTZ results                    Number of obs =    9915
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        p401 |   63107.13   66893.34     0.94   0.345    -68001.42    194215.7
+       p401a |  -49311.22   65746.37    -0.75   0.453    -178171.7    79549.29
+          i2 |   3503.516   4855.984     0.72   0.471    -6014.038    13021.07
+          i3 |   3118.261   3767.216     0.83   0.408    -4265.348    10501.87
+          i4 |   5769.018   3820.874     1.51   0.131    -1719.757    13257.79
+          i5 |   12369.96   4877.969     2.54   0.011      2809.32    21930.61
+          i6 |   21717.41   4175.026     5.20   0.000     13534.51    29900.31
+          i7 |   64886.15   5823.839    11.14   0.000     53471.63    76300.66
+         age |  -1931.492   660.8515    -2.92   0.003    -3226.737   -636.2465
+        age2 |   28.91049   7.380846     3.92   0.000      14.4443    43.37668
+       fsize |  -491.5276   704.0123    -0.70   0.485    -1871.366    888.3111
+          hs |   2962.341   2554.353     1.16   0.246    -2044.099     7968.78
+       smcol |   2438.647   2830.732     0.86   0.389    -3109.485    7986.779
+         col |   5039.902   3003.372     1.68   0.093    -846.5991     10926.4
+        marr |   1400.629   4772.619     0.29   0.769    -7953.533    10754.79
+     twoearn |  -12037.79   4568.619    -2.63   0.008    -20992.12   -3083.459
+          db |  -2964.663   1878.261    -1.58   0.114    -6645.986    716.6612
+        pira |   31684.45   2029.275    15.61   0.000     27707.14    35661.76
+        hown |   5266.201    2308.91     2.28   0.023     740.8201    9791.581
+       _cons |   21253.16   13737.29     1.55   0.122     -5671.44    48177.76
+------------------------------------------------------------------------------
+. graph export "$GRA/LTZvariousinst.eps", as(eps) replace
+(file ~/investigacion/Activa/Twins/Do/PlausExog/Graphs/LTZvariousinst.eps written in EPS format)
+. }
+
+. 
+. ********************************************************************************
+. *** (4) Break UCI, LTZ
+. ********************************************************************************
+. if `ucibreak'==1 {
+.         plausexog uci net_tfa `x' (p401=e401), gmin(-10000 0) gmax(10000 0)
+. }
+
+. 
+. if `ltzbreak'==1 {
+.         matrix omega_eta = J(20,20,0)
+.         matrix omega_eta[1,1] = 5000^2
+.         matrix mu_eta = J(20,1,0)
+. 
+.         plausexog ltz net_tfa `x' (p401 = e401), omega(omega_eta) mu(mu_eta)
+Estimating Conely et al.'s ltz method
+Exogenous variables: i2 i3 i4 i5 i6 i7 age age2 fsize hs smcol col marr twoearn db pira hown
+Endogenous variables: p401
+Instruments: e401
+Z'Z matrix is 19*19, Omega defined by user is 20*20
+Ensure that Omega is of the same dimension as Z'Z to avoid conformability errors
+Z'X matrix is 19*19, Omega defined by user is 20*20
+Ensure that Omega is of the same dimension as Z'X to avoid conformability errors
+conformability error
+r(503);
+. }
+r(503);
+
+end of do-file
+
+r(503);
+
+. h plausexog
+
+. h plausexog
+
+. 5~
+unrecognized command:  5 invalid command name
+r(199);
+
+. h plausexog
+--Break--
+r(1);
+
+. ssc hot
+file http://repec.org/docs/sschotPPPcur.dta not Stata format
+r(610);
+
+. whatshot
+unrecognized command:  whatshot
+r(199);
+
+. h ssc
+--Break--
+r(1);
+
+. ssc new
+(contacting http://repec.org)
+
+SSC Stata modules created or revised 2014-04-09 to 2014-05-09
+-----------------------------------------------------------------------------------------------------------------
+
+QV
+ module to compute quasi-variances
+ Authors: Aspen Chen       Req: Stata version 11
+ Created: 2014-05-07
+
+NPSERIES
+ module to perform Nonparametric Power Series Estimation
+ Authors: Boris Kaiser       Req: Stata version 12.1
+ Created: 2014-05-06
+
+SEPSCATTER
+ module to draw scatter (or other twoway) plots separated by a third variable  
+ Authors: Nicholas J. Cox       Req: Stata version 8.2
+ Created: 2014-05-06
+
+MIINC
+ module to conduct multi-model inference using information criteria 
+ Authors: Joseph N. Luchman       Req: Stata version 12.1
+ Created: 2014-05-06
+
+SMCL2DO
+ module to convert log files to do-files in a robust fashion
+ Authors: Bill Rising       Req: Stata version 11.2
+ Created: 2014-05-06
+
+TESTCASE
+ module to provide a code-testing framework for Mata
+ Authors: James Fiedler       Req: Stata version 12
+ Created: 2014-05-06
+
+PVW
+ module to perform predictive value weighting for covariate misclassification in logistic regression
+ Authors: Jonathan Bartlett       Req: Stata version 11
+ Created: 2014-05-06
+
+SPECHIST
+ module to produce specific histograms for continuous variables
+ Authors: Alfonso Sanchez-Penalver       Req: Stata version 8
+ Created: 2014-05-06
+
+COMBINEPLOT
+ module to combine similar univariate or bivariate plots for different variables
+ Authors: Nicholas J. Cox       Req: Stata version 8.2
+ Created: 2014-04-29
+
+MIPARALLEL
+ module to perform parallel estimation for multiple imputed datasets
+ Authors: Timothy Mak       Req: Stata version 12 and parallel from SSC (q.v.)
+ Revised: 2014-04-29
+
+UNEMP
+ module module to compute aggregate households employment deprivation (or unemployment) measures
+ Authors: Carlos Gradin       Req: Stata version 7
+ Created: 2014-04-25
+
+CTREATREG
+ module for estimating dose-response models under exogenous and endogenous treatment
+ Authors: Giovanni Cerulli       Req: Stata version 11
+ Created: 2014-04-24
+
+CROSSPLOT
+ module for scatter (or other twoway) plots for each y vs each x variable
+ Authors: Nicholas J. Cox       Req: Stata version 8
+ Revised: 2014-04-29
+
+TEX3PT
+ module to produce LaTeX documents from estout with threeparttable
+ Authors: Derek Wolfson       Req: Stata version 12 and estout package (q.v.)
+ Revised: 2014-04-18
+
+GLMDECO
+ module to compute Detailed Decomposition of Average Outcome Differentials in Generalized Linear Models
+ Authors: Boris Kaiser       Req: Stata version 10
+ Created: 2014-04-13
+
+GVSELECT
+ module to perform best subsets variable selection
+ Authors: Charles Lindsey  Simon Sheather       Req: Stata version 11.2
+ Created: 2014-04-13
+
+TREATOPROBIT
+ module to estimate a treatment effects model for a binary endogenous treatment on an ordered outcome
+ Authors: Christian Gregory       Req: Stata version 10
+ Revised: 2014-05-06
+
+DQD
+ module to compute treatment effects under alternative Parallel-q assumptions
+ Authors: Ricardo Mora  Iliana Reggio       Req: Stata version 11
+ Revised: 2014-04-25
+
+COMBOMARGINSPLOT
+ module to combine the saved results from multiple calls to margins into one marginsplot
+ Authors: Nick Winter       Req: Stata version 12
+ Revised: 2014-04-16
+
+ORTH_OUT
+ module to automate and export summary stats/orthogonality tables 
+ Authors: Joe Long       Req: Stata version 12
+ Revised: 2014-05-06
+
+ER
+ module to compute Esteban and Ray measure of polarization
+ Authors: Carlos Gradin       Req: Stata version 7
+ Revised: 2014-04-09
+
+RQ
+ module to compute Reynal-Querol index of ethnic polarization
+ Authors: Carlos Gradin       Req: Stata version 7
+ Revised: 2014-04-09
+
+MIMRGNS
+ module to run margins after mi estimate
+ Authors: Daniel Klein       Req: Stata version 11.2
+ Revised: 2014-04-23
+
+IPDMETAN
+ module for performing two-stage IPD meta-analysis 
+ Authors: David Fisher       Req: Stata version 10 
+ Revised: 2014-04-16
+
+DMOUT
+ module to create difference-in-means tables
+ Authors: Michael Barker       Req: Stata version 10 
+ Revised: 2014-04-23
+
+GRAPHLOG
+ module to convert log files to PDF documents with embedded graphs using LaTeX
+ Authors: Martin Rune Hansen       Req: Stata version 12.1 
+ Revised: 2014-04-18
+
+PSACALC
+ module to calculate treatment effects or bounds under proportional selection of observables and unobservables
+ Authors: Emily Oster       Req: Stata version 12
+ Revised: 2014-05-04
+
+SURVEYBIAS
+ module to compute the B and B_w multinomial accuracy measures for polling bias
+ Authors:  Kai Arzheimer       Req: Stata version 11
+ Revised: 2014-04-09
+
+STNS
+ module for estimation of net survival
+ Authors:  Michel Grzebyk   Isabelle Urmès       Req: Stata version 11
+ Revised: 2014-04-18
+
+XTSEMIPAR
+ module to compute Semiparametric Fixed-Effects Estimator of Baltagi and Li 
+ Authors: Vincenzo Verardi  François Libois       Req: Stata version 10.1
+ Revised: 2014-04-29
+
+SEGREGATION
+ module to compute segregation indices
+ Authors: Carlos Gradin       Req: Stata version 10 and matsort from SSC
+ Revised: 2014-04-09
+
+ROBUMETA
+ module to perform robust variance estimation in meta-regression with dependent effect size estimates
+ Authors: Eric C. Hedberg       Req: Stata version 11.1
+ Revised: 2014-04-23
+
+XTDOLSHM
+ module to perform panel data cointegration 
+ Authors: Diallo Ibrahima Amadou       Req: Stata version 10 and ltimbimata from SSC (q.v.)
+ Revised: 2014-04-27
+
+GRSTEST
+ module to implement the Gibbons et al. (1989) test in a single-factor or multi-factor setting 
+ Authors: Rajesh Tharyan       Req: Stata version 9
+ Revised: 2014-04-29
+
+CMP
+ module to implement conditional (recursive) mixed process estimator
+ Authors: David Roodman       Req: Stata version 10.1 and package ghk2 (q.v.); version 11 to use factor variables
+ Revised: 2014-04-25
+
+ISOPOVERTY
+ module to generate data for Inequality-Poverty and Iso-Poverty curves
+ Authors: Joao Pedro Azevedo  Samuel Franco       Req: Stata version 8.1
+ Revised: 2014-05-04
+
+PLOTMATRIX
+ module to plot values of a matrix as different coloured blocks 
+ Authors: Adrian Mander       Req: Stata version 10.1
+ Revised: 2014-04-25
+
+XTABOND2
+ module to extend xtabond dynamic panel data estimator 
+ Authors: David Roodman       Req: Stata version 7.0 (with 21jun2002 update); version 9.0 for Mata version
+ Revised: 2014-05-01
+
+FSUM
+ module to generate and format summary statistics
+ Authors: Fred Wolfe       Req: Stata version 8.2
+ Revised: 2014-05-06
+
+PARMEST
+ module to create new data set with one observation per parameter of most recent model
+ Authors: Roger Newson       Req: Stata version 11.0
+ Revised: 2014-04-13
+
+SOMERSD
+ module to calculate Kendall's tau-a, Somers' D and median differences
+ Authors: Roger Newson       Req: Stata 12.0
+ Revised: 2014-05-06
+
+-----------------------------------------------------------------------------------------------------------------
+ End of recent additions and updates
+
+
+. exit,
+no; data in memory would be lost
+r(4);
+
+. exit, clear

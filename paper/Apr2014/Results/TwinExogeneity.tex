@@ -1,1 +1,57 @@
-Discuss balance, twin reg, IMR test.
+%*******************************************************************************
+Table \ref{TWINtab:comp} presents a test of balance of maternal characteristics
+between mothers who have and who have not given birth to twins.
+
+In table \ref{TWINtab:twinreg1} we report the results from specification 
+(\ref{TWINeqn:twinreg}). These results suggest that twin births are 
+not random, even after conditioning on maternal age and child birth order as is
+typical in recent twin literature. The inclusion of a full set of country and 
+year-of-birth dummies (not displayed in table \ref{TWINtab:twinreg1}) will 
+capture any systematic trend in the frequency of twin births across time or 
+regions, and country dummies will absorb all time invariant differences in the 
+probability of a twin birth across countries.  The estimated coefficients and 
+signs support the idea discussed in section \ref{TWINscn:method} that higher 
+`investments' (for example in maternal health) required to maintain multiple 
+healthy fetuses \emph{in utero} may result in non-random twin births. Initially 
+results from the pooled DHS data are presented as this provides a particularly 
+large sample with which to test the hypothesis of twin exogeneity.  This is 
+represented in table \ref{TWINtab:twinreg1} column (1) and provides considerable 
+evidence that live multiple births respond to family `choice' variables such as 
+education (tests for the joint significance of both socioeconomic variables and 
+health variables are rejected with p-values of 0.0000).
+
+
+The fact that maternal health is correlated with twinning is supported by medical 
+literature, although is not a point that has been incorporated into prior 
+economic studies of twinning.  \citet{Hall2003} for example suggests that 
+follicle-stimulating hormone (FSH) is associated with an increased likelihood 
+of twinning, and is found in higher concentrations in older, heavier and taller 
+mothers.  Further, she suggests ``that adequate maternal folic acid consumption 
+could affect the number of twins coming to term'' (see p.\ 741, and further 
+discussion in \citet{Lietal2003}).  Given that twinning also increases in cases 
+where the mother undergoes fertility treatment, we run a similar regression for 
+children born in a period not potentially affected by IVF.\footnote{In order to 
+be conservative, we estimate for the period preceeding 1990, the date which 
+coincides with the first reported successful use of IVF in South Africa, an 
+early-adopter among DHS countries.}  These results are included in columns (4) 
+and (5), and although education is now no longer always significant, mother's 
+height and weight, and family socioeconomic variables remain economically and 
+statistically significant.
+
+If the reason non-random twin births are observed is due to insufficient investment 
+in the developing fetus, it seems likely that twin `selection' will be more 
+pronounced in lower income settings, and settings where the mother is less well 
+resourced during gestation.  This is tested in columns (2) and (3), where it is 
+shown that the violation of the twin exclusion restriction is particularly strong 
+in low income countries.  Here maternal health is a more important predictor, and 
+the explained portion of this set of variables is larger that in middle-income 
+countries.\footnote{The low $R^2$ in these regressions is not at all surprising 
+given that twin conception can be thought of as an approximately random process.
+The fact that socioeconomic and health variables have \emph{any} power in 
+explaining twin birth however is sufficient to invalidate IV estimations if these 
+or other relevant predictors are not controlled for.}
+
+These results call into question the veracity of the conditional exogeneity (or 
+`as good as random') assumption required to estimate $\beta$ consistently in 
+(\ref{TWINeqn:secondstage}).  This implies that omitting factors such as family 
+income...

@@ -144,13 +144,13 @@ local income 0
 local wealth 0
 local gender 0
 local genderint 2
-local desire 1.1
+local desire 1
 local desire_sep 0
 local pref 0
 local new 0
 local twinoccur_ols 0
 local twinoccur_iv 0
-local conley 1
+local conley 1.1
 local thresholdtest 1.5
 local balance 4
 local intense 8
@@ -1057,7 +1057,8 @@ if `genderint'==1 {
 if `desire'==1 {
 	*gen idealbarrier=floor(idealnumkids)
 	gen idealbarrier=floor(desiredfert_region)
-
+	*gen idealbarrier=floor(desiredfert_clusterYE)
+	
 	local endog fert fertXthreshold
 
 	cap drop income
@@ -1065,9 +1066,10 @@ if `desire'==1 {
 	replace income="mid" if inc_status!="L"
 
 	
-	foreach inc in all low mid {
+	foreach inc in /*all low mid*/ F M {
 		if "`inc'"=="all" local cex
 		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
+		else if "`inc'"=="F"|"`inc'"=="M" local cex &gender=="`inc'"
 
 		local n1=1
 		local n2=2
@@ -1110,10 +1112,10 @@ if `desire'==1 {
 		}
 
 		estout `estimates' using "$Tables/IV/`IVdes'_`inc'_`births'.xls", replace ///
-		 keep(fert fertXthreshold malec $age $S $H) `estopt' `varlab'
+		 keep(fert fertXthreshold $age $S $H) `estopt' `varlab'
 
 		estout `firststage' using "$Tables/IV/`IVdes1'_`inc'_`births'.xls", replace ///
-		 keep(twin* malec $age $S $H) `estopt' `varlab'
+		 keep(twin* $age $S $H) `estopt' `varlab'
 	
 		estimates clear
 	}
@@ -1363,9 +1365,12 @@ if `conley'==1 {
 		*local c `cond'&`n'_plus==1&income=="`inc'"
 		local c `cond'&`n'_plus==1
 
+		reg school_zscore fert `base' $age `c'
+		outreg2 fert using "$Tables/Conley/ConleyReg.xls", excel append		
 		reg school_zscore fert twin_`n'_fam `base' $age `c'
+		outreg2 twin_`n'_fam fert using "$Tables/Conley/ConleyReg.xls", excel append
 		local estimate `=_b[twin_`n'_fam]'
-				
+
 		foreach num of numlist 1 /*2*/ {
 			dis "estimating for `num' times the estimated coefficient on twins"
 			local est2=`estimate'*`num'
@@ -1414,7 +1419,6 @@ if `conley'==1 {
 	*****************************************************************************
 	mat2txt, matrix(conbounds) saving("$Tables/Conley/ConleyResults.txt") /*
 		*/ format(%6.4f) replace
-
 }
 
 ********************************************************************************

@@ -1,0 +1,37 @@
+%********************************************************************************
+The results from the previous subsection provide consistent estimates of $\beta$
+via 2SLS \emph{if} the full set of controls completely account for those 
+characteristics and behaviours which predict giving live birth to twins.  
+However, given that we have shown that twinning is predicted by a wide range
+of health behaviours, and given that maternal health variables in this dataset
+are limited, it seems unlikely that all relevant variables are included in
+these specifications.  As such, we turn to \citeauthor{Conleyetal2012}'s
+(\citeyear{Conleyetal2012}) methodology to estimate bounds for the Q-Q trade-off.
+
+As described in section \ref{TWINsscn:BoundMeth}, this involves the specification
+of some prior over the sign that the twin instrument takes in the structural
+equation \ref{TWINeqn:Conley}.  Results are displayed in figures 
+\ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}, and in table \ref{TWINtab:Conley}.
+At each point on the horizontal axis of figures \ref{TWINfig:ltz2} and 
+\ref{TWINfig:ltz3}, the bounds for $\beta$ are displayed, along with the
+corresponding point estimate under the assumption that $\gamma$ is distributed
+$U(0,\delta)$.  Dashed lines present the 95\% confidence interval, while the
+solid line represents the point estimate.
+
+Table \ref{TWINtab:Conley} provides these bounds at a particular point on this
+graph.  This point corresponds to an assumption of $\gamma \in [0,2\hat\delta]$
+and $\gamma\sim U(0,2\hat\delta)$ for the UCI and the LTZ approaches respectively,
+where $\hat\delta$ is estimated from equation \ref{TWINeqn:Conley} with DHS data.
+These results allow us to make informative statements about the Q-Q trade-off,
+at least for those twins born at third and fourth birth orders who affect more
+children the birth.  Further, these results suggest that the magnitude of this
+trade-off may be large: and indeed much larger than those estimated in existing 
+studies as the twin instrument departs from true exogeneity.  For example, the
+effect of an additional child at birth order three on first- and second-born
+children (ie the 3+ group) has an effect between -1.5\% to as much as -15\% of
+a standard deviation in standardised educational attainment if the prior 
+(based on DHS estimates) is true.  While it is not the case that informative
+statements can always be made given the wide bound on estimates in some cases
+(particularly the five plus group), it is important to point out that in each
+case as the twin-exogeneity assumption is loosened, the point estimate of the
+Q-Q tradeoff becomes more (and considerably) negative.
