@@ -225,6 +225,7 @@ replace childmortality=. if age<5
 ********************************************************************************
 *** (3C) Control variables
 ********************************************************************************
+gen ALL=1
 gen gender="F" if sex==2
 replace gender="M" if sex==1
 
@@ -253,6 +254,17 @@ foreach var of varlist prenate_doc prenate_nurse prenate_none {
 gen poor1=wealth==1
 gen agesq=age*age
 gen magesq=agemay*agemay
+
+gen motherage   = agemay - age
+gen motheragesq = motherage^2 
+gen motheragecub= motherage^3
+gen antesq = antenatal^2
+
+gen bmi_sq    = bmi*bmi
+gen height_sq = height*height
+
+gen underweight=bmi<=18.5 if bmi!=.
+gen overweight =bmi>25 if bmi!=.
 
 *** General variables (country year)
 rename _cou country
@@ -350,8 +362,12 @@ lab var twin "Child is a twin (0-4) for no, twin, triplet, ... "
 lab var twind100 "Child is twin (binary*100)"
 lab var malec "Child is a boy"
 lab var height "height in centimetres"
+lab var height_sq "mother's height in centimetres squared"
 lab var weightk "Weight in kilograms"
 lab var bmi "Body Mass Index (weight in kilos squared/height in cm)"
+lab var bmi_sq "Body Mass Index squared (weight in kilos squared/height in cm)"
+lab var underweight "Mother's BMI is less than or equal to 18.5"
+lab var overweight "Mother's BMI is greater than 25"
 lab var antenatal "Number of antenatal check-ups for mother"
 lab var antenateDummy "Antenatal checkup (binary)"
 lab var prenate_doc "Prenatal care by doctor"
@@ -362,6 +378,9 @@ lab var age "Child's age in years"
 lab var agemay "Mother's age in years"
 lab var agesq "Child's age squared"
 lab var magesq "Mother's age squared"
+lab var motherage "Mother's age at date of birth of child"
+lab var motheragesq "Mother's age at date of birth of child squared"
+lab var motheragecub "Mother's age at date of birth of child cubed"
 lab var sweight "Sample weight (from DHS)"
 lab var country "Coutry name"
 lab var _cou "country (numeric code)"
@@ -404,9 +423,8 @@ replace _cou=69 if v000=="ZW6" & _cou==.
 
 do $PATH/Do/countrynaming
 
-*gen income="low" if income_status=="LOWINCOME"
-*replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
-
+gen income="low" if inc_status=="L"
+replace income="mid" if inc_status!="L"
 ********************************************************************************
 *** (6) Keep required variables.  Save data as working file.
 ********************************************************************************
@@ -422,6 +440,8 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ twinexceedfamily twin_undesired twin_desired twinexceed singlexceed         /*
 */ twinattain desiredfert_region desiredfert_ethnic inc_stat contracep_intent  /*
 */ _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy  /*
-*/ prenate_doc prenate_nurse prenate_none WBcountry v001 desiredfert_cluster
+*/ prenate_doc prenate_nurse prenate_none WBcountry v001 desiredfert_cluster*  /*
+*/ income motherage* antesq bmi_sq height_sq underweigh overweight ALL
+
 
 save "$PATH/Data/DHS_twins", replace

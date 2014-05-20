@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twins_DHS.txt
   log type:  text
- opened on:   7 May 2014, 16:31:07
+ opened on:  20 May 2014, 16:40:43
 
 . ********************************************************************************
 . *** (2) Take necessary variables from BR (mother births) and PR (household me-
@@ -718,7 +718,7 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
 . 
 . gen twin_bord=bord-twin+1 if twin>0
-(6597226 missing values generated)
+(6597215 missing values generated)
 
 . 
 . foreach num in two three four five {
@@ -731,10 +731,10 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
   8.         local ++max
   9.         local ++fert
  10. }
-(13541 real changes made)
-(34245 real changes made)
-(47213 real changes made)
-(52330 real changes made)
+(13551 real changes made)
+(34244 real changes made)
+(47219 real changes made)
+(52336 real changes made)
 
 . 
 . 
@@ -743,13 +743,13 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . ********************************************************************************
 . *** Attendance (attend_year==2 is sometimes)
 . gen attendance=0 if attend_year==0
-(5626454 missing values generated)
+(5626468 missing values generated)
 
 . replace attendance=1 if attend_year==2
-(493831 real changes made)
+(493838 real changes made)
 
 . replace attendance=2 if attend_year==1
-(394480 real changes made)
+(394488 real changes made)
 
 . replace attendance=. if age<6
 (763384 real changes made, 763384 to missing)
@@ -757,7 +757,7 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . 
 . *** Z-Score
 . replace educ=. if educ>25 // come back here when compiling summary stats.
-(13326 real changes made, 13326 to missing)
+(13324 real changes made, 13324 to missing)
 
 . bys _cou age: egen sd_educ=sd(educ)
 (209305 missing values generated)
@@ -766,33 +766,33 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 (198354 missing values generated)
 
 . gen school_zscore=(educ-mean_educ)/sd_educ
-(4053280 missing values generated)
+(4053257 missing values generated)
 
 . replace school_zscore=. if age<6
-(261292 real changes made, 261292 to missing)
+(261291 real changes made, 261291 to missing)
 
 . 
 . *** Highschool
 . gen highschool=1 if (educlevel==2|educlevel==3)&age>=11
-(6097295 missing values generated)
+(6097270 missing values generated)
 
 . replace highschool=0 if (educlevel==0|educlevel==1)&age>=11
-(782943 real changes made)
+(782924 real changes made)
 
 . 
 . *** No Educ
 . gen noeduc=1 if educlevel==0&age>6
-(6427404 missing values generated)
+(6427372 missing values generated)
 
 . replace noeduc=0 if (educlevel==1|educlevel==2|educlevel==3)&age>6
-(1908770 real changes made)
+(1908751 real changes made)
 
 . 
 . *** Health
 . gen childsurvive=child_alive
 
 . gen childageatdeath=b7/12
-(5878337 missing values generated)
+(5878347 missing values generated)
 
 . gen infantmortality=childageatdeath<=1
 
@@ -808,6 +808,8 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . ********************************************************************************
 . *** (3C) Control variables
 . ********************************************************************************
+. gen ALL=1
+
 . gen gender="F" if sex==2
 (3459479 missing values generated)
 
@@ -816,7 +818,7 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
 . 
 . gen educfyrs_sq=educf*educf
-(2077 missing values generated)
+(2078 missing values generated)
 
 . gen educf_0=educf==0
 
@@ -829,10 +831,10 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . gen educf_11plus=educf>10
 
 . gen twind=1 if twin>=1&twin!=.
-(6597226 missing values generated)
+(6597215 missing values generated)
 
 . replace twind=0 if twin==0
-(6597226 real changes made)
+(6597215 real changes made)
 
 . gen twind100=twin*100
 
@@ -840,26 +842,26 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
 . 
 . replace educp=. if educp>25
-(188556 real changes made, 188556 to missing)
+(188538 real changes made, 188538 to missing)
 
 . 
 . replace height=height/10
 height was int now float
-(3711931 real changes made)
+(3711955 real changes made)
 
 . replace weight=weight/10
 weightk was int now float
-(3711901 real changes made)
+(3711918 real changes made)
 
 . replace bmi=bmi/100
 bmi was int now float
-(3709378 real changes made)
+(3709400 real changes made)
 
 . replace antenatal=. if antenatal>20
-(20110 real changes made, 20110 to missing)
+(20095 real changes made, 20095 to missing)
 
 . gen antenateDummy=antenatal!=0 if antenatal!=.
-(5615613 missing values generated)
+(5615591 missing values generated)
 
 . foreach var of varlist prenate_doc prenate_nurse prenate_none {
   2.         replace `var'=. if `var'==9
@@ -876,6 +878,30 @@ bmi was int now float
 . gen magesq=agemay*agemay
 
 . 
+. gen motherage   = agemay - age
+
+. gen motheragesq = motherage^2 
+
+. gen motheragecub= motherage^3
+
+. gen antesq = antenatal^2
+(5615591 missing values generated)
+
+. 
+. gen bmi_sq    = bmi*bmi
+(3043348 missing values generated)
+
+. gen height_sq = height*height
+(3040793 missing values generated)
+
+. 
+. gen underweight=bmi<=18.5 if bmi!=.
+(3043348 missing values generated)
+
+. gen overweight =bmi>25 if bmi!=.
+(3043348 missing values generated)
+
+. 
 . *** General variables (country year)
 . rename _cou country
 
@@ -887,488 +913,3 @@ bmi was int now float
 . ********************************************************************************
 . *** (3D) Twin variables
 . ********************************************************************************
-. bys id: egen twinfamily=max(twin)
-
-. bys id: egen twin_bord_fam=max(twin_bord)
-(6291221 missing values generated)
-
-. bys id: egen nummultiple=max(twin)
-
-. gen finaltwin=(fert==bord)&twind==1
-
-. bys id: egen finaltwinfamily=max(finaltwin)
-
-. replace finaltwinfamily=0 if finaltwinfamily==.
-(0 real changes made)
-
-. 
-. 
-. ********************************************************************************
-. *** (3E) Fertility variables
-. ********************************************************************************
-. gen idealnumkids=v613 if v613<25
-(814058 missing values generated)
-
-. gen lastbirth=fert==bord&twin==0
-
-. replace lastbirth=1 if (twin_bord==(fert-1))&nummultiple==2
-(52892 real changes made)
-
-. replace lastbirth=1 if (twin_bord==(fert-2))&nummultiple==3
-(980 real changes made)
-
-. replace lastbirth=1 if (twin_bord==(fert-3))&nummultiple==4
-(40 real changes made)
-
-. 
-. gen wantedbirth=bord<=idealnumkids
-
-. gen idealfam=0 if idealnumkids==fert
-(5451231 missing values generated)
-
-. replace idealfam=1 if idealnumkids<fert
-(2764186 real changes made)
-
-. replace idealfam=-1 if idealnumkids>fert
-(2687045 real changes made)
-
-. 
-. gen quant_exceed=fert-idealnumkids
-(814058 missing values generated)
-
-. gen exceeder=1 if bord-idealnumkids==1
-(6248725 missing values generated)
-
-. gen twinexceeder=exceeder==1&(twin==2|twin==3|twin==4)
-
-. bys id: egen twinexceedfamily=max(twinexceeder)
-
-. gen tu=twin_bord>=idealnumkids
-
-. gen td=twin_bord>=idealnumkids
-
-. bys id: egen twin_undesired=max(tu)
-
-. bys id: egen twin_desired=max(td)
-
-. drop td tu
-
-. 
-. *Twins born on final birth causing parents to exceed desired family size
-. gen twinexceed=finaltwinfamily==1&idealfam==1
-
-. gen singlexceed=finaltwinfamily==0&idealfam==1
-
-. gen twinattain=finaltwinfamily==1&idealfam==0
-
-. 
-. **Generate sub-region (and ethnicity) specific desired fertility
-. bys _cou v001: egen desiredfert_cluster=mean(idealnumkids)
-(18768 missing values generated)
-
-. bys _cou _year v001: egen desiredfert_clusterYEAR=mean(idealnumkids)
-(72722 missing values generated)
-
-. bys _cou v101: egen desiredfert_region=mean(idealnumkids)
-(11677 missing values generated)
-
-. bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
-(9925 missing values generated)
-
-. 
-. 
-. ********************************************************************************
-. *** (4) Labels
-. ********************************************************************************
-. lab var year_birth "Mother's year of birth"
-
-. lab var religion "Reported religion"
-
-. lab var fert "Total number of children in the family"
-
-. lab var bord "Child's birth order"
-
-. lab var agefirstbirth "Mother's age at first birth"
-
-. lab var child_yob "Child's year of birth"
-
-. lab var two_plus "First born child in families with at least two births"
-
-. lab var three_plus "1,2 born children in families with at least 3 births"
-
-. lab var four_plus "1,2,3 born children in families with at least 4 births"
-
-. lab var five_plus "1,2,3,4 born children in families with at least 5 births"
-
-. lab var two_plus_twins "1,2 born children in families with >=2 births"
-
-. lab var three_plus_twins "1,2,3 born children in families with >=3 births"
-
-. lab var four_plus_twins "1,2,3,4 born children in families with >=4 births"
-
-. lab var five_plus_twins "1-5 born children in families with >=5 births"
-
-. lab var twin_two_fam "Twin birth at second birth"
-
-. lab var twin_three_fam "twin birth at third birth"
-
-. lab var twin_four_fam "twin birth at fourth birth"
-
-. lab var twin_five_fam "twin birth at fifth birth"
-
-. lab var id "Unique family identifier"
-
-. lab var attendance "child attends school (1=sometimes, 2=always)"
-
-. lab var educ "Years of education (child)"
-
-. lab var school_zscore "Standardised educ attainment compared to country cohort"
-
-. lab var highschool "Attends or attended highschool (>=12 years)"
-
-. lab var noeduc "No education (>7 years)"
-
-. lab var infantmortality "child died before 1 year of age"
-
-. lab var childmortality "child died before 5 years of age"
-
-. lab var gender "string variable: F or M"
-
-. lab var educf "Mother's years of education"
-
-. lab var educfyrs_sq "Mother's years of education squared"
-
-. lab var educf_0 "Mother has 0 years of education (binary)"
-
-. lab var educf_1_4 "Mother has 1-4 years of education (binary)"
-
-. lab var educf_5_6 "Mother has 5-6 years of education (binary)"
-
-. lab var educf_7_10 "Mother has 7-10 years of education (binary)"
-
-. lab var educf_11plus "Mother has 11+ years of education (binary)"
-
-. lab var educp "Partner's years of education"
-
-. lab var educp_level "Partner's education level"
-
-. lab var twind "Child is a twin (binary)"
-
-. lab var twin "Child is a twin (0-4) for no, twin, triplet, ... "
-
-. lab var twind100 "Child is twin (binary*100)"
-
-. lab var malec "Child is a boy"
-
-. lab var height "height in centimetres"
-
-. lab var weightk "Weight in kilograms"
-
-. lab var bmi "Body Mass Index (weight in kilos squared/height in cm)"
-
-. lab var antenatal "Number of antenatal check-ups for mother"
-
-. lab var antenateDummy "Antenatal checkup (binary)"
-
-. lab var prenate_doc "Prenatal care by doctor"
-
-. lab var prenate_nurse "Prenatal care by nurse"
-
-. lab var prenate_none "No prenatal care"
-
-. lab var poor1 "In lowest asset quintile"
-
-. lab var age "Child's age in years"
-
-. lab var agemay "Mother's age in years"
-
-. lab var agesq "Child's age squared"
-
-. lab var magesq "Mother's age squared"
-
-. lab var sweight "Sample weight (from DHS)"
-
-. lab var country "Coutry name"
-
-. lab var _cou "country (numeric code)"
-
-. lab var twinfamily "At least one twin birth in family"
-
-. lab var twin_bord "Birth order when twins occur (for twins only)"
-
-. lab var twin_bord_fam "Birth order when twins occur (for whole family)"
-
-. lab var nummultiple "0 if singleton family, 1 if twins, 2 if triplets, ..."
-
-. lab var finaltwinfamily "The family had twins at their final birth"
-
-. lab var idealnumkids "Ideal number of children reported (truncate at 25)"
-
-. lab var lastbirth "Child is family's last birth (singleton or both twins)"
-
-. lab var wantedbirth "Birth occurs before optimal target"
-
-. lab var idealfam "Has family obtained ideal size? (negative implies < ideal)"
-
-. lab var quant_exceed "Difference between total births and desired births"
-
-. lab var exceeder "1 if child causes family to exceed optimal size"
-
-. lab var twinexceeder "Twin birth causes parents to exceed optimal size"
-
-. lab var twinexceedfamily "Family exceeds desired N and twin caused exceed"
-
-. lab var twin_undesired "Family has had twins, and twins were >desired births"
-
-. lab var twin_desired "Family has had twins, and twins were <=desired births"
-
-. lab var twinexceed "Twin birth causes parents to exceed optimal size"
-
-. lab var singlexceed "Single birth causes parents to exceed optimal size"
-
-. lab var twinattain "Twin birth causes parents to attain optimal size"
-
-. lab var desiredfert_cluster "Average desired family size by DHS cluster"
-
-. lab var desiredfert_region "Average desired family size by (subcountry) region"
-
-. lab var desiredfert_ethnic "Average desired family size by ethnicity"
-
-. lab var birthspacing "Time between child and previous birth (in months)"
-
-. lab var wealth "Wealth quartile based on observed assets"
-
-. lab var childageatdeath "Age of child (years) at death"
-
-. 
-. lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
-
-. lab val idealfam ideal
-
-. 
-. replace age=age+100 if age<0
-(5537 real changes made)
-
-. ********************************************************************************
-. *** (5) Create country income levels and weight variables
-. ********************************************************************************
-. replace country="CAR" if v000=="CF3" & _cou==.
-(0 real changes made)
-
-. replace _cou=10 if v000=="CF3" & _cou==.
-(0 real changes made)
-
-. replace country="Zimbabwe" if v000=="ZW6" & _cou==.
-(0 real changes made)
-
-. replace _cou=69 if v000=="ZW6" & _cou==.
-(0 real changes made)
-
-. 
-. do $PATH/Do/countrynaming
-
-. ********************************************************************************
-. global IncData "~/investigacion/Activa/Twins/Data"
-
-. 
-. local oldway 0
-
-. local file incomestatus.dta
-
-. local incomes 480 545 580 610 635 675 695 725 765 785 785 760 755 755 745 735 /*
-> */ 765 825 875 905 935 975 995 1005 1025 1035
-
-. 
-. 
-. if `oldway'==0 {
-.         gen WBcountry=subinstr(country, "-", " ", .)
-.         replace WBcountry="Congo, Dem. Rep." if WBcountry=="Congo Democratic Republic"
-(29648 real changes made)
-.         replace WBcountry="Cote d'Ivoire" if WBcountry=="Cote d Ivoire"
-(75234 real changes made)
-.         replace WBcountry="Egypt, Arab Rep." if WBcountry=="Egypt"
-(295304 real changes made)
-.         replace WBcountry="Yemen, Rep." if WBcountry=="Yemen"
-(29940 real changes made)
-.         destring _year, replace
-_year has all characters numeric; replaced as int
-.         
-.         merge m:1 WBcountry _year using "$IncData/`file'", gen(_incmerge)
-WBcountry was str25 now str30
-
-    Result                           # of obs.
-    -----------------------------------------
-    not matched                       149,629
-        from master                   144,241  (_incmerge==1)
-        from using                      5,388  (_incmerge==2)
-
-    matched                         6,608,507  (_incmerge==3)
-    -----------------------------------------
-.         replace inc_status="LM" if WBcountry=="Brazil" & _year==1986
-(12356 real changes made)
-.         replace inc_status="LM" if WBcountry=="Colombia" & _year==1986
-(11622 real changes made)
-.         replace inc_status="LM" if WBcountry=="Congo Brazzaville"
-(48785 real changes made)
-.         replace inc_status="LM" if WBcountry=="Dominican Republic" & _year==1986        
-(20151 real changes made)
-.         replace inc_status="LM" if WBcountry=="El Salvador" & _year==1985
-(6383 real changes made)
-.         replace inc_status="L" if WBcountry=="Liberia" & _year==1986
-(17264 real changes made)
-.         replace inc_status="L" if WBcountry=="Senegal" & _year==1986
-(14389 real changes made)
-.         replace inc_status="LM" if WBcountry=="Peru" & _year==1986
-(13291 real changes made)
-.         tostring _year, replace
-_year was int now str4
-.         keep if _incmerge!=2
-(5388 observations deleted)
-. }
-
-. 
-. if `oldway'==1 {
-.         gen income_status=      "LOWERMIDDLE"   if country=="Albania"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Armenia"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Azerbaijan"
-.         replace income_status=  "LOWINCOME"     if country=="Bangladesh"
-.         replace income_status=  "LOWINCOME"     if country=="Benin"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Bolivia"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Brazil"
-.         replace income_status=  "LOWINCOME"     if country=="Burkina-Faso"
-.         replace income_status=  "LOWINCOME"     if country=="Burundi"
-.         replace income_status=  "LOWINCOME"     if country=="Cambodia"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Cameroon"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Cape-Verde"
-.         replace income_status=  "LOWINCOME"     if country=="CAR"
-.         replace income_status=  "LOWINCOME"     if country=="Chad"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Colombia"
-.         replace income_status=  "LOWINCOME"     if country=="Comoros"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Congo-Brazzaville"
-.         replace income_status=  "LOWINCOME"     if country=="Congo-Democratic-Republic"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Cote-d-Ivoire"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Dominican-Republic"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Egypt"
-.         replace income_status=  "LOWINCOME"     if country=="Eritrea"
-.         replace income_status=  "LOWINCOME"     if country=="Ethiopia"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Gabon"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Ghana"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Guatemala"
-.         replace income_status=  "LOWINCOME"     if country=="Guinea"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Guyana"
-.         replace income_status=  "LOWINCOME"     if country=="Haiti"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Honduras"
-.         replace income_status=  "LOWERMIDDLE"   if country=="India"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Indonesia"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Jordan"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Kazakhstan"
-.         replace income_status=  "LOWINCOME"     if country=="Kenya"
-.         replace income_status=  "LOWINCOME"     if country=="Kyrgyz-Republic"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Lesotho"
-.         replace income_status=  "LOWINCOME"     if country=="Liberia"
-.         replace income_status=  "LOWINCOME"     if country=="Madagascar"
-.         replace income_status=  "LOWINCOME"     if country=="Malawi"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Maldives"
-.         replace income_status=  "LOWINCOME"     if country=="Mali"
-.         replace income_status=  "LOWINCOME"     if country=="Mauritania"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Moldova"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Morocco"
-.         replace income_status=  "LOWINCOME"     if country=="Mozambique"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Namibia"
-.         replace income_status=  "LOWINCOME"     if country=="Nepal"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Nicaragua"
-.         replace income_status=  "LOWINCOME"     if country=="Niger"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Nigeria"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Pakistan"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Paraguay"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Peru"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Philippines"
-.         replace income_status=  "LOWINCOME"     if country=="Rwanda"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Samoa"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Sao-Tome-and-Principe"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Senegal"
-.         replace income_status=  "LOWINCOME"     if country=="Sierra-Leone"
-.         replace income_status=  "UPPERMIDDLE"   if country=="South-Africa"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Sri-Lanka"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Sudan"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Swaziland"
-.         replace income_status=  "LOWINCOME"     if country=="Tanzania"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Timor-Leste"
-.         replace income_status=  "LOWINCOME"     if country=="Togo"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Turkey"
-.         replace income_status=  "UPPERMIDDLE"   if country=="Turkmenistan"
-.         replace income_status=  "LOWINCOME"     if country=="Uganda"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Ukraine"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Uzbekistan"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Vietnam"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Yemen"
-.         replace income_status=  "LOWERMIDDLE"   if country=="Zambia"
-.         replace income_status=  "LOWINCOME"     if country=="Zimbabwe"
-. }
-
-. *THIS COMES FROM WORLD BANK ATLAS METHOD (http://data.worldbank.org/about/country-classifications)
-. *ACTUAL CLASSIFICATION IS HERE: (http://data.worldbank.org/about/country-classifications/country-and-lending-gr
-> oups#Low_income)
-. 
-. 
-end of do-file
-
-. 
-. *gen income="low" if income_status=="LOWINCOME"
-. *replace income="mid" if income_status=="LOWERMIDDLE"|income_statu=="UPPERMIDDLE"
-. 
-. ********************************************************************************
-. *** (6) Keep required variables.  Save data as working file.
-. ********************************************************************************
-. keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /*
-> */ four_plus five_plus two_plus_twins three_plus_twins four_plus_twins         /*
-> */ five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id  /*
-> */ attendance educ school_zscore highschool noeduc infantmortality wealth      /* 
-> */ childmortality gender educf educfyrs_sq educf_0 educf_1_4 educf_5_6         /*
-> */ educf_7_10 educf_11plus educp educp_level twind twin twind100 malec height  /*
-> */ weightk bmi poor1 age agemay agesq magesq sweight country _cou _year        /*
-> */ twinfamily twin_bord twin_bord_fam nummultiple finaltwinfamily idealnumkids /*
-> */ lastbirth wantedbirth idealfam quant_exceed exceeder twinexceeder           /*
-> */ twinexceedfamily twin_undesired twin_desired twinexceed singlexceed         /*
-> */ twinattain desiredfert_region desiredfert_ethnic inc_stat contracep_intent  /*
-> */ _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy  /*
-> */ prenate_doc prenate_nurse prenate_none WBcountry v001 desiredfert_cluster*
-
-. 
-. save "$PATH/Data/DHS_twins", replace
-file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
-
-. 
-end of do-file
-
-. do Twin_Regressions.do
-
-. /* Regressions 3.01              damiancclarke             yyyy-mm-dd:2013-04-15
-> *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
-> */
-. 
-. /* This file contains all regression results that are being used in the Twin 
-> Instrument paper.  These include
->         - Summary.xls (sum stats)
->         - Summary_Birthorder.xls
->    - Twin_Predict.xls
->    - ...
-> 
-> This do file uses as input the data file DHS_Twins, which is generated by the
-> file Twin_Setup.do.  Currently it includes all DHS files available up until 
-> October 2013.  Files are downloaded and imported to Stata using the files 
-> DHS_Import.py and DHS_Multicountry.do.
-> 
-> Last edit:
-> * December 17th, 2013: considerable rewrite based on comments in 22 Nov email.
-> Can revert by going back to git commit Nov 11 2013.
-> * September 12th, 2013: Address Paul Dev's comment about treatment
-> * August 5th, 2013: Update figures and tables based on Sonia's comme-
-> nts on early draft.
-> */
-. 
-. clear all
-
-. version 11.2
-
-. cap log close

@@ -15,6 +15,7 @@ October 2013.  Files are downloaded and imported to Stata using the files
 DHS_Import.py and DHS_Multicountry.do.
 
 Last edit:
+* May 10th, 2014: testing for 35+ as well.
 * December 17th, 2013: considerable rewrite based on comments in 22 Nov email.
 Can revert by going back to git commit Nov 11 2013.
 * September 12th, 2013: Address Paul Dev's comment about treatment
@@ -28,15 +29,21 @@ cap log close
 set more off
 set mem 2000m
 set matsize 2000
+
+*#include
+foreach ado in ivreg2 outreg2 estout ranktest mat2txt {
+	cap which `ado'
+	if _rc!=0 ssc install `ado'
+}
+
 *******************************************************************************
 *** (0) Globals and Locals
 *******************************************************************************
 * DIRECTORIES
 global Base "~/investigacion/Activa/Twins"
 global Data "$Base/Data"
-global Results "$Base/Results"
-global Tables "$Results/Outreg"
-global Graphs "$Results/Graphs"
+global Tables "$Base/Results/Outreg"
+global Graphs "$Base/Results/Graphs"
 global Log "$Base/Log"
 global ConAdos "$Base/Do/PlausExog"
 global Source "$Base/Do"
@@ -56,16 +63,19 @@ global HP height bmi /*antenatal*/ prenate*
 global balance fert idealnumkids agefirstbirth educf educp height underweight /*
 */ /*antenatal*/ prenate* motherage childmortality infantmortal 
 
-* SPECIFICATIONS
+* ECONOMETRIC SPECIFICATIONS
 local se cluster(id)
 local wt [pw=sweight]
 local cond if agefirstbirth>=15&age<19
-local births none
+
+* FILE SPECIFICATIONS
 local gplus two three four five
+local births none
+local MAGE 0
+
 
 if `"`births'"'=="none" {
 	local add
-	dis "`base'"
 }
 else if `"`births'"'=="bord" {
 	global base malec i._cou i.year_birth i.age i.contracep_intent i.bord
@@ -73,7 +83,6 @@ else if `"`births'"'=="bord" {
 	*/ height bmi i.child_yob i._cou i.bord
 	global twinout motherage motheragesq agefirstbirth educf educfyrs_sq height bmi
 	local add _bord*
-	dis "`base'"
 }
 else if `"`births'"'=="space" {
 	global base malec i._cou i.year_birth i.age i.contracep_intent i.bord birthspac
@@ -82,7 +91,13 @@ else if `"`births'"'=="space" {
 	global twinout motherage motheragesq agefirstbirth educf educfyrs_sq height /*
 	*/ bmi birthspacing
 	local add _bord* birthspacing
-	dis "`base'"
+}
+
+if `MAGE'==35 {
+	global Tables "$Base/Results/Outreg/over35"
+	global Graphs "$Base/Results/Graphs/over35"
+
+	local cond if agefirstbirth>=15&age<19&agemay>=35
 }
 
 
@@ -91,26 +106,6 @@ local Sum      Summary
 local SumC     SummaryChild
 local SumBord  Summary_Birthorder
 local TwinPred Twin_Predict
-local IVb      Base_IV
-local IVb1     Base_IV_firststage
-local IVt      Base_IV_twins
-local IVt1     Base_IV_twins_firststage
-local IVinc    Income_IV
-local IVinc1   Income_IV_firststage
-local IVweal   Wealth_IV
-local IVweal1  Wealth_IV_firststage
-local IVgend   Gender_IV
-local IVgend1  Gender_IV_firststage
-local IVgendi  GenderAll_IV
-local IVgendi1 GenderAll_IV_firststage
-local IVdes    Desire_IV_reg
-local IVdes1   Desire_IV_firststage_reg
-local IVdesS   Desire_IV_sep
-local IVdesS1  Desire_IV_sep_firststage
-local IVpref   PrefThreshold_IV
-local IVpref1  PrefThreshold_IV_firststage
-local IVint    Intensity_IV
-local IVint1   Intensity_IV_firststage
 
 * FIGURES
 local famsize   famsize
@@ -126,34 +121,74 @@ local varlab varlabels(malec "Male Child" agemay "Mother's age" magesq    /*
 */ "Mother's Age Squared" agefirstbirth "Age First Birth" educf           /*
 */ "Mother's Education" educfyrs_sq "Mother's Education Squared" height   /*
 */ "Height" bmi "BMI")
-local sep "&"
 
 
 *SWITCHES (1 if run, else not run)
-local sumstats 1.1
-  local graphs 1.3
-local sumstats2 1.4
+local sumstats 0
+  local graphs 0
+local sumstats2 0
   local graphs2 0
-local trends 1.2
-local twin 4
-local ols 3
+local trends 0
+local twin 0
+local ols 0
 local IV 0
+local IVage 1
 local IVtime 0
 local IVtwin 0
 local income 0
 local wealth 0
 local gender 0
-local genderint 2
-local desire 1
+local genderint 0
+local desire 0
 local desire_sep 0
 local pref 0
 local new 0
 local twinoccur_ols 0
 local twinoccur_iv 0
-local conley 1.1
-local thresholdtest 1.5
-local balance 4
-local intense 8
+local conley 0
+local thresholdtest 0
+local balance 0
+local intense 0
+local country 0
+
+#delimit ;
+local conditions
+  ALL==1
+  age>11
+  age<=11
+  child_yob<=1984
+  child_yob>1984
+  income=="low"
+  income=="mid"
+  gender=="F"
+  gender=="M"
+  ;
+
+local fnames
+  All
+  Under11
+  Over10
+  BornPre1985
+  BornPost1984
+  LowIncome
+  MidIncome
+  Girls
+  Boys
+  ;
+
+local IVt      Base_IV_twins
+local IVt1     Base_IV_twins_firststage
+local IVdes    Desire_IV_reg
+local IVdes1   Desire_IV_firststage_reg
+local IVdesS   Desire_IV_sep
+local IVdesS1  Desire_IV_sep_firststage
+local IVpref   PrefThreshold_IV
+local IVpref1  PrefThreshold_IV_firststage
+local IVint    Intensity_IV
+local IVint1   Intensity_IV_firststage
+
+  
+#delimit cr
 
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
@@ -161,13 +196,8 @@ local intense 8
 log using "$Log/Twin_Regressions.log", text replace
 use "$Data/DHS_twins", clear
 
-gen motherage    = agemay - age
-gen motheragesq  = motherage^2
-gen motheragecub = motherage^3
-gen mage3        = agemay^3
-
-gen antesq = antenatal^2
-
+drop if twinfamily>2
+keep if _merge==3
 replace bmi=. if bmi>50
 replace height=. if height>240
 replace height=. if height<80
@@ -176,15 +206,6 @@ replace educ=. if educ>25
 replace educf=. if educf>25
 replace birthspacing=. if birthspacing<8|birthspacing==999
 
-gen bmi_sq=bmi*bmi
-gen height_sq=height*height
-gen underweight=1 if bmi<=18.5
-replace underweight=0 if bmi>18.5 & bmi!=.
-if `sumstats'==1 save "$Data/DHS_twins_full.dta", replace
-
-drop if twinfamily>2
-keep if _merge==3
-
 tab _cou, gen(_country)
 tab year_birth, gen(_yb)
 tab age, gen(_age)
@@ -192,20 +213,11 @@ tab contracep_intent, gen(_contracep)
 tab bord, gen(_bord)
 local base malec _country* _yb* _age* _contracep* `add'
 
-foreach ado in ivreg2 outreg2 estout ranktest mat2txt {
-	cap which `ado'
-	if _rc!=0 ssc install `ado'
-}
-
-*bys desiredfert_region: egen antenatalregion=mean(antenatal)
-*rename antenatal antenatal_ind
-*rename antenatalregion antenatal
-
 *******************************************************************************
 *** (2) Summary Stats
 *******************************************************************************
 if `sumstats'==1 {
-
+	
 	if c(os)=="Windows" local format png
 	else if c(os)=="Unix" local format eps
 	***************************************************************************
@@ -312,7 +324,7 @@ if `sumstats'==1 {
 	restore
 
 	preserve
-	use "$Data/DHS_twins_full.dta", clear
+	use "$Data/DHS_twins.dta", clear
 	gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
 	replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
 	replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
@@ -426,6 +438,38 @@ if `sumstats'==1 {
 	   graph export "$Graphs/idealfam_`c'.`format'", as(`format') replace
 		restore
 	}
+
+	local ii=1
+	foreach condition in income=="low" income=="mid" income=="low"|income=="mid" {
+		if `ii'==1 local name "Low"
+		else if `ii'==2 local name "Middle"
+		else if `ii'==3 local name "All"
+		preserve
+		gen attend1=1 if attendance==1|attendance==2
+		replace attend1=0 if attendance==0
+		gen attend2=1 if attendance==2
+		replace attend2=0 if attendance==1|attendance==0
+		keep `cond'&`condition'
+		collapse attend1 attend2 educ, by(age)
+		drop if age>19
+		gen theoretical=age-5
+		twoway line educ age if age>5 || line theoretical age if age>5, /*
+		*/ title("Education by Age Group") subtitle("`name' Income") /*
+		*/ xtitle("Child's age in years") ytitle("Education") scheme(s1color)
+		graph export "$Graphs/EducAge`name'.eps", as(eps) replace
+		twoway bar attend1 age if age>5, scheme(s1color) bcolor(navy) /*
+		*/ title("Attendance by Age Group") subtitle("`name' Income") /*
+		*/ xtitle("Child's age in years") ytitle("Proportion Attending") /*
+		*/ note("Attendance refers to children who report always or sometimes attending")
+		graph export "$Graphs/Attend1`name'.eps", as(eps) replace
+		twoway bar attend2 age if age>5, scheme(s1color) bcolor(navy) /*
+		*/ title("Attendance by Age Group") subtitle("`name' Income") /*
+		*/ xtitle("Child's age in years") ytitle("Proportion Always Attending") /*
+		*/ note("Attendance refers to children who report always attending")
+		graph export "$Graphs/Attend2`name'.eps", as(eps) replace
+		restore
+		local ++ii
+	}	
 	}
 }
 
@@ -507,10 +551,6 @@ if `sumstats2'==1 {
 }
 
 if `trends'==1 {
-	cap drop income
-	gen income="low" if inc_status=="L"
-	replace income="mid" if inc_status!="L"
-
 	foreach inc in all low mid {
 		if "`inc'"=="all" local cex
 		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"	
@@ -596,6 +636,7 @@ if `twin'== 1 {
 	  "these observations are made.")
 
 	estimates clear
+	
 	*****************************************************************************
    **** (3a) Non-linear health
    *****************************************************************************
@@ -617,6 +658,7 @@ if `twin'== 1 {
 	  height_sq "height squared") `estopt' replace
 
 	estimates clear
+	
 	*****************************************************************************
    **** (3b) Z-scores
    *****************************************************************************
@@ -656,17 +698,16 @@ if `twin'== 1 {
 **** (4) Simple OLS of Q-Q (can then apply Altonji)
 ********************************************************************************
 if `ols'==1 {
-	*cap rm "$Results/Outreg/OLS/QQ_ols_`births'.xls"
-	*cap rm "$Results/Outreg/OLS/QQ_ols_`births'.txt"
-	local out "$Results/Outreg/OLS/QQ_ols_`births'.xls"
+	local out "$Tables/OLS/QQ_ols_`births'.xls"
 
 	gen desiredbirth=bord<=idealnumkids
 	gen fertXdesired=fert*desiredbirth
-	/*
+	local count = 0
 	foreach y of varlist $outcomes {
 		qui reg `y' fert `base' $age  $S $H [pw=sweight], `se'
 		reg `y' fert `base' $age [pw=sweight] if e(sample)==1, `se'
-		outreg2 fert $age using `out', append
+		if `count'==0 outreg2 fert $age using `out', replace
+		else if `count'!=0 outreg2 fert $age using `out', append
 		reg `y' fert `base' $age $S [pw=sweight] if e(sample)==1, `se'
 		outreg2 fert $age $S using `out', append
 		reg `y' fert `base' $age $S $H [pw=sweight], `se'
@@ -674,30 +715,24 @@ if `ols'==1 {
 		reg `y' fert fertXdesired `base' $age $S $H [pw=sweight], `se'
 		outreg2 fert* $age $S $H using `out', excel append
 
+		local ++count
 	}
-	*/
-	cap drop income
-	gen income="low" if inc_status=="L"
-	replace income="mid" if inc_status!="L"
-
+	
 	foreach inc in low mid {
 		foreach y of varlist $outcomes {
 			qui reg `y' fert `base' $age $S $H if income==`"`inc'"', `se'
-			reg `y' fert `base' $age [pw=sweight] if income==`"`inc'"'&e(sample)/*
-			*/, `se'
+			reg `y' fert `base' $age `wt' if income==`"`inc'"'&e(sample), `se'
 			outreg2 fert $age using `out', excel append
 
-			reg `y' fert `base' $age $S [pw=sweight] if income==`"`inc'"'&e(sample),/*
-			*/ `se'
+			reg `y' fert `base' $age $S `wt' if income==`"`inc'"'&e(sample), `se'
 			outreg2 fert $age $S using `out', excel append
 
-			reg `y' fert `base' $age $S $H [pw=sweight] if income==`"`inc'"', `se'
+			reg `y' fert `base' $age $S $H `wt' if income==`"`inc'"', `se'
 			outreg2 fert $age $S $H using `out', excel append
 
-			reg `y' fert fertXdesired `base' $age $S $H [pw=sweight] /*
+			reg `y' fert fertXdesired `base' $age $S $H `wt' /*
 			*/ if income==`"`inc'"', `se'
 			outreg2 fert* $age $S $H using `out', excel append
-
 		}
 	}
 }
@@ -709,7 +744,6 @@ if `IV'==1 {
 	local n1=1
 	local n2=2
 	local n3=3
-	local n4=4
 	local estimates
 	local firststage
 
@@ -717,31 +751,67 @@ if `IV'==1 {
 		local c  `cond'&`n'_plus==1
 		local ce `cond'&`n'_plus==1&e(sample)
 		foreach y of varlist $outcomes {
-			eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt' `c', /*
-			*/ `se' savefirst savefp(f`n4')
 			eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
 			*/ `se' savefirst savefp(f`n3')
-			eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' `ce',   /*
+			eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt' `ce',   /*
 			*/ `se' savefirst savefp(f`n2')
 			eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' `ce',           /*
 			*/ `se' savefirst savefp(f`n1')
 
-			local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
-			local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert f`n4'fert
-			local n1=`n1'+4
-			local n2=`n2'+4
-			local n3=`n3'+4
-			local n4=`n4'+4
+			local estimates `estimates'  est`n3' est`n2' est`n1' 
+			local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+			local n1=`n1'+3
+			local n2=`n2'+3
+			local n3=`n3'+3
 		}
 	}
 
-	estout `estimates' using "$Tables/IV/`IVb'_`births'.xls", replace ///
+	estout `estimates' using "$Tables/IV/`IVb'_`births'_alt.xls", replace ///
 	keep(fert malec $age $S $H) `estopt' `varlab'
 
-	estout `firststage' using "$Tables/IV/`IVb1'_`births'.xls", replace ///
+	estout `firststage' using "$Tables/IV/`IVb1'_`births'_alt.xls", replace ///
 	keep(twin_* malec $age $S $H) `estopt' `varlab' 
 	
 	estimates clear
+}
+
+if `IVage'==1 {
+	foreach agecut in /*age>11*/ age<=11 {
+		local n1=1
+		local n2=2
+		local n3=3
+		local estimates
+		local firststage
+		local ii=1
+
+		foreach n in `gplus' {
+			local c  `cond'&`agecut'&`n'_plus==1
+			local ce `cond'&`agecut'&`n'_plus==1&e(sample)
+			foreach y of varlist $outcomes {
+				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+				*/ `se' savefirst savefp(f`n3')
+				eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt' `ce',   /*
+				*/ `se' savefirst savefp(f`n2')
+				eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' `ce',           /*
+				*/ `se' savefirst savefp(f`n1')
+				
+				local estimates `estimates'  est`n3' est`n2' est`n1' 
+				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+				local n1=`n1'+3
+				local n2=`n2'+3
+				local n3=`n3'+3
+			}
+		}
+
+		estout `estimates' using "$Tables/IV/`IVb'_`births'_age`ii'.xls", /*
+		*/ replace keep(fert malec $age $S $H) `estopt' `varlab'
+
+		estout `firststage' using "$Tables/IV/`IVb1'_`births'_age`ii'.xls", /*
+		*/ replace keep(twin_* malec $age $S $H) `estopt' `varlab' 
+	
+		estimates clear
+		local ++ii
+	}
 }
 
 ********************************************************************************
@@ -829,12 +899,7 @@ if `IVtwin'==1 {
 ********************************************************************************
 **** (7a) IV by income (country)
 ********************************************************************************
-if `income'==1 {
-	cap drop income
-	gen income="low" if inc_status=="L"
-	replace income="mid" if inc_status!="L"
-	tab income
-	
+if `income'==1 {	
 	foreach inc in low mid {
 		local n1=1
 		local n2=2
@@ -852,7 +917,6 @@ if `income'==1 {
 				*/ `se' savefirst savefp(f`n2')
 				eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' `ce', /*
 				*/ `se' savefirst savefp(f`n1')
-
 
 				local estimates `estimates' est`n3' est`n2' est`n1' 
 				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
@@ -872,47 +936,6 @@ if `income'==1 {
 	}
 }
 
-********************************************************************************
-**** (7b) IV by wealth (household)
-********************************************************************************
-if `wealth'==1 {
-	cap mkdir "$Tables/IV/Wealth/"
-	foreach num of numlist 1(1)5 {
-		local n1=1
-		local n2=2
-		local n3=3
-		local estimates
-		local firststage
-
-		foreach n in `gplus' {
-			local c  `cond'&`n'_plus==1&wealth==`num'
-			local ce `cond'&`n'_plus==1&wealth==`num'&e(sample)
-			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c',/*
-				*/ `se' savefirst savefp(f`n3')
-				eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' `ce', /*
-				*/ `se' savefirst savefp(f`n2')
-				eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' `ce', /*
-				*/ `se' savefirst savefp(f`n1')
-
-
-				local estimates `estimates' est`n3' est`n2' est`n1' 
-				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
-				local n1=`n1'+3
-				local n2=`n2'+3
-				local n3=`n3'+3
-			}
-		}
-
-	estout `estimates' using "$Tables/IV/Wealth/`IVweal'_`num'_`births'.xls", replace ///
-	keep(fert malec $age $S $H) `estopt' `varlab'
-
-	estout `firststage' using "$Tables/IV/Wealth/`IVweal1'_`num'_`births'.xls", replace ///
-	keep(twin_* malec $age $S $H) `estopt' `varlab'
-	
-	estimates clear
-	}
-}
 
 ********************************************************************************
 **** (7c) IV by gender
@@ -955,102 +978,8 @@ if `gender'==1 {
 	}
 }
 
+*NOTE: to check out gender interaction code, roll back and see here.
 
-if `genderint'==1 {
-	local endog fert fertXthreshold
-	/*
-	cap gen female=1 if gender=="F"
-	replace female=0 if gender=="M"
-	cap gen Ffert = fert*female
-
-	foreach ii of numlist 1(1)5 {
-		local n`ii'=`ii'
-	}
-	local t=2
-	local estimates
-	local firststage
-
-	foreach n in `gplus' {
-		foreach gend in F M {
-			preserve
-			cap gen Ftwin_`n'_fam=twin_`n'_fam*female
-			keep `cond'&`n'_plus==1&gender=="`gend'"
-
-			gen threshold=(twin_`n'_fam==1 & idealnumkids==`t')
-			gen fertXthreshold=fert*threshold
-			gen desired=idealnumkids<=`t'			
-			cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
-			local insts twin_`n'_fam twin`n'Xthreshold
-			
-			
-			foreach y of varlist $outcomes {
-*				eststo: ivregress 2sls `y' i.female#c.(`base' $age $S $H) female /*
-*				*/ (fert Ffert=twin_`n'_fam Ftwin_`n'_fam) `wt', `se'
-
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt', /*
-				*/ `se' savefirst savefp(f`n5')
-
-				eststo: ivreg2 `y' `base' $age $S $H _bord* (fert=twin_`n'_fam) `wt', /*
-				*/ `se' savefirst savefp(f`n4')
-
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' /*
-				*/ if inc_status=="L", `se' savefirst savefp(f`n3')
-
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' /*
-				*/ if inc_status!="L", `se' savefirst savefp(f`n2')
-
-				eststo: ivreg2 `y' `base' $age $S $H desired (`endog' = `insts') /*
-				*/ `wt', `se' savefirst savefp(f`n1')
-
-				local estimates `estimates' est`n5' est`n4' est`n3' est`n2' est`n1'
-				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert fert /*
-				*/ f`n4'fert fert f`n5'fert
-
-				foreach ii of numlist 1(1)5 {
-					local n`ii'=`n`ii''+5
-				}
-			}
-			restore
-		}
-		local ++t
-	}
-	estout `estimates' using "$Tables/IV/`IVgendi'_`births'.xls", replace ///
-	keep(fert $age $S $H) `estopt' `varlab'
-
-	estout `firststage' using "$Tables/IV/`IVgendi1'_`births'.xls", replace ///
-	keep(twin_* $age $S $H) `estopt' `varlab'
-	
-	estimates clear
-	*/
-	
-	local n1=1
-	foreach n in `gplus' {
-		foreach gend in F M {
-			preserve
-			keep `cond'&`n'_plus_twins==1&gender=="`gend'"			
-
-			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt', /*
-				*/ `se' savefirst savefp(f`n1')
-				local ++n1
-				
-				eststo: ivreg2 `y' `base' $age $S $H _bord* (fert=twin_`n'_fam) `wt', /*
-				*/ `se' savefirst savefp(f`n1')
-				local ++n1
-			}
-			restore
-		}
-	}
-	estout est1 est2 est3 est4 est5 est6 est7 est8 est9 est10 est11 est12 est13 ///
-	est14 est5 est16 using "$Tables/IV/`IVgendi'_twin_`births'.xls", replace ///
-	  keep(fert $age $S $H) `estopt' `varlab'
-
-	estout f1fert f2fert f3fert f4fert f5fert f6fert f7fert f8fert f9fert f10fert ///
-	f11fert f12fert f13fert f14fert f15fert f16fert using ///
-	  "$Tables/IV/`IVgendi1'_twin_`births'.xls", replace ///
-	  keep(twin_* $age $S $H) `estopt' `varlab'
-
-}
 ********************************************************************************
 **** (8) IV with twin threshold
 ********************************************************************************
@@ -1060,13 +989,7 @@ if `desire'==1 {
 	*gen idealbarrier=floor(desiredfert_clusterYE)
 	
 	local endog fert fertXthreshold
-
-	cap drop income
-	gen income="low" if inc_status=="L"
-	replace income="mid" if inc_status!="L"
-
-	
-	foreach inc in /*all low mid*/ F M {
+	foreach inc in all low mid F M {
 		if "`inc'"=="all" local cex
 		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
 		else if "`inc'"=="F"|"`inc'"=="M" local cex &gender=="`inc'"
@@ -1121,58 +1044,7 @@ if `desire'==1 {
 	}
 }
 
-
-if `desire_sep'==1 {
-	cap mkdir "$Tables/IV/Desire/"
-	foreach num of numlist 0 1 {
-		if `num'==0 local fT "NoThreshold"
-		else if `num'==1 local fT "Threshold"
-
-		local n1=1
-		local n2=2
-		local n3=3
-		local estimates
-		local firststage
-
-		local t=2
-		foreach n in `gplus' {
-			gen threshold=(twin_`n'_fam==1 & idealnumkids==`t')
-			if `num'==0 cap gen twin`n'Xthreshold = twin_`n'_fam*(1-threshold)
-			else if `num'==1 cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
-			
-			local c  `cond'&`n'_plus==1
-			local ce `cond'&`n'_plus==1&e(sample)
-			
-			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin`n'Xthreshold) /*
-				*/ `wt' `c', `se' savefirst savefp(f`n3')
-				eststo: ivreg2 `y' `base' $age $S (fert=twin`n'Xthreshold) /*
-				*/ `wt' `ce', `se' savefirst savefp(f`n2')
-				eststo: ivreg2 `y' `base' (fert=twin`n'Xthreshold) /*
-				*/ `wt' `ce', `se' savefirst savefp(f`n1')
-
-
-				local estimates `estimates' est`n3' est`n2' est`n1' 
-				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
-
-				local n1=`n1'+3
-				local n2=`n2'+3
-				local n3=`n3'+3
-
-				drop threshold twin`n'Xthreshold
-			}
-			local ++t
-		}
-
-	estout `estimates' using "$Tables/IV/Desire/`IVdesS'_`fT'_`births'.xls", ///
-	  replace keep(fert malec $age $S $H) `estopt' `varlab'
-
-	estout `firststage' using "$Tables/IV/Desire/`IVdesS1'_`fT'_`births'.xls", ///
-	  replace keep(twin* malec $age $S $H) `estopt' `varlab'
-	
-	estimates clear
-	}
-}
+*NOTE: for coefficients estimated separately by desire, roll back and see here.
 ********************************************************************************
 **** (9) IV with twin threshold condition on same fertility preference
 ********************************************************************************
@@ -1263,7 +1135,6 @@ if `new'==1 {
 		
 	estout `estimates' using "$Tables/New/NewFirst.xls", replace ///
 	keep(twin* malec $age $S $H _contracep*) `estopt'
-
 	
 	estimates clear
 }
@@ -1336,8 +1207,6 @@ if `twinoccur_iv'==1 {
 	keep(twin_* malec $age $S $H) `estopt' `varlab' 
 	
 	estimates clear
-
-
 }
 
 
@@ -1587,4 +1456,53 @@ if `intense'==1 {
 		estimates clear
 		local ++index
 	}	
+}
+
+
+********************************************************************************
+**** (15) Run for each country
+********************************************************************************
+if `country'==1 {
+
+	levelsof country
+	local countries = `"`r(levels)'"'
+
+	local n1=1
+	local estimates
+	local firststage
+	local colnames
+
+	local base malec _yb* _age* _contracep* `add'
+	
+	foreach cc of local countries {
+		preserve
+		keep if country=="`cc'"
+		count
+		if `r(N)'== 0 {
+			restore
+			exit
+		}
+
+		foreach n in `gplus' {
+			local c  `cond'&`n'_plus==1
+			foreach y of varlist $outcomes {
+				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+				*/ `se' savefirst savefp(f`n1')
+
+				local estimates `estimates' est`n1' 
+				local firststage `firststage' f`n1'fert
+				local colnames `cc'
+				local ++n1
+			}
+		}
+		restore	
+	}	
+
+	estout `estimates' using "$Tables/IV/Countries_`births'.xls", replace ///
+	keep(fert malec $age $S $H) mlabels(`colnames') `estopt' `varlab'
+
+	estout `firststage' using "$Tables/IV/Countries_f_`births'.xls", replace ///
+	keep(twin_* malec $age $S $H) mlabels(`colnames') `estopt' `varlab' 
+	
+	estimates clear	
 }
