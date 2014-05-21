@@ -1,4 +1,4 @@
-* Twin_Setup 2.00                damiancclarke   	 		  yyyy-mm-dd:2013-11-22    
+* Twin_Setup 2.00                damiancclarke   	 		  yyyy-mm-dd:2012-03-22
 *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 *
 /* This is has been a pretty major refactorisation of the previous twin setup
@@ -9,6 +9,10 @@ family size.  Our principal specification for desired is:
 
 quality_{ij}=\beta_0+\beta_1*fert_{j}+\beta_2*fert*desired_{j}+X'\beta+u_{ij}
 
+Major version highlights:
+> 2012-03: Completed Thesis version
+> 2013-01: Major changes based on presentations: Bristol, ESPE, NEUDC
+> 2013-06: Change outlined about to incorporate desired tests
 
 */
 
@@ -30,7 +34,7 @@ global TEMP "$PATH/Temp"
 
 cap mkdir $PATH/Temp
 
-log using "$LOG/Twins_DHS.txt", text replace
+log using "$LOG/Twins_Setup.txt", text replace
 ********************************************************************************
 *** (2) Take necessary variables from BR (mother births) and PR (household me-
 *** mber) The IR dataset has the majority of family and maternal characterist-
@@ -46,7 +50,7 @@ foreach num of numlist 1(1)7 {
 	*/ v209 v211 v212 v213 v228 v229 v230 v437 v438 v445 v457 v463a v481 v501/*
 	*/ v504 v602 v605 v715 v701 v730 bord b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11/*
 	*/ b12 b13 b14 b15 b16 v613 v614 m19 m19a v367 v312 v364 m4 m5 m8 m9 m10 /*
-	*/ m12 m14 m15 m16 m17 m18 m19 m19a m2a m2b m2n
+	*/ m12 m14 m15 m16 m17 m18 m19 m19a m2a m2b m2n bidx
 	
 	cap rename v010 year_birth
 	cap rename v012 agemay
@@ -81,7 +85,9 @@ foreach num of numlist 1(1)7 {
 	
 	replace age=floor(v007-child_yob+(v006-b1/12)) if age==.
 
-
+	cap drop if _cou=="Cameroon" & _year=="1991"
+	* no v002 recorded.  This could be saved by a split of caseid if desired...
+	
 	**The following lines correct for the fact that we only observe each births'
 	**mothers' relationship to the household head.  In this way, if the mother 
 	**is the wife, the birth must be the child of the household head.
@@ -91,7 +97,16 @@ foreach num of numlist 1(1)7 {
 	replace relationship=10 if v150==8|v150==10|v150==12|v150==5
 
 	egen id=concat(_cou _year v001 v002)
-
+	bys id relationship age sex (bidx): gen counter=_n
+	bys id relationship age sex counter: gen tester=_N
+	sum tester
+	if r(max)!=1 {
+		tab _cou if tester!=1
+		dis as err "Merging error. Check that country id (v001, v002) is correct"
+		exit 2727
+	}
+	drop tester
+	
 	save $TEMP/BR`num', replace
 }
 
@@ -99,7 +114,7 @@ foreach num of numlist 1(1)7 {
 foreach num of numlist 1(1)7 {
 	use $DATA/World_PR_p`num', clear
 
-	keep _cou _year hhid hvidx hv000-hv002 hv101 hv104 hv105 hv106 hv121 hv122/*
+	keep _cou _year hhid hvidx hv000-hv003 hv101 hv104 hv105 hv106 hv121 hv122/*
 	*/ hv123 hv129 hv108
 
 	cap rename hv101 relationship
@@ -111,15 +126,25 @@ foreach num of numlist 1(1)7 {
 	cap rename hv108 educ
 	rename hv001 v001
 	rename hv002 v002
+	rename hv003 v003
 	egen id=concat(_cou _year v001 v002)
-	
+
+	bys id relationship age sex (hvidx): gen counter=_n
+	bys id relationship age sex counter: gen tester=_N
+	sum tester
+	if r(max)!=1 {
+		tab _cou if tester!=1
+		dis as err "Merging error. Check that country id (v001, v002) is correct"
+		exit 2727
+	}
+	drop tester
 	save $TEMP/PR`num', replace
 }
 
 ***Merge PR and BR (still in parts)
 foreach num of numlist 1(1)7 {
 	use $TEMP/PR`num'
-	merge m:m id relationship sex age using $TEMP/BR`num'
+	merge 1:1 id relationship age sex counter using $TEMP/BR`num'
 	keep if _merge==3|_merge==2 //updated Apr 24, 2013
 	save $TEMP/twins`num', replace
 }
@@ -428,6 +453,7 @@ replace income="mid" if inc_status!="L"
 ********************************************************************************
 *** (6) Keep required variables.  Save data as working file.
 ********************************************************************************
+save "$PATH/Data/DHS_twins_FULL", replace
 keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /*
 */ four_plus five_plus two_plus_twins three_plus_twins four_plus_twins         /*
 */ five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id  /*
@@ -445,3 +471,4 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 
 
 save "$PATH/Data/DHS_twins", replace
+log close

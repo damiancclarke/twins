@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twins_DHS.txt
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twins_Setup.txt
   log type:  text
- opened on:  20 May 2014, 16:40:43
+ opened on:  21 May 2014, 17:58:14
 
 . ********************************************************************************
 . *** (2) Take necessary variables from BR (mother births) and PR (household me-
@@ -19,7 +19,7 @@
 >         */ v209 v211 v212 v213 v228 v229 v230 v437 v438 v445 v457 v463a v481 v501/*
 >         */ v504 v602 v605 v715 v701 v730 bord b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11/*
 >         */ b12 b13 b14 b15 b16 v613 v614 m19 m19a v367 v312 v364 m4 m5 m8 m9 m10 /*
->         */ m12 m14 m15 m16 m17 m18 m19 m19a m2a m2b m2n
+>         */ m12 m14 m15 m16 m17 m18 m19 m19a m2a m2b m2n bidx
   4.         
 .         cap rename v010 year_birth
   5.         cap rename v012 agemay
@@ -54,24 +54,39 @@
  34.         
 .         replace age=floor(v007-child_yob+(v006-b1/12)) if age==.
  35. 
-. 
+.         cap drop if _cou=="Cameroon" & _year=="1991"
+ 36.         * no v002 recorded.  This could be saved by a split of caseid if desired...
+.         
 .         **The following lines correct for the fact that we only observe each births'
 .         **mothers' relationship to the household head.  In this way, if the mother 
 .         **is the wife, the birth must be the child of the household head.
 .         gen relationship=3 if v150==1|v150==2|v150==9
- 36.         replace relationship=5 if v150==3|v150==4|v150==11
- 37.         replace relationship=8 if v150==6|v150==7
- 38.         replace relationship=10 if v150==8|v150==10|v150==12|v150==5
- 39. 
-.         egen id=concat(_cou _year v001 v002)
+ 37.         replace relationship=5 if v150==3|v150==4|v150==11
+ 38.         replace relationship=8 if v150==6|v150==7
+ 39.         replace relationship=10 if v150==8|v150==10|v150==12|v150==5
  40. 
+.         egen id=concat(_cou _year v001 v002)
+ 41.         bys id relationship age sex (bidx): gen counter=_n
+ 42.         bys id relationship age sex counter: gen tester=_N
+ 43.         sum tester
+ 44.         if r(max)!=1 {
+ 45.                 tab _cou if tester!=1
+ 46.                 dis as err "Merging error. Check that country id (v001, v002) is correct"
+ 47.                 exit 2727
+ 48.         }
+ 49.         drop tester
+ 50.         
 .         save $TEMP/BR`num', replace
- 41. }
+ 51. }
 (139917 real changes made)
-(162393 missing values generated)
-(74778 real changes made)
-(10361 real changes made)
-(29814 real changes made)
+(160524 missing values generated)
+(73894 real changes made)
+(10271 real changes made)
+(28920 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |    953688           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR1.dta not found)
 file ~/investigacion/Activa/Twins/Temp/BR1.dta saved
 (123698 real changes made)
@@ -79,6 +94,10 @@ file ~/investigacion/Activa/Twins/Temp/BR1.dta saved
 (96398 real changes made)
 (7596 real changes made)
 (47175 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |   1111913           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR2.dta not found)
 file ~/investigacion/Activa/Twins/Temp/BR2.dta saved
 (96080 real changes made)
@@ -86,6 +105,10 @@ file ~/investigacion/Activa/Twins/Temp/BR2.dta saved
 (131355 real changes made)
 (12565 real changes made)
 (26450 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |    800833           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR3.dta not found)
 file ~/investigacion/Activa/Twins/Temp/BR3.dta saved
 (176905 real changes made)
@@ -93,6 +116,10 @@ file ~/investigacion/Activa/Twins/Temp/BR3.dta saved
 (103013 real changes made)
 (8266 real changes made)
 (36792 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |   1512325           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR4.dta not found)
 file ~/investigacion/Activa/Twins/Temp/BR4.dta saved
 (161145 real changes made)
@@ -100,6 +127,10 @@ file ~/investigacion/Activa/Twins/Temp/BR4.dta saved
 (81325 real changes made)
 (6349 real changes made)
 (36191 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |    963337           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR5.dta not found)
 file ~/investigacion/Activa/Twins/Temp/BR5.dta saved
 (117864 real changes made)
@@ -107,6 +138,10 @@ file ~/investigacion/Activa/Twins/Temp/BR5.dta saved
 (81341 real changes made)
 (3564 real changes made)
 (42377 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |    898484           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR6.dta not found)
 file ~/investigacion/Activa/Twins/Temp/BR6.dta saved
 (58299 real changes made)
@@ -114,6 +149,10 @@ file ~/investigacion/Activa/Twins/Temp/BR6.dta saved
 (36005 real changes made)
 (2200 real changes made)
 (15511 real changes made)
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |    456817           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/BR7.dta not found)
 file ~/investigacion/Activa/Twins/Temp/BR7.dta saved
 
@@ -122,7 +161,7 @@ file ~/investigacion/Activa/Twins/Temp/BR7.dta saved
 . foreach num of numlist 1(1)7 {
   2.         use $DATA/World_PR_p`num', clear
   3. 
-.         keep _cou _year hhid hvidx hv000-hv002 hv101 hv104 hv105 hv106 hv121 hv122/*
+.         keep _cou _year hhid hvidx hv000-hv003 hv101 hv104 hv105 hv106 hv121 hv122/*
 >         */ hv123 hv129 hv108
   4. 
 .         cap rename hv101 relationship
@@ -134,22 +173,60 @@ file ~/investigacion/Activa/Twins/Temp/BR7.dta saved
  10.         cap rename hv108 educ
  11.         rename hv001 v001
  12.         rename hv002 v002
- 13.         egen id=concat(_cou _year v001 v002)
- 14.         
-.         save $TEMP/PR`num', replace
- 15. }
+ 13.         rename hv003 v003
+ 14.         egen id=concat(_cou _year v001 v002)
+ 15. 
+.         bys id relationship age sex (hvidx): gen counter=_n
+ 16.         bys id relationship age sex counter: gen tester=_N
+ 17.         sum tester
+ 18.         if r(max)!=1 {
+ 19.                 tab _cou if tester!=1
+ 20.                 dis as err "Merging error. Check that country id (v001, v002) is correct"
+ 21.                 exit 2727
+ 22.         }
+ 23.         drop tester
+ 24.         save $TEMP/PR`num', replace
+ 25. }
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |   1613820           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR1.dta not found)
 file ~/investigacion/Activa/Twins/Temp/PR1.dta saved
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |   1939546           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR2.dta not found)
 file ~/investigacion/Activa/Twins/Temp/PR2.dta saved
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |   1566367           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR3.dta not found)
 file ~/investigacion/Activa/Twins/Temp/PR3.dta saved
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |   2633767           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR4.dta not found)
 file ~/investigacion/Activa/Twins/Temp/PR4.dta saved
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |   2198952           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR5.dta not found)
 file ~/investigacion/Activa/Twins/Temp/PR5.dta saved
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |   1519532           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR6.dta not found)
 file ~/investigacion/Activa/Twins/Temp/PR6.dta saved
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+      tester |    813996           1           0          1          1
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/PR7.dta not found)
 file ~/investigacion/Activa/Twins/Temp/PR7.dta saved
 
@@ -157,92 +234,93 @@ file ~/investigacion/Activa/Twins/Temp/PR7.dta saved
 . ***Merge PR and BR (still in parts)
 . foreach num of numlist 1(1)7 {
   2.         use $TEMP/PR`num'
-  3.         merge m:m id relationship sex age using $TEMP/BR`num'
+  3.         merge 1:1 id relationship age sex counter using $TEMP/BR`num'
   4.         keep if _merge==3|_merge==2 //updated Apr 24, 2013
   5.         save $TEMP/twins`num', replace
   6. }
 relationship was byte now float
-(label LABG already defined)
 (label LABH already defined)
+(label LABG already defined)
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,425,676
-        from master                 1,038,805  (_merge==1)
-        from using                    386,871  (_merge==2)
+    not matched                     1,444,182
+        from master                 1,052,157  (_merge==1)
+        from using                    392,025  (_merge==2)
 
-    matched                           584,446  (_merge==3)
+    matched                           561,663  (_merge==3)
     -----------------------------------------
-(1038805 observations deleted)
+(1052157 observations deleted)
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins1.dta not found)
 file ~/investigacion/Activa/Twins/Temp/twins1.dta saved
 relationship was byte now float
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,767,456
-        from master                 1,299,127  (_merge==1)
-        from using                    468,329  (_merge==2)
+    not matched                     1,784,997
+        from master                 1,306,315  (_merge==1)
+        from using                    478,682  (_merge==2)
 
-    matched                           650,772  (_merge==3)
+    matched                           633,231  (_merge==3)
     -----------------------------------------
-(1299127 observations deleted)
+(1306315 observations deleted)
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins2.dta not found)
 file ~/investigacion/Activa/Twins/Temp/twins2.dta saved
 relationship was byte now float
-(label LABD already defined)
-(label LABE already defined)
 (label LABI already defined)
+(label LABE already defined)
+(label LABD already defined)
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,392,865
-        from master                 1,080,109  (_merge==1)
-        from using                    312,756  (_merge==2)
+    not matched                     1,408,190
+        from master                 1,086,862  (_merge==1)
+        from using                    321,328  (_merge==2)
 
-    matched                           494,830  (_merge==3)
+    matched                           479,505  (_merge==3)
     -----------------------------------------
-(1080109 observations deleted)
+(1086862 observations deleted)
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins3.dta not found)
 file ~/investigacion/Activa/Twins/Temp/twins3.dta saved
 relationship was byte now float
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     2,303,006
-        from master                 1,715,142  (_merge==1)
-        from using                    587,864  (_merge==2)
+    not matched                     2,332,424
+        from master                 1,726,933  (_merge==1)
+        from using                    605,491  (_merge==2)
 
-    matched                           936,252  (_merge==3)
+    matched                           906,834  (_merge==3)
     -----------------------------------------
-(1715142 observations deleted)
+(1726933 observations deleted)
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins4.dta not found)
 file ~/investigacion/Activa/Twins/Temp/twins4.dta saved
 relationship was byte now float
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     2,138,357
-        from master                 1,690,776  (_merge==1)
-        from using                    447,581  (_merge==2)
+    not matched                     2,161,267
+        from master                 1,698,441  (_merge==1)
+        from using                    462,826  (_merge==2)
 
-    matched                           523,421  (_merge==3)
+    matched                           500,511  (_merge==3)
     -----------------------------------------
-(1690776 observations deleted)
+(1698441 observations deleted)
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins5.dta not found)
 file ~/investigacion/Activa/Twins/Temp/twins5.dta saved
 v001 was int now long
+v003 was byte now int
 relationship was byte now float
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                     1,445,130
-        from master                 1,034,332  (_merge==1)
-        from using                    410,798  (_merge==2)
+    not matched                     1,454,158
+        from master                 1,037,603  (_merge==1)
+        from using                    416,555  (_merge==2)
 
-    matched                           490,957  (_merge==3)
+    matched                           481,929  (_merge==3)
     -----------------------------------------
-(1034332 observations deleted)
+(1037603 observations deleted)
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins6.dta not found)
 file ~/investigacion/Activa/Twins/Temp/twins6.dta saved
 _cou was str10 now str19
@@ -251,13 +329,13 @@ id was str20 now str29
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       787,409
-        from master                   572,819  (_merge==1)
-        from using                    214,590  (_merge==2)
+    not matched                       790,567
+        from master                   573,873  (_merge==1)
+        from using                    216,694  (_merge==2)
 
-    matched                           243,281  (_merge==3)
+    matched                           240,123  (_merge==3)
     -----------------------------------------
-(572819 observations deleted)
+(573873 observations deleted)
 (note: file /home/damiancclarke/investigacion/Activa/Twins/Temp/twins7.dta not found)
 file ~/investigacion/Activa/Twins/Temp/twins7.dta saved
 
@@ -274,373 +352,373 @@ file ~/investigacion/Activa/Twins/Temp/twins7.dta saved
 
 . append using $TEMP/twins2 $TEMP/twins3 $TEMP/twins4 $TEMP/twins5 $TEMP/twins6 /*
 > */ $TEMP/twins7
+v003 was byte now int
 _cou was str12 now str25
 id was str22 now str35
-v003 was byte now int
 (label _merge already defined)
-(label v190 already defined)
-(label m19a already defined)
-(label m19 already defined)
-(label m18 already defined)
-(label m15 already defined)
-(label m14 already defined)
-(label m10 already defined)
-(label m8 already defined)
-(label m5 already defined)
-(label m4 already defined)
-(label m2n already defined)
-(label b16 already defined)
-(label b13 already defined)
-(label b9 already defined)
-(label b6 already defined)
-(label b0 already defined)
-(label v730 already defined)
-(label v701 already defined)
-(label v614 already defined)
-(label v613 already defined)
-(label v605 already defined)
-(label v602 already defined)
-(label v504 already defined)
-(label v501 already defined)
-(label v367 already defined)
-(label v364 already defined)
-(label v312 already defined)
-(label LABN already defined)
-(label v213 already defined)
-(label v152 already defined)
-(label v150 already defined)
-(label v149 already defined)
-(label v130 already defined)
-(label v106 already defined)
-(label LABE already defined)
-(label LABD already defined)
-(label v023 already defined)
-(label v020 already defined)
-(label LABC already defined)
-(label v015 already defined)
-(label LABB already defined)
-(label v013 already defined)
-(label b14 already defined)
 (label m16 already defined)
-(label hv108 already defined)
-(label hv106 already defined)
-(label hv105 already defined)
-(label hv104 already defined)
-(label hv101 already defined)
-(label hv129 already defined)
-(label hv121 already defined)
-(label _merge already defined)
-(label m19a already defined)
-(label m19 already defined)
-(label m18 already defined)
-(label m15 already defined)
-(label m14 already defined)
-(label m10 already defined)
-(label m8 already defined)
-(label m5 already defined)
-(label m4 already defined)
-(label m2n already defined)
-(label b16 already defined)
-(label b13 already defined)
-(label b9 already defined)
-(label b6 already defined)
-(label b0 already defined)
-(label v730 already defined)
-(label v701 already defined)
-(label v614 already defined)
-(label v613 already defined)
-(label v605 already defined)
-(label v602 already defined)
-(label v504 already defined)
-(label v501 already defined)
-(label v367 already defined)
-(label v364 already defined)
-(label v312 already defined)
-(label LABO already defined)
-(label LABN already defined)
+(label b14 already defined)
+(label v013 already defined)
+(label LABB already defined)
+(label v015 already defined)
+(label LABC already defined)
+(label v020 already defined)
+(label v023 already defined)
+(label LABD already defined)
+(label LABE already defined)
+(label v106 already defined)
+(label v130 already defined)
+(label v149 already defined)
+(label v150 already defined)
+(label v152 already defined)
 (label v213 already defined)
-(label LABM already defined)
+(label LABN already defined)
+(label v312 already defined)
+(label v364 already defined)
+(label v367 already defined)
+(label v501 already defined)
+(label v504 already defined)
+(label v602 already defined)
+(label v605 already defined)
+(label v613 already defined)
+(label v614 already defined)
+(label v701 already defined)
+(label v730 already defined)
+(label b0 already defined)
+(label b6 already defined)
+(label b9 already defined)
+(label b13 already defined)
+(label b16 already defined)
+(label m2n already defined)
+(label m4 already defined)
+(label m5 already defined)
+(label m8 already defined)
+(label m10 already defined)
+(label m14 already defined)
+(label m15 already defined)
+(label m18 already defined)
+(label m19 already defined)
+(label m19a already defined)
 (label v190 already defined)
+(label hv121 already defined)
+(label hv129 already defined)
+(label hv101 already defined)
+(label hv104 already defined)
+(label hv105 already defined)
+(label hv106 already defined)
+(label hv108 already defined)
+(label _merge already defined)
+(label m16 already defined)
+(label v013 already defined)
+(label LABB already defined)
+(label v015 already defined)
+(label LABC already defined)
+(label v020 already defined)
+(label LABF already defined)
+(label v106 already defined)
+(label LABH already defined)
+(label v133 already defined)
+(label v149 already defined)
+(label v150 already defined)
+(label v152 already defined)
 (label LABK already defined)
-(label v152 already defined)
-(label v150 already defined)
-(label v149 already defined)
-(label v133 already defined)
-(label LABH already defined)
-(label v106 already defined)
-(label LABF already defined)
-(label v020 already defined)
-(label LABC already defined)
-(label v015 already defined)
-(label LABB already defined)
-(label v013 already defined)
-(label m16 already defined)
-(label LABI already defined)
-(label hv108 already defined)
-(label hv106 already defined)
-(label hv101 already defined)
-(label LABE already defined)
-(label LABD already defined)
-(label hv129 already defined)
-(label hv121 already defined)
-(label _merge already defined)
 (label v190 already defined)
-(label m19a already defined)
-(label m19 already defined)
-(label m18 already defined)
-(label m15 already defined)
-(label m14 already defined)
-(label m10 already defined)
-(label m8 already defined)
-(label m5 already defined)
-(label m4 already defined)
-(label m2n already defined)
-(label b16 already defined)
-(label b13 already defined)
-(label b9 already defined)
-(label b6 already defined)
-(label b0 already defined)
-(label v730 already defined)
-(label v701 already defined)
-(label v614 already defined)
-(label v613 already defined)
-(label v605 already defined)
-(label v602 already defined)
-(label v504 already defined)
-(label v501 already defined)
-(label v367 already defined)
-(label v364 already defined)
-(label v312 already defined)
-(label v213 already defined)
-(label v152 already defined)
-(label v150 already defined)
-(label v149 already defined)
-(label v133 already defined)
-(label v131 already defined)
-(label v130 already defined)
-(label v106 already defined)
-(label v101 already defined)
-(label v023 already defined)
-(label v020 already defined)
-(label v015 already defined)
-(label v013 already defined)
-(label b14 already defined)
-(label v481 already defined)
-(label m16 already defined)
-(label m12 already defined)
-(label hv129 already defined)
-(label hv122 already defined)
-(label hv121 already defined)
-(label hv108 already defined)
-(label hv106 already defined)
-(label hv105 already defined)
-(label hv104 already defined)
-(label hv101 already defined)
-(label hv123 already defined)
-(label _merge already defined)
-(label m19a already defined)
-(label m19 already defined)
-(label m18 already defined)
-(label m17 already defined)
-(label m15 already defined)
-(label m14 already defined)
-(label m10 already defined)
-(label m9 already defined)
-(label m8 already defined)
-(label m5 already defined)
-(label m4 already defined)
-(label m2n already defined)
-(label m2b already defined)
-(label m2a already defined)
-(label b15 already defined)
-(label b14 already defined)
-(label b13 already defined)
-(label b10 already defined)
-(label b9 already defined)
-(label b6 already defined)
-(label b5 already defined)
-(label b0 already defined)
-(label v730 already defined)
-(label v715 already defined)
-(label v701 already defined)
-(label v614 already defined)
-(label v613 already defined)
-(label v605 already defined)
-(label v602 already defined)
-(label v504 already defined)
-(label v501 already defined)
-(label v367 already defined)
-(label v364 already defined)
-(label v312 already defined)
-(label v230 already defined)
-(label v229 already defined)
-(label v228 already defined)
-(label v213 already defined)
-(label v151 already defined)
-(label v150 already defined)
-(label v149 already defined)
-(label v133 already defined)
-(label v131 already defined)
-(label v130 already defined)
-(label v106 already defined)
-(label v101 already defined)
-(label v025 already defined)
-(label v024 already defined)
-(label v023 already defined)
-(label v020 already defined)
-(label v019 already defined)
-(label v018 already defined)
-(label v015 already defined)
-(label v014 already defined)
-(label v013 already defined)
-(label b16 already defined)
-(label v190 already defined)
-(label LABH already defined)
-(label m16 already defined)
-(label m12 already defined)
-(label hv108 already defined)
-(label hv106 already defined)
-(label hv105 already defined)
-(label hv104 already defined)
-(label hv101 already defined)
-(label hv129 already defined)
-(label hv123 already defined)
-(label hv122 already defined)
-(label hv121 already defined)
-(label _merge already defined)
-(label m19a already defined)
-(label m19 already defined)
-(label m18 already defined)
-(label m17 already defined)
-(label m15 already defined)
-(label m14 already defined)
-(label m10 already defined)
-(label m9 already defined)
-(label m8 already defined)
-(label m5 already defined)
-(label m4 already defined)
-(label m2n already defined)
-(label m2b already defined)
-(label m2a already defined)
-(label b16 already defined)
-(label b15 already defined)
-(label b13 already defined)
-(label b10 already defined)
-(label b9 already defined)
-(label b6 already defined)
-(label b5 already defined)
-(label b0 already defined)
-(label v730 already defined)
-(label v715 already defined)
-(label v701 already defined)
-(label v614 already defined)
-(label v613 already defined)
-(label v605 already defined)
-(label v602 already defined)
-(label v504 already defined)
-(label v501 already defined)
-(label v481 already defined)
-(label v463a already defined)
-(label v457 already defined)
-(label v445 already defined)
-(label v367 already defined)
-(label v364 already defined)
-(label v312 already defined)
-(label v230 already defined)
-(label v229 already defined)
-(label v228 already defined)
-(label v213 already defined)
-(label v190 already defined)
-(label v152 already defined)
-(label v151 already defined)
-(label v150 already defined)
-(label v149 already defined)
-(label v133 already defined)
-(label v130 already defined)
-(label v106 already defined)
-(label v101 already defined)
-(label v026 already defined)
-(label v025 already defined)
-(label v024 already defined)
-(label v023 already defined)
-(label v020 already defined)
-(label v019 already defined)
-(label v018 already defined)
-(label v015 already defined)
-(label v014 already defined)
-(label v013 already defined)
-(label m16 already defined)
-(label m12 already defined)
-(label hv129 already defined)
-(label hv121 already defined)
-(label LABI already defined)
-(label LABH already defined)
-(label hv101 already defined)
-(label LABF already defined)
-(label LABD already defined)
-(label LABC already defined)
-(label _merge already defined)
-(label m19a already defined)
-(label m19 already defined)
-(label m18 already defined)
-(label m15 already defined)
-(label m14 already defined)
-(label m10 already defined)
-(label m8 already defined)
-(label m5 already defined)
-(label m4 already defined)
-(label m2n already defined)
-(label b16 already defined)
-(label b13 already defined)
-(label b9 already defined)
-(label b6 already defined)
-(label b0 already defined)
-(label v730 already defined)
-(label v701 already defined)
-(label v614 already defined)
-(label v613 already defined)
-(label v605 already defined)
-(label v602 already defined)
-(label v504 already defined)
-(label v501 already defined)
-(label LABZ already defined)
-(label v367 already defined)
-(label v364 already defined)
-(label v312 already defined)
-(label LABO already defined)
 (label LABM already defined)
-(label LABL already defined)
 (label v213 already defined)
-(label v190 already defined)
-(label LABJ already defined)
-(label v152 already defined)
-(label LABI already defined)
-(label v150 already defined)
-(label v149 already defined)
-(label v133 already defined)
-(label v130 already defined)
-(label v106 already defined)
-(label LABF already defined)
-(label LABE already defined)
-(label LABD already defined)
-(label v023 already defined)
-(label v020 already defined)
-(label LABC already defined)
-(label v015 already defined)
-(label LABB already defined)
-(label v013 already defined)
-(label v007 already defined)
-(label m16 already defined)
-(label m12 already defined)
-(label hv129 already defined)
-(label hv123 already defined)
-(label hv122 already defined)
+(label LABN already defined)
+(label LABO already defined)
+(label v312 already defined)
+(label v364 already defined)
+(label v367 already defined)
+(label v501 already defined)
+(label v504 already defined)
+(label v602 already defined)
+(label v605 already defined)
+(label v613 already defined)
+(label v614 already defined)
+(label v701 already defined)
+(label v730 already defined)
+(label b0 already defined)
+(label b6 already defined)
+(label b9 already defined)
+(label b13 already defined)
+(label b16 already defined)
+(label m2n already defined)
+(label m4 already defined)
+(label m5 already defined)
+(label m8 already defined)
+(label m10 already defined)
+(label m14 already defined)
+(label m15 already defined)
+(label m18 already defined)
+(label m19 already defined)
+(label m19a already defined)
 (label hv121 already defined)
-(label hv108 already defined)
-(label hv106 already defined)
-(label hv105 already defined)
-(label hv104 already defined)
+(label hv129 already defined)
+(label LABD already defined)
+(label LABE already defined)
 (label hv101 already defined)
+(label hv106 already defined)
+(label hv108 already defined)
+(label LABI already defined)
+(label _merge already defined)
+(label m12 already defined)
+(label m16 already defined)
+(label v481 already defined)
+(label b14 already defined)
+(label v013 already defined)
+(label v015 already defined)
+(label v020 already defined)
+(label v023 already defined)
+(label v101 already defined)
+(label v106 already defined)
+(label v130 already defined)
+(label v131 already defined)
+(label v133 already defined)
+(label v149 already defined)
+(label v150 already defined)
+(label v152 already defined)
+(label v213 already defined)
+(label v312 already defined)
+(label v364 already defined)
+(label v367 already defined)
+(label v501 already defined)
+(label v504 already defined)
+(label v602 already defined)
+(label v605 already defined)
+(label v613 already defined)
+(label v614 already defined)
+(label v701 already defined)
+(label v730 already defined)
+(label b0 already defined)
+(label b6 already defined)
+(label b9 already defined)
+(label b13 already defined)
+(label b16 already defined)
+(label m2n already defined)
+(label m4 already defined)
+(label m5 already defined)
+(label m8 already defined)
+(label m10 already defined)
+(label m14 already defined)
+(label m15 already defined)
+(label m18 already defined)
+(label m19 already defined)
+(label m19a already defined)
+(label v190 already defined)
+(label hv123 already defined)
+(label hv101 already defined)
+(label hv104 already defined)
+(label hv105 already defined)
+(label hv106 already defined)
+(label hv108 already defined)
+(label hv121 already defined)
+(label hv122 already defined)
+(label hv129 already defined)
+(label _merge already defined)
+(label m12 already defined)
+(label m16 already defined)
+(label LABH already defined)
+(label v190 already defined)
+(label b16 already defined)
+(label v013 already defined)
+(label v014 already defined)
+(label v015 already defined)
+(label v018 already defined)
+(label v019 already defined)
+(label v020 already defined)
+(label v023 already defined)
+(label v024 already defined)
+(label v025 already defined)
+(label v101 already defined)
+(label v106 already defined)
+(label v130 already defined)
+(label v131 already defined)
+(label v133 already defined)
+(label v149 already defined)
+(label v150 already defined)
+(label v151 already defined)
+(label v213 already defined)
+(label v228 already defined)
+(label v229 already defined)
+(label v230 already defined)
+(label v312 already defined)
+(label v364 already defined)
+(label v367 already defined)
+(label v501 already defined)
+(label v504 already defined)
+(label v602 already defined)
+(label v605 already defined)
+(label v613 already defined)
+(label v614 already defined)
+(label v701 already defined)
+(label v715 already defined)
+(label v730 already defined)
+(label b0 already defined)
+(label b5 already defined)
+(label b6 already defined)
+(label b9 already defined)
+(label b10 already defined)
+(label b13 already defined)
+(label b14 already defined)
+(label b15 already defined)
+(label m2a already defined)
+(label m2b already defined)
+(label m2n already defined)
+(label m4 already defined)
+(label m5 already defined)
+(label m8 already defined)
+(label m9 already defined)
+(label m10 already defined)
+(label m14 already defined)
+(label m15 already defined)
+(label m17 already defined)
+(label m18 already defined)
+(label m19 already defined)
+(label m19a already defined)
+(label hv121 already defined)
+(label hv122 already defined)
+(label hv123 already defined)
+(label hv129 already defined)
+(label hv101 already defined)
+(label hv104 already defined)
+(label hv105 already defined)
+(label hv106 already defined)
+(label hv108 already defined)
+(label _merge already defined)
+(label m12 already defined)
+(label m16 already defined)
+(label v013 already defined)
+(label v014 already defined)
+(label v015 already defined)
+(label v018 already defined)
+(label v019 already defined)
+(label v020 already defined)
+(label v023 already defined)
+(label v024 already defined)
+(label v025 already defined)
+(label v026 already defined)
+(label v101 already defined)
+(label v106 already defined)
+(label v130 already defined)
+(label v133 already defined)
+(label v149 already defined)
+(label v150 already defined)
+(label v151 already defined)
+(label v152 already defined)
+(label v190 already defined)
+(label v213 already defined)
+(label v228 already defined)
+(label v229 already defined)
+(label v230 already defined)
+(label v312 already defined)
+(label v364 already defined)
+(label v367 already defined)
+(label v445 already defined)
+(label v457 already defined)
+(label v463a already defined)
+(label v481 already defined)
+(label v501 already defined)
+(label v504 already defined)
+(label v602 already defined)
+(label v605 already defined)
+(label v613 already defined)
+(label v614 already defined)
+(label v701 already defined)
+(label v715 already defined)
+(label v730 already defined)
+(label b0 already defined)
+(label b5 already defined)
+(label b6 already defined)
+(label b9 already defined)
+(label b10 already defined)
+(label b13 already defined)
+(label b15 already defined)
+(label b16 already defined)
+(label m2a already defined)
+(label m2b already defined)
+(label m2n already defined)
+(label m4 already defined)
+(label m5 already defined)
+(label m8 already defined)
+(label m9 already defined)
+(label m10 already defined)
+(label m14 already defined)
+(label m15 already defined)
+(label m17 already defined)
+(label m18 already defined)
+(label m19 already defined)
+(label m19a already defined)
+(label LABC already defined)
+(label LABD already defined)
+(label LABF already defined)
+(label hv101 already defined)
+(label LABH already defined)
+(label LABI already defined)
+(label hv121 already defined)
+(label hv129 already defined)
+(label _merge already defined)
+(label m12 already defined)
+(label m16 already defined)
+(label v007 already defined)
+(label v013 already defined)
+(label LABB already defined)
+(label v015 already defined)
+(label LABC already defined)
+(label v020 already defined)
+(label v023 already defined)
+(label LABD already defined)
+(label LABE already defined)
+(label LABF already defined)
+(label v106 already defined)
+(label v130 already defined)
+(label v133 already defined)
+(label v149 already defined)
+(label v150 already defined)
+(label LABI already defined)
+(label v152 already defined)
+(label LABJ already defined)
+(label v190 already defined)
+(label v213 already defined)
+(label LABL already defined)
+(label LABM already defined)
+(label LABO already defined)
+(label v312 already defined)
+(label v364 already defined)
+(label v367 already defined)
+(label LABZ already defined)
+(label v501 already defined)
+(label v504 already defined)
+(label v602 already defined)
+(label v605 already defined)
+(label v613 already defined)
+(label v614 already defined)
+(label v701 already defined)
+(label v730 already defined)
+(label b0 already defined)
+(label b6 already defined)
+(label b9 already defined)
+(label b13 already defined)
+(label b16 already defined)
+(label m2n already defined)
+(label m4 already defined)
+(label m5 already defined)
+(label m8 already defined)
+(label m10 already defined)
+(label m14 already defined)
+(label m15 already defined)
+(label m18 already defined)
+(label m19 already defined)
+(label m19a already defined)
+(label hv101 already defined)
+(label hv104 already defined)
+(label hv105 already defined)
+(label hv106 already defined)
+(label hv108 already defined)
+(label hv121 already defined)
+(label hv122 already defined)
+(label hv123 already defined)
+(label hv129 already defined)
 
 . 
 . foreach num of numlist 1(1)7 {
@@ -668,27 +746,27 @@ v003 was byte now int
   2.         replace `year'=`year'+2000 if _cou=="Nepal" & `year'<100
   3.         replace `year'=`year'-57 if _cou=="Nepal"
   4. }
-(29215 real changes made)
-(111268 real changes made)
-(29215 real changes made)
-(111268 real changes made)
+(29156 real changes made)
+(111120 real changes made)
+(29156 real changes made)
+(111120 real changes made)
 
 . ***Year of birth for Ethiopia (convert from Ge'ez to Gregorian calendar)
 . foreach year of varlist child_yob year_birth {
   2.         replace `year'=`year'+8 if _cou=="Ethiopia"
   3. }
-(129672 real changes made)
-(129672 real changes made)
+(129595 real changes made)
+(129595 real changes made)
 
 . 
 . replace child_yob=child_yob+1900 if child_yob<100&child_yob>2
-(2952497 real changes made)
+(2918134 real changes made)
 
 . replace child_yob=child_yob+2000 if child_yob<=2
-(2198 real changes made)
+(2192 real changes made)
 
 . replace year_birth=year_birth+1900 if year_birth<100
-(2954695 real changes made)
+(2920326 real changes made)
 
 . 
 . save $PATH/Data/DHS_twins, replace
@@ -718,7 +796,7 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
 . 
 . gen twin_bord=bord-twin+1 if twin>0
-(6597215 missing values generated)
+(6543069 missing values generated)
 
 . 
 . foreach num in two three four five {
@@ -731,10 +809,10 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
   8.         local ++max
   9.         local ++fert
  10. }
-(13551 real changes made)
-(34244 real changes made)
-(47219 real changes made)
-(52336 real changes made)
+(13462 real changes made)
+(34046 real changes made)
+(46945 real changes made)
+(51990 real changes made)
 
 . 
 . 
@@ -743,66 +821,66 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . ********************************************************************************
 . *** Attendance (attend_year==2 is sometimes)
 . gen attendance=0 if attend_year==0
-(5626468 missing values generated)
+(5592655 missing values generated)
 
 . replace attendance=1 if attend_year==2
-(493838 real changes made)
+(486610 real changes made)
 
 . replace attendance=2 if attend_year==1
-(394488 real changes made)
+(387569 real changes made)
 
 . replace attendance=. if age<6
-(763384 real changes made, 763384 to missing)
+(755963 real changes made, 755963 to missing)
 
 . 
 . *** Z-Score
 . replace educ=. if educ>25 // come back here when compiling summary stats.
-(13324 real changes made, 13324 to missing)
+(12903 real changes made, 12903 to missing)
 
 . bys _cou age: egen sd_educ=sd(educ)
-(209305 missing values generated)
+(209954 missing values generated)
 
 . bys _cou age: egen mean_educ=mean(educ)
-(198354 missing values generated)
+(198177 missing values generated)
 
 . gen school_zscore=(educ-mean_educ)/sd_educ
-(4053257 missing values generated)
+(4096740 missing values generated)
 
 . replace school_zscore=. if age<6
-(261291 real changes made, 261291 to missing)
+(253567 real changes made, 253567 to missing)
 
 . 
 . *** Highschool
 . gen highschool=1 if (educlevel==2|educlevel==3)&age>=11
-(6097270 missing values generated)
+(6063765 missing values generated)
 
 . replace highschool=0 if (educlevel==0|educlevel==1)&age>=11
-(782924 real changes made)
+(745613 real changes made)
 
 . 
 . *** No Educ
 . gen noeduc=1 if educlevel==0&age>6
-(6427372 missing values generated)
+(6393404 missing values generated)
 
 . replace noeduc=0 if (educlevel==1|educlevel==2|educlevel==3)&age>6
-(1908751 real changes made)
+(1845072 real changes made)
 
 . 
 . *** Health
 . gen childsurvive=child_alive
 
 . gen childageatdeath=b7/12
-(5878347 missing values generated)
+(5825861 missing values generated)
 
 . gen infantmortality=childageatdeath<=1
 
 . replace infantmortality=. if age<1
-(324359 real changes made, 324359 to missing)
+(321729 real changes made, 321729 to missing)
 
 . gen childmortality=childageatdeath<=5
 
 . replace childmortality=. if age<5
-(1534888 real changes made, 1534888 to missing)
+(1520337 real changes made, 1520337 to missing)
 
 . 
 . ********************************************************************************
@@ -811,14 +889,14 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . gen ALL=1
 
 . gen gender="F" if sex==2
-(3459479 missing values generated)
+(3429554 missing values generated)
 
 . replace gender="M" if sex==1
-(3459470 real changes made)
+(3429545 real changes made)
 
 . 
 . gen educfyrs_sq=educf*educf
-(2078 missing values generated)
+(2057 missing values generated)
 
 . gen educf_0=educf==0
 
@@ -831,10 +909,10 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 . gen educf_11plus=educf>10
 
 . gen twind=1 if twin>=1&twin!=.
-(6597215 missing values generated)
+(6543069 missing values generated)
 
 . replace twind=0 if twin==0
-(6597215 real changes made)
+(6543069 real changes made)
 
 . gen twind100=twin*100
 
@@ -842,33 +920,33 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
 . 
 . replace educp=. if educp>25
-(188538 real changes made, 188538 to missing)
+(186863 real changes made, 186863 to missing)
 
 . 
 . replace height=height/10
 height was int now float
-(3711955 real changes made)
+(3689159 real changes made)
 
 . replace weight=weight/10
 weightk was int now float
-(3711918 real changes made)
+(3689140 real changes made)
 
 . replace bmi=bmi/100
 bmi was int now float
-(3709400 real changes made)
+(3686643 real changes made)
 
 . replace antenatal=. if antenatal>20
-(20095 real changes made, 20095 to missing)
+(19840 real changes made, 19840 to missing)
 
 . gen antenateDummy=antenatal!=0 if antenatal!=.
-(5615591 missing values generated)
+(5572386 missing values generated)
 
 . foreach var of varlist prenate_doc prenate_nurse prenate_none {
   2.         replace `var'=. if `var'==9
   3. }
-(1103 real changes made, 1103 to missing)
-(1103 real changes made, 1103 to missing)
-(817 real changes made, 817 to missing)
+(1098 real changes made, 1098 to missing)
+(1098 real changes made, 1098 to missing)
+(814 real changes made, 814 to missing)
 
 . 
 . gen poor1=wealth==1
@@ -885,21 +963,21 @@ bmi was int now float
 . gen motheragecub= motherage^3
 
 . gen antesq = antenatal^2
-(5615591 missing values generated)
+(5572386 missing values generated)
 
 . 
 . gen bmi_sq    = bmi*bmi
-(3043348 missing values generated)
+(3010754 missing values generated)
 
 . gen height_sq = height*height
-(3040793 missing values generated)
+(3008238 missing values generated)
 
 . 
 . gen underweight=bmi<=18.5 if bmi!=.
-(3043348 missing values generated)
+(3010754 missing values generated)
 
 . gen overweight =bmi>25 if bmi!=.
-(3043348 missing values generated)
+(3010754 missing values generated)
 
 . 
 . *** General variables (country year)
@@ -916,7 +994,7 @@ bmi was int now float
 . bys id: egen twinfamily=max(twin)
 
 . bys id: egen twin_bord_fam=max(twin_bord)
-(6291208 missing values generated)
+(6239709 missing values generated)
 
 . bys id: egen nummultiple=max(twin)
 
@@ -933,15 +1011,15 @@ bmi was int now float
 . *** (3E) Fertility variables
 . ********************************************************************************
 . gen idealnumkids=v613 if v613<25
-(814022 missing values generated)
+(805504 missing values generated)
 
 . gen lastbirth=fert==bord&twin==0
 
 . replace lastbirth=1 if (twin_bord==(fert-1))&nummultiple==2
-(52886 real changes made)
+(52419 real changes made)
 
 . replace lastbirth=1 if (twin_bord==(fert-2))&nummultiple==3
-(980 real changes made)
+(974 real changes made)
 
 . replace lastbirth=1 if (twin_bord==(fert-3))&nummultiple==4
 (40 real changes made)
@@ -950,20 +1028,20 @@ bmi was int now float
 . gen wantedbirth=bord<=idealnumkids
 
 . gen idealfam=0 if idealnumkids==fert
-(5451159 missing values generated)
+(5404935 missing values generated)
 
 . replace idealfam=1 if idealnumkids<fert
-(2764183 real changes made)
+(2747361 real changes made)
 
 . replace idealfam=-1 if idealnumkids>fert
-(2686976 real changes made)
+(2657574 real changes made)
 
 . 
 . gen quant_exceed=fert-idealnumkids
-(814022 missing values generated)
+(805504 missing values generated)
 
 . gen exceeder=1 if bord-idealnumkids==1
-(6248702 missing values generated)
+(6196568 missing values generated)
 
 . gen twinexceeder=exceeder==1&(twin==2|twin==3|twin==4)
 
@@ -990,16 +1068,16 @@ bmi was int now float
 . 
 . **Generate sub-region (and ethnicity) specific desired fertility
 . bys _cou v001: egen desiredfert_cluster=mean(idealnumkids)
-(18768 missing values generated)
+(18712 missing values generated)
 
 . bys _cou _year v001: egen desiredfert_clusterYEAR=mean(idealnumkids)
-(72722 missing values generated)
+(71802 missing values generated)
 
 . bys _cou v101: egen desiredfert_region=mean(idealnumkids)
-(11677 missing values generated)
+(11653 missing values generated)
 
 . bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
-(9925 missing values generated)
+(9917 missing values generated)
 
 . 
 . 
@@ -1223,13 +1301,13 @@ bmi was int now float
 . if `oldway'==0 {
 .         gen WBcountry=subinstr(country, "-", " ", .)
 .         replace WBcountry="Congo, Dem. Rep." if WBcountry=="Congo Democratic Republic"
-(29648 real changes made)
+(29548 real changes made)
 .         replace WBcountry="Cote d'Ivoire" if WBcountry=="Cote d Ivoire"
-(75234 real changes made)
+(74014 real changes made)
 .         replace WBcountry="Egypt, Arab Rep." if WBcountry=="Egypt"
-(295304 real changes made)
+(294830 real changes made)
 .         replace WBcountry="Yemen, Rep." if WBcountry=="Yemen"
-(29940 real changes made)
+(29803 real changes made)
 .         destring _year, replace
 _year has all characters numeric; replaced as int
 .         
@@ -1238,18 +1316,18 @@ WBcountry was str25 now str30
 
     Result                           # of obs.
     -----------------------------------------
-    not matched                       149,629
-        from master                   144,241  (_incmerge==1)
-        from using                      5,388  (_incmerge==2)
+    not matched                       149,480
+        from master                   144,091  (_incmerge==1)
+        from using                      5,389  (_incmerge==2)
 
-    matched                         6,608,507  (_incmerge==3)
+    matched                         6,553,306  (_incmerge==3)
     -----------------------------------------
 .         replace inc_status="LM" if WBcountry=="Brazil" & _year==1986
 (12356 real changes made)
 .         replace inc_status="LM" if WBcountry=="Colombia" & _year==1986
 (11622 real changes made)
 .         replace inc_status="LM" if WBcountry=="Congo Brazzaville"
-(48785 real changes made)
+(48635 real changes made)
 .         replace inc_status="LM" if WBcountry=="Dominican Republic" & _year==1986        
 (20151 real changes made)
 .         replace inc_status="LM" if WBcountry=="El Salvador" & _year==1985
@@ -1263,7 +1341,7 @@ WBcountry was str25 now str30
 .         tostring _year, replace
 _year was int now str4
 .         keep if _incmerge!=2
-(5388 observations deleted)
+(5389 observations deleted)
 . }
 
 . 
@@ -1355,14 +1433,17 @@ end of do-file
 
 . 
 . gen income="low" if inc_status=="L"
-(2732524 missing values generated)
+(2703742 missing values generated)
 
 . replace income="mid" if inc_status!="L"
-(2732524 real changes made)
+(2703742 real changes made)
 
 . ********************************************************************************
 . *** (6) Keep required variables.  Save data as working file.
 . ********************************************************************************
+. save "$PATH/Data/DHS_twins_FULL", replace
+file ~/investigacion/Activa/Twins/Data/DHS_twins_FULL.dta saved
+
 . keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /*
 > */ four_plus five_plus two_plus_twins three_plus_twins four_plus_twins         /*
 > */ five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id  /*
@@ -1383,68 +1464,9 @@ end of do-file
 . save "$PATH/Data/DHS_twins", replace
 file ~/investigacion/Activa/Twins/Data/DHS_twins.dta saved
 
-. 
-. 
-end of do-file
-
-. 
-. dis _newline(25)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-. do Twin_Regressions.do
-
-. /* Regressions 3.01              damiancclarke             yyyy-mm-dd:2013-04-15
-> *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
-> */
-. 
-. /* This file contains all regression results that are being used in the Twin 
-> Instrument paper.  These include
->         - Summary.xls (sum stats)
->         - Summary_Birthorder.xls
->    - Twin_Predict.xls
->    - ...
-> 
-> This do file uses as input the data file DHS_Twins, which is generated by the
-> file Twin_Setup.do.  Currently it includes all DHS files available up until 
-> October 2013.  Files are downloaded and imported to Stata using the files 
-> DHS_Import.py and DHS_Multicountry.do.
-> 
-> Last edit:
-> * May 10th, 2014: testing for 35+ as well.
-> * December 17th, 2013: considerable rewrite based on comments in 22 Nov email.
-> Can revert by going back to git commit Nov 11 2013.
-> * September 12th, 2013: Address Paul Dev's comment about treatment
-> * August 5th, 2013: Update figures and tables based on Sonia's comme-
-> nts on early draft.
-> */
-. 
-. clear all
-
-. version 11.2
-
-. cap log close
+. log close
+      name:  <unnamed>
+       log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twins_Setup.txt
+  log type:  text
+ closed on:  21 May 2014, 18:20:01
+-----------------------------------------------------------------------------------------------------------------
