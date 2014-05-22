@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twin_Regressions.log
   log type:  text
- opened on:  22 May 2014, 00:30:54
+ opened on:  22 May 2014, 15:47:04
 
 . use "$Data/DHS_twins", clear
 
@@ -911,459 +911,529 @@ file ~/investigacion/Activa/Twins/Data/DHS_twins_mortality.dta saved
 .                 estimates clear
  26.                 macro shift
  27.         }
-(3234643 observations deleted)
-(sum of wgt is     2.4786e+11)
-Warning - collinearities detected
-Vars dropped:       _country20 _country22 _country32 _country43 _country44
-                    _country52 _country53 _country55 _country60 _country61
-                    _country62 _country65 _country67 _country68 _country71
-                    _country73 _country74 _country76 _yb1 _yb2 _yb3 _yb4 _yb5
-                    _yb6 _yb7 _yb57 _yb58 _yb59 _yb60 _yb61 _yb62 _yb63 _age1
-                    _age2 _age3 _age4 _age5 _age6 _age19 _age20 _age21 _age22
-                    _age23 _age24 _age25 _age26 _age27 _age28 _age29 _age30
-                    _age31 _age32 _age33 _age34 _age35 _age36 _age37 _age38
-                    _age39 _age40 _age41 _age42 _age43 _age44 _age45 _age46
-                    _age47 _age48 _age49 _age50 _age51 _age52 _age53 _contracep4
-                    _contracep5
+. }
 
-Stored estimation results
--------------------------
----------------------------------------------------------------------------
-        name | command      depvar       npar  title 
--------------+-------------------------------------------------------------
-      f3fert | ivreg2       fert          133  First-stage regression: fert
----------------------------------------------------------------------------
+. 
+. ********************************************************************************
+. **** (6) IV including twins and pre-twins
+. ********************************************************************************
+. if `IVtwin'==1 {
+.         local n1=1
+.         local n2=2
+.         local n3=3
+.         local estimates
+.         local firststage
+. 
+.         foreach n in `gplus' {
+  2.                 preserve
+  3.                 keep `cond'&`n'_plus_twins==1
+  4. 
+.                 foreach y of varlist $outcomes {
+  5.                         eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt', /*
+>                         */ `se' savefirst savefp(f`n3')
+  6.                         eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' if e(sample),   /*
+>                         */ `se' savefirst savefp(f`n2')
+  7.                         eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample), /*
+>                         */ `se' savefirst savefp(f`n1')
+  8. 
+.                         local estimates `estimates' est`n3' est`n2' est`n1' 
+  9.                         local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+ 10.                         local n1=`n1'+3
+ 11.                         local n2=`n2'+3
+ 12.                         local n3=`n3'+3
+ 13.                 }
+ 14.                 restore
+ 15.         }
+. 
+.         estout `estimates' using "$Tables/IV/`IVt'.xls", replace ///
+>         keep(fert malec $age $S $H) `estopt' `varlab'
+. 
+.         estout `firststage' using "$Tables/IV/`IVt1'.xls", replace ///
+>         keep(twin_* malec $age $S $H) `estopt' `varlab' 
+.         
+.         estimates clear
+. }
 
-IV (2SLS) estimation
---------------------
+. 
+. 
+. ********************************************************************************
+. **** (7) IV with twin threshold
+. ********************************************************************************
+. if `desire'==1 {
+.         *gen idealbarrier=floor(idealnumkids)
+.         gen idealbarrier=floor(desiredfert_region)
+.         
+.         local endog fert fertXthreshold
+.         foreach inc in /*all low*/ mid F M {
+  2.                 if "`inc'"=="all" local cex
+  3.                 else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
+  4.                 else if "`inc'"=="F"|"`inc'"=="M" local cex &gender=="`inc'"
+  5. 
+.                 local n1=1
+  6.                 local n2=2
+  7.                 local n3=3
+  8.                 local estimates
+  9.                 local firststage
+ 10. 
+.                 local t=2
+ 11.                 foreach n in `gplus' {
+ 12.                         preserve
+ 13.                         keep `cond'&`n'_plus==1 `cex'
+ 14.                         gen threshold=(twin_`n'_fam==1 & idealbarrier==`t')
+ 15.                         gen fertXthreshold=fert*threshold
+ 16.                         gen desired=idealbarrier<=`t'
+ 17.                         
+.                         cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
+ 18.                         local insts twin_`n'_fam twin`n'Xthreshold
+ 19. 
+.                         foreach y of varlist $outcomes {
+ 20.                                 eststo: ivreg2 `y' `base' $age $S $H desired (`endog' = `insts') /*
+>                                 */ `wt', `se' savefirst savefp(f`n3')
+ 21.                                 eststo: ivreg2 `y' `base' $age $S desired (`endog' = `insts') /*
+>                                 */ `wt' if e(sample), `se' savefirst savefp(f`n2')
+ 22.                                 eststo: ivreg2 `y' `base' desired (`endog' = `insts') /*
+>                                 */ `wt' if e(sample), `se' savefirst savefp(f`n1')
+ 23. 
+.                                 local estimates `estimates' est`n3' est`n2' est`n1'
+ 24.                                 local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+ 25.                 
+.                                 local n1=`n1'+3
+ 26.                                 local n2=`n2'+3
+ 27.                                 local n3=`n3'+3
+ 28.                                 }
+ 29.                         local ++t
+ 30.                         drop threshold fertXthreshold desired
+ 31.                         restore
+ 32.                 }
+ 33. 
+.                 estout `estimates' using "$Tables/IV/`IVdes'_`inc'.xls", replace ///
+>                  keep(fert fertXthreshold $age $S $H) `estopt' `varlab'
+ 34. 
+.                 estout `firststage' using "$Tables/IV/`IVdes1'_`inc'.xls", replace ///
+>                  keep(twin* $age $S $H) `estopt' `varlab'
+ 35.         
+.                 estimates clear
+ 36.         }
+. }
 
-Estimates efficient for homoskedasticity only
-Statistics robust to heteroskedasticity and clustering on id
+. 
+. *NOTE: for coefficients estimated separately by desire, roll back and see here.
+. ********************************************************************************
+. **** (9) New results 04/01/2013.  This first section is a quick look at whether
+. ***  truncated and non truncated fertility look similar in terms of 1st stage.
+. ***  Also, the IMR test (pre-twins) is included as `twinoccur'
+. ********************************************************************************
+. if `compl_fert'==1 {
+.         local n1=1
+.         local n2=2
+.         local n3=3
+.         local estimates
+. 
+.         foreach age of numlist 35 40 {
+  2.                 foreach n in `gplus' {
+  3.                         local c  `cond'&agemay>`age'&`n'_plus==1
+  4.                         local ce `cond'&agemay>`age'&`n'_plus==1&e(sample)
+  5.                         foreach y of varlist $outcomes {
+  6.                                 eststo: reg fert `base' $age $S $H twin_`n'_fam `wt' `c'&`y'!=., `se'
+  7.                                 eststo: reg fert `base' $age $S twin_`n'_fam `wt' `ce', `se'
+  8.                                 eststo: reg fert `base' twin_`n'_fam `wt' `ce', `se'
+  9. 
+.                                 local estimates `estimates' est`n3' est`n2' est`n1' 
+ 10.                                 local n1=`n1'+3
+ 11.                                 local n2=`n2'+3
+ 12.                                 local n3=`n3'+3
+ 13.                         }
+ 14.                 }
+ 15.         }
+.                 
+.         estout `estimates' using "$Tables/New/NewFirst.xls", replace ///
+>         keep(twin* malec $age $S $H _contracep*) `estopt'
+.         
+.         estimates clear
+. }
 
-Number of clusters (id) =       249536                Number of obs =   249536
-                                                      F(132,249535) = 12868.11
-                                                      Prob > F      =   0.0000
-Total (centered) SS     =  227504.7498                Centered R2   =   0.1726
-Total (uncentered) SS   =  230628.2659                Uncentered R2 =   0.1839
-Residual SS             =  188226.7883                Root MSE      =    .8685
+. 
+. if `twinoccur_ols'==1 {
+.         preserve
+.         use "$Data/DHS_twins_mortality"
+.         
+.         gen ta=age if twind==1
+.         bys id: egen twinage=min(ta)
+.         gen twinagedif=twinage-age
+.         
+.         gen treated=twinfamily>=1&twinagedif>1&twinagedif!=.
+.         replace treated=. if twinfamily>=1&twinagedif<1
+.         tab treated
+. 
+.         local n1=1
+.         local n2=2
+.         local n3=3
+.         local estimates
+. 
+.         replace infantmortality=infantmortality*100
+.         foreach n in `gplus' {
+  2.                 local c  `cond'&`n'_plus==1
+  3.                 local ce `cond'&`n'_plus==1&e(sample)
+  4.                 eststo: reg infantmortality `base' $age $S $H treated `wt' `c', `se'
+  5.                 eststo: reg infantmortality `base' $age $S treated `wt' `ce', `se'
+  6.                 eststo: reg infantmortality `base' $age treated `wt' `ce', `se'
+  7. 
+.                 local estimates `estimates' est`n3' est`n2' est`n1' 
+  8.                 local n1=`n1'+3
+  9.                 local n2=`n2'+3
+ 10.                 local n3=`n3'+3
+ 11.         }
+.         
+.                 
+.         estout `estimates' using "$Tables/New/PreTwinTest.xls", replace ///
+>         keep(treated malec $age $S $H) `estopt' 
+.         estimates clear
+. 
+.         restore
+. }
 
--------------------------------------------------------------------------------
-              |               Robust
-school_zscore |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
---------------+----------------------------------------------------------------
-         fert |   -.026371   .0261416    -1.01   0.313    -.0776076    .0248656
-        malec |  -.0237293   .0048033    -4.94   0.000    -.0331436   -.0143149
-    _country1 |  -.3596484   .0327834   -10.97   0.000    -.4239027   -.2953941
-    _country2 |  -.5164591   .0320038   -16.14   0.000    -.5791854   -.4537327
-    _country3 |  -.4352985   .0340148   -12.80   0.000    -.5019662   -.3686308
-    _country4 |   .4432809   .0258933    17.12   0.000     .3925311    .4940308
-    _country5 |   .6288297    .023215    27.09   0.000     .5833291    .6743302
-    _country6 |   .0906697   .0205284     4.42   0.000     .0504348    .1309047
-    _country7 |   .3227108   .0385533     8.37   0.000     .2471476     .398274
-    _country8 |   .5615853    .022015    25.51   0.000     .5184368    .6047338
-    _country9 |   .3798848   .0455624     8.34   0.000     .2905841    .4691854
-   _country10 |   .4373855   .0232278    18.83   0.000       .39186    .4829111
-   _country11 |   .2067806   .0316536     6.53   0.000     .1447407    .2688204
-   _country12 |   .5788677   .0444582    13.02   0.000     .4917312    .6660042
-   _country13 |   .5748467   .0294469    19.52   0.000     .5171317    .6325616
-   _country14 |  -.0426347   .0228431    -1.87   0.062    -.0874064    .0021369
-   _country15 |   .5304389   .0782193     6.78   0.000     .3771319     .683746
-   _country16 |   .1248066   .0389773     3.20   0.001     .0484126    .2012007
-   _country17 |   .3010189   .0518813     5.80   0.000     .1993334    .4027044
-   _country18 |   .5477578   .0327256    16.74   0.000     .4836168    .6118987
-   _country19 |  -.0838841   .0308473    -2.72   0.007    -.1443437   -.0234245
-   _country21 |   .0511917   .0182853     2.80   0.005     .0153532    .0870302
-   _country23 |   .5695075   .0255102    22.32   0.000     .5195084    .6195067
-   _country24 |   .2494059   .0475629     5.24   0.000     .1561843    .3426274
-   _country25 |    .227627   .0253325     8.99   0.000     .1779762    .2772778
-   _country26 |    .579084   .0339822    17.04   0.000       .51248     .645688
-   _country27 |     .59609   .0321126    18.56   0.000     .5331506    .6590295
-   _country28 |  -.4281329   .0416145   -10.29   0.000    -.5096958   -.3465701
-   _country29 |   .4686738    .028379    16.51   0.000      .413052    .5242956
-   _country30 |   .1242822   .0207328     5.99   0.000     .0836467    .1649178
-   _country31 |      .3978   .0238691    16.67   0.000     .3510175    .4445826
-   _country33 |  -.0951366   .0432901    -2.20   0.028    -.1799837   -.0102895
-   _country34 |  -.2471743   .0417799    -5.92   0.000    -.3290613   -.1652872
-   _country35 |   .2102218   .0276654     7.60   0.000     .1559986     .264445
-   _country36 |  -.2710334   .0400329    -6.77   0.000    -.3494965   -.1925703
-   _country37 |   -.047357   .0334353    -1.42   0.157     -.112889     .018175
-   _country38 |    .380919   .0392374     9.71   0.000     .3040151     .457823
-   _country39 |   .4792914    .026213    18.28   0.000      .427915    .5306678
-   _country40 |   .2474586    .023186    10.67   0.000     .2020149    .2929023
-   _country41 |   .1415982   .0368697     3.84   0.000     .0693349    .2138616
-   _country42 |   .6796616   .0277938    24.45   0.000     .6251867    .7341365
-   _country45 |   .5020819   .0225021    22.31   0.000     .4579787    .5461851
-   _country46 |    .378559   .0246518    15.36   0.000     .3302423    .4268757
-   _country47 |   .0388755   .0319625     1.22   0.224    -.0237699    .1015208
-   _country48 |   .4439475   .0254798    17.42   0.000      .394008    .4938869
-   _country49 |   .3780257   .0227957    16.58   0.000      .333347    .4227043
-   _country50 |    .577323   .0307418    18.78   0.000     .5170701    .6375759
-   _country51 |   .3289376    .030533    10.77   0.000      .269094    .3887812
-   _country54 |   .1815552   .0204452     8.88   0.000     .1414833    .2216271
-   _country56 |   .1741435    .027866     6.25   0.000     .1195272    .2287597
-   _country57 |   .1355615    .056883     2.38   0.017     .0240729    .2470501
-   _country58 |   .5706896   .0316411    18.04   0.000     .5086741    .6327051
-   _country59 |    .403914   .0492034     8.21   0.000      .307477    .5003509
-   _country63 |   -.134318   .0470143    -2.86   0.004    -.2264643   -.0421717
-   _country64 |   .2603929   .0253522    10.27   0.000     .2107036    .3100822
-   _country66 |   .5377465   .0470949    11.42   0.000     .4454422    .6300509
-   _country69 |   .1331333   .0259511     5.13   0.000     .0822702    .1839965
-   _country70 |   .3442674   .0361054     9.54   0.000     .2735021    .4150327
-   _country72 |  -.2778347   .0380702    -7.30   0.000     -.352451   -.2032184
-   _country75 |   .2951819   .0260986    11.31   0.000     .2440296    .3463342
-         _yb8 |  -2.863709   .5048535    -5.67   0.000    -3.853203   -1.874214
-         _yb9 |  -1.711948   .7275791    -2.35   0.019    -3.137976   -.2859188
-        _yb10 |  -.2138247   .6692701    -0.32   0.749     -1.52557    1.097921
-        _yb11 |  -1.232525   .5684958    -2.17   0.030    -2.346757   -.1182942
-        _yb12 |  -.8025106   .5340336    -1.50   0.133    -1.849197    .2441761
-        _yb13 |   -1.11441   .4998767    -2.23   0.026     -2.09415   -.1346692
-        _yb14 |  -.9940728   .4854107    -2.05   0.041     -1.94546   -.0426853
-        _yb15 |  -1.095047   .4863656    -2.25   0.024    -2.048306    -.141788
-        _yb16 |  -1.059055   .4808253    -2.20   0.028    -2.001456   -.1166551
-        _yb17 |  -.8865221   .4789061    -1.85   0.064    -1.825161    .0521167
-        _yb18 |  -.8691969   .4765694    -1.82   0.068    -1.803256     .064862
-        _yb19 |  -.9299916   .4757874    -1.95   0.051    -1.862518    .0025346
-        _yb20 |  -.8814975   .4744497    -1.86   0.063    -1.811402    .0484067
-        _yb21 |  -.8612096   .4743604    -1.82   0.069    -1.790939    .0685198
-        _yb22 |  -.8768362   .4739742    -1.85   0.064    -1.805809    .0521362
-        _yb23 |  -.8657872    .473627    -1.83   0.068    -1.794079    .0625047
-        _yb24 |  -.8021206   .4727478    -1.70   0.090    -1.728689     .124448
-        _yb25 |  -.8158502   .4724491    -1.73   0.084    -1.741833    .1101329
-        _yb26 |  -.8389923   .4722536    -1.78   0.076    -1.764592    .0866078
-        _yb27 |  -.8322148   .4721226    -1.76   0.078    -1.757558    .0931285
-        _yb28 |   -.798574   .4719411    -1.69   0.091    -1.723561    .1264136
-        _yb29 |  -.7798781    .471659    -1.65   0.098    -1.704313    .1445565
-        _yb30 |  -.7788893   .4713657    -1.65   0.098    -1.702749    .1449705
-        _yb31 |  -.7996159   .4712767    -1.70   0.090    -1.723301    .1240694
-        _yb32 |  -.7789997   .4711597    -1.65   0.098    -1.702456    .1444564
-        _yb33 |  -.7549079   .4709734    -1.60   0.109    -1.677999     .168183
-        _yb34 |  -.7805345   .4708801    -1.66   0.097    -1.703443    .1423736
-        _yb35 |  -.7407011   .4707492    -1.57   0.116    -1.663353    .1819503
-        _yb36 |  -.7349235   .4706699    -1.56   0.118     -1.65742    .1875727
-        _yb37 |  -.7212311   .4706107    -1.53   0.125    -1.643611    .2011489
-        _yb38 |  -.6984742   .4705257    -1.48   0.138    -1.620688    .2237392
-        _yb39 |  -.7015857   .4705007    -1.49   0.136     -1.62375    .2205787
-        _yb40 |  -.6600645   .4703831    -1.40   0.161    -1.581999    .2618695
-        _yb41 |  -.6583872   .4702879    -1.40   0.162    -1.580135    .2633601
-        _yb42 |  -.6458113   .4703167    -1.37   0.170    -1.567615    .2759925
-        _yb43 |  -.6547942   .4702011    -1.39   0.164    -1.576371    .2667829
-        _yb44 |  -.6513524   .4701351    -1.39   0.166      -1.5728    .2700954
-        _yb45 |  -.6165502   .4701131    -1.31   0.190    -1.537955    .3048545
-        _yb46 |  -.6210042   .4700271    -1.32   0.186     -1.54224    .3002319
-        _yb47 |  -.6418641   .4699857    -1.37   0.172    -1.563019     .279291
-        _yb48 |  -.6085111     .46992    -1.29   0.195    -1.529537    .3125152
-        _yb49 |  -.5996382   .4698714    -1.28   0.202    -1.520569    .3212928
-        _yb50 |  -.6287909   .4700295    -1.34   0.181    -1.550032      .29245
-        _yb51 |   -.642179   .4703328    -1.37   0.172    -1.564014    .2796563
-        _yb52 |  -.6519173    .470294    -1.39   0.166    -1.573677     .269842
-        _yb53 |  -.6781094   .4709666    -1.44   0.150    -1.601187    .2449682
-        _yb54 |  -.7545462   .4715587    -1.60   0.110    -1.678784    .1696918
-        _yb55 |  -.7334599   .4782336    -1.53   0.125    -1.670781    .2038608
-        _yb56 |  -.8639788   .4736747    -1.82   0.068    -1.792364    .0644066
-        _age7 |  -.3333659   .0450045    -7.41   0.000    -.4215732   -.2451587
-        _age8 |  -.2656697   .0402869    -6.59   0.000    -.3446305   -.1867089
-        _age9 |  -.2171545   .0352045    -6.17   0.000    -.2861541    -.148155
-       _age10 |  -.1997695   .0309505    -6.45   0.000    -.2604314   -.1391075
-       _age11 |  -.1578696   .0262631    -6.01   0.000    -.2093442    -.106395
-       _age12 |  -.1595364   .0234227    -6.81   0.000     -.205444   -.1136289
-       _age13 |  -.1125129   .0195119    -5.77   0.000    -.1507555   -.0742703
-       _age14 |  -.1028461   .0172903    -5.95   0.000    -.1367344   -.0689578
-       _age15 |  -.0791103    .014734    -5.37   0.000    -.1079885   -.0502322
-       _age16 |  -.0539105   .0138798    -3.88   0.000    -.0811144   -.0267067
-       _age17 |  -.0586016   .0129473    -4.53   0.000    -.0839779   -.0332253
-       _age18 |  -.0539453   .0126538    -4.26   0.000    -.0787462   -.0291444
-  _contracep1 |   .2154486   .0069223    31.12   0.000     .2018812    .2290161
-  _contracep2 |   .1683051    .009765    17.24   0.000     .1491661    .1874441
-  _contracep3 |   .0639772   .0117784     5.43   0.000      .040892    .0870625
-    motherage |   .0044647   .0271897     0.16   0.870    -.0488262    .0577556
-  motheragesq |     .00496   .0011697     4.24   0.000     .0026674    .0072525
- motheragecub |  -.0000799   .0000162    -4.93   0.000    -.0001117   -.0000481
-agefirstbirth |  -.0776004    .004747   -16.35   0.000    -.0869044   -.0682964
-        educf |   .1170555   .0028974    40.40   0.000     .1113766    .1227343
-  educfyrs_sq |  -.0039655   .0001062   -37.33   0.000    -.0041737   -.0037573
-       height |   .0044619   .0003695    12.08   0.000     .0037378    .0051861
-          bmi |   .0163111   .0007286    22.39   0.000      .014883    .0177392
-        _cons |  -.7047448   .4986134    -1.41   0.158    -1.682009    .2725196
--------------------------------------------------------------------------------
-Underidentification test (Kleibergen-Paap rk LM statistic):            598.831
-                                                   Chi-sq(1) P-val =    0.0000
-------------------------------------------------------------------------------
-Weak identification test (Cragg-Donald Wald F statistic):             1187.779
-                         (Kleibergen-Paap rk Wald F statistic):        850.092
-Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
-                                         15% maximal IV size              8.96
-                                         20% maximal IV size              6.66
-                                         25% maximal IV size              5.53
-Source: Stock-Yogo (2005).  Reproduced by permission.
-NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
-------------------------------------------------------------------------------
-Warning: estimated covariance matrix of moment conditions not of full rank.
-         model tests should be interpreted with caution.
-Possible causes:
-         number of clusters insufficient to calculate robust covariance matrix
-         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
-partial option may address problem.
-------------------------------------------------------------------------------
-Instrumented:         fert
-Included instruments: malec _country1 _country2 _country3 _country4 _country5
-                      _country6 _country7 _country8 _country9 _country10
-                      _country11 _country12 _country13 _country14 _country15
-                      _country16 _country17 _country18 _country19 _country21
-                      _country23 _country24 _country25 _country26 _country27
-                      _country28 _country29 _country30 _country31 _country33
-                      _country34 _country35 _country36 _country37 _country38
-                      _country39 _country40 _country41 _country42 _country45
-                      _country46 _country47 _country48 _country49 _country50
-                      _country51 _country54 _country56 _country57 _country58
-                      _country59 _country63 _country64 _country66 _country69
-                      _country70 _country72 _country75 _yb8 _yb9 _yb10 _yb11
-                      _yb12 _yb13 _yb14 _yb15 _yb16 _yb17 _yb18 _yb19 _yb20
-                      _yb21 _yb22 _yb23 _yb24 _yb25 _yb26 _yb27 _yb28 _yb29
-                      _yb30 _yb31 _yb32 _yb33 _yb34 _yb35 _yb36 _yb37 _yb38
-                      _yb39 _yb40 _yb41 _yb42 _yb43 _yb44 _yb45 _yb46 _yb47
-                      _yb48 _yb49 _yb50 _yb51 _yb52 _yb53 _yb54 _yb55 _yb56
-                      _age7 _age8 _age9 _age10 _age11 _age12 _age13 _age14
-                      _age15 _age16 _age17 _age18 _contracep1 _contracep2
-                      _contracep3 motherage motheragesq motheragecub
-                      agefirstbirth educf educfyrs_sq height bmi
-Excluded instruments: twin_two_fam
-Dropped collinear:    _country20 _country22 _country32 _country43 _country44
-                      _country52 _country53 _country55 _country60 _country61
-                      _country62 _country65 _country67 _country68 _country71
-                      _country73 _country74 _country76 _yb1 _yb2 _yb3 _yb4 _yb5
-                      _yb6 _yb7 _yb57 _yb58 _yb59 _yb60 _yb61 _yb62 _yb63 _age1
-                      _age2 _age3 _age4 _age5 _age6 _age19 _age20 _age21 _age22
-                      _age23 _age24 _age25 _age26 _age27 _age28 _age29 _age30
-                      _age31 _age32 _age33 _age34 _age35 _age36 _age37 _age38
-                      _age39 _age40 _age41 _age42 _age43 _age44 _age45 _age46
-                      _age47 _age48 _age49 _age50 _age51 _age52 _age53
-                      _contracep4 _contracep5
-------------------------------------------------------------------------------
-(est1 stored)
-(sum of wgt is     2.4786e+11)
-Warning - collinearities detected
-Vars dropped:       _country20 _country22 _country32 _country43 _country44
-                    _country52 _country53 _country55 _country60 _country61
-                    _country62 _country65 _country67 _country68 _country71
-                    _country73 _country74 _country76 _yb1 _yb2 _yb3 _yb4 _yb5
-                    _yb6 _yb7 _yb57 _yb58 _yb59 _yb60 _yb61 _yb62 _yb63 _age1
-                    _age2 _age3 _age4 _age5 _age6 _age19 _age20 _age21 _age22
-                    _age23 _age24 _age25 _age26 _age27 _age28 _age29 _age30
-                    _age31 _age32 _age33 _age34 _age35 _age36 _age37 _age38
-                    _age39 _age40 _age41 _age42 _age43 _age44 _age45 _age46
-                    _age47 _age48 _age49 _age50 _age51 _age52 _age53 _contracep4
-                    _contracep5
+. if `twinoccur_iv'==1 {
+.         preserve
+.         use "$Data/DHS_twins_mortality"
+. 
+.         local n1=1
+.         local n2=2
+.         local n3=3
+.         local estimates
+.         local firststage
+.         tempfile before
+.         
+.         foreach n in `gplus' {
+  2.                 save `before'
+  3.                 keep `cond'&`n'_plus==1
+  4.                 foreach y of varlist infantmortality {
+  5.                         eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt', /*
+>                         */ `se' savefirst savefp(f`n3')
+  6.                         eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' /*
+>                         */ if e(sample), `se' savefirst savefp(f`n2')
+  7.                         eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample), /*
+>                         */ `se' savefirst savefp(f`n1')
+  8. 
+.                         local estimates `estimates' est`n3' est`n2' est`n1' 
+  9.                         local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+ 10.                         local n1=`n1'+3
+ 11.                         local n2=`n2'+3
+ 12.                         local n3=`n3'+3
+ 13.                 }
+ 14.                 use `before', clear
+ 15.         }
+. 
+.         estout `estimates' using "$Tables/New/IMRtest.xls", replace ///
+>         keep(fert malec $age $S $H) `estopt' `varlab'
+. 
+.         estout `firststage' using "$Tables/New/IMRtest_f.xls", replace ///
+>         keep(twin_* malec $age $S $H) `estopt' `varlab' 
+.         
+.         estimates clear
+.         restore
+. }
 
-Stored estimation results
--------------------------
----------------------------------------------------------------------------
-        name | command      depvar       npar  title 
--------------+-------------------------------------------------------------
-      f2fert | ivreg2       fert          131  First-stage regression: fert
----------------------------------------------------------------------------
+. 
+. 
+. ********************************************************************************
+. **** (10) Conley et al approach
+. ***  Here we are assuming that:
+. ***     quality  = beta*quantity + gamma*twin + epsilon.
+. ***     quantity = pi*twin + nu
+. ***
+. ***  Typical instrumental assumption is that gamma=0, but Conley et al relax
+. ***  this so that gamma can be a small effect, or as they say, we have "prior
+. ***  information that implies that gamma is near 0 but perhaps not exactly 0".
+. ********************************************************************************
+. if `conley'==1 {
+. 
+.         *****************************************************************************
+.         *** (10a) Union of Confidence Intervals (have now removed $S and $H)
+.         *****************************************************************************   
+.         matrix conbounds = J(5,4,1)
+.         local ii=3
+.         foreach n in `gplus' {
+  2.                 *local c `cond'&`n'_plus==1&income=="`inc'"
+.                 local c `cond'&`n'_plus==1
+  3. 
+.                 reg school_zscore fert `base' $age `c'
+  4.                 outreg2 fert using "$Tables/Conley/ConleyReg.xls", excel append         
+  5.                 reg school_zscore fert twin_`n'_fam `base' $age `c'
+  6.                 outreg2 twin_`n'_fam fert using "$Tables/Conley/ConleyReg.xls", excel append
+  7.                 local estimate `=_b[twin_`n'_fam]'
+  8. 
+.                 foreach num of numlist 1 /*2*/ {
+  9.                         dis "estimating for `num' times the estimated coefficient on twins"
+ 10.                         local est2=`estimate'*`num'
+ 11.                         plausexog uci school_zscore `base' $age (fert = twin_`n'_fam) `c', /*
+>                         */ gmin(0) gmax(`est2') grid(2) level(.95) robust
+ 12.                 }
+ 13.                 mat conbounds[`ii',1]=e(lb_fert)
+ 14.                 mat conbounds[`ii',2]=e(ub_fert)                
+ 15.                 **************************************************************************
+.                 *** (10b) Local to Zero Approach
+.                 **************************************************************************
+.                 local items = `e(numvars)'
+ 16.                 matrix omega_eta = J(`items',`items',0)
+ 17.                 matrix omega_eta[1,1] = (`estimate'/sqrt(12))^2
+ 18.                 matrix mu_eta = J(`items',1,0)
+ 19.                 matrix mu_eta[1,1] = `estimate'/2
+ 20. 
+.                 foreach num of numlist 1(1)5 {
+ 21.                         matrix om`num'=omega_eta
+ 22.                         matrix om`num'[1,1] = ((`num'/5)*`estimate'/sqrt(12))^2
+ 23.                         matrix mu`num'=mu_eta
+ 24.                         matrix mu`num'[1,1]= (`num'/5)*`estimate'/2
+ 25.                 }
+ 26. 
+.                 foreach num of numlist 1(1)5{
+ 27.                         local nd`num'=(`num'/5)*`estimate'
+ 28.                 }
+ 29.                 
+.                 plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam) `c', /*
+>                 */ omega(omega_eta) mu(mu_eta) level(0.95) robust graph(fert) /*
+>                 */ graphomega(om1 om2 om3 om4 om5) graphmu(mu1 mu2 mu3 mu4 mu5) /*
+>                 */ graphdelta(`nd1' `nd2' `nd3' `nd4' `nd5')
+ 30.                 graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace
+ 31. 
+.                 mat conbounds[`ii',3]=_b[fert]-1.96*_se[fert]
+ 32.                 mat conbounds[`ii',4]=_b[fert]+1.96*_se[fert]
+ 33. 
+.                 mat conbounds[5,`ii']=`estimate'
+ 34.                 local ++ii
+ 35.                 
+.                 mat colnames conbounds = LowerBound UpperBound LowerBound UpperBound
+ 36.                 mat rownames conbounds = TwoPlus ThreePlus FourPlus FivePlus deltas
+ 37.         }
+.         *****************************************************************************
+.         *** (10c) Write Conley et al results to file
+.         *****************************************************************************
+.         mat2txt, matrix(conbounds) saving("$Tables/Conley/ConleyResults.txt") /*
+>                 */ format(%6.4f) replace
+. }
 
-IV (2SLS) estimation
---------------------
+. 
+. ********************************************************************************
+. *** (11) Is twins crossing desired threshold related to family characteristics?
+. *** First version compares twins crossing threshold to all families, second only
+. *** to other twin families (more reasonable).
+. ********************************************************************************
+. if `thresholdtest'==1 {
+.         gen threshold2=(twin_two_fam==1   & idealnumkids==2)
+.         gen threshold3=(twin_three_fam==1 & idealnumkids==3)
+.         gen threshold4=(twin_four_fam==1  & idealnumkids==4)
+.         gen threshold5=(twin_five_fam==1  & idealnumkids==5)    
+. 
+.         gen threshold=threshold2+threshold3+threshold4+threshold5
+. 
+.         replace threshold=threshold*100
+.         sum threshold*
+. 
+. /*      reg threshold $twinpredict `wt', `se'
+>         outreg2 $twinout using $Tables/crossing.xls, excel replace
+>         test educf educfyrs_sq height bmi
+>         local Ftestall=r(p)
+>         
+>         local t=2
+>         foreach num in `gplus' {
+>                 reg threshold`t' $twinpredict `wt' if `num'_plus==1, `se'
+>                 outreg2 $twinout using $Tables/crossing.xls, excel append
+>                 test educf educfyrs_sq height bmi
+>                 local Ftest`num'=r(p)
+>                 
+>                 local ++t
+>         }
+> */
+.         preserve
+.         keep if twinfamily>0&twinfamily!=.
+.         *collapse threshold motherage motheragesq agefirstbirth educf educfyrs_sq /*
+>         **/ height bmi child_yob _cou sweight, by(id)
+.         *replace child_yob=round(child_yob)
+.         reg threshold $twinpredict `wt', `se'
+.         outreg2 $twinout using $Tables/crossing_twins.xls, excel replace
+.         test educf educfyrs_sq height bmi
+.         local Ftwinall=r(p)
+.         restore
+. /*
+>         local t=2
+>         foreach num in `gplus' {
+>                 reg threshold`t' $twinpredict `wt' if twinfamily>0&twinfamily!=.&`num'_plus==1, `se'
+>                 outreg2 $twinout using $Tables/crossing_twins.xls, excel append
+>                 test educf educfyrs_sq height bmi
+>                 local Ftwin`num'=r(p)
+>                 
+>                 local ++t
+>         }       
+>         
+>         dis "`Ftestall' `Ftesttwo' `Ftestthree' `Ftestfour' `Ftestfive'"
+>         dis "`Ftwinall' `Ftwintwo' `Ftwinthree' `Ftwinfour' `Ftwinfive'"
+> 
+>         
+> 
+>         gen fertshortfall=fert-idealnumkids
+>         reg idealnumkids $twinpredict `wt', `se'
+>         outreg2 $twinout using $Tables/desiredtest.tex, tex(pretty) replace
+>         reg fertshortfall $twinpredict `wt', `se'
+>         outreg2 $twinout using $Tables/desiredtest.tex, tex(pretty) append
+> */      
+.         /*
+>         gen lowinc=income=="low"
+>         cap log close
+>         log using "$Base/Results/Sum/Desired/DesiredSum.txt", text replace
+>         foreach num of numlist -1 0 1 {
+>                 sum fert idealnumkids agemay educf height bmi educ school_zscore /*
+>                 */ noeduc highschool infantmortality childmortality agefirstbirth /*
+>                 */ motherage lowinc if idealfam==`num'
+>         }
+>         cap log close
+>         */
+. }
 
-Estimates efficient for homoskedasticity only
-Statistics robust to heteroskedasticity and clustering on id
+. 
+. ********************************************************************************
+. **** (12) Twin treated versus untreated balance
+. ********************************************************************************
+. if `balance'==1 {
+.         estimates clear
+.         do "$Source/myttests.ado"
+. 
+. 
+.         foreach opt in /*child*/ mother {
+  2.                 gen Treated=1 if twinfamily>0&twinfamily!=.
+  3.                 replace Treated=0 if twinfamily==0
+  4.                 tab wealth, gen(_wealth)
+  5. 
+. 
+.                 if `"`opt'"'=="mother" {
+  6.                         collapse $balance _wealth* Treated, by(id)
+  7.                 }
+  8. 
+.                 lab var fert "Total Fertilty"
+  9.                 lab var idealnumkids "Desired Fertility"
+ 10.                 lab var agefirstbirth "Age First Birth"
+ 11.                 lab var educf "Mother's Education"
+ 12.                 lab var educp "Father's Education"
+ 13.                 lab var height "Mother's Height"
+ 14.                 lab var underweight "Pr(BMI $<$ 18.5)"
+ 15.                 *lab var antenatal "Number of Antenatal Checks"
+.                 lab var prenate_doc "Prenatal care (doctor)"
+ 16.                 lab var prenate_nurse "Prenatal care (nurse)"           
+ 17.                 lab var prenate_none "Prenatal care (none)"
+ 18.                 lab var motherage "Mother's Age"
+ 19.                 lab var _wealth1 "Wealth Quintile 1"
+ 20.                 lab var _wealth2 "Wealth Quintile 2"
+ 21.                 lab var _wealth3 "Wealth Quintile 3"
+ 22.                 lab var _wealth4 "Wealth Quintile 4"
+ 23.                 lab var _wealth5 "Wealth Quintile 5"
+ 24.                 lab var childmortality "Child Mortality"
+ 25.                 lab var infantmortality "Infant Mortality"              
+ 26. 
+.                 
+.                 myttests $balance _wealth*, by(Treated)
+ 27.                 ereturn list
+ 28.                 *esttab using $Tables/Balance.xls, nomtitle nonumbers noobs ///
+>                 *  cells("mu_1(fmt(a3)) mu_2 d(star pvalue(d_p))" " . . d_se(par)") replace
+. 
+.                 esttab using $Tables/Balance_`opt'.tex, nomtitle nonumbers noobs ///
+>                   booktabs title(Test of Balance of Observables: Twins versus Non-twins ///
+>                   \label{TWINtab:comp}) label ///
+>                   cells("mu_1(fmt(a3)) mu_2 d(star pvalue(d_p))" " . . d_se(par)") replace
+ 29. 
+.         }
+. }
 
-Number of clusters (id) =       249536                Number of obs =   249536
-                                                      F(130,249535) = 11373.18
-                                                      Prob > F      =   0.0000
-Total (centered) SS     =  227504.7498                Centered R2   =   0.1000
-Total (uncentered) SS   =  230628.2659                Uncentered R2 =   0.1122
-Residual SS             =  204755.9644                Root MSE      =    .9058
+. 
+. ********************************************************************************
+. **** (14) Run for each country
+. ********************************************************************************
+. if `country'==1 {
+.         levelsof country
+.         local countries = `"`r(levels)'"'
+. 
+.         local n1=1
+.         local estimates
+.         local firststage
+.         local colnames
+. 
+.         local base malec _yb* _age* _contracep* `add'
+.         
+.         foreach cc of local countries {
+  2.                 preserve
+  3.                 keep if country=="`cc'"
+  4.                 count
+  5.                 if `r(N)'== 0 {
+  6.                         restore
+  7.                         exit
+  8.                 }
+  9. 
+.                 foreach n in `gplus' {
+ 10.                         local c  `cond'&`n'_plus==1
+ 11.                         foreach y of varlist $outcomes {
+ 12.                                 eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+>                                 */ `se' savefirst savefp(f`n1')
+ 13. 
+.                                 local estimates `estimates' est`n1' 
+ 14.                                 local firststage `firststage' f`n1'fert
+ 15.                                 local colnames `cc'
+ 16.                                 local ++n1
+ 17.                         }
+ 18.                 }
+ 19.                 restore 
+ 20.         }       
+. 
+.         estout `estimates' using "$Tables/IV/Countries.xls", replace ///
+>         keep(fert malec $age $S $H) mlabels(`colnames') `estopt' `varlab'
+. 
+.         estout `firststage' using "$Tables/IV/Countries_f.xls", replace ///
+>         keep(twin_* malec $age $S $H) mlabels(`colnames') `estopt' `varlab' 
+.         
+.         estimates clear 
+. }
 
--------------------------------------------------------------------------------
-              |               Robust
-school_zscore |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
---------------+----------------------------------------------------------------
-         fert |  -.0258035   .0269679    -0.96   0.339    -.0786596    .0270525
-        malec |  -.0295321    .004922    -6.00   0.000    -.0391791   -.0198851
-    _country1 |   -.338356   .0338329   -10.00   0.000    -.4046672   -.2720448
-    _country2 |  -.4042319   .0358043   -11.29   0.000    -.4744071   -.3340568
-    _country3 |  -.3542755   .0361304    -9.81   0.000    -.4250899   -.2834611
-    _country4 |   .2476601   .0233771    10.59   0.000     .2018418    .2934783
-    _country5 |   .1962696   .0293167     6.69   0.000       .13881    .2537293
-    _country6 |   .0177786    .021539     0.83   0.409    -.0244371    .0599943
-    _country7 |   .1968279   .0391887     5.02   0.000     .1200194    .2736364
-    _country8 |   .0846843   .0273209     3.10   0.002     .0311364    .1382322
-    _country9 |   .0217128   .0521445     0.42   0.677    -.0804885    .1239142
-   _country10 |   .2033736    .023223     8.76   0.000     .1578573    .2488899
-   _country11 |   .0454505   .0364575     1.25   0.213    -.0260049    .1169058
-   _country12 |   .2769327   .0499924     5.54   0.000     .1789494     .374916
-   _country13 |   .1373701   .0369871     3.71   0.000     .0648767    .2098635
-   _country14 |  -.0956138   .0227724    -4.20   0.000    -.1402469   -.0509808
-   _country15 |   .1631021   .0848736     1.92   0.055    -.0032471    .3294513
-   _country16 |   .0809984   .0410775     1.97   0.049      .000488    .1615088
-   _country17 |   .1787104   .0560198     3.19   0.001     .0689136    .2885072
-   _country18 |   .1668298   .0367789     4.54   0.000     .0947445    .2389152
-   _country19 |  -.0925741   .0328508    -2.82   0.005    -.1569605   -.0281878
-   _country21 |  -.2092828   .0208438   -10.04   0.000     -.250136   -.1684296
-   _country23 |   .1565321   .0321043     4.88   0.000     .0936088    .2194555
-   _country24 |   .2195772   .0495101     4.44   0.000     .1225393    .3166151
-   _country25 |   .0438294    .026997     1.62   0.104    -.0090838    .0967425
-   _country26 |   .3680446   .0378172     9.73   0.000     .2939242    .4421651
-   _country27 |   .1538931   .0356077     4.32   0.000     .0841033    .2236829
-   _country28 |  -.4204866   .0421012    -9.99   0.000    -.5030035   -.3379698
-   _country29 |   .1678041   .0324264     5.17   0.000     .1042496    .2313586
-   _country30 |  -.0160687   .0205879    -0.78   0.435    -.0564204    .0242829
-   _country31 |   .1730045   .0210079     8.24   0.000     .1318299    .2141792
-   _country33 |  -.0679708   .0427844    -1.59   0.112    -.1518267    .0158851
-   _country34 |  -.1038979   .0457769    -2.27   0.023    -.1936191   -.0141768
-   _country35 |    .187469   .0289921     6.47   0.000     .1306456    .2442924
-   _country36 |   -.104726   .0416213    -2.52   0.012    -.1863022   -.0231498
-   _country37 |  -.0922078   .0344397    -2.68   0.007    -.1597083   -.0247073
-   _country38 |   .0931283   .0422125     2.21   0.027     .0103932    .1758633
-   _country39 |   .3293724   .0294777    11.17   0.000     .2715973    .3871476
-   _country40 |   .0394771   .0269286     1.47   0.143    -.0133021    .0922563
-   _country41 |   .0565087    .035698     1.58   0.113     -.013458    .1264754
-   _country42 |   .2258824   .0359594     6.28   0.000     .1554033    .2963616
-   _country45 |   .0530386   .0233564     2.27   0.023     .0072609    .0988163
-   _country46 |   .0683205    .029111     2.35   0.019     .0112639    .1253771
-   _country47 |  -.0061544   .0333596    -0.18   0.854    -.0715379    .0592292
-   _country48 |   .0798558   .0224173     3.56   0.000     .0359188    .1237929
-   _country49 |   .2707887   .0233825    11.58   0.000     .2249598    .3166176
-   _country50 |   .1613982   .0367939     4.39   0.000     .0892835    .2335129
-   _country51 |   .1608614   .0348347     4.62   0.000     .0925866    .2291361
-   _country54 |   .1755988    .021238     8.27   0.000     .1339731    .2172245
-   _country56 |  -.0692733   .0336971    -2.06   0.040    -.1353184   -.0032283
-   _country57 |  -.0242527   .0602403    -0.40   0.687    -.1423216    .0938162
-   _country58 |   .1589473   .0386402     4.11   0.000     .0832139    .2346807
-   _country59 |  -.0319865   .0507448    -0.63   0.528    -.1314444    .0674715
-   _country63 |  -.1494257    .047903    -3.12   0.002    -.2433139   -.0555375
-   _country64 |   .1482027   .0275725     5.38   0.000     .0941616    .2022438
-   _country66 |   .1582788   .0529042     2.99   0.003     .0545884    .2619691
-   _country69 |  -.1208071   .0272191    -4.44   0.000    -.1741555   -.0674586
-   _country70 |   .1636518   .0410673     3.98   0.000     .0831613    .2441422
-   _country72 |   -.103147    .038748    -2.66   0.008    -.1790917   -.0272023
-   _country75 |   .2450501   .0280646     8.73   0.000     .1900446    .3000557
-         _yb8 |  -3.518915   .5138708    -6.85   0.000    -4.526083   -2.511747
-         _yb9 |  -2.191684   .7533974    -2.91   0.004    -3.668315   -.7150518
-        _yb10 |  -.4125952   .6509038    -0.63   0.526    -1.688343    .8631527
-        _yb11 |  -1.770289   .5646175    -3.14   0.002    -2.876919   -.6636589
-        _yb12 |  -1.165947   .5406471    -2.16   0.031    -2.225595   -.1062979
-        _yb13 |  -1.366359   .5012345    -2.73   0.006    -2.348761   -.3839575
-        _yb14 |  -1.244432    .489808    -2.54   0.011    -2.204438   -.2844256
-        _yb15 |  -1.362011   .4902406    -2.78   0.005    -2.322865   -.4011573
-        _yb16 |  -1.282561   .4831613    -2.65   0.008     -2.22954   -.3355826
-        _yb17 |  -1.117968   .4810335    -2.32   0.020    -2.060776   -.1751593
-        _yb18 |   -1.09368   .4778441    -2.29   0.022    -2.030237   -.1571225
-        _yb19 |  -1.127982   .4769663    -2.36   0.018    -2.062819   -.1931456
-        _yb20 |  -1.061074   .4752289    -2.23   0.026    -1.992506   -.1296427
-        _yb21 |  -1.040872   .4751593    -2.19   0.028    -1.972167   -.1095764
-        _yb22 |  -1.032946    .474614    -2.18   0.030    -1.963172   -.1027191
-        _yb23 |  -1.021931   .4741645    -2.16   0.031    -1.951276   -.0925856
-        _yb24 |   -.942221   .4731369    -1.99   0.046    -1.869552   -.0148898
-        _yb25 |  -.9377397    .472689    -1.98   0.047    -1.864193   -.0112863
-        _yb26 |  -.9754659   .4725734    -2.06   0.039    -1.901693   -.0492391
-        _yb27 |  -.9463125   .4723224    -2.00   0.045    -1.872047   -.0205776
-        _yb28 |  -.9093823   .4720922    -1.93   0.054    -1.834666    .0159015
-        _yb29 |   -.887966   .4717726    -1.88   0.060    -1.812623    .0366914
-        _yb30 |  -.8806679   .4714288    -1.87   0.062    -1.804651    .0433155
-        _yb31 |  -.8916493   .4713039    -1.89   0.059    -1.815388    .0320893
-        _yb32 |  -.8626409   .4711512    -1.83   0.067     -1.78608    .0607985
-        _yb33 |  -.8362718   .4709287    -1.78   0.076    -1.759275    .0867315
-        _yb34 |  -.8504302   .4708096    -1.81   0.071      -1.7732    .0723397
-        _yb35 |   -.807972   .4706562    -1.72   0.086    -1.730441    .1144972
-        _yb36 |  -.8084562   .4705844    -1.72   0.086    -1.730785    .1138722
-        _yb37 |  -.7844411   .4704891    -1.67   0.095    -1.706583    .1377007
-        _yb38 |   -.750854   .4703731    -1.60   0.110    -1.672768    .1710604
-        _yb39 |  -.7583118   .4703565    -1.61   0.107    -1.680194    .1635701
-        _yb40 |  -.7092506   .4702111    -1.51   0.131    -1.630847    .2123462
-        _yb41 |   -.702823   .4700935    -1.50   0.135    -1.624189    .2185433
-        _yb42 |  -.6855321   .4701157    -1.46   0.145    -1.606942    .2358777
-        _yb43 |  -.6867619   .4699814    -1.46   0.144    -1.607909    .2343848
-        _yb44 |  -.6899581   .4699296    -1.47   0.142    -1.611003     .231087
-        _yb45 |  -.6312846   .4698582    -1.34   0.179     -1.55219    .2896206
-        _yb46 |  -.6558523   .4697995    -1.40   0.163    -1.576642    .2649378
-        _yb47 |  -.6632713   .4697337    -1.41   0.158    -1.583933    .2573898
-        _yb48 |  -.6220983   .4696633    -1.32   0.185    -1.542622    .2984249
-        _yb49 |  -.6138175   .4695858    -1.31   0.191    -1.534189    .3065537
-        _yb50 |  -.6189828   .4697053    -1.32   0.188    -1.539588    .3016227
-        _yb51 |  -.6179486   .4699709    -1.31   0.189    -1.539075    .3031773
-        _yb52 |  -.6335338   .4699596    -1.35   0.178    -1.554638      .28757
-        _yb53 |  -.6292881   .4705176    -1.34   0.181    -1.551486    .2929095
-        _yb54 |  -.6870308   .4712248    -1.46   0.145    -1.610614    .2365528
-        _yb55 |  -.6169224   .4773551    -1.29   0.196    -1.552521    .3186764
-        _yb56 |  -.8294488   .4730607    -1.75   0.080    -1.756631    .0977332
-        _age7 |  -.3116808   .0469046    -6.64   0.000     -.403612   -.2197495
-        _age8 |  -.2500667   .0419277    -5.96   0.000    -.3322434     -.16789
-        _age9 |  -.2044545   .0366123    -5.58   0.000    -.2762134   -.1326957
-       _age10 |  -.1810459   .0324419    -5.58   0.000    -.2446308    -.117461
-       _age11 |  -.1579291   .0271752    -5.81   0.000    -.2111916   -.1046666
-       _age12 |   -.148085   .0245489    -6.03   0.000    -.1961999   -.0999701
-       _age13 |  -.1170135   .0202347    -5.78   0.000    -.1566727   -.0773543
-       _age14 |  -.1058276   .0180149    -5.87   0.000    -.1411361   -.0705191
-       _age15 |  -.0741111   .0155963    -4.75   0.000    -.1046792   -.0435429
-       _age16 |  -.0507277   .0147551    -3.44   0.001    -.0796471   -.0218082
-       _age17 |  -.0596002    .013816    -4.31   0.000     -.086679   -.0325213
-       _age18 |  -.0391934   .0136846    -2.86   0.004    -.0660147   -.0123721
-  _contracep1 |    .352196   .0071454    49.29   0.000     .3381914    .3662006
-  _contracep2 |   .2956181   .0092626    31.92   0.000     .2774638    .3137725
-  _contracep3 |    .118521   .0109613    10.81   0.000     .0970374    .1400047
-    motherage |  -.0049243    .029645    -0.17   0.868    -.0630274    .0531789
-  motheragesq |   .0065616   .0012902     5.09   0.000     .0040328    .0090904
- motheragecub |  -.0001154    .000018    -6.39   0.000    -.0001507     -.00008
-agefirstbirth |  -.0648468   .0051747   -12.53   0.000     -.074989   -.0547046
-       height |   .0102251   .0004698    21.76   0.000     .0093042     .011146
-          bmi |   .0286271   .0010389    27.55   0.000     .0265909    .0306633
-        _cons |  -1.749985   .5046077    -3.47   0.001    -2.738998   -.7609725
--------------------------------------------------------------------------------
-Underidentification test (Kleibergen-Paap rk LM statistic):            572.692
-                                                   Chi-sq(1) P-val =    0.0000
-------------------------------------------------------------------------------
-Weak identification test (Cragg-Donald Wald F statistic):             1116.777
-                         (Kleibergen-Paap rk Wald F statistic):        789.382
-Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
-                                         15% maximal IV size              8.96
-                                         20% maximal IV size              6.66
-                                         25% maximal IV size              5.53
-Source: Stock-Yogo (2005).  Reproduced by permission.
-NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
-------------------------------------------------------------------------------
-Warning: estimated covariance matrix of moment conditions not of full rank.
-         model tests should be interpreted with caution.
-Possible causes:
-         number of clusters insufficient to calculate robust covariance matrix
-         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
-partial option may address problem.
-------------------------------------------------------------------------------
-Instrumented:         fert
-Included instruments: malec _country1 _country2 _country3 _country4 _country5
-                      _country6 _country7 _country8 _country9 _country10
-                      _country11 _country12 _country13 _country14 _country15
-                      _country16 _country17 _country18 _country19 _country21
-                      _country23 _country24 _country25 _country26 _country27
-                      _country28 _country29 _country30 _country31 _country33
-                      _country34 _country35 _country36 _country37 _country38
-                      _country39 _country40 _country41 _country42 _country45
-                      _country46 _country47 _country48 _country49 _country50
-                      _country51 _country54 _country56 _country57 _country58
-                      _country59 _country63 _country64 _country66 _country69
-                      _country70 _country72 _country75 _yb8 _yb9 _yb10 _yb11
-                      _yb12 _yb13 _yb14 _yb15 _yb16 _yb17 _yb18 _yb19 _yb20
-                      _yb21 _yb22 _yb23 _yb24 _yb25 _yb26 _yb27 _yb28 _yb29
-                      _yb30 _yb31 _yb32 _yb33 _yb34 _yb35 _yb36 _yb37 _yb38
-                      _yb39 _yb40 _yb41 _yb42 _yb43 _yb44 _yb45 _yb46 _yb47
-                      _yb48 _yb49 _yb50 _yb51 _yb52 _yb53 _yb54 _yb55 _yb56
-                      _age7 _age8 _age9 _age10 _age11 _age12 _age13 _age14
-                      _age15 _age16 _age17 _age18 _contracep1 _contracep2
-                      _contracep3 motherage motheragesq motheragecub
-                      agefirstbirth height bmi
-Excluded instruments: twin_two_fam
-Dropped collinear:    _country20 _country22 _country32 _country43 _country44
-                      _country52 _country53 _country55 _country60 _country61
-                      _country62 _country65 _country67 _country68 _country71
-                      _country73 _country74 _country76 _yb1 _yb2 _yb3 _yb4 _yb5
-                      _yb6 _yb7 _yb57 _yb58 _yb59 _yb60 _yb61 _yb62 _yb63 _age1
-                      _age2 _age3 _age4 _age5 _age6 _age19 _age20 _age21 _age22
-                      _age23 _age24 _age25 _age26 _age27 _age28 _age29 _age30
-                      _age31 _age32 _age33 _age34 _age35 _age36 _age37 _age38
-                      _age39 _age40 _age41 _age42 _age43 _age44 _age45 _age46
-                      _age47 _age48 _age49 _age50 _age51 _age52 _age53
-                      _contracep4 _contracep5
-------------------------------------------------------------------------------
-(est2 stored)
-(sum of wgt is     2.4786e+11)
+. 
+. ********************************************************************************
+. **** (15a) IV Using adjusted fertility and adjusted twins (survival only)
+. ********************************************************************************
+. if `adj_fert'==1&`ADJIV'==1 {
+.         tokenize `fnames'
+.         foreach condition of local conditions {
+  2.                 
+.                 local n1=1
+  3.                 local n2=2
+  4.                 local n3=3
+  5.                 local estimates
+  6.                 local fstage
+  7. 
+.                 local OUT "$Tables/IV/ADJ`1'"
+  8. 
+.                 foreach n in `gplus' {
+  9.                         preserve
+ 10.                         keep `cond'&`condition'&ADJ`n'_plus==1                  
+ 11. 
+.                         foreach y of varlist $outcomes {
+ 12.                                 eststo: ivreg2 `y' `base' $age $S $H (ADJfert=ADJtwin_`n'_fam) `wt',/*
+>                                 */ `se' savefirst savefp(f`n3')
+ 13.                                 eststo: ivreg2 `y' `base' $age $H (ADJfert=ADJtwin_`n'_fam) `wt'    /*
+>                                 */ if e(sample), `se' savefirst savefp(f`n2')
+ 14.                                 eststo: ivreg2 `y' `base' (ADJfert=ADJtwin_`n'_fam) `wt'            /*
+>                                 */ if e(sample), `se' savefirst savefp(f`n1')
+ 15. 
+.                                 local estimates `estimates'  est`n3' est`n2' est`n1' 
+ 16.                                 local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert
+ 17.                                 local n1=`n1'+3
+ 18.                                 local n2=`n2'+3
+ 19.                                 local n3=`n3'+3
+ 20.                         }
+ 21.                         restore
+ 22.                 }
+ 23. 
+.                 estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
+>                 */ keep(ADJfert $age $S $H)
+ 24.                 estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
+>                 */ keep(ADJtwin_* $age $S $H)
+ 25. 
+.                 estimates clear
+ 26.                 macro shift
+ 27.         }
+(3184304 observations deleted)
+(sum of wgt is     2.7263e+11)

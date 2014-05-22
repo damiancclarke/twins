@@ -56,18 +56,20 @@ local sumstats2     0
 local trends        0
 local twin          0
 local ols           0
-local IV            1
-local IVtwin        1
-local desire        1
-local pref          0
-local new           0
-local twinoccur_ols 1
-local twinoccur_iv  1
-local conley        0
+local IV            0
+local IVtwin        0
+local desire        3
+local compl_fert    0
+local twinoccur_ols 2
+local twinoccur_iv  2
+local conley        2
 local thresholdtest 0
 local balance       0
 local country       0
-local adj_fert      2727
+local adj_fert      1
+  local ADJIV       1
+  local ADJtwin     3
+  local ADJdesire   3
 
 * VARIABLES
 global outcomes school_zscore
@@ -105,10 +107,6 @@ local IVt      Base_IV_twins
 local IVt1     Base_IV_twins_firststage
 local IVdes    Desire_IV_reg
 local IVdes1   Desire_IV_firststage_reg
-local IVdesS   Desire_IV_sep
-local IVdesS1  Desire_IV_sep_firststage
-local IVpref   PrefThreshold_IV
-local IVpref1  PrefThreshold_IV_firststage
 
 
 * FIGURES
@@ -773,8 +771,6 @@ if `IV'==1 {
 	}
 }
 
-
-
 ********************************************************************************
 **** (6) IV including twins and pre-twins
 ********************************************************************************
@@ -786,14 +782,15 @@ if `IVtwin'==1 {
 	local firststage
 
 	foreach n in `gplus' {
-		local c  `cond'&`n'_plus_twins==1
-		local ce `cond'&`n'_plus_twins==1&e(sample)
+		preserve
+		keep `cond'&`n'_plus_twins==1
+
 		foreach y of varlist $outcomes {
-			eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+			eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt', /*
 			*/ `se' savefirst savefp(f`n3')
-			eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' `ce',   /*
+			eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' if e(sample),   /*
 			*/ `se' savefirst savefp(f`n2')
-			eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' `ce',           /*
+			eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample), /*
 			*/ `se' savefirst savefp(f`n1')
 
 			local estimates `estimates' est`n3' est`n2' est`n1' 
@@ -802,6 +799,7 @@ if `IVtwin'==1 {
 			local n2=`n2'+3
 			local n3=`n3'+3
 		}
+		restore
 	}
 
 	estout `estimates' using "$Tables/IV/`IVt'.xls", replace ///
@@ -815,14 +813,14 @@ if `IVtwin'==1 {
 
 
 ********************************************************************************
-**** (8) IV with twin threshold
+**** (7) IV with twin threshold
 ********************************************************************************
 if `desire'==1 {
 	*gen idealbarrier=floor(idealnumkids)
 	gen idealbarrier=floor(desiredfert_region)
 	
 	local endog fert fertXthreshold
-	foreach inc in all low mid F M {
+	foreach inc in /*all low*/ mid F M {
 		if "`inc'"=="all" local cex
 		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
 		else if "`inc'"=="F"|"`inc'"=="M" local cex &gender=="`inc'"
@@ -835,11 +833,8 @@ if `desire'==1 {
 
 		local t=2
 		foreach n in `gplus' {
-			local c  `cond'&`n'_plus==1 `cex'
-			local ce `cond'&`n'_plus==1&e(sample) `cex'
-
 			preserve
-			keep `c'
+			keep `cond'&`n'_plus==1 `cex'
 			gen threshold=(twin_`n'_fam==1 & idealbarrier==`t')
 			gen fertXthreshold=fert*threshold
 			gen desired=idealbarrier<=`t'
@@ -849,11 +844,11 @@ if `desire'==1 {
 
 			foreach y of varlist $outcomes {
 				eststo: ivreg2 `y' `base' $age $S $H desired (`endog' = `insts') /*
-				*/ `wt' `c', `se' savefirst savefp(f`n3')
+				*/ `wt', `se' savefirst savefp(f`n3')
 				eststo: ivreg2 `y' `base' $age $S desired (`endog' = `insts') /*
-				*/ `wt' `ce', `se' savefirst savefp(f`n2')
+				*/ `wt' if e(sample), `se' savefirst savefp(f`n2')
 				eststo: ivreg2 `y' `base' desired (`endog' = `insts') /*
-				*/ `wt' `ce', `se' savefirst savefp(f`n1')
+				*/ `wt' if e(sample), `se' savefirst savefp(f`n1')
 
 				local estimates `estimates' est`n3' est`n2' est`n1'
 				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
@@ -861,7 +856,7 @@ if `desire'==1 {
 				local n1=`n1'+3
 				local n2=`n2'+3
 				local n3=`n3'+3
-			}
+				}
 			local ++t
 			drop threshold fertXthreshold desired
 			restore
@@ -879,71 +874,11 @@ if `desire'==1 {
 
 *NOTE: for coefficients estimated separately by desire, roll back and see here.
 ********************************************************************************
-**** (9) IV with twin threshold condition on same fertility preference
-********************************************************************************
-if `pref'==1 {
-	local endog fert fertXthreshold
-
-	foreach inc in all /*low mid*/ {
-		if "`inc'"=="all" local cex
-		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
-
-		local n1=1
-		local n2=2
-		local n3=3
-		local estimates
-		local firststage
-
-		local t=2
-		foreach n in `gplus' {
-			local c  `cond'&`n'_plus==1 `cex'
-			local ce `cond'&`n'_plus==1&e(sample) `cex'
-
-			local ik idealnumkids
-			
-			gen threshold=(twin_`n'_fam==1 & idealnumkids==`t')
-			gen fertXthreshold=fert*threshold
-			
-			cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
-			local insts twin_`n'_fam twin`n'Xthreshold
-
-			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $H `ik' (`endog' = `insts') /*
-				*/ `wt' `c', `se' savefirst savefp(f`n3')
-				eststo: ivreg2 `y' `base' $age $S `ik' (`endog' = `insts') /*
-				*/ `wt' `ce', `se' savefirst savefp(f`n2')
-				eststo: ivreg2 `y' `base' `ik' (`endog' = `insts') /*
-				*/ `wt' `ce', `se' savefirst savefp(f`n1')
-
-				local estimates `estimates' est`n3' est`n2' est`n1'
-				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
-		
-				local ++t
-				local n1=`n1'+3
-				local n2=`n2'+3
-				local n3=`n3'+3
-			}
-			drop threshold fertXthreshold
-		}
-
-		estout `estimates' using "$Tables/IV/`IVpref'_`inc'.xls", replace ///
-		 keep(fert fertXthreshold malec $age $S $H) `estopt' `varlab'
-
-		estout `firststage' using "$Tables/IV/`IVpref1'_`inc'.xls", replace ///
-		 keep(twin* malec $age $S $H) `estopt' `varlab'
-	
-		estimates clear
-	}
-}
-
-
-
-********************************************************************************
-**** (10) New results 04/01/2013.  This first section is a quick look at whether
+**** (9) New results 04/01/2013.  This first section is a quick look at whether
 ***  truncated and non truncated fertility look similar in terms of 1st stage.
 ***  Also, the IMR test (pre-twins) is included as `twinoccur'
 ********************************************************************************
-if `new'==1 {
+if `compl_fert'==1 {
 	local n1=1
 	local n2=2
 	local n3=3
@@ -1019,16 +954,17 @@ if `twinoccur_iv'==1 {
 	local n3=3
 	local estimates
 	local firststage
-
+	tempfile before
+	
 	foreach n in `gplus' {
-		local c  `cond'&`n'_plus==1
-		local ce `cond'&`n'_plus==1&e(sample)
+		save `before'
+		keep `cond'&`n'_plus==1
 		foreach y of varlist infantmortality {
-			eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+			eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt', /*
 			*/ `se' savefirst savefp(f`n3')
-			eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' `ce',   /*
-			*/ `se' savefirst savefp(f`n2')
-			eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' `ce',           /*
+			eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' /*
+			*/ if e(sample), `se' savefirst savefp(f`n2')
+			eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample), /*
 			*/ `se' savefirst savefp(f`n1')
 
 			local estimates `estimates' est`n3' est`n2' est`n1' 
@@ -1037,6 +973,7 @@ if `twinoccur_iv'==1 {
 			local n2=`n2'+3
 			local n3=`n3'+3
 		}
+		use `before', clear
 	}
 
 	estout `estimates' using "$Tables/New/IMRtest.xls", replace ///
@@ -1051,7 +988,7 @@ if `twinoccur_iv'==1 {
 
 
 ********************************************************************************
-**** (11) Conley et al approach
+**** (10) Conley et al approach
 ***  Here we are assuming that:
 ***     quality  = beta*quantity + gamma*twin + epsilon.
 ***     quantity = pi*twin + nu
@@ -1063,7 +1000,7 @@ if `twinoccur_iv'==1 {
 if `conley'==1 {
 
 	*****************************************************************************
-	*** (11a) Union of Confidence Intervals (have now removed $S and $H)
+	*** (10a) Union of Confidence Intervals (have now removed $S and $H)
 	*****************************************************************************	
 	matrix conbounds = J(5,4,1)
 	local ii=3
@@ -1086,7 +1023,7 @@ if `conley'==1 {
 		mat conbounds[`ii',1]=e(lb_fert)
 		mat conbounds[`ii',2]=e(ub_fert)		
 		**************************************************************************
-		*** (11b) Local to Zero Approach
+		*** (10b) Local to Zero Approach
 		**************************************************************************
 		local items = `e(numvars)'
 		matrix omega_eta = J(`items',`items',0)
@@ -1121,14 +1058,14 @@ if `conley'==1 {
 		mat rownames conbounds = TwoPlus ThreePlus FourPlus FivePlus deltas
 	}
 	*****************************************************************************
-	*** (11c) Write Conley et al results to file
+	*** (10c) Write Conley et al results to file
 	*****************************************************************************
 	mat2txt, matrix(conbounds) saving("$Tables/Conley/ConleyResults.txt") /*
 		*/ format(%6.4f) replace
 }
 
 ********************************************************************************
-*** (12) Is twins crossing desired threshold related to family characteristics?
+*** (11) Is twins crossing desired threshold related to family characteristics?
 *** First version compares twins crossing threshold to all families, second only
 *** to other twin families (more reasonable).
 ********************************************************************************
@@ -1204,7 +1141,7 @@ if `thresholdtest'==1 {
 }
 
 ********************************************************************************
-**** (13) Twin treated versus untreated balance
+**** (12) Twin treated versus untreated balance
 ********************************************************************************
 if `balance'==1 {
 	estimates clear
@@ -1256,7 +1193,7 @@ if `balance'==1 {
 }
 
 ********************************************************************************
-**** (15) Run for each country
+**** (14) Run for each country
 ********************************************************************************
 if `country'==1 {
 	levelsof country
@@ -1300,4 +1237,150 @@ if `country'==1 {
 	keep(twin_* malec $age $S $H) mlabels(`colnames') `estopt' `varlab' 
 	
 	estimates clear	
+}
+
+********************************************************************************
+**** (15a) IV Using adjusted fertility and adjusted twins (survival only)
+********************************************************************************
+if `adj_fert'==1&`ADJIV'==1 {
+	tokenize `fnames'
+	foreach condition of local conditions {
+		
+		local n1=1
+		local n2=2
+		local n3=3
+		local estimates
+		local fstage
+
+		local OUT "$Tables/IV/ADJ`1'"
+
+		foreach n in `gplus' {
+			preserve
+			keep `cond'&`condition'&ADJ`n'_plus==1			
+
+			foreach y of varlist $outcomes {
+				eststo: ivreg2 `y' `base' $age $S $H (ADJfert=ADJtwin_`n'_fam) `wt',/*
+				*/ `se' savefirst savefp(f`n3')
+				eststo: ivreg2 `y' `base' $age $H (ADJfert=ADJtwin_`n'_fam) `wt'    /*
+				*/ if e(sample), `se' savefirst savefp(f`n2')
+				eststo: ivreg2 `y' `base' (ADJfert=ADJtwin_`n'_fam) `wt'            /*
+				*/ if e(sample), `se' savefirst savefp(f`n1')
+
+				local estimates `estimates'  est`n3' est`n2' est`n1' 
+				local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert
+				local n1=`n1'+3
+				local n2=`n2'+3
+				local n3=`n3'+3
+			}
+			restore
+		}
+
+		estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
+		*/ keep(ADJfert $age $S $H)
+		estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
+		*/ keep(ADJtwin_* $age $S $H)
+
+		estimates clear
+		macro shift
+	}
+}
+
+********************************************************************************
+**** (15b) IV plus twins using survival-adjusted fertility and twins 
+********************************************************************************
+if `adj_fert'==1&`ADJtwin'==1 {
+	local n1=1
+	local n2=2
+	local n3=3
+	local estimates
+	local firststage
+
+	foreach n in `gplus' {
+		preserve
+		keep `cond'&ADJ`n'_plus_twins==1
+
+		foreach y of varlist $outcomes {
+			eststo: ivreg2 `y' `base' $age $S $H (ADJfert=ADJtwin_`n'_fam) `wt', /*
+			*/ `se' savefirst savefp(f`n3')
+			eststo: ivreg2 `y' `base' $age $S (ADJfert=ADJtwin_`n'_fam) `wt'     /*
+			*/ if e(sample), `se' savefirst savefp(f`n2')
+			eststo: ivreg2 `y' `base' (ADJfert=ADJtwin_`n'_fam) `wt'             /*
+			*/ if e(sample), `se' savefirst savefp(f`n1')
+
+			local estimates `estimates' est`n3' est`n2' est`n1' 
+			local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+			local n1=`n1'+3
+			local n2=`n2'+3
+			local n3=`n3'+3
+		}
+		restore
+	}
+
+	estout `estimates' using "$Tables/IV/ADJ`IVt'.xls", replace ///
+	keep(ADJfert malec $age $S $H) `estopt' `varlab'
+
+	estout `firststage' using "$Tables/IV/ADJ`IVt1'.xls", replace ///
+	keep(ADJtwin_* malec $age $S $H) `estopt' `varlab' 
+	
+	estimates clear
+
+}
+
+********************************************************************************
+**** (15c) IV with desired using survival-adjusted fertility and twins 
+********************************************************************************
+if `adj_fert'==1&`ADJdesire'==1 {
+	cap gen idealbarrier=floor(desiredfert_region)
+	
+	local endog ADJfert ADJfertXthreshold
+	foreach inc in all low mid F M {
+		if "`inc'"=="all" local cex
+		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
+		else if "`inc'"=="F"|"`inc'"=="M" local cex &gender=="`inc'"
+
+		local n1=1
+		local n2=2
+		local n3=3
+		local estimates
+		local firststage
+
+		local t=2
+		foreach n in `gplus' {
+			preserve
+			keep `cond'&ADJ`n'_plus==1 `cex'
+			gen threshold=(ADJtwin_`n'_fam==1 & idealbarrier==`t')
+			gen ADJfertXthreshold=ADJfert*threshold
+			gen ADJdesired=idealbarrier<=`t'
+			
+			cap gen ADJtwin`n'Xthreshold = ADJtwin_`n'_fam*threshold
+			local insts ADJtwin_`n'_fam ADJtwin`n'Xthreshold
+
+			foreach y of varlist $outcomes {
+				eststo: ivreg2 `y' `base' $age $S $H desired (`endog' = `insts') /*
+				*/ `wt', `se' savefirst savefp(f`n3')
+				eststo: ivreg2 `y' `base' $age $S desired (`endog' = `insts')    /*
+				*/ `wt' if e(sample), `se' savefirst savefp(f`n2')
+				eststo: ivreg2 `y' `base' desired (`endog' = `insts')            /*
+				*/ `wt' if e(sample), `se' savefirst savefp(f`n1')
+
+				local estimates `estimates' est`n3' est`n2' est`n1'
+				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
+		
+				local n1=`n1'+3
+				local n2=`n2'+3
+				local n3=`n3'+3
+				}
+			local ++t
+			drop threshold ADJfertXthreshold ADJdesired
+			restore
+		}
+
+		estout `estimates' using "$Tables/IV/ADJ`IVdes'_`inc'.xls", replace ///
+		 keep(ADJfert ADJfertXthreshold $age $S $H) `estopt' `varlab'
+
+		estout `firststage' using "$Tables/IV/ADJ`IVdes1'_`inc'.xls", replace ///
+		 keep(ADJtwin* $age $S $H) `estopt' `varlab'
+	
+		estimates clear
+	}
 }

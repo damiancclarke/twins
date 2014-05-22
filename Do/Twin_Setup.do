@@ -25,7 +25,7 @@ set maxvar 20000
 
 
 ********************************************************************************
-****(1) Globals and locals
+*** (1) Globals and locals
 ********************************************************************************
 global PATH "~/investigacion/Activa/Twins"
 global DATA "~/database/DHS/XDHS_Data"
@@ -37,7 +37,7 @@ cap mkdir $PATH/Temp
 log using "$LOG/Twins_Setup.txt", text replace
 ********************************************************************************
 *** (2) Take necessary variables from BR (mother births) and PR (household me-
-*** mber) The IR dataset has the majority of family and maternal characterist-
+*** mber) The BR dataset has the majority of family and maternal characterist-
 *** ics used in the regressions, however there is no child education variables
 *** in this dataset.  The child education information comes from PR.
 ********************************************************************************
@@ -99,6 +99,7 @@ foreach num of numlist 1(1)7 {
 	egen id=concat(_cou _year v001 v002)
 	bys id relationship age sex (bidx): gen counter=_n
 	bys id relationship age sex counter: gen tester=_N
+
 	sum tester
 	if r(max)!=1 {
 		tab _cou if tester!=1
@@ -131,6 +132,7 @@ foreach num of numlist 1(1)7 {
 
 	bys id relationship age sex (hvidx): gen counter=_n
 	bys id relationship age sex counter: gen tester=_N
+
 	sum tester
 	if r(max)!=1 {
 		tab _cou if tester!=1
@@ -146,22 +148,18 @@ foreach num of numlist 1(1)7 {
 	use $TEMP/PR`num'
 	merge 1:1 id relationship age sex counter using $TEMP/BR`num'
 	keep if _merge==3|_merge==2 //updated Apr 24, 2013
-	save $TEMP/twins`num', replace
+	save $TEMP/c`num', replace
+	clear
+	rm "$TEMP/PR`num'.dta"
+	rm "$TEMP/BR`num'.dta"
 }
 
-// Remove partial PR/BR datasets
-foreach t in PR BR {
-	foreach file in `t'1 `t'2 `t'3 `t'4 `t'5 `t'6 `t'7 {
-		rm "$TEMP/`file'.dta"
-	}
-}
 
-use $TEMP/twins1
-append using $TEMP/twins2 $TEMP/twins3 $TEMP/twins4 $TEMP/twins5 $TEMP/twins6 /*
-*/ $TEMP/twins7
+use $TEMP/c1
+append using $TEMP/c2 $TEMP/c3 $TEMP/c4 $TEMP/c5 $TEMP/c6 $TEMP/c7
 
 foreach num of numlist 1(1)7 {
-	rm $TEMP/twins`num'.dta
+	rm $TEMP/c`num'.dta
 }
 rmdir $TEMP
 
@@ -183,14 +181,10 @@ foreach year of varlist child_yob year_birth {
 replace child_yob=child_yob+1900 if child_yob<100&child_yob>2
 replace child_yob=child_yob+2000 if child_yob<=2
 replace year_birth=year_birth+1900 if year_birth<100
+replace age=age+100 if age<0
 
-save $PATH/Data/DHS_twins, replace
 ********************************************************************************
 *** (3) Setup Variables which are used in TwinRegression
-********************************************************************************
-use $PATH/Data/DHS_twins, clear
-
-********************************************************************************
 *** (3A) Generate sibling size subgroups (1+, 2+, 3+,...)  As per Angrist et al.
 ********************************************************************************
 gen mid="a"
@@ -342,6 +336,36 @@ bys _cou _year v001: egen desiredfert_clusterYEAR=mean(idealnumkids)
 bys _cou v101: egen desiredfert_region=mean(idealnumkids)
 bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
 
+**Correct fertility, birth order and twinning for children who died young
+gen aliveafter3=childageatdeath>3
+bys id: egen ADJfert=sum(aliveafter3)
+bys id aliveafter3 (bord): gen ADJbord=_n
+replace ADJbord=. if aliveafter3==0
+gen twin_aliveafter3=childageatdeath>3&twin!=0
+bys id age: egen at=sum(twin_aliveafter3)
+gen ADJtwind=twind==1&at>1
+bys id ADJtwind age (bord): gen ADJtwin=_n
+replace ADJtwin=0 if ADJtwind==0
+
+bys id: egen ADJtwinfamily=max(ADJtwin)
+gen ADJtwin_bord=ADJbord-ADJtwin+1 if ADJtwin>0
+bys id: egen ADJtwin_bord_fam=max(ADJ_twinbord)
+bys id: egen ADJnummultiple=max(ADJtwin)
+
+local max 1
+local fert 2
+
+foreach num in two three four five {
+	gen ADJ`num'_plus=(ADJbord>=1&ADJbord<=`max')&ADJfert>=`fert'
+	gen ADJ`num'_plus_twins=((ADJbord>=1&ADJbord<=`fert')&ADJfert>=`fert')|ADJtwin_bord==`fert'
+	replace ADJ`num'_plus=0 if ADJtwin!=0
+	gen ADJtwin`num'=(ADJtwin==1 & ADJbord==`fert')|(ADJtwin==2 & ADJbord==`fert'+1)
+	bys id: egen ADJtwin_`num'_fam=max(ADJtwin`num')
+	drop ADJtwin`num'
+	local ++max
+	local ++fert
+}
+drop aliveafter3 twin_aliveafter3 at
 
 ********************************************************************************
 *** (4) Labels
@@ -433,27 +457,41 @@ lab var desiredfert_ethnic "Average desired family size by ethnicity"
 lab var birthspacing "Time between child and previous birth (in months)"
 lab var wealth "Wealth quartile based on observed assets"
 lab var childageatdeath "Age of child (years) at death"
+lab var ADJfert "Total fertility adjusted for children surviving beyond 3"
+lab var ADJbord "Birth order of child adjusted for children surviving beyond 3"
+lab var ADJtwin "Child is a twin adjusted for survival (0-4) for no, twin, triplet"
+lab var ADJtwind "Adjusted twin indicator (takes 1 if both twins survive)"
+lab var ADJtwinfamily "At least one twin birth in family where both twins survive"
+lab var ADJtwin_bord "Birth order when adjusted twins occur (for twins only)"
+lab var ADJtwin_bord_fam "Birth order when adjusted twins occur (for whole family)"
+lab var ADJnummultiple "0 if singleton family, 1 if twins, 2 if triplets, ..."
+lab var ADJtwo_plus "Adjusted first born child in families with at least two births"
+lab var ADJthree_plus "Adjusted 1,2 born children in families with at least 3 births"
+lab var ADJfour_plus "Adjusted 1,2,3 born children in families with at least 4 births"
+lab var ADJfive_plus "Adjusted 1-4 born children in families with at least 5 births"
+lab var ADJtwo_plus_twins "Adjusted 1,2 born children in families with >=2 births"
+lab var ADJthree_plus_twins "Adjusted 1-3 born children in families with >=3 births"
+lab var ADJfour_plus_twins "Adjusted 1-4 born children in families with >=4 births"
+lab var ADJfive_plus_twins "Adjusted 1-5 born children in families with >=5 births"
+lab var ADJtwin_two_fam "Adjusted twin birth at second birth"
+lab var ADJtwin_three_fam "Adjusted twin birth at third birth"
+lab var ADJtwin_four_fam "Adjusted twin birth at fourth birth"
+lab var ADJtwin_five_fam "Adjusted twin birth at fifth birth"
 
 lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
 lab val idealfam ideal
 
-replace age=age+100 if age<0
 ********************************************************************************
 *** (5) Create country income levels and weight variables
 ********************************************************************************
-replace country="CAR" if v000=="CF3" & _cou==.
-replace _cou=10 if v000=="CF3" & _cou==.
-replace country="Zimbabwe" if v000=="ZW6" & _cou==.
-replace _cou=69 if v000=="ZW6" & _cou==.
-
 do $PATH/Do/countrynaming
 
 gen income="low" if inc_status=="L"
 replace income="mid" if inc_status!="L"
+
 ********************************************************************************
 *** (6) Keep required variables.  Save data as working file.
 ********************************************************************************
-save "$PATH/Data/DHS_twins_FULL", replace
 keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /*
 */ four_plus five_plus two_plus_twins three_plus_twins four_plus_twins         /*
 */ five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id  /*
@@ -467,8 +505,11 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ twinattain desiredfert_region desiredfert_ethnic inc_stat contracep_intent  /*
 */ _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy  /*
 */ prenate_doc prenate_nurse prenate_none WBcountry v001 desiredfert_cluster*  /*
-*/ income motherage* antesq bmi_sq height_sq underweigh overweight ALL
-
+*/ income motherage* antesq bmi_sq height_sq underweigh overweight ALL ADJfert /*
+*/ ADJbord ADJtwin ADJtwinfamily ADJtwin_bord ADJtwin_bord_fam ADJnummultiple  /*
+*/ ADJtwo_plus ADJthree_plus ADJfour_plus ADJfive_plus ADJtwo_plus_twins       /*
+*/ ADJthree_plus_twins ADJfour_plus_twins ADJfive_plus_twins ADJtwin_two_fam   /*
+*/ ADJtwin_three_fam ADJtwin_four_fam ADJtwin_five_fam ADJtwind
 
 save "$PATH/Data/DHS_twins", replace
 log close
