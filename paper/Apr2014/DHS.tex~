@@ -1,10 +1,11 @@
-%********************************************************************************
+\section{Demographic and Health Surveys}
+
 The DHS are a nationally representative set of surveys which have been 
 administered in low- and middle-income countries between 1985 and the present.
 Women aged between 15-49 in surveyed households respond to an in-depth series 
 of questions reporting their full fertility history (both surviving and 
-non-surviving children), their actual and desired contraceptive use and number
-of births, education level, marital status, plus the measurement of a 
+non-surviving children), their actual and desired contraceptive use and total
+children born, education level, marital status, plus the measurement of a 
 number of health endowments such as height and body mass index.  For all other 
 members living in the household a shorter series of responses are recorded, 
 including the individual's educational attainment.
@@ -27,18 +28,12 @@ analysis to those children aged 18 and under.
 We pool all publicly available DHS data resulting in microdata on 6,697,397 
 children ever born.  Of these offspring, 3,803,796 remain living in the same
 household as their mother.  The majority of these 3,803,796 children are aged
-18 and under (91.45\%) and hance make up our principal estimation sample.  The
-remaining 2,893,601 offspring were not recorded as living in the same household
-as their mother.  Of these children \emph{not} in the household, and hence for 
-whom education is not recorded, the majority (53.4\%) were aged over 18 or had 
-died prior to the date of survey.  The full sample of children aged 18 and 
-under (with and without education) are used in tests which involve infant or
-child mortality as outcome variables.
+18 and under (91.45\%).  The remaining 2,893,601 offspring were not recorded
+as living in the same household as their mother.  Of these children \emph{not}
+in the household, and hence for whom education is not recorded, the majority
+(53.4\%) were aged over 18 or had died prior to the date of survey.
 
-Table \ref{TWINtab:sumstats} provides summary statistics of this data.  
-Fertility and maternal characteristics are described at the level of the 
-mother, while child education and survival are described at the level of the
-child (the education and full samples respectively).  The number of 
-observations at each level is provided at the bottom of the table.
-
-%measures of child outcomes and mother 
+%These surveys collect data on (among other things) maternal and child health 
+%outcomes and behaviours, along with data on a family's fertility and 
+%contraceptive behaviours and preferences, plus each member's educational 
+%attainment.  

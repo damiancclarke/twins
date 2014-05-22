@@ -42,6 +42,7 @@ bala = "Balance_mother.tex"
 twin = "Twin_Predict_none.xls"
 summ = "Summary.txt"
 sumc = "SummaryChild.txt"
+sumf = "SummaryMortality.txt"
 coun = "Count.txt"
 dhss = "Countries.txt"
 
@@ -71,7 +72,7 @@ if ftype=='tex':
     mc2  = '}}'
     twid = ['5','7','4','5','9','9','4','6','10','7']
     tcm  = ['}{p{10cm}}','}{p{15.8cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
-            '}{p{13.8cm}}','}{p{14.2cm}}','}{p{10.6cm}}','}{p{13.2cm}}',
+            '}{p{13.8cm}}','}{p{14.2cm}}','}{p{10.6cm}}','}{p{13.8cm}}',
             '}{p{18.0cm}}','}{p{13.4cm}}']
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
     lname = "Fertility$\\times$desire"
@@ -517,27 +518,28 @@ counti = open(Results2+"Summary/"+coun, 'r')
 
 addL = []
 for i,line in enumerate(counti):
-    if i<7:
+    if i<8:
         line=line.replace("(  ", "(")
         if ftype=='csv':
             line = line.replace('\\multicolumn{2}{c}{','')
             line = line.replace('}','')
-            if i==3 or i==4 or i==5 or i==6:
+            if i==4 or i==5 or i==6 or i==7:
                 line = line.replace('&',';;')
             line = line.replace('&',';')
             line = line.replace('\\\\','')
         addL.append(line.replace("( ","("))
-    elif i==7:
+    elif i==8:
         nk = line
 print nk
 
 summi = open(Results2+"Summary/"+summ, 'r')
 summc = open(Results2+"Summary/"+sumc, 'r')
+summf = open(Results2+"Summary/"+sumf, 'r')
 summo = open(Tables+"Summary."+end, 'w')
 
 if ftype=='tex':
     summo.write("\\begin{table}[htpb!]\\caption{Summary Statistics} \n"
-    "\\label{TWINtab:sumstats}\\begin{center}\\scalebox{0.99}{"
+    "\\label{TWINtab:sumstats}\\begin{center}\\scalebox{0.95}{"
     "\\begin{tabular}{lccccc}\n\\toprule \\toprule \n"
     "&\\multicolumn{2}{c}{Low Income}&\\multicolumn{2}{c}{Middle Income}\\\\ \n" 
     "\\cmidrule(r){2-3} \\cmidrule(r){4-5}\n"
@@ -565,7 +567,7 @@ for i,line in enumerate(summi):
         line = line.replace("exceedfam"      , "Actual Births$>$Desired")
 
         line = line.replace("Age", 
-        addL[3]+ addL[4]+addL[5]+ addL[6]+
+        addL[4]+ addL[5]+addL[6]+ addL[7]+
         "\\textsc{Mother's Characteristics}&&&&&\\\\ Age\n")
 
 
@@ -583,8 +585,6 @@ for i,line in enumerate(summc):
         line = line.replace("noeduc"         , "No Education (Percent)" )
         line = line.replace("educ"           , "Education (Years)"      )
         line = line.replace("school_zsc~e"   , "Education (Z-Score)"    )
-        line = line.replace("infantmort~y"   , "Infant Mortality"       )
-        line = line.replace("childmorta~y"   , "Child Mortality"        )
 
         line = line.replace("Education (Years)", 
         "\\textsc{Children's Outcomes}&&&&&\\\\ Education (Years)\n")
@@ -596,17 +596,31 @@ for i,line in enumerate(summc):
 
         summo.write(line+'\n')
 
+for i,line in enumerate(summf):
+    if i>2 and i%3!=2:
+        line=re.sub(r"\s+", dd, line)
+        line=re.sub(r"&$", ls+ls, line)
+        #line=re.sub(r"&(\d+.\d+)&$", ls+ls, line)
+        line = line.replace("infantmort~y", "Infant Mortality")
+        line = line.replace("childmorta~y", "Child Mortality" )
+
+        if ftype=='csv':
+            line=line.replace("$","")
+
+        summo.write(line+'\n')
+
 summo.write(
-mr +'\n'+ addL[0] + addL[1] + addL[2] + mr + "\n"
-+mc1+twid[7]+tcm[7]+mc3+" Group "
+mr +'\n'+ addL[0] + addL[1] + addL[2] + addL[3] + mr + "\n"
++mc1+twid[7]+tcm[7]+mc3+"Summary statistics are presented for the full estimation "
+" sample consisting of all children 18 years of age and under born to the " +nk+ 
+" mothers responding to any publicly available DHS survey. Group "
 "means are presented with standard deviation below in parenthesis.  Education" 
 " is reported as total years attained, and Z-score presents educational "
 "attainment relative to country and cohort (mean 0, std deviation 1).  Infant"
 " mortality refers to the proportion of children who die before 1 year of age,"
 "  while child mortality refers to the proportion who die before 5 years.  "
-"Maternal height is reported in cm, and BMI is weight in kg over height in "
-"metres squared.  Summary statistics are for the full sample of " +nk+ 
-" mothers responding to any publicly available DHS survey.  For a full "
+"Maternal height is reported in centimetres, and BMI is weight in kilograms "
+"over height in metres squared.  For a full "
 "list of country and years of survey, see appendix "
 "table "+rCou+".")
 if ftype=='tex':

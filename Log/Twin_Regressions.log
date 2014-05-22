@@ -2,113 +2,115 @@
       name:  <unnamed>
        log:  /home/damiancclarke/investigacion/Activa/Twins/Log/Twin_Regressions.log
   log type:  text
- opened on:  21 May 2014, 18:30:14
+ opened on:  22 May 2014, 00:30:54
 
 . use "$Data/DHS_twins", clear
 
 . 
-. drop if twinfamily>2
-(6723 observations deleted)
-
-. keep if _merge==3
-(2889332 observations deleted)
-
 . replace bmi=. if bmi>50
-(39849 real changes made, 39849 to missing)
+(67938 real changes made, 67938 to missing)
 
 . replace height=. if height>240
-(32758 real changes made, 32758 to missing)
+(55830 real changes made, 55830 to missing)
 
 . replace height=. if height<80
-(2134 real changes made, 2134 to missing)
+(3636 real changes made, 3636 to missing)
 
 . replace educ=. if age<6
-(1380644 real changes made, 1380644 to missing)
+(1381441 real changes made, 1381441 to missing)
 
 . replace educ=. if educ>25
 (0 real changes made)
 
 . replace educf=. if educf>25
-(1422 real changes made, 1422 to missing)
+(2548 real changes made, 2548 to missing)
 
 . replace birthspacing=. if birthspacing<8|birthspacing==999
-(507 real changes made, 507 to missing)
+(3064 real changes made, 3064 to missing)
 
 . 
 . tab _cou, gen(_country)
 
    country (numeric code) |      Freq.     Percent        Cum.
 --------------------------+-----------------------------------
-                  Albania |      9,815        0.26        0.26
-                  Armenia |     23,064        0.61        0.86
-               Azerbaijan |     10,052        0.26        1.13
-               Bangladesh |    137,762        3.62        4.75
-                    Benin |     48,825        1.28        6.04
-                  Bolivia |     89,613        2.36        8.40
-                   Brazil |     26,230        0.69        9.09
-             Burkina-Faso |     77,794        2.05       11.13
-                  Burundi |     17,030        0.45       11.58
-                 Cambodia |     77,554        2.04       13.62
-                 Cameroon |     43,514        1.14       14.76
- Central-African-Republic |      8,208        0.22       14.98
-                     Chad |     26,257        0.69       15.67
-                 Colombia |    151,302        3.98       19.65
-                  Comoros |      4,322        0.11       19.77
-        Congo-Brazzaville |     23,867        0.63       20.39
-Congo-Democratic-Republic |     17,566        0.46       20.86
-            Cote-d-Ivoire |     35,441        0.93       21.79
-       Dominican-Republic |     82,483        2.17       23.96
-                    Egypt |    188,321        4.95       28.91
-                 Ethiopia |     76,245        2.01       30.92
-                    Gabon |     18,717        0.49       31.41
-                    Ghana |     29,012        0.76       32.17
-                Guatemala |     26,159        0.69       32.86
-                   Guinea |     25,721        0.68       33.54
-                   Guyana |      9,725        0.26       33.79
-                    Haiti |     51,606        1.36       35.15
-                 Honduras |     63,970        1.68       36.83
-                    India |    479,419       12.61       49.45
-                Indonesia |    350,158        9.21       58.66
-                   Jordan |    103,528        2.72       61.38
-               Kazakhstan |     10,878        0.29       61.67
-                    Kenya |     40,503        1.07       62.73
-          Kyrgyz-Republic |      6,244        0.16       62.90
-                  Lesotho |     19,463        0.51       63.41
-                  Liberia |      9,751        0.26       63.66
-               Madagascar |     65,688        1.73       65.39
-                   Malawi |     93,838        2.47       67.86
-                 Maldives |     11,226        0.30       68.16
-                     Mali |     71,572        1.88       70.04
-                  Moldova |      7,132        0.19       70.23
-                  Morocco |     38,387        1.01       71.24
-               Mozambique |     51,001        1.34       72.58
-                  Namibia |     21,713        0.57       73.15
-                    Nepal |     61,709        1.62       74.77
-                Nicaragua |     45,442        1.20       75.97
-                    Niger |     41,768        1.10       77.07
-                  Nigeria |     91,428        2.41       79.47
-                 Pakistan |     49,004        1.29       80.76
-                 Paraguay |      9,756        0.26       81.02
-                     Peru |    108,175        2.85       83.86
-              Philippines |     92,201        2.43       86.29
-                   Rwanda |     71,594        1.88       88.17
-    Sao-Tome-and-Principe |      4,524        0.12       88.29
-                  Senegal |     70,462        1.85       90.15
-             Sierra-Leone |     10,353        0.27       90.42
-             South-Africa |     12,790        0.34       90.75
-                Swaziland |      5,762        0.15       90.91
-                 Tanzania |     94,414        2.48       93.39
-                     Togo |     11,299        0.30       93.69
-                   Turkey |     37,557        0.99       94.67
-                   Uganda |     52,006        1.37       96.04
-                  Ukraine |      6,031        0.16       96.20
-               Uzbekistan |      7,905        0.21       96.41
-                  Vietnam |     25,329        0.67       97.08
-                    Yemen |     20,500        0.54       97.62
-                   Zambia |     51,358        1.35       98.97
-                 Zimbabwe |     39,299        1.03      100.00
+                  Albania |     12,766        0.19        0.19
+                  Armenia |     30,007        0.45        0.64
+               Azerbaijan |     13,565        0.20        0.84
+               Bangladesh |    203,857        3.04        3.89
+                    Benin |     95,989        1.43        5.32
+                  Bolivia |    161,456        2.41        7.73
+                   Brazil |     53,232        0.79        8.52
+             Burkina-Faso |    140,498        2.10       10.62
+                  Burundi |     36,406        0.54       11.17
+                 Cambodia |    118,958        1.78       12.94
+                 Cameroon |     86,954        1.30       14.24
+ Central-African-Republic |     16,936        0.25       14.49
+                     Chad |     47,187        0.70       15.20
+                 Colombia |    233,372        3.48       18.68
+                  Comoros |      7,913        0.12       18.80
+        Congo-Brazzaville |     48,635        0.73       19.53
+Congo-Democratic-Republic |     29,548        0.44       19.97
+            Cote-d-Ivoire |     74,014        1.11       21.07
+       Dominican-Republic |    171,678        2.56       23.64
+                  Ecuador |     11,835        0.18       23.81
+                    Egypt |    294,830        4.40       28.21
+              El-Salvador |      6,383        0.10       28.31
+                 Ethiopia |    129,595        1.94       30.24
+                    Gabon |     39,987        0.60       30.84
+                    Ghana |     67,676        1.01       31.85
+                Guatemala |     53,451        0.80       32.65
+                   Guinea |     50,058        0.75       33.40
+                   Guyana |     15,852        0.24       33.63
+                    Haiti |     92,827        1.39       35.02
+                 Honduras |     99,356        1.48       36.50
+                    India |    800,833       11.96       48.46
+                Indonesia |    538,817        8.05       56.51
+                   Jordan |    125,811        1.88       58.39
+               Kazakhstan |     14,972        0.22       58.61
+                    Kenya |    101,418        1.51       60.12
+          Kyrgyz-Republic |      8,781        0.13       60.25
+                  Lesotho |     29,137        0.44       60.69
+                  Liberia |     39,387        0.59       61.28
+               Madagascar |    109,847        1.64       62.92
+                   Malawi |    164,935        2.46       65.38
+                 Maldives |     20,136        0.30       65.68
+                     Mali |    150,720        2.25       67.93
+                   Mexico |     22,676        0.34       68.27
+                  Moldova |      9,903        0.15       68.42
+                  Morocco |     80,669        1.20       69.62
+               Mozambique |    101,179        1.51       71.13
+                  Namibia |     47,840        0.71       71.85
+                    Nepal |    111,120        1.66       73.51
+                Nicaragua |     70,977        1.06       74.57
+                    Niger |     87,107        1.30       75.87
+                  Nigeria |    179,246        2.68       78.54
+                 Pakistan |     66,418        0.99       79.53
+                 Paraguay |     15,346        0.23       79.76
+                     Peru |    189,917        2.84       82.60
+              Philippines |    127,450        1.90       84.50
+                   Rwanda |    109,753        1.64       86.14
+    Sao-Tome-and-Principe |      7,620        0.11       86.25
+                  Senegal |    145,057        2.17       88.42
+             Sierra-Leone |     21,136        0.32       88.74
+             South-Africa |     22,934        0.34       89.08
+                Sri-Lanka |     17,705        0.26       89.34
+                    Sudan |     25,805        0.39       89.73
+                Swaziland |     11,410        0.17       89.90
+                 Tanzania |    164,843        2.46       92.36
+                 Thailand |     17,803        0.27       92.63
+                     Togo |     37,051        0.55       93.18
+      Trinidad-and-Tobago |      7,837        0.12       93.30
+                  Tunisia |     16,463        0.25       93.54
+                   Turkey |     59,996        0.90       94.44
+                   Uganda |    120,935        1.81       96.24
+                  Ukraine |      8,007        0.12       96.36
+               Uzbekistan |      9,650        0.14       96.51
+                  Vietnam |     29,900        0.45       96.95
+                    Yemen |     29,803        0.44       97.40
+                   Zambia |     92,092        1.38       98.77
+                 Zimbabwe |     82,134        1.23      100.00
 --------------------------+-----------------------------------
-                    Total |  3,801,342      100.00
+                    Total |  6,697,397      100.00
 
 . tab year_birth, gen(_yb)
 
@@ -116,165 +118,207 @@ Congo-Democratic-Republic |     17,566        0.46       20.86
     year of |
       birth |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-       1936 |          2        0.00        0.00
-       1937 |        144        0.00        0.00
-       1938 |         96        0.00        0.01
-       1939 |        132        0.00        0.01
-       1940 |        461        0.01        0.02
-       1941 |      2,203        0.06        0.08
-       1942 |      5,550        0.15        0.23
-       1943 |      9,056        0.24        0.46
-       1944 |     11,585        0.30        0.77
-       1945 |     17,252        0.45        1.22
-       1946 |     20,100        0.53        1.75
-       1947 |     24,308        0.64        2.39
-       1948 |     28,805        0.76        3.15
-       1949 |     34,267        0.90        4.05
-       1950 |     45,554        1.20        5.25
-       1951 |     44,350        1.17        6.42
-       1952 |     57,501        1.51        7.93
-       1953 |     58,759        1.55        9.47
-       1954 |     69,154        1.82       11.29
-       1955 |     77,169        2.03       13.32
-       1956 |     85,667        2.25       15.58
-       1957 |     94,346        2.48       18.06
-       1958 |    104,722        2.75       20.81
-       1959 |    108,858        2.86       23.68
-       1960 |    132,520        3.49       27.16
-       1961 |    116,971        3.08       30.24
-       1962 |    139,941        3.68       33.92
-       1963 |    138,244        3.64       37.56
-       1964 |    140,983        3.71       41.27
-       1965 |    146,485        3.85       45.12
-       1966 |    138,817        3.65       48.77
-       1967 |    133,411        3.51       52.28
-       1968 |    144,797        3.81       56.09
-       1969 |    131,742        3.47       59.56
-       1970 |    147,016        3.87       63.42
-       1971 |    122,022        3.21       66.63
-       1972 |    129,996        3.42       70.05
-       1973 |    119,705        3.15       73.20
-       1974 |    109,105        2.87       76.07
-       1975 |    110,462        2.91       78.98
-       1976 |    100,544        2.64       81.62
-       1977 |     89,131        2.34       83.97
-       1978 |     88,061        2.32       86.29
-       1979 |     76,926        2.02       88.31
-       1980 |     80,032        2.11       90.41
-       1981 |     61,870        1.63       92.04
-       1982 |     59,639        1.57       93.61
-       1983 |     51,268        1.35       94.96
-       1984 |     42,245        1.11       96.07
-       1985 |     36,593        0.96       97.03
-       1986 |     30,525        0.80       97.84
-       1987 |     21,993        0.58       98.41
-       1988 |     19,438        0.51       98.93
-       1989 |     12,719        0.33       99.26
-       1990 |     10,861        0.29       99.55
-       1991 |      7,079        0.19       99.73
-       1992 |      4,987        0.13       99.86
-       1993 |      2,772        0.07       99.94
-       1994 |      1,472        0.04       99.98
-       1995 |        665        0.02       99.99
-       1996 |        240        0.01      100.00
-       1997 |         24        0.00      100.00
+       1935 |         28        0.00        0.00
+       1936 |        642        0.01        0.01
+       1937 |      5,153        0.08        0.09
+       1938 |      9,648        0.14        0.23
+       1939 |     11,907        0.18        0.41
+       1940 |     17,946        0.27        0.68
+       1941 |     17,568        0.26        0.94
+       1942 |     29,411        0.44        1.38
+       1943 |     37,975        0.57        1.95
+       1944 |     44,000        0.66        2.60
+       1945 |     54,788        0.82        3.42
+       1946 |     62,891        0.94        4.36
+       1947 |     72,415        1.08        5.44
+       1948 |     82,877        1.24        6.68
+       1949 |     92,797        1.39        8.06
+       1950 |    117,391        1.75        9.82
+       1951 |    111,386        1.66       11.48
+       1952 |    135,822        2.03       13.51
+       1953 |    135,386        2.02       15.53
+       1954 |    153,659        2.29       17.82
+       1955 |    162,991        2.43       20.26
+       1956 |    178,668        2.67       22.92
+       1957 |    195,500        2.92       25.84
+       1958 |    212,495        3.17       29.02
+       1959 |    215,348        3.22       32.23
+       1960 |    253,270        3.78       36.01
+       1961 |    218,691        3.27       39.28
+       1962 |    257,926        3.85       43.13
+       1963 |    250,867        3.75       46.88
+       1964 |    246,665        3.68       50.56
+       1965 |    247,614        3.70       54.26
+       1966 |    230,797        3.45       57.70
+       1967 |    213,281        3.18       60.89
+       1968 |    231,401        3.46       64.34
+       1969 |    203,061        3.03       67.37
+       1970 |    224,706        3.36       70.73
+       1971 |    182,932        2.73       73.46
+       1972 |    191,406        2.86       76.32
+       1973 |    174,972        2.61       78.93
+       1974 |    156,908        2.34       81.27
+       1975 |    157,900        2.36       83.63
+       1976 |    143,151        2.14       85.77
+       1977 |    124,695        1.86       87.63
+       1978 |    123,093        1.84       89.47
+       1979 |    105,509        1.58       91.04
+       1980 |    110,410        1.65       92.69
+       1981 |     84,190        1.26       93.95
+       1982 |     81,306        1.21       95.16
+       1983 |     69,486        1.04       96.20
+       1984 |     56,404        0.84       97.04
+       1985 |     49,259        0.74       97.78
+       1986 |     40,873        0.61       98.39
+       1987 |     29,234        0.44       98.82
+       1988 |     25,825        0.39       99.21
+       1989 |     16,490        0.25       99.46
+       1990 |     14,157        0.21       99.67
+       1991 |      9,177        0.14       99.81
+       1992 |      6,513        0.10       99.90
+       1993 |      3,531        0.05       99.96
+       1994 |      1,821        0.03       99.98
+       1995 |        866        0.01      100.00
+       1996 |        287        0.00      100.00
+       1997 |         31        0.00      100.00
 ------------+-----------------------------------
-      Total |  3,801,342      100.00
+      Total |  6,697,397      100.00
 
 . tab age, gen(_age)
 
 Child's age |
    in years |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          0 |    275,016        7.23        7.23
-          1 |    245,515        6.46       13.69
-          2 |    232,155        6.11       19.80
-          3 |    228,410        6.01       25.81
-          4 |    220,860        5.81       31.62
-          5 |    210,710        5.54       37.16
-          6 |    225,267        5.93       43.09
-          7 |    204,541        5.38       48.47
-          8 |    201,440        5.30       53.77
-          9 |    177,132        4.66       58.43
-         10 |    195,036        5.13       63.56
-         11 |    156,533        4.12       67.68
-         12 |    175,649        4.62       72.30
-         13 |    153,224        4.03       76.33
-         14 |    144,665        3.81       80.13
-         15 |    128,153        3.37       83.50
-         16 |    114,507        3.01       86.52
-         17 |     95,749        2.52       89.04
-         18 |     91,777        2.41       91.45
-         19 |     63,914        1.68       93.13
-         20 |     64,965        1.71       94.84
-         21 |     42,704        1.12       95.96
-         22 |     40,566        1.07       97.03
-         23 |     29,234        0.77       97.80
-         24 |     22,920        0.60       98.40
-         25 |     20,815        0.55       98.95
-         26 |     12,695        0.33       99.28
-         27 |      9,184        0.24       99.53
-         28 |      7,031        0.18       99.71
-         29 |      3,705        0.10       99.81
-         30 |      3,920        0.10       99.91
-         31 |      1,315        0.03       99.95
-         32 |      1,032        0.03       99.97
-         33 |        463        0.01       99.99
-         34 |        245        0.01       99.99
-         35 |        178        0.00      100.00
-         36 |         58        0.00      100.00
-         37 |         27        0.00      100.00
-         38 |         13        0.00      100.00
-         39 |          5        0.00      100.00
-         40 |          8        0.00      100.00
-         41 |          2        0.00      100.00
-         42 |          3        0.00      100.00
-         44 |          1        0.00      100.00
+          0 |    316,192        4.72        4.72
+          1 |    302,729        4.52        9.24
+          2 |    296,976        4.43       13.68
+          3 |    300,959        4.49       18.17
+          4 |    298,118        4.45       22.62
+          5 |    291,951        4.36       26.98
+          6 |    319,424        4.77       31.75
+          7 |    303,176        4.53       36.28
+          8 |    304,502        4.55       40.82
+          9 |    278,274        4.15       44.98
+         10 |    303,572        4.53       49.51
+         11 |    262,120        3.91       53.42
+         12 |    285,399        4.26       57.68
+         13 |    260,939        3.90       61.58
+         14 |    250,923        3.75       65.33
+         15 |    239,339        3.57       68.90
+         16 |    227,965        3.40       72.31
+         17 |    209,195        3.12       75.43
+         18 |    210,847        3.15       78.58
+         19 |    174,779        2.61       81.19
+         20 |    184,612        2.76       83.94
+         21 |    147,046        2.20       86.14
+         22 |    146,634        2.19       88.33
+         23 |    125,759        1.88       90.21
+         24 |    112,178        1.67       91.88
+         25 |    106,656        1.59       93.47
+         26 |     84,864        1.27       94.74
+         27 |     70,533        1.05       95.79
+         28 |     61,969        0.93       96.72
+         29 |     46,304        0.69       97.41
+         30 |     44,000        0.66       98.07
+         31 |     29,183        0.44       98.50
+         32 |     24,366        0.36       98.87
+         33 |     18,578        0.28       99.14
+         34 |     14,152        0.21       99.36
+         35 |     11,153        0.17       99.52
+         36 |      8,560        0.13       99.65
+         37 |      6,775        0.10       99.75
+         38 |      5,266        0.08       99.83
+         39 |      3,894        0.06       99.89
+         40 |      2,751        0.04       99.93
+         41 |      1,919        0.03       99.96
+         42 |      1,196        0.02       99.98
+         43 |        826        0.01       99.99
+         44 |        441        0.01       99.99
+         45 |        226        0.00      100.00
+         46 |        105        0.00      100.00
+         47 |         43        0.00      100.00
+         48 |         15        0.00      100.00
+         49 |          5        0.00      100.00
+         50 |          7        0.00      100.00
+         51 |          1        0.00      100.00
+         52 |          1        0.00      100.00
 ------------+-----------------------------------
-      Total |  3,801,342      100.00
+      Total |  6,697,397      100.00
 
 . tab contracep_intent, gen(_contracep)
 
 contraceptive use and intention |      Freq.     Percent        Cum.
 --------------------------------+-----------------------------------
-            using modern method |  1,373,985       36.49       36.49
-       using traditional method |    310,740        8.25       44.74
-non-user - intends to use later |    912,583       24.24       68.98
-         does not intend to use |  1,168,160       31.02      100.00
+            using modern method |  2,202,376       33.17       33.17
+       using traditional method |    501,290        7.55       40.72
+non-user - intends to use later |  1,502,563       22.63       63.35
+         does not intend to use |  2,433,037       36.65      100.00
                   never had sex |          1        0.00      100.00
 --------------------------------+-----------------------------------
-                          Total |  3,765,469      100.00
+                          Total |  6,639,267      100.00
 
 . tab bord, gen(_bord)
 
     Child's |
 birth order |      Freq.     Percent        Cum.
 ------------+-----------------------------------
-          1 |    971,887       25.57       25.57
-          2 |    837,648       22.04       47.60
-          3 |    632,402       16.64       64.24
-          4 |    451,590       11.88       76.12
-          5 |    319,188        8.40       84.52
-          6 |    223,078        5.87       90.38
-          7 |    150,112        3.95       94.33
-          8 |     96,682        2.54       96.88
-          9 |     57,940        1.52       98.40
-         10 |     32,505        0.86       99.26
-         11 |     16,204        0.43       99.68
-         12 |      7,411        0.19       99.88
-         13 |      2,811        0.07       99.95
-         14 |      1,137        0.03       99.98
-         15 |        465        0.01       99.99
-         16 |        188        0.00      100.00
-         17 |         58        0.00      100.00
-         18 |         19        0.00      100.00
-         19 |         10        0.00      100.00
-         20 |          6        0.00      100.00
-         21 |          1        0.00      100.00
+          1 |  1,848,161       27.60       27.60
+          2 |  1,486,566       22.20       49.79
+          3 |  1,095,137       16.35       66.14
+          4 |    772,132       11.53       77.67
+          5 |    536,110        8.00       85.68
+          6 |    367,741        5.49       91.17
+          7 |    244,693        3.65       94.82
+          8 |    156,114        2.33       97.15
+          9 |     93,046        1.39       98.54
+         10 |     51,971        0.78       99.32
+         11 |     25,849        0.39       99.70
+         12 |     11,959        0.18       99.88
+         13 |      4,654        0.07       99.95
+         14 |      1,922        0.03       99.98
+         15 |        798        0.01       99.99
+         16 |        331        0.00      100.00
+         17 |        114        0.00      100.00
+         18 |         55        0.00      100.00
+         19 |         24        0.00      100.00
+         20 |         11        0.00      100.00
+         21 |          3        0.00      100.00
+         22 |          1        0.00      100.00
+         23 |          1        0.00      100.00
+         24 |          1        0.00      100.00
+         25 |          1        0.00      100.00
+         26 |          1        0.00      100.00
+         27 |          1        0.00      100.00
 ------------+-----------------------------------
-      Total |  3,801,342      100.00
+      Total |  6,697,397      100.00
 
 . local base malec _country* _yb* _age* _contracep* `add'
+
+. drop if twinfamily>2
+(6723 observations deleted)
+
+. 
+. gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
+(2797625 missing values generated)
+
+. replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
+(96511 real changes made)
+
+. replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
+(2646406 real changes made)
+
+. replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
+(54708 real changes made)
+
+. encode cat, gen(catnum)
+
+. 
+. save "$Data/DHS_twins_mortality", replace
+file ~/investigacion/Activa/Twins/Data/DHS_twins_mortality.dta saved
+
+. 
+. keep if _merge==3
+(2889332 observations deleted)
 
 . 
 . *******************************************************************************
@@ -289,21 +333,17 @@ birth order |      Freq.     Percent        Cum.
 .         ***************************************************************************
 .         * (A) By twins
 .         local opts cells("count mean sd min max")
-. 
-.         gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
-.         replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
-.         replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
-.         replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
-.         encode cat, gen(catnum)
-.         
-.         local numkids "Number of Children"
+.         local sep &             
+.         local numkids "Number of Children (Education)"
+.         local numkidsF "Number of Children (Ever Born)"
 .         local nummothers "Number of Mothers"
 .         local numcountry "Number of Countries"
+. 
 .         foreach num of numlist 1(1)4 {
-  2.                 cap drop count
-  3.                 gen count = 1
+  2.                 cap drop count 
+  3.                 gen count = 1 `cond'
   4.                 replace count=. if catnum!=`num'
-  5.                 foreach var of local sumstats {
+  5.                 foreach var of local sumstatsC {
   6.                         replace count=. if `var'==.
   7.                 }
   8.                 count if count==1
@@ -317,7 +357,7 @@ birth order |      Freq.     Percent        Cum.
  14.                 local nummothers "`nummothers' `sep'" "`mm'"
  15.                 drop n
  16. 
-.                 bys _cou: gen n=_n
+.                 bys _cou count: gen n=_n
  17.                 count if count==1&n==1
  18.                 if `num'==1|`num'==3 {
  19.                         local numcountry "`numcountry' `sep' `r(N)'`sep'`r(N)' "
@@ -325,7 +365,7 @@ birth order |      Freq.     Percent        Cum.
  21.                 drop n
  22.         }
 . 
-.         count
+.         count `cond'
 .         local kidcount = "`: display %9.0fc r(N)'"
 .         sum twind
 .         scalar at = "`: display %7.4f r(mean)'"
@@ -350,14 +390,54 @@ birth order |      Freq.     Percent        Cum.
 . 
 .         preserve
 .         gen exceedfam=idealfam==1
+.         keep `cond'
 .         collapse $sumstatsM, by(id cat)
 .         count
 .         local mothercount = "`: display %9.0fc r(N)'"
+.         
+.         estpost tabstat $sumstatsM, by(cat) statistics(mean sd) listwise ///
+>          columns(statistics)
+.         esttab using "$Tables/Summary/`Sum'.txt", replace main(mean) aux(sd) /*
+>         */ nostar unstack noobs nonote nomtitle nonumber
+.         restore
+. 
+.         estpost tabstat $sumstatsC, by(cat) statistics(mean sd) listwise ///
+>          columns(statistics)
+.         esttab using "$Tables/Summary/`SumC'.txt", replace main(mean) aux(sd) /*
+>         */ nostar unstack noobs nonote nomtitle nonumber
+. 
+.         preserve
+.         use "$Data/DHS_twins_mortality.dta", clear
+.         estpost tabstat $sumstatsF, by(cat) statistics(mean sd) listwise ///
+>          columns(statistics)
+.         esttab using "$Tables/Summary/`SumF'.txt", replace main(mean) aux(sd) /*
+>         */ nostar unstack noobs nonote nomtitle nonumber
+. 
+.         foreach num of numlist 1(1)4 {
+  2.                 cap drop count
+  3.                 gen count = 1 `cond'
+  4.                 replace count=. if catnum!=`num'
+  5.                 foreach var of local sumstatsF {
+  6.                         replace count=. if `var'==.
+  7.                 }
+  8.                 count if count==1
+  9.                 local kk = "`: display %9.0fc r(N)'"
+ 10. 
+.                 local numkidsF "`numkidsF' `sep'" "`kk'"
+ 11.         }
+.         count `cond'
+.         local kidcountF = "`: display %9.0fc r(N)'"
+.         
+.         clear
+.         restore
+. 
 . 
 .         file open resfile using "$Tables/Summary/Count.txt", write replace
 .         file write resfile "`numcountry' & 67 \\" _n
-.         file write resfile "`numkids' & `kidcount' \\" _n
 .         file write resfile "`nummothers' & `mothercount' \\" _n
+.         file write resfile "`numkids' & `kidcount' \\" _n
+.         file write resfile "`numkidsF' & `kidcountF' \\" _n
+.         
 .         file write resfile "Fraction Twin & \multicolumn{2}{c}{ `=scalar(lt)'" ///
 >           "}& \multicolumn{2}{c}{ `=scalar(mt)' } & `=scalar(at)'\\" _n
 .         file write resfile "& \multicolumn{2}{c}{(`=scalar(ls)')" ///
@@ -368,12 +448,6 @@ birth order |      Freq.     Percent        Cum.
 >           "}& \multicolumn{2}{c}{(`=scalar(mbs)')}& (`=scalar(abs)')\\" _n
 .         file write resfile "`mothercount'"
 .         file close resfile
-.         
-.         estpost tabstat $sumstatsM, by(cat) statistics(mean sd) listwise ///
->          columns(statistics)
-.         esttab using "$Tables/Summary/`Sum'.txt", replace main(mean) aux(sd) /*
->         */ nostar unstack noobs nonote nomtitle nonumber
-.         restore
 . 
 .         preserve
 .         decode _cou, gen(WBcountry)
@@ -386,21 +460,8 @@ birth order |      Freq.     Percent        Cum.
 .         sort WBc _year
 .         outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
 .         restore
-. 
-.         preserve
-.         use "$Data/DHS_twins.dta", clear
-.         gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
-.         replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
-.         replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
-.         replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
-.         encode cat, gen(catnum)
-.         estpost tabstat $sumstatsC, by(cat) statistics(mean sd) listwise ///
->          columns(statistics)
-.         esttab using "$Tables/Summary/`SumC'.txt", replace main(mean) aux(sd) /*
->         */ nostar unstack noobs nonote nomtitle nonumber
-.         clear
-.         restore
-.         ***************************************************************************
+.         
+.    ***************************************************************************
 .         *** (2b) Graphical
 .         *** graph 1: total births by family type (twins vs non-twins)
 .         *** graph 2: total births by family type for families who exceed desired
@@ -468,7 +529,7 @@ birth order |      Freq.     Percent        Cum.
 .         graph export "$Graphs/`idealfam'.`format'", as(`format') replace
 .         restore
 . 
-.         foreach c of varlist /*agemay agefirstbirth*/ fert {
+.         foreach c of varlist agemay agefirstbirth fert {
   2.                 preserve
   3.                 if `"`c'"'=="agemay" {
   4.                         local cond agemay>=15&agemay<=45
@@ -670,7 +731,7 @@ birth order |      Freq.     Percent        Cum.
 . **** (3) Twin predict regressions
 . ********************************************************************************
 . if `twin'== 1 {
-.         local out "$Tables/Twin/`TwinPred'_`births'.xls"
+.         local out "$Tables/Twin/`TwinPred'.xls"
 .         fvset base 1 _cou
 .         fvset base 1 child_yob
 .         
@@ -766,7 +827,7 @@ birth order |      Freq.     Percent        Cum.
 . **** (4) Simple OLS of Q-Q (can then apply Altonji)
 . ********************************************************************************
 . if `ols'==1 {
-.         local out "$Tables/OLS/QQ_ols_`births'.xls"
+.         local out "$Tables/OLS/QQ_ols.xls"
 . 
 .         gen desiredbirth=bord<=idealnumkids
 .         gen fertXdesired=fert*desiredbirth
@@ -853,14 +914,17 @@ birth order |      Freq.     Percent        Cum.
 (3234643 observations deleted)
 (sum of wgt is     2.4786e+11)
 Warning - collinearities detected
-Vars dropped:       _country30 _country41 _country49 _country50 _country52
-                    _country57 _country63 _country65 _country66 _country68 _yb1
-                    _yb2 _yb3 _yb4 _yb5 _yb6 _yb56 _yb57 _yb58 _yb59 _yb60 _yb61
-                    _yb62 _age1 _age2 _age3 _age4 _age5 _age6 _age19 _age20
-                    _age21 _age22 _age23 _age24 _age25 _age26 _age27 _age28
-                    _age29 _age30 _age31 _age32 _age33 _age34 _age35 _age36
-                    _age37 _age38 _age39 _age40 _age41 _age42 _age43 _age44
-                    _contracep4 _contracep5
+Vars dropped:       _country20 _country22 _country32 _country43 _country44
+                    _country52 _country53 _country55 _country60 _country61
+                    _country62 _country65 _country67 _country68 _country71
+                    _country73 _country74 _country76 _yb1 _yb2 _yb3 _yb4 _yb5
+                    _yb6 _yb7 _yb57 _yb58 _yb59 _yb60 _yb61 _yb62 _yb63 _age1
+                    _age2 _age3 _age4 _age5 _age6 _age19 _age20 _age21 _age22
+                    _age23 _age24 _age25 _age26 _age27 _age28 _age29 _age30
+                    _age31 _age32 _age33 _age34 _age35 _age36 _age37 _age38
+                    _age39 _age40 _age41 _age42 _age43 _age44 _age45 _age46
+                    _age47 _age48 _age49 _age50 _age51 _age52 _age53 _contracep4
+                    _contracep5
 
 Stored estimation results
 -------------------------
@@ -908,94 +972,94 @@ school_zscore |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
    _country17 |   .3010189   .0518813     5.80   0.000     .1993334    .4027044
    _country18 |   .5477578   .0327256    16.74   0.000     .4836168    .6118987
    _country19 |  -.0838841   .0308473    -2.72   0.007    -.1443437   -.0234245
-   _country20 |   .0511917   .0182853     2.80   0.005     .0153532    .0870302
-   _country21 |   .5695075   .0255102    22.32   0.000     .5195084    .6195067
-   _country22 |   .2494059   .0475629     5.24   0.000     .1561843    .3426274
-   _country23 |    .227627   .0253325     8.99   0.000     .1779762    .2772778
-   _country24 |    .579084   .0339822    17.04   0.000       .51248     .645688
-   _country25 |     .59609   .0321126    18.56   0.000     .5331506    .6590295
-   _country26 |  -.4281329   .0416145   -10.29   0.000    -.5096958   -.3465701
-   _country27 |   .4686738    .028379    16.51   0.000      .413052    .5242956
-   _country28 |   .1242822   .0207328     5.99   0.000     .0836467    .1649178
-   _country29 |      .3978   .0238691    16.67   0.000     .3510175    .4445826
-   _country31 |  -.0951366   .0432901    -2.20   0.028    -.1799837   -.0102895
-   _country32 |  -.2471743   .0417799    -5.92   0.000    -.3290613   -.1652872
-   _country33 |   .2102218   .0276654     7.60   0.000     .1559986     .264445
-   _country34 |  -.2710334   .0400329    -6.77   0.000    -.3494965   -.1925703
-   _country35 |   -.047357   .0334353    -1.42   0.157     -.112889     .018175
-   _country36 |    .380919   .0392374     9.71   0.000     .3040151     .457823
-   _country37 |   .4792914    .026213    18.28   0.000      .427915    .5306678
-   _country38 |   .2474586    .023186    10.67   0.000     .2020149    .2929023
-   _country39 |   .1415982   .0368697     3.84   0.000     .0693349    .2138616
-   _country40 |   .6796616   .0277938    24.45   0.000     .6251867    .7341365
-   _country42 |   .5020819   .0225021    22.31   0.000     .4579787    .5461851
-   _country43 |    .378559   .0246518    15.36   0.000     .3302423    .4268757
-   _country44 |   .0388755   .0319625     1.22   0.224    -.0237699    .1015208
-   _country45 |   .4439475   .0254798    17.42   0.000      .394008    .4938869
-   _country46 |   .3780257   .0227957    16.58   0.000      .333347    .4227043
-   _country47 |    .577323   .0307418    18.78   0.000     .5170701    .6375759
-   _country48 |   .3289376    .030533    10.77   0.000      .269094    .3887812
-   _country51 |   .1815552   .0204452     8.88   0.000     .1414833    .2216271
-   _country53 |   .1741435    .027866     6.25   0.000     .1195272    .2287597
-   _country54 |   .1355615    .056883     2.38   0.017     .0240729    .2470501
-   _country55 |   .5706896   .0316411    18.04   0.000     .5086741    .6327051
-   _country56 |    .403914   .0492034     8.21   0.000      .307477    .5003509
-   _country58 |   -.134318   .0470143    -2.86   0.004    -.2264643   -.0421717
-   _country59 |   .2603929   .0253522    10.27   0.000     .2107036    .3100822
-   _country60 |   .5377465   .0470949    11.42   0.000     .4454422    .6300509
-   _country61 |   .1331333   .0259511     5.13   0.000     .0822702    .1839965
-   _country62 |   .3442674   .0361054     9.54   0.000     .2735021    .4150327
-   _country64 |  -.2778347   .0380702    -7.30   0.000     -.352451   -.2032184
-   _country67 |   .2951819   .0260986    11.31   0.000     .2440296    .3463342
-         _yb7 |  -2.863709   .5048535    -5.67   0.000    -3.853203   -1.874214
-         _yb8 |  -1.711948   .7275791    -2.35   0.019    -3.137976   -.2859188
-         _yb9 |  -.2138247   .6692701    -0.32   0.749     -1.52557    1.097921
-        _yb10 |  -1.232525   .5684958    -2.17   0.030    -2.346757   -.1182942
-        _yb11 |  -.8025106   .5340336    -1.50   0.133    -1.849197    .2441761
-        _yb12 |   -1.11441   .4998767    -2.23   0.026     -2.09415   -.1346692
-        _yb13 |  -.9940728   .4854107    -2.05   0.041     -1.94546   -.0426853
-        _yb14 |  -1.095047   .4863656    -2.25   0.024    -2.048306    -.141788
-        _yb15 |  -1.059055   .4808253    -2.20   0.028    -2.001456   -.1166551
-        _yb16 |  -.8865221   .4789061    -1.85   0.064    -1.825161    .0521167
-        _yb17 |  -.8691969   .4765694    -1.82   0.068    -1.803256     .064862
-        _yb18 |  -.9299916   .4757874    -1.95   0.051    -1.862518    .0025346
-        _yb19 |  -.8814975   .4744497    -1.86   0.063    -1.811402    .0484067
-        _yb20 |  -.8612096   .4743604    -1.82   0.069    -1.790939    .0685198
-        _yb21 |  -.8768362   .4739742    -1.85   0.064    -1.805809    .0521362
-        _yb22 |  -.8657872    .473627    -1.83   0.068    -1.794079    .0625047
-        _yb23 |  -.8021206   .4727478    -1.70   0.090    -1.728689     .124448
-        _yb24 |  -.8158502   .4724491    -1.73   0.084    -1.741833    .1101329
-        _yb25 |  -.8389923   .4722536    -1.78   0.076    -1.764592    .0866078
-        _yb26 |  -.8322148   .4721226    -1.76   0.078    -1.757558    .0931285
-        _yb27 |   -.798574   .4719411    -1.69   0.091    -1.723561    .1264136
-        _yb28 |  -.7798781    .471659    -1.65   0.098    -1.704313    .1445565
-        _yb29 |  -.7788893   .4713657    -1.65   0.098    -1.702749    .1449705
-        _yb30 |  -.7996159   .4712767    -1.70   0.090    -1.723301    .1240694
-        _yb31 |  -.7789997   .4711597    -1.65   0.098    -1.702456    .1444564
-        _yb32 |  -.7549079   .4709734    -1.60   0.109    -1.677999     .168183
-        _yb33 |  -.7805345   .4708801    -1.66   0.097    -1.703443    .1423736
-        _yb34 |  -.7407011   .4707492    -1.57   0.116    -1.663353    .1819503
-        _yb35 |  -.7349235   .4706699    -1.56   0.118     -1.65742    .1875727
-        _yb36 |  -.7212311   .4706107    -1.53   0.125    -1.643611    .2011489
-        _yb37 |  -.6984742   .4705257    -1.48   0.138    -1.620688    .2237392
-        _yb38 |  -.7015857   .4705007    -1.49   0.136     -1.62375    .2205787
-        _yb39 |  -.6600645   .4703831    -1.40   0.161    -1.581999    .2618695
-        _yb40 |  -.6583872   .4702879    -1.40   0.162    -1.580135    .2633601
-        _yb41 |  -.6458113   .4703167    -1.37   0.170    -1.567615    .2759925
-        _yb42 |  -.6547942   .4702011    -1.39   0.164    -1.576371    .2667829
-        _yb43 |  -.6513524   .4701351    -1.39   0.166      -1.5728    .2700954
-        _yb44 |  -.6165502   .4701131    -1.31   0.190    -1.537955    .3048545
-        _yb45 |  -.6210042   .4700271    -1.32   0.186     -1.54224    .3002319
-        _yb46 |  -.6418641   .4699857    -1.37   0.172    -1.563019     .279291
-        _yb47 |  -.6085111     .46992    -1.29   0.195    -1.529537    .3125152
-        _yb48 |  -.5996382   .4698714    -1.28   0.202    -1.520569    .3212928
-        _yb49 |  -.6287909   .4700295    -1.34   0.181    -1.550032      .29245
-        _yb50 |   -.642179   .4703328    -1.37   0.172    -1.564014    .2796563
-        _yb51 |  -.6519173    .470294    -1.39   0.166    -1.573677     .269842
-        _yb52 |  -.6781094   .4709666    -1.44   0.150    -1.601187    .2449682
-        _yb53 |  -.7545462   .4715587    -1.60   0.110    -1.678784    .1696918
-        _yb54 |  -.7334599   .4782336    -1.53   0.125    -1.670781    .2038608
-        _yb55 |  -.8639788   .4736747    -1.82   0.068    -1.792364    .0644066
+   _country21 |   .0511917   .0182853     2.80   0.005     .0153532    .0870302
+   _country23 |   .5695075   .0255102    22.32   0.000     .5195084    .6195067
+   _country24 |   .2494059   .0475629     5.24   0.000     .1561843    .3426274
+   _country25 |    .227627   .0253325     8.99   0.000     .1779762    .2772778
+   _country26 |    .579084   .0339822    17.04   0.000       .51248     .645688
+   _country27 |     .59609   .0321126    18.56   0.000     .5331506    .6590295
+   _country28 |  -.4281329   .0416145   -10.29   0.000    -.5096958   -.3465701
+   _country29 |   .4686738    .028379    16.51   0.000      .413052    .5242956
+   _country30 |   .1242822   .0207328     5.99   0.000     .0836467    .1649178
+   _country31 |      .3978   .0238691    16.67   0.000     .3510175    .4445826
+   _country33 |  -.0951366   .0432901    -2.20   0.028    -.1799837   -.0102895
+   _country34 |  -.2471743   .0417799    -5.92   0.000    -.3290613   -.1652872
+   _country35 |   .2102218   .0276654     7.60   0.000     .1559986     .264445
+   _country36 |  -.2710334   .0400329    -6.77   0.000    -.3494965   -.1925703
+   _country37 |   -.047357   .0334353    -1.42   0.157     -.112889     .018175
+   _country38 |    .380919   .0392374     9.71   0.000     .3040151     .457823
+   _country39 |   .4792914    .026213    18.28   0.000      .427915    .5306678
+   _country40 |   .2474586    .023186    10.67   0.000     .2020149    .2929023
+   _country41 |   .1415982   .0368697     3.84   0.000     .0693349    .2138616
+   _country42 |   .6796616   .0277938    24.45   0.000     .6251867    .7341365
+   _country45 |   .5020819   .0225021    22.31   0.000     .4579787    .5461851
+   _country46 |    .378559   .0246518    15.36   0.000     .3302423    .4268757
+   _country47 |   .0388755   .0319625     1.22   0.224    -.0237699    .1015208
+   _country48 |   .4439475   .0254798    17.42   0.000      .394008    .4938869
+   _country49 |   .3780257   .0227957    16.58   0.000      .333347    .4227043
+   _country50 |    .577323   .0307418    18.78   0.000     .5170701    .6375759
+   _country51 |   .3289376    .030533    10.77   0.000      .269094    .3887812
+   _country54 |   .1815552   .0204452     8.88   0.000     .1414833    .2216271
+   _country56 |   .1741435    .027866     6.25   0.000     .1195272    .2287597
+   _country57 |   .1355615    .056883     2.38   0.017     .0240729    .2470501
+   _country58 |   .5706896   .0316411    18.04   0.000     .5086741    .6327051
+   _country59 |    .403914   .0492034     8.21   0.000      .307477    .5003509
+   _country63 |   -.134318   .0470143    -2.86   0.004    -.2264643   -.0421717
+   _country64 |   .2603929   .0253522    10.27   0.000     .2107036    .3100822
+   _country66 |   .5377465   .0470949    11.42   0.000     .4454422    .6300509
+   _country69 |   .1331333   .0259511     5.13   0.000     .0822702    .1839965
+   _country70 |   .3442674   .0361054     9.54   0.000     .2735021    .4150327
+   _country72 |  -.2778347   .0380702    -7.30   0.000     -.352451   -.2032184
+   _country75 |   .2951819   .0260986    11.31   0.000     .2440296    .3463342
+         _yb8 |  -2.863709   .5048535    -5.67   0.000    -3.853203   -1.874214
+         _yb9 |  -1.711948   .7275791    -2.35   0.019    -3.137976   -.2859188
+        _yb10 |  -.2138247   .6692701    -0.32   0.749     -1.52557    1.097921
+        _yb11 |  -1.232525   .5684958    -2.17   0.030    -2.346757   -.1182942
+        _yb12 |  -.8025106   .5340336    -1.50   0.133    -1.849197    .2441761
+        _yb13 |   -1.11441   .4998767    -2.23   0.026     -2.09415   -.1346692
+        _yb14 |  -.9940728   .4854107    -2.05   0.041     -1.94546   -.0426853
+        _yb15 |  -1.095047   .4863656    -2.25   0.024    -2.048306    -.141788
+        _yb16 |  -1.059055   .4808253    -2.20   0.028    -2.001456   -.1166551
+        _yb17 |  -.8865221   .4789061    -1.85   0.064    -1.825161    .0521167
+        _yb18 |  -.8691969   .4765694    -1.82   0.068    -1.803256     .064862
+        _yb19 |  -.9299916   .4757874    -1.95   0.051    -1.862518    .0025346
+        _yb20 |  -.8814975   .4744497    -1.86   0.063    -1.811402    .0484067
+        _yb21 |  -.8612096   .4743604    -1.82   0.069    -1.790939    .0685198
+        _yb22 |  -.8768362   .4739742    -1.85   0.064    -1.805809    .0521362
+        _yb23 |  -.8657872    .473627    -1.83   0.068    -1.794079    .0625047
+        _yb24 |  -.8021206   .4727478    -1.70   0.090    -1.728689     .124448
+        _yb25 |  -.8158502   .4724491    -1.73   0.084    -1.741833    .1101329
+        _yb26 |  -.8389923   .4722536    -1.78   0.076    -1.764592    .0866078
+        _yb27 |  -.8322148   .4721226    -1.76   0.078    -1.757558    .0931285
+        _yb28 |   -.798574   .4719411    -1.69   0.091    -1.723561    .1264136
+        _yb29 |  -.7798781    .471659    -1.65   0.098    -1.704313    .1445565
+        _yb30 |  -.7788893   .4713657    -1.65   0.098    -1.702749    .1449705
+        _yb31 |  -.7996159   .4712767    -1.70   0.090    -1.723301    .1240694
+        _yb32 |  -.7789997   .4711597    -1.65   0.098    -1.702456    .1444564
+        _yb33 |  -.7549079   .4709734    -1.60   0.109    -1.677999     .168183
+        _yb34 |  -.7805345   .4708801    -1.66   0.097    -1.703443    .1423736
+        _yb35 |  -.7407011   .4707492    -1.57   0.116    -1.663353    .1819503
+        _yb36 |  -.7349235   .4706699    -1.56   0.118     -1.65742    .1875727
+        _yb37 |  -.7212311   .4706107    -1.53   0.125    -1.643611    .2011489
+        _yb38 |  -.6984742   .4705257    -1.48   0.138    -1.620688    .2237392
+        _yb39 |  -.7015857   .4705007    -1.49   0.136     -1.62375    .2205787
+        _yb40 |  -.6600645   .4703831    -1.40   0.161    -1.581999    .2618695
+        _yb41 |  -.6583872   .4702879    -1.40   0.162    -1.580135    .2633601
+        _yb42 |  -.6458113   .4703167    -1.37   0.170    -1.567615    .2759925
+        _yb43 |  -.6547942   .4702011    -1.39   0.164    -1.576371    .2667829
+        _yb44 |  -.6513524   .4701351    -1.39   0.166      -1.5728    .2700954
+        _yb45 |  -.6165502   .4701131    -1.31   0.190    -1.537955    .3048545
+        _yb46 |  -.6210042   .4700271    -1.32   0.186     -1.54224    .3002319
+        _yb47 |  -.6418641   .4699857    -1.37   0.172    -1.563019     .279291
+        _yb48 |  -.6085111     .46992    -1.29   0.195    -1.529537    .3125152
+        _yb49 |  -.5996382   .4698714    -1.28   0.202    -1.520569    .3212928
+        _yb50 |  -.6287909   .4700295    -1.34   0.181    -1.550032      .29245
+        _yb51 |   -.642179   .4703328    -1.37   0.172    -1.564014    .2796563
+        _yb52 |  -.6519173    .470294    -1.39   0.166    -1.573677     .269842
+        _yb53 |  -.6781094   .4709666    -1.44   0.150    -1.601187    .2449682
+        _yb54 |  -.7545462   .4715587    -1.60   0.110    -1.678784    .1696918
+        _yb55 |  -.7334599   .4782336    -1.53   0.125    -1.670781    .2038608
+        _yb56 |  -.8639788   .4736747    -1.82   0.068    -1.792364    .0644066
         _age7 |  -.3333659   .0450045    -7.41   0.000    -.4215732   -.2451587
         _age8 |  -.2656697   .0402869    -6.59   0.000    -.3446305   -.1867089
         _age9 |  -.2171545   .0352045    -6.17   0.000    -.2861541    -.148155
@@ -1044,253 +1108,48 @@ Instrumented:         fert
 Included instruments: malec _country1 _country2 _country3 _country4 _country5
                       _country6 _country7 _country8 _country9 _country10
                       _country11 _country12 _country13 _country14 _country15
-                      _country16 _country17 _country18 _country19 _country20
-                      _country21 _country22 _country23 _country24 _country25
-                      _country26 _country27 _country28 _country29 _country31
-                      _country32 _country33 _country34 _country35 _country36
-                      _country37 _country38 _country39 _country40 _country42
-                      _country43 _country44 _country45 _country46 _country47
-                      _country48 _country51 _country53 _country54 _country55
-                      _country56 _country58 _country59 _country60 _country61
-                      _country62 _country64 _country67 _yb7 _yb8 _yb9 _yb10
-                      _yb11 _yb12 _yb13 _yb14 _yb15 _yb16 _yb17 _yb18 _yb19
-                      _yb20 _yb21 _yb22 _yb23 _yb24 _yb25 _yb26 _yb27 _yb28
-                      _yb29 _yb30 _yb31 _yb32 _yb33 _yb34 _yb35 _yb36 _yb37
-                      _yb38 _yb39 _yb40 _yb41 _yb42 _yb43 _yb44 _yb45 _yb46
-                      _yb47 _yb48 _yb49 _yb50 _yb51 _yb52 _yb53 _yb54 _yb55
+                      _country16 _country17 _country18 _country19 _country21
+                      _country23 _country24 _country25 _country26 _country27
+                      _country28 _country29 _country30 _country31 _country33
+                      _country34 _country35 _country36 _country37 _country38
+                      _country39 _country40 _country41 _country42 _country45
+                      _country46 _country47 _country48 _country49 _country50
+                      _country51 _country54 _country56 _country57 _country58
+                      _country59 _country63 _country64 _country66 _country69
+                      _country70 _country72 _country75 _yb8 _yb9 _yb10 _yb11
+                      _yb12 _yb13 _yb14 _yb15 _yb16 _yb17 _yb18 _yb19 _yb20
+                      _yb21 _yb22 _yb23 _yb24 _yb25 _yb26 _yb27 _yb28 _yb29
+                      _yb30 _yb31 _yb32 _yb33 _yb34 _yb35 _yb36 _yb37 _yb38
+                      _yb39 _yb40 _yb41 _yb42 _yb43 _yb44 _yb45 _yb46 _yb47
+                      _yb48 _yb49 _yb50 _yb51 _yb52 _yb53 _yb54 _yb55 _yb56
                       _age7 _age8 _age9 _age10 _age11 _age12 _age13 _age14
                       _age15 _age16 _age17 _age18 _contracep1 _contracep2
                       _contracep3 motherage motheragesq motheragecub
                       agefirstbirth educf educfyrs_sq height bmi
 Excluded instruments: twin_two_fam
-Dropped collinear:    _country30 _country41 _country49 _country50 _country52
-                      _country57 _country63 _country65 _country66 _country68
-                      _yb1 _yb2 _yb3 _yb4 _yb5 _yb6 _yb56 _yb57 _yb58 _yb59
-                      _yb60 _yb61 _yb62 _age1 _age2 _age3 _age4 _age5 _age6
-                      _age19 _age20 _age21 _age22 _age23 _age24 _age25 _age26
-                      _age27 _age28 _age29 _age30 _age31 _age32 _age33 _age34
-                      _age35 _age36 _age37 _age38 _age39 _age40 _age41 _age42
-                      _age43 _age44 _contracep4 _contracep5
+Dropped collinear:    _country20 _country22 _country32 _country43 _country44
+                      _country52 _country53 _country55 _country60 _country61
+                      _country62 _country65 _country67 _country68 _country71
+                      _country73 _country74 _country76 _yb1 _yb2 _yb3 _yb4 _yb5
+                      _yb6 _yb7 _yb57 _yb58 _yb59 _yb60 _yb61 _yb62 _yb63 _age1
+                      _age2 _age3 _age4 _age5 _age6 _age19 _age20 _age21 _age22
+                      _age23 _age24 _age25 _age26 _age27 _age28 _age29 _age30
+                      _age31 _age32 _age33 _age34 _age35 _age36 _age37 _age38
+                      _age39 _age40 _age41 _age42 _age43 _age44 _age45 _age46
+                      _age47 _age48 _age49 _age50 _age51 _age52 _age53
+                      _contracep4 _contracep5
 ------------------------------------------------------------------------------
 (est1 stored)
 (sum of wgt is     2.4786e+11)
 Warning - collinearities detected
-Vars dropped:       _country30 _country41 _country49 _country50 _country52
-                    _country57 _country63 _country65 _country66 _country68 _yb1
-                    _yb2 _yb3 _yb4 _yb5 _yb6 _yb56 _yb57 _yb58 _yb59 _yb60 _yb61
-                    _yb62 _age1 _age2 _age3 _age4 _age5 _age6 _age19 _age20
-                    _age21 _age22 _age23 _age24 _age25 _age26 _age27 _age28
-                    _age29 _age30 _age31 _age32 _age33 _age34 _age35 _age36
-                    _age37 _age38 _age39 _age40 _age41 _age42 _age43 _age44
-                    _contracep4 _contracep5
-
-Stored estimation results
--------------------------
----------------------------------------------------------------------------
-        name | command      depvar       npar  title 
--------------+-------------------------------------------------------------
-      f2fert | ivreg2       fert          131  First-stage regression: fert
----------------------------------------------------------------------------
-
-IV (2SLS) estimation
---------------------
-
-Estimates efficient for homoskedasticity only
-Statistics robust to heteroskedasticity and clustering on id
-
-Number of clusters (id) =       249536                Number of obs =   249536
-                                                      F(130,249535) = 11373.18
-                                                      Prob > F      =   0.0000
-Total (centered) SS     =  227504.7498                Centered R2   =   0.1000
-Total (uncentered) SS   =  230628.2659                Uncentered R2 =   0.1122
-Residual SS             =  204755.9644                Root MSE      =    .9058
-
--------------------------------------------------------------------------------
-              |               Robust
-school_zscore |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
---------------+----------------------------------------------------------------
-         fert |  -.0258035   .0269679    -0.96   0.339    -.0786596    .0270525
-        malec |  -.0295321    .004922    -6.00   0.000    -.0391791   -.0198851
-    _country1 |   -.338356   .0338329   -10.00   0.000    -.4046672   -.2720448
-    _country2 |  -.4042319   .0358043   -11.29   0.000    -.4744071   -.3340568
-    _country3 |  -.3542755   .0361304    -9.81   0.000    -.4250899   -.2834611
-    _country4 |   .2476601   .0233771    10.59   0.000     .2018418    .2934783
-    _country5 |   .1962696   .0293167     6.69   0.000       .13881    .2537293
-    _country6 |   .0177786    .021539     0.83   0.409    -.0244371    .0599943
-    _country7 |   .1968279   .0391887     5.02   0.000     .1200194    .2736364
-    _country8 |   .0846843   .0273209     3.10   0.002     .0311364    .1382322
-    _country9 |   .0217128   .0521445     0.42   0.677    -.0804885    .1239142
-   _country10 |   .2033736    .023223     8.76   0.000     .1578573    .2488899
-   _country11 |   .0454505   .0364575     1.25   0.213    -.0260049    .1169058
-   _country12 |   .2769327   .0499924     5.54   0.000     .1789494     .374916
-   _country13 |   .1373701   .0369871     3.71   0.000     .0648767    .2098635
-   _country14 |  -.0956138   .0227724    -4.20   0.000    -.1402469   -.0509808
-   _country15 |   .1631021   .0848736     1.92   0.055    -.0032471    .3294513
-   _country16 |   .0809984   .0410775     1.97   0.049      .000488    .1615088
-   _country17 |   .1787104   .0560198     3.19   0.001     .0689136    .2885072
-   _country18 |   .1668298   .0367789     4.54   0.000     .0947445    .2389152
-   _country19 |  -.0925741   .0328508    -2.82   0.005    -.1569605   -.0281878
-   _country20 |  -.2092828   .0208438   -10.04   0.000     -.250136   -.1684296
-   _country21 |   .1565321   .0321043     4.88   0.000     .0936088    .2194555
-   _country22 |   .2195772   .0495101     4.44   0.000     .1225393    .3166151
-   _country23 |   .0438294    .026997     1.62   0.104    -.0090838    .0967425
-   _country24 |   .3680446   .0378172     9.73   0.000     .2939242    .4421651
-   _country25 |   .1538931   .0356077     4.32   0.000     .0841033    .2236829
-   _country26 |  -.4204866   .0421012    -9.99   0.000    -.5030035   -.3379698
-   _country27 |   .1678041   .0324264     5.17   0.000     .1042496    .2313586
-   _country28 |  -.0160687   .0205879    -0.78   0.435    -.0564204    .0242829
-   _country29 |   .1730045   .0210079     8.24   0.000     .1318299    .2141792
-   _country31 |  -.0679708   .0427844    -1.59   0.112    -.1518267    .0158851
-   _country32 |  -.1038979   .0457769    -2.27   0.023    -.1936191   -.0141768
-   _country33 |    .187469   .0289921     6.47   0.000     .1306456    .2442924
-   _country34 |   -.104726   .0416213    -2.52   0.012    -.1863022   -.0231498
-   _country35 |  -.0922078   .0344397    -2.68   0.007    -.1597083   -.0247073
-   _country36 |   .0931283   .0422125     2.21   0.027     .0103932    .1758633
-   _country37 |   .3293724   .0294777    11.17   0.000     .2715973    .3871476
-   _country38 |   .0394771   .0269286     1.47   0.143    -.0133021    .0922563
-   _country39 |   .0565087    .035698     1.58   0.113     -.013458    .1264754
-   _country40 |   .2258824   .0359594     6.28   0.000     .1554033    .2963616
-   _country42 |   .0530386   .0233564     2.27   0.023     .0072609    .0988163
-   _country43 |   .0683205    .029111     2.35   0.019     .0112639    .1253771
-   _country44 |  -.0061544   .0333596    -0.18   0.854    -.0715379    .0592292
-   _country45 |   .0798558   .0224173     3.56   0.000     .0359188    .1237929
-   _country46 |   .2707887   .0233825    11.58   0.000     .2249598    .3166176
-   _country47 |   .1613982   .0367939     4.39   0.000     .0892835    .2335129
-   _country48 |   .1608614   .0348347     4.62   0.000     .0925866    .2291361
-   _country51 |   .1755988    .021238     8.27   0.000     .1339731    .2172245
-   _country53 |  -.0692733   .0336971    -2.06   0.040    -.1353184   -.0032283
-   _country54 |  -.0242527   .0602403    -0.40   0.687    -.1423216    .0938162
-   _country55 |   .1589473   .0386402     4.11   0.000     .0832139    .2346807
-   _country56 |  -.0319865   .0507448    -0.63   0.528    -.1314444    .0674715
-   _country58 |  -.1494257    .047903    -3.12   0.002    -.2433139   -.0555375
-   _country59 |   .1482027   .0275725     5.38   0.000     .0941616    .2022438
-   _country60 |   .1582788   .0529042     2.99   0.003     .0545884    .2619691
-   _country61 |  -.1208071   .0272191    -4.44   0.000    -.1741555   -.0674586
-   _country62 |   .1636518   .0410673     3.98   0.000     .0831613    .2441422
-   _country64 |   -.103147    .038748    -2.66   0.008    -.1790917   -.0272023
-   _country67 |   .2450501   .0280646     8.73   0.000     .1900446    .3000557
-         _yb7 |  -3.518915   .5138708    -6.85   0.000    -4.526083   -2.511747
-         _yb8 |  -2.191684   .7533974    -2.91   0.004    -3.668315   -.7150518
-         _yb9 |  -.4125952   .6509038    -0.63   0.526    -1.688343    .8631527
-        _yb10 |  -1.770289   .5646175    -3.14   0.002    -2.876919   -.6636589
-        _yb11 |  -1.165947   .5406471    -2.16   0.031    -2.225595   -.1062979
-        _yb12 |  -1.366359   .5012345    -2.73   0.006    -2.348761   -.3839575
-        _yb13 |  -1.244432    .489808    -2.54   0.011    -2.204438   -.2844256
-        _yb14 |  -1.362011   .4902406    -2.78   0.005    -2.322865   -.4011573
-        _yb15 |  -1.282561   .4831613    -2.65   0.008     -2.22954   -.3355826
-        _yb16 |  -1.117968   .4810335    -2.32   0.020    -2.060776   -.1751593
-        _yb17 |   -1.09368   .4778441    -2.29   0.022    -2.030237   -.1571225
-        _yb18 |  -1.127982   .4769663    -2.36   0.018    -2.062819   -.1931456
-        _yb19 |  -1.061074   .4752289    -2.23   0.026    -1.992506   -.1296427
-        _yb20 |  -1.040872   .4751593    -2.19   0.028    -1.972167   -.1095764
-        _yb21 |  -1.032946    .474614    -2.18   0.030    -1.963172   -.1027191
-        _yb22 |  -1.021931   .4741645    -2.16   0.031    -1.951276   -.0925856
-        _yb23 |   -.942221   .4731369    -1.99   0.046    -1.869552   -.0148898
-        _yb24 |  -.9377397    .472689    -1.98   0.047    -1.864193   -.0112863
-        _yb25 |  -.9754659   .4725734    -2.06   0.039    -1.901693   -.0492391
-        _yb26 |  -.9463125   .4723224    -2.00   0.045    -1.872047   -.0205776
-        _yb27 |  -.9093823   .4720922    -1.93   0.054    -1.834666    .0159015
-        _yb28 |   -.887966   .4717726    -1.88   0.060    -1.812623    .0366914
-        _yb29 |  -.8806679   .4714288    -1.87   0.062    -1.804651    .0433155
-        _yb30 |  -.8916493   .4713039    -1.89   0.059    -1.815388    .0320893
-        _yb31 |  -.8626409   .4711512    -1.83   0.067     -1.78608    .0607985
-        _yb32 |  -.8362718   .4709287    -1.78   0.076    -1.759275    .0867315
-        _yb33 |  -.8504302   .4708096    -1.81   0.071      -1.7732    .0723397
-        _yb34 |   -.807972   .4706562    -1.72   0.086    -1.730441    .1144972
-        _yb35 |  -.8084562   .4705844    -1.72   0.086    -1.730785    .1138722
-        _yb36 |  -.7844411   .4704891    -1.67   0.095    -1.706583    .1377007
-        _yb37 |   -.750854   .4703731    -1.60   0.110    -1.672768    .1710604
-        _yb38 |  -.7583118   .4703565    -1.61   0.107    -1.680194    .1635701
-        _yb39 |  -.7092506   .4702111    -1.51   0.131    -1.630847    .2123462
-        _yb40 |   -.702823   .4700935    -1.50   0.135    -1.624189    .2185433
-        _yb41 |  -.6855321   .4701157    -1.46   0.145    -1.606942    .2358777
-        _yb42 |  -.6867619   .4699814    -1.46   0.144    -1.607909    .2343848
-        _yb43 |  -.6899581   .4699296    -1.47   0.142    -1.611003     .231087
-        _yb44 |  -.6312846   .4698582    -1.34   0.179     -1.55219    .2896206
-        _yb45 |  -.6558523   .4697995    -1.40   0.163    -1.576642    .2649378
-        _yb46 |  -.6632713   .4697337    -1.41   0.158    -1.583933    .2573898
-        _yb47 |  -.6220983   .4696633    -1.32   0.185    -1.542622    .2984249
-        _yb48 |  -.6138175   .4695858    -1.31   0.191    -1.534189    .3065537
-        _yb49 |  -.6189828   .4697053    -1.32   0.188    -1.539588    .3016227
-        _yb50 |  -.6179486   .4699709    -1.31   0.189    -1.539075    .3031773
-        _yb51 |  -.6335338   .4699596    -1.35   0.178    -1.554638      .28757
-        _yb52 |  -.6292881   .4705176    -1.34   0.181    -1.551486    .2929095
-        _yb53 |  -.6870308   .4712248    -1.46   0.145    -1.610614    .2365528
-        _yb54 |  -.6169224   .4773551    -1.29   0.196    -1.552521    .3186764
-        _yb55 |  -.8294488   .4730607    -1.75   0.080    -1.756631    .0977332
-        _age7 |  -.3116808   .0469046    -6.64   0.000     -.403612   -.2197495
-        _age8 |  -.2500667   .0419277    -5.96   0.000    -.3322434     -.16789
-        _age9 |  -.2044545   .0366123    -5.58   0.000    -.2762134   -.1326957
-       _age10 |  -.1810459   .0324419    -5.58   0.000    -.2446308    -.117461
-       _age11 |  -.1579291   .0271752    -5.81   0.000    -.2111916   -.1046666
-       _age12 |   -.148085   .0245489    -6.03   0.000    -.1961999   -.0999701
-       _age13 |  -.1170135   .0202347    -5.78   0.000    -.1566727   -.0773543
-       _age14 |  -.1058276   .0180149    -5.87   0.000    -.1411361   -.0705191
-       _age15 |  -.0741111   .0155963    -4.75   0.000    -.1046792   -.0435429
-       _age16 |  -.0507277   .0147551    -3.44   0.001    -.0796471   -.0218082
-       _age17 |  -.0596002    .013816    -4.31   0.000     -.086679   -.0325213
-       _age18 |  -.0391934   .0136846    -2.86   0.004    -.0660147   -.0123721
-  _contracep1 |    .352196   .0071454    49.29   0.000     .3381914    .3662006
-  _contracep2 |   .2956181   .0092626    31.92   0.000     .2774638    .3137725
-  _contracep3 |    .118521   .0109613    10.81   0.000     .0970374    .1400047
-    motherage |  -.0049243    .029645    -0.17   0.868    -.0630274    .0531789
-  motheragesq |   .0065616   .0012902     5.09   0.000     .0040328    .0090904
- motheragecub |  -.0001154    .000018    -6.39   0.000    -.0001507     -.00008
-agefirstbirth |  -.0648468   .0051747   -12.53   0.000     -.074989   -.0547046
-       height |   .0102251   .0004698    21.76   0.000     .0093042     .011146
-          bmi |   .0286271   .0010389    27.55   0.000     .0265909    .0306633
-        _cons |  -1.749985   .5046077    -3.47   0.001    -2.738998   -.7609725
--------------------------------------------------------------------------------
-Underidentification test (Kleibergen-Paap rk LM statistic):            572.692
-                                                   Chi-sq(1) P-val =    0.0000
-------------------------------------------------------------------------------
-Weak identification test (Cragg-Donald Wald F statistic):             1116.777
-                         (Kleibergen-Paap rk Wald F statistic):        789.382
-Stock-Yogo weak ID test critical values: 10% maximal IV size             16.38
-                                         15% maximal IV size              8.96
-                                         20% maximal IV size              6.66
-                                         25% maximal IV size              5.53
-Source: Stock-Yogo (2005).  Reproduced by permission.
-NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
-------------------------------------------------------------------------------
-Warning: estimated covariance matrix of moment conditions not of full rank.
-         model tests should be interpreted with caution.
-Possible causes:
-         number of clusters insufficient to calculate robust covariance matrix
-         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
-partial option may address problem.
-------------------------------------------------------------------------------
-Instrumented:         fert
-Included instruments: malec _country1 _country2 _country3 _country4 _country5
-                      _country6 _country7 _country8 _country9 _country10
-                      _country11 _country12 _country13 _country14 _country15
-                      _country16 _country17 _country18 _country19 _country20
-                      _country21 _country22 _country23 _country24 _country25
-                      _country26 _country27 _country28 _country29 _country31
-                      _country32 _country33 _country34 _country35 _country36
-                      _country37 _country38 _country39 _country40 _country42
-                      _country43 _country44 _country45 _country46 _country47
-                      _country48 _country51 _country53 _country54 _country55
-                      _country56 _country58 _country59 _country60 _country61
-                      _country62 _country64 _country67 _yb7 _yb8 _yb9 _yb10
-                      _yb11 _yb12 _yb13 _yb14 _yb15 _yb16 _yb17 _yb18 _yb19
-                      _yb20 _yb21 _yb22 _yb23 _yb24 _yb25 _yb26 _yb27 _yb28
-                      _yb29 _yb30 _yb31 _yb32 _yb33 _yb34 _yb35 _yb36 _yb37
-                      _yb38 _yb39 _yb40 _yb41 _yb42 _yb43 _yb44 _yb45 _yb46
-                      _yb47 _yb48 _yb49 _yb50 _yb51 _yb52 _yb53 _yb54 _yb55
-                      _age7 _age8 _age9 _age10 _age11 _age12 _age13 _age14
-                      _age15 _age16 _age17 _age18 _contracep1 _contracep2
-                      _contracep3 motherage motheragesq motheragecub
-                      agefirstbirth height bmi
-Excluded instruments: twin_two_fam
-Dropped collinear:    _country30 _country41 _country49 _country50 _country52
-                      _country57 _country63 _country65 _country66 _country68
-                      _yb1 _yb2 _yb3 _yb4 _yb5 _yb6 _yb56 _yb57 _yb58 _yb59
-                      _yb60 _yb61 _yb62 _age1 _age2 _age3 _age4 _age5 _age6
-                      _age19 _age20 _age21 _age22 _age23 _age24 _age25 _age26
-                      _age27 _age28 _age29 _age30 _age31 _age32 _age33 _age34
-                      _age35 _age36 _age37 _age38 _age39 _age40 _age41 _age42
-                      _age43 _age44 _contracep4 _contracep5
-------------------------------------------------------------------------------
-(est2 stored)
-(sum of wgt is     2.4786e+11)
+Vars dropped:       _country20 _country22 _country32 _country43 _country44
+                    _country52 _country53 _country55 _country60 _country61
+                    _country62 _country65 _country67 _country68 _country71
+                    _country73 _country74 _country76 _yb1 _yb2 _yb3 _yb4 _yb5
+                    _yb6 _yb7 _yb57 _yb58 _yb59 _yb60 _yb61 _yb62 _yb63 _age1
+                    _age2 _age3 _age4 _age5 _age6 _age19 _age20 _age21 _age22
+                    _age23 _age24 _age25 _age26 _age27 _age28 _age29 _age30
+                    _age31 _age32 _age33 _age34 _age35 _age36 _age37 _age38
+                    _age39 _age40 _age41 _age42 _age43 _age44 _age45 _age46
+                    _age47 _age48 _age49 _age50 _age51 _age52 _age53 _contracep4
+                    _contracep5

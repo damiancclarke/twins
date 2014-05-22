@@ -1,5 +1,6 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  7 MAY 2014 01:29
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  21 MAY 2014 23:14
 entering extended mode
+ \write18 enabled.
  %&-line parsing enabled.
 **TwinsQQ_BhalotraClarke.tex
 (./TwinsQQ_BhalotraClarke.tex
@@ -467,13 +468,11 @@ Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 )
-
-Package epstopdf Warning: Shell escape feature is not enabled.
-
 Package grfext Info: Graphics extension search list:
 (grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 433.
+
 (/usr/share/texmf-texlive/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2009/10/26 v1.1 Configuration of epstopdf for TeX Live
 )))
@@ -577,10 +576,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 95--96
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./Introduction.tex)
-(./TwinLiterature.tex) (./Data.tex) (./Methodology.tex (./Methodology/QQ.tex
-[2]) (./Methodology/BoundEst.tex [3])) (./Results.tex
-(./Results/TwinExogeneity.tex [4]) (./Results/TwinQQ.tex [5] [6])
-(./Results/Bounds.tex)) (./Conclusion.tex) [7] [8]
+(./TwinLiterature.tex) (./Data.tex [2]) (./Methodology.tex
+(./Methodology/QQ.tex) (./Methodology/BoundEst.tex [3] [4])) (./Results.tex
+(./Results/TwinExogeneity.tex [5]) (./Results/TwinQQ.tex [6])
+(./Results/Bounds.tex [7])) (./Conclusion.tex) [8]
 (./../../../Twins/Figures/Figures.tex
 Package epstopdf Info: Source file: <./../../../Twins/Figures/ferttrend_35_all.
 eps>
@@ -828,7 +827,7 @@ b></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/shar
 e/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texmf-texl
 ive/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-texlive/fonts/t
 ype1/public/amsfonts/cm/cmtt8.pfb>
-Output written on TwinsQQ_BhalotraClarke.pdf (27 pages, 394700 bytes).
+Output written on TwinsQQ_BhalotraClarke.pdf (27 pages, 397046 bytes).
 PDF statistics:
  238 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
