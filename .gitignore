@@ -9,6 +9,7 @@
 *.aux
 *.out
 *.png
+*.zip
 ./Results
 ./Results2
 ./ThesisFiles
