@@ -1,20 +1,26 @@
 Probability of Giving Birth to Twins (DHS)
-	est1	est2	est3	est4	est5
-	b/se	b/se	b/se	b/se	b/se
-Age	0.494***	0.606***	0.395***	0.590***	0.173***
-	(0.026)	(0.039)	(0.036)	(0.030)	(0.064)
-Age Squared	-0.006***	-0.008***	-0.005***	-0.008***	-0.000
-	(0.000)	(0.001)	(0.001)	(0.001)	(0.001)
-Age First Birth	-0.051***	-0.083***	-0.024**	-0.050***	-0.050***
-	(0.008)	(0.013)	(0.010)	(0.009)	(0.015)
-Education (years)	0.027*	0.077**	0.021	0.043**	-0.009
-	(0.016)	(0.031)	(0.019)	(0.019)	(0.028)
-Education squared	-0.001	-0.008***	-0.000	-0.002	0.002
-	(0.001)	(0.003)	(0.001)	(0.001)	(0.002)
-Height	0.057***	0.062***	0.052***	0.063***	0.038***
-	(0.004)	(0.006)	(0.005)	(0.005)	(0.007)
-BMI	0.050***	0.067***	0.046***	0.046***	0.056***
-	(0.006)	(0.011)	(0.007)	(0.007)	(0.009)
-r2	0.01	0.01	0.01	0.01	0.00
-N	2271991	923607	1342903	1660246	611745
-Notes: All specifications include a full set of year of birth and  country dummies, and are estimated as linear probability models.  Twin is multiplied by 100 for presentation.  Height is measured in cm  and BMI is weight in kg divided by height in cm squared.
+	est1	est2	est3	est4	est5	est6
+	b/se	b/se	b/se	b/se	b/se	b/se
+Age	0.502***	0.507***	0.494***	0.588***	0.191***	0.631***
+	(0.026)	(0.032)	(0.045)	(0.030)	(0.062)	(0.040)
+Age Squared	-0.006***	-0.006***	-0.006***	-0.008***	-0.001	-0.009***
+	(0.000)	(0.001)	(0.001)	(0.001)	(0.001)	(0.001)
+Age First Birth	-0.049***	-0.080***	-0.002	-0.048***	-0.048***	-0.040***
+	(0.008)	(0.010)	(0.013)	(0.009)	(0.015)	(0.013)
+Education (years)	0.030*	0.071***	-0.010	0.044**	-0.004	-0.070**
+	(0.016)	(0.021)	(0.027)	(0.019)	(0.027)	(0.028)
+Education squared	-0.001	-0.005***	0.001	-0.002	0.002	0.003
+	(0.001)	(0.002)	(0.002)	(0.001)	(0.002)	(0.002)
+Height	0.057***	0.056***	0.057***	0.063***	0.038***	0.059***
+	(0.004)	(0.005)	(0.006)	(0.005)	(0.006)	(0.007)
+BMI	0.048***	0.058***	0.042***	0.045***	0.054***	0.045***
+	(0.006)	(0.008)	(0.008)	(0.007)	(0.009)	(0.011)
+prenate_doc						0.909***
+						(0.128)
+prenate_nurse						0.059
+						(0.108)
+prenate_none						-0.488***
+						(0.132)
+r2	0.01	0.01	0.01	0.01	0.00	0.01
+N	2210849	1380066	830783	1629070	581779	615924
+Notes: All specifications include a full set of year of birth and  country dummies, and are estimated as linear probability models.  Twin is multiplied by 100 for presentation.  Height is measured in cm  and BMI is weight in kg divided by height in metres squared. l  Prenatal care variables are only recoreded for recent births.  As  such, column (6) is estimated only for that subset of births where  these observations are made.

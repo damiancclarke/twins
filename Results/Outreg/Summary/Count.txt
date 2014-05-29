@@ -1,9 +1,9 @@
-Number of Countries & 39&39  & 28&28  & 67 \\
-Number of Mothers &763,244 &11,312 &570,771 &7,446 & 1,444,440 \\
-Number of Children (Education) &1,865,409 &38,114 &1,350,591 &24,507 & 3,278,621 \\
-Number of Children (Ever Born) &2,852,388 &70,441 &1,955,362 &40,109 & 4,918,300 \\
+Number of Countries & 42&42  & 34&34  & 67 \\
+Number of Mothers &798,699 &11,427 &570,700 &7,521 & 1,444,522 \\
+Number of Children (Education) &1,865,445 &38,111 &1,350,606 &24,505 & 3,278,667 \\
+Number of Children (Ever Born) &2,852,388 &70,442 &1,955,362 &40,109 & 4,918,301 \\
 Fraction Twin & \multicolumn{2}{c}{  0.0194}& \multicolumn{2}{c}{  0.0173 } &  0.0185\\
-& \multicolumn{2}{c}{( 0.1378)}& \multicolumn{2}{c}{( 0.1306)} & ( 0.1348)\\
-Birth Order Twin & \multicolumn{2}{c}{   4.680}& \multicolumn{2}{c}{   4.016 }&   4.419\\
-& \multicolumn{2}{c}{(  2.463)}& \multicolumn{2}{c}{(  2.370)}& (  2.449)\\
-1,444,440
+& \multicolumn{2}{c}{( 0.1378)}& \multicolumn{2}{c}{( 0.1305)} & ( 0.1348)\\
+Birth Order Twin & \multicolumn{2}{c}{   4.680}& \multicolumn{2}{c}{   4.017 }&   4.419\\
+& \multicolumn{2}{c}{(  2.462)}& \multicolumn{2}{c}{(  2.370)}& (  2.448)\\
+1,444,522

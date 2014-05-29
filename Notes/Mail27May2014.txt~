@@ -1,0 +1,7 @@
+Dear Sonia,
+
+I hope that you're feeling better and back to full strength!  I'm attaching here an updated set of twins tables.  This has been updated to include adjusted fertility, and an updated IV table based on different subgroups we've discussed.  If you see table 5 of the paper (and the corresponding first-stage table 11), you'll note that I've combined tables, and changed the groups we're presenting.  I think that combining the tables might be better to see the main idea all at once, but if it looks to overwhelming lwt me know and I can change.
+
+Reduced form specifications have all been run but have not been incorporated into a table.  I've put up the full results for all regressions on dropbox.  If there are particular things that you are interested in seeing they are in the folders "Results/RF" (for all reduced form regressions), or "Results/IV/" for IV results.  I've tried to make naming conventions reasonably simple (ie LowIncome.xls, Girls.xls and so forth), but if there is something that you need to see and don't know where it is, just ask.
+
+The one thing that I *haven't* yet included in tables is updated desired results.  The current set are all in the folder "Results/IV/Desired", but I'm writing code right now to re-define based on education/ethnicity and so forth, as we discussed.  If I leave this to run over night I can have it by tomorrow for us to look at.  As a reminder, the set in "Results/IV/Desired" creates the threshold based on country*region averages.

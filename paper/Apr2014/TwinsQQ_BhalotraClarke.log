@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  22 MAY 2014 01:25
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.6.26)  28 MAY 2014 19:48
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -578,8 +578,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 95--96
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./Introduction.tex)
 (./TwinLiterature.tex) (./Data.tex [2]) (./Methodology.tex
 (./Methodology/QQ.tex) (./Methodology/BoundEst.tex [3] [4])) (./Results.tex
-(./Results/TwinExogeneity.tex [5]) (./Results/TwinQQ.tex [6])
-(./Results/Bounds.tex [7])) (./Conclusion.tex) [8]
+(./Results/TwinExogeneity.tex [5]) (./Results/TwinQQ.tex [6]
+
+LaTeX Warning: Reference `TWINtab:IVTwoplus' on page 7 undefined on input line 
+45.
+
+
+LaTeX Warning: Reference `TWINtab:IVFourplus' on page 7 undefined on input line
+ 45.
+
+) (./Results/Bounds.tex [7])) (./Conclusion.tex) [8]
 (./../../../Twins/Figures/Figures.tex
 Package epstopdf Info: Source file: <./../../../Twins/Figures/ferttrend_35_all.
 eps>
@@ -694,12 +702,12 @@ File: ./../../../Twins/Figures/idealfam_fert-eps-converted-to.pdf Graphic file
 (type pdf)
  <use ./../../../Twins/Figures/idealfam_fert-eps-converted-to.pdf>
 Package epstopdf Info: Source file: <./../../../Twins/Figures/LTZ_two.eps>
-(epstopdf)                    date: 2014-04-01 17:49:02
-(epstopdf)                    size: 14665 bytes
+(epstopdf)                    date: 2014-05-28 19:30:31
+(epstopdf)                    size: 15508 bytes
 (epstopdf)             Output file: <./../../../Twins/Figures/LTZ_two-eps-conve
 rted-to.pdf>
-(epstopdf)                    date: 2014-04-01 17:57:26
-(epstopdf)                    size: 8317 bytes
+(epstopdf)                    date: 2014-05-28 19:35:04
+(epstopdf)                    size: 9601 bytes
 (epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/LT
 Z_two-eps-converted-to.pdf ./../../../Twins/Figures/LTZ_two.eps>
 (epstopdf)             \includegraphics on input line 60.
@@ -711,8 +719,8 @@ File: ./../../../Twins/Figures/LTZ_two-eps-converted-to.pdf Graphic file (type
 pdf)
  <use ./../../../Twins/Figures/LTZ_two-eps-converted-to.pdf>
 Package epstopdf Info: Source file: <./../../../Twins/Figures/LTZ_three.eps>
-(epstopdf)                    date: 2014-04-01 18:02:16
-(epstopdf)                    size: 14549 bytes
+(epstopdf)                    date: 2014-05-28 19:46:54
+(epstopdf)                    size: 15492 bytes
 (epstopdf)             Output file: <./../../../Twins/Figures/LTZ_three-eps-con
 verted-to.pdf>
 (epstopdf)                    date: 2014-04-01 19:04:50
@@ -720,7 +728,13 @@ verted-to.pdf>
 (epstopdf)             Command: <epstopdf --outfile=./../../../Twins/Figures/LT
 Z_three-eps-converted-to.pdf ./../../../Twins/Figures/LTZ_three.eps>
 (epstopdf)             \includegraphics on input line 70.
-Package epstopdf Info: Output file is already uptodate.
+runsystem(epstopdf --outfile=./../../../Twins/Figures/LTZ_three-eps-converted-t
+o.pdf ./../../../Twins/Figures/LTZ_three.eps)...executed.
+
+Package epstopdf Info: Result file: <./../../../Twins/Figures/LTZ_three-eps-con
+verted-to.pdf>
+(epstopdf)                    date: 2014-05-28 19:48:22
+(epstopdf)                    size: 9586 bytes.
 
 <./../../../Twins/Figures/LTZ_three-eps-converted-to.pdf, id=56, 397.485pt x 28
 9.08pt>
@@ -743,22 +757,17 @@ to.pdf>] (./../../../Twins/Tables/Tables.tex
 
 LaTeX Warning: Float too large for page by 37.61693pt on input line 33.
 
-[16]) (./../../../Twins/Tables/TwoPlusIV.tex
+[16]) (./../../../Twins/Tables/IVTogether.tex
 
-LaTeX Warning: Float too large for page by 10.40694pt on input line 46.
+LaTeX Warning: Float too large for page by 68.6169pt on input line 42.
 
-) (./../../../Twins/Tables/ThreePlusIV.tex
-
-LaTeX Warning: Float too large for page by 10.40694pt on input line 46.
-
-) (./../../../Twins/Tables/FourPlusIV.tex
-
-LaTeX Warning: Float too large for page by 10.40694pt on input line 46.
-
-) (./../../../Twins/Tables/Conley.tex) (./../../../Twins/Tables/Gender.tex))
-[17] [18] [19] [20] (./TwinsQQ_BhalotraClarke.bbl) [21
+[17]) (./../../../Twins/Tables/Conley.tex) (./../../../Twins/Tables/Gender.tex)
+) [18
 
 
+
+
+] (./TwinsQQ_BhalotraClarke.bbl) [19
 
 ]
 (./../../../Twins/Tables/Appendix_Tables.tex
@@ -780,32 +789,34 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--74
 ST.xls (con-sulted 1 April,
  []
 
-[22]) (./../../../Twins/Tables/TwinReg.tex [23]
+[20]) (./../../../Twins/Tables/TwinReg.tex [21]
 
 LaTeX Warning: Float too large for page by 28.2739pt on input line 33.
 
-[24]) (./../../../Twins/Tables/FivePlusIV.tex
+[22]) (./../../../Twins/Tables/GenderIV.tex)
+(./../../../Twins/Tables/firstStage.tex [23
 
-LaTeX Warning: Float too large for page by 10.40694pt on input line 46.
 
-) (./../../../Twins/Tables/GenderIV.tex)
-(./../../../Twins/Tables/firstStage.tex [25] [26]
+]
 
-LaTeX Warning: Float too large for page by 56.6169pt on input line 39.
+LaTeX Warning: Float too large for page by 92.6169pt on input line 39.
 
-[27])) AED: lastpage setting LastPage (./TwinsQQ_BhalotraClarke.aux)
+[24])) AED: lastpage setting LastPage (./TwinsQQ_BhalotraClarke.aux)
+
+LaTeX Warning: There were undefined references.
+
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 6383 strings out of 493848
- 92003 string characters out of 1152823
- 191857 words of memory out of 3000000
- 9409 multiletter control sequences out of 15000+50000
+ 6373 strings out of 493848
+ 91719 string characters out of 1152823
+ 183857 words of memory out of 3000000
+ 9408 multiletter control sequences out of 15000+50000
  15338 words of font info for 59 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 41i,16n,42p,1016b,560s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 41i,16n,42p,1432b,562s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
 re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-te
 xlive/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf-texlive/fonts/
@@ -827,9 +838,9 @@ b></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/shar
 e/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texmf-texl
 ive/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-texlive/fonts/t
 ype1/public/amsfonts/cm/cmtt8.pfb>
-Output written on TwinsQQ_BhalotraClarke.pdf (27 pages, 397046 bytes).
+Output written on TwinsQQ_BhalotraClarke.pdf (24 pages, 394422 bytes).
 PDF statistics:
- 238 PDF objects out of 1000 (max. 8388607)
+ 236 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

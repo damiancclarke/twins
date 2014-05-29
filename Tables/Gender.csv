@@ -1,11 +1,11 @@
 ;Females;;;Males;; 
 ;Base;Socioec;Health;Obs.;Base;Socioec;Health;Obs. 
-Two Plus ;0.014;-0.018;-0.023;126,527;-0.008;-0.027;-0.027;131,716
-;(0.040);(0.036);(0.035);;(0.038);(0.034);(0.034);
-Three Plus ;-0.020;-0.047*;-0.050*;194,176;0.001;-0.028;-0.033;196,809
-;(0.032);(0.028);(0.028);;(0.029);(0.027);(0.027);
-Four Plus ;-0.036;-0.051**;-0.056**;201,174;0.003;-0.007;-0.010;201,950
-;(0.030);(0.026);(0.026);;(0.030);(0.027);(0.027);
+Two Plus ;0.005;-0.039;-0.037;122,414;0.010;-0.010;-0.015;127,122
+;(0.043);(0.039);(0.038);;(0.040);(0.038);(0.036);
+Three Plus ;-0.024;-0.056*;-0.052*;187,098;0.016;-0.015;-0.022;188,889
+;(0.033);(0.030);(0.029);;(0.030);(0.028);(0.027);
+Four Plus ;-0.029;-0.052*;-0.053**;192,714;-0.005;-0.020;-0.018;192,675
+;(0.032);(0.029);(0.027);;(0.030);(0.028);(0.027);
 NOTES: Female or male refers to the gender of the index child of the regression. 
 All regressions include full controls including socioeconomic and maternal health variables.  The full lis of controls are available in 
 the notes to table 5.  Full IV results for male and female children are presented in table 14. Standard errors are clustered 

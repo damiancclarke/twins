@@ -1,19 +1,34 @@
-* Twin_Setup 2.00                damiancclarke   	 		  yyyy-mm-dd:2012-03-22
+/* Twin_Setup 2.00               damiancclarke   	 		  yyyy-mm-dd:2012-03-22
+*---|---------|---------|-----   soniabhalotra   -----|---------|---------|-----
 *---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 *
-/* This is has been a pretty major refactorisation of the previous twin setup
-file.  To rollback to the previous one, return to the git commit made on Nov 11
-2013.  Here we are redefining to only look at reduced form and IV with treament
-as described in Black et al, Angrist et al, and also to interact with desired
-family size.  Our principal specification for desired is:
 
-quality_{ij}=\beta_0+\beta_1*fert_{j}+\beta_2*fert*desired_{j}+X'\beta+u_{ij}
+This file generates data to use in the Twin Instrument paper.  It uses as input
+the full set of publicly available DHS files up to October 2013.  To replicate
+results exactly no DHS files released after 2013 should be included.  Full deta-
+ils regarding creating this paper from source including downloading and merging
+DHS, creating crude data and formatting tables can be found in the README file
+located in this directory.
+
+This file merges all DHS BR (birth recode) and PR (household member recode) fil-
+es to generate an output file with one line per child.  Each child is linked to
+their mother, and for those children who still live in the same household as th-
+eir mother, their educational attainment is available.
+
+The file can be controlled in section (0).  This defines the directory structure
+where crude data is stored and where completed data should be saved. A database
+called DHS_twins.dta will be generated.
+
+For optimal viewing set tab width as 2 in text editor.
+
+Questions should be directed to damian.clarke@economics.ox.ac.uk.
+
 
 Major version highlights:
 > 2012-03: Completed Thesis version
 > 2013-01: Major changes based on presentations: Bristol, ESPE, NEUDC
-> 2013-06: Change outlined about to incorporate desired tests
-
+> 2013-06: Change to incorporate desired tests
+> 2014-05: Change to incorporate adjusted fertility
 */
 
 clear all
@@ -25,18 +40,19 @@ set maxvar 20000
 
 
 ********************************************************************************
-*** (1) Globals and locals
+*** (0) Globals and locals
 ********************************************************************************
-global PATH "~/investigacion/Activa/Twins"
-global DATA "~/database/DHS/XDHS_Data"
-global LOG "$PATH/Log"
-global TEMP "$PATH/Temp"
+global DATA   "~/database/DHS/XDHS_Data"
+global SOURCE "~/investigacion/Activa/Twins/Do"
+global LOG    "~/investigacion/Activa/Twins/Log"
+global TEMP   "~/investigacion/Activa/Twins/Temp"
+global OUT    "~/investigacion/Activa/Twins/Data"
 
-cap mkdir $PATH/Temp
-
+cap mkdir $TEMP
 log using "$LOG/Twins_Setup.txt", text replace
+
 ********************************************************************************
-*** (2) Take necessary variables from BR (mother births) and PR (household me-
+*** (1) Take necessary variables from BR (mother births) and PR (household me-
 *** mber) The BR dataset has the majority of family and maternal characterist-
 *** ics used in the regressions, however there is no child education variables
 *** in this dataset.  The child education information comes from PR.
@@ -184,8 +200,8 @@ replace year_birth=year_birth+1900 if year_birth<100
 replace age=age+100 if age<0
 
 ********************************************************************************
-*** (3) Setup Variables which are used in TwinRegression
-*** (3A) Generate sibling size subgroups (1+, 2+, 3+,...)  As per Angrist et al.
+*** (2) Setup Variables which are used in TwinRegression
+*** (2A) Generate sibling size subgroups (1+, 2+, 3+,...)  As per Angrist et al.
 ********************************************************************************
 gen mid="a"
 drop id
@@ -210,7 +226,7 @@ foreach num in two three four five {
 
 
 ********************************************************************************
-*** (3B) "Quality" variables
+*** (2B) "Quality" variables
 ********************************************************************************
 *** Attendance (attend_year==2 is sometimes)
 gen attendance=0 if attend_year==0
@@ -242,7 +258,7 @@ gen childmortality=childageatdeath<=5
 replace childmortality=. if age<5
 
 ********************************************************************************
-*** (3C) Control variables
+*** (2C) Control variables
 ********************************************************************************
 gen ALL=1
 gen gender="F" if sex==2
@@ -254,6 +270,7 @@ gen educf_1_4=educf>0&educf<5
 gen educf_5_6=educf>4&educf<7
 gen educf_7_10=educf>6&educf<11
 gen educf_11plus=educf>10
+gen educf_level=v149 if v149<8
 gen twind=1 if twin>=1&twin!=.
 replace twind=0 if twin==0
 gen twind100=twin*100
@@ -291,7 +308,7 @@ rename v005 sweight
 encode country, gen(_cou)
 
 ********************************************************************************
-*** (3D) Twin variables
+*** (2D) Twin variables
 ********************************************************************************
 bys id: egen twinfamily=max(twin)
 bys id: egen twin_bord_fam=max(twin_bord)
@@ -299,10 +316,10 @@ bys id: egen nummultiple=max(twin)
 gen finaltwin=(fert==bord)&twind==1
 bys id: egen finaltwinfamily=max(finaltwin)
 replace finaltwinfamily=0 if finaltwinfamily==.
-
+gen twindfamily=twinfamily!=0
 
 ********************************************************************************
-*** (3E) Fertility variables
+*** (2E) Fertility variables
 ********************************************************************************
 gen idealnumkids=v613 if v613<25
 gen lastbirth=fert==bord&twin==0
@@ -330,26 +347,20 @@ gen twinexceed=finaltwinfamily==1&idealfam==1
 gen singlexceed=finaltwinfamily==0&idealfam==1
 gen twinattain=finaltwinfamily==1&idealfam==0
 
-**Generate sub-region (and ethnicity) specific desired fertility
-bys _cou v001: egen desiredfert_cluster=mean(idealnumkids)
-bys _cou _year v001: egen desiredfert_clusterYEAR=mean(idealnumkids)
-bys _cou v101: egen desiredfert_region=mean(idealnumkids)
-bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
-
 **Correct fertility, birth order and twinning for children who died young
-gen aliveafter3=childageatdeath>3
-bys id: egen ADJfert=sum(aliveafter3)
-bys id aliveafter3 (bord): gen ADJbord=_n
-replace ADJbord=. if aliveafter3==0
-gen twin_aliveafter3=childageatdeath>3&twin!=0
-bys id age: egen at=sum(twin_aliveafter3)
+gen aliveafter1=childageatdeath>1
+bys id: egen ADJfert=sum(aliveafter1)
+bys id aliveafter1 (bord): gen ADJbord=_n
+replace ADJbord=. if aliveafter1==0
+gen twin_aliveafter1=childageatdeath>1&twin!=0
+bys id age: egen at=sum(twin_aliveafter1)
 gen ADJtwind=twind==1&at>1
 bys id ADJtwind age (bord): gen ADJtwin=_n
 replace ADJtwin=0 if ADJtwind==0
 
 bys id: egen ADJtwinfamily=max(ADJtwin)
 gen ADJtwin_bord=ADJbord-ADJtwin+1 if ADJtwin>0
-bys id: egen ADJtwin_bord_fam=max(ADJ_twinbord)
+bys id: egen ADJtwin_bord_fam=max(ADJtwin_bord)
 bys id: egen ADJnummultiple=max(ADJtwin)
 
 local max 1
@@ -365,10 +376,32 @@ foreach num in two three four five {
 	local ++max
 	local ++fert
 }
-drop aliveafter3 twin_aliveafter3 at
+drop aliveafter1 twin_aliveafter1 at
 
 ********************************************************************************
-*** (4) Labels
+*** (2F) Desired Fertility variables
+********************************************************************************
+bys _cou v001: egen desiredfert_cluster=mean(idealnumkids)
+bys _cou _year v001: egen desiredfert_clusterYEAR=mean(idealnumkids)
+bys _cou v101: egen desiredfert_region=mean(idealnumkids)
+bys _cou v131: egen desiredfert_ethnic=mean(idealnumkids)
+
+local group1 _cou _year v101
+local group2 _cou _year v001
+local group3 _cou _year educf_level
+local group3 _cou _year educf_level
+local names region clust educ regionEduc
+
+tokenize `names'
+foreach group in `group1' `group2' `group3' {
+	bys `group': egen gtotal=sum(idealnumkids)
+	bys `group': gen N=_N
+	gen `1'DesiredLeaveOut=(gtotal-idealnumkids)/(N-1)
+	drop gtotal N
+	macro shift
+}
+********************************************************************************
+*** (3) Labels
 ********************************************************************************
 lab var year_birth "Mother's year of birth"
 lab var religion "Reported religion"
@@ -434,6 +467,7 @@ lab var sweight "Sample weight (from DHS)"
 lab var country "Coutry name"
 lab var _cou "country (numeric code)"
 lab var twinfamily "At least one twin birth in family"
+lab var twindfamily "Binary for twin birth in the family"
 lab var twin_bord "Birth order when twins occur (for twins only)"
 lab var twin_bord_fam "Birth order when twins occur (for whole family)"
 lab var nummultiple "0 if singleton family, 1 if twins, 2 if triplets, ..."
@@ -482,12 +516,13 @@ lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
 lab val idealfam ideal
 
 ********************************************************************************
-*** (5) Create country income levels and weight variables
+*** (4) Create country income levels and weight variables
 ********************************************************************************
-do $PATH/Do/countrynaming
+do "$SOURCE/countrynaming.do"
 
 gen income="low" if inc_status=="L"
 replace income="mid" if inc_status!="L"
+
 ********************************************************************************
 *** (6) Keep required variables.  Save data as working file.
 ********************************************************************************
@@ -510,5 +545,5 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ ADJthree_plus_twins ADJfour_plus_twins ADJfive_plus_twins ADJtwin_two_fam   /*
 */ ADJtwin_three_fam ADJtwin_four_fam ADJtwin_five_fam ADJtwind
 
-save "$PATH/Data/DHS_twins", replace
+save "$OUT/DHS_twins", replace
 log close

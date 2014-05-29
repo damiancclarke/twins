@@ -14,30 +14,32 @@ print('\n\nHey DCC. The script %s is making %s files \n' %(script, ftype))
 #==============================================================================
 #== (1a) File names (comes from Twin_Regressions.do)
 #==============================================================================
-Results  = "/home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/IV/"
-Results1 = "/home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/OLS"
-Results2 = "/home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/"
+Results  = "/home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/"
 Tables   = "/home/damiancclarke/investigacion/Activa/Twins/Tables/"
 
-base = 'Base_IV_none.xls'
-bord = 'Base_IV_bord.xls'
-lowi = 'Income_IV_low_none.xls'
-midi = 'Income_IV_mid_none.xls'
-thre = 'Desire_IV_reg_all_none.xls'
-twIV = 'Base_IV_twins_none.xls'
-tbIV = 'Base_IV_twins_bord.xls'
-gend = ['Gender_IV_F_none.xls','Gender_IV_M_none.xls']
-geni = ['IVgender_alt.xls', 'GenderAll_IV_twin_none.xls']
-genf = 'GenderAll_IV_firststage_twin_none.xls'
+base = 'All.xls'
+lowi = 'LowIncome.xls'
+midi = 'MidIncome.xls'
+thre = 'Desire_IV_reg_all.xls'
+twIV = 'Base_IV_twins.xls'
+adjf = 'ADJAll.xls'
 
-firs = 'Base_IV_firststage_none.xls'
-fbor = 'Base_IV_firststage_bord.xls'
-flow = 'Income_IV_firststage_low_none.xls'
-fmid = 'Income_IV_firststage_mid_none.xls'
-ftwi = 'Base_IV_twins_firststage_none.xls'
-fdes = 'Desire_IV_firststage_reg_all_none.xls'
+gend = ['Girls.xls','Boys.xls']
+genl = ['gendFLow.xls','gendMLow.xls']
+genm = ['gendFMid.xls','gendMMid.xls']
+gent = ['gendFWithTwin.xls','gendMWithTwin.xls']
+gena = ['ADJGirls.xls','ADJBoys.xls']
+fgen = ['Girls_first.xls','Boys_first.xls']
+fgna = ['ADJGirls_first.xls','ADJBoys_first.xls']
 
-ols  = "QQ_ols_none.txt"
+firs = 'All_first.xls'
+flow = 'LowIncome_first.xls'
+fmid = 'MidIncome_first.xls'
+ftwi = 'Base_IV_twins_firststage.xls'
+fadj = 'ADJAll_first.xls'
+fdes = 'Desire_IV_firststage_reg_all.xls'
+
+ols  = "QQ_ols.txt"
 bala = "Balance_mother.tex"
 twin = "Twin_Predict_none.xls"
 summ = "Summary.txt"
@@ -47,9 +49,9 @@ coun = "Count.txt"
 dhss = "Countries.txt"
 
 conl = "ConleyResults.txt"
-imrt = "PreTwinTest_none.xls"
+imrt = "PreTwinTest.xls"
 
-os.chdir(Results)
+os.chdir(Results+'IV/')
 
 #==============================================================================
 #== (1b) Options (tex or csv out)
@@ -70,10 +72,10 @@ if ftype=='tex':
     mcsc = '}{l}{\\textsc{'
     mcbf = '}{l}{\\textbf{'    
     mc2  = '}}'
-    twid = ['5','7','4','5','9','9','4','6','10','7']
-    tcm  = ['}{p{10cm}}','}{p{15.8cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
-            '}{p{13.8cm}}','}{p{14.2cm}}','}{p{10.6cm}}','}{p{13.8cm}}',
-            '}{p{18.0cm}}','}{p{13.4cm}}']
+    twid = ['5','8','4','5','9','9','4','6','10','7','12']
+    tcm  = ['}{p{10.0cm}}','}{p{17.8cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
+            '}{p{13.8cm}}','}{p{14.2cm}}','}{p{12.1cm}}','}{p{13.8cm}}',
+            '}{p{18.0cm}}','}{p{12.8cm}}','}{p{19.2cm}}']
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
     lname = "Fertility$\\times$desire"
     tname = "Twin$\\times$desire"
@@ -84,8 +86,11 @@ if ftype=='tex':
     mo   = '$'
     lineadd = '\\begin{footnotesize}\\end{footnotesize}&'*6+ls
     lA   = '\\begin{footnotesize}\\end{footnotesize}&'*9+'\\begin{footnotesize}\\end{footnotesize}'+ls
+    lA2  = '\\begin{footnotesize}\\end{footnotesize}&'*11+'\\begin{footnotesize}\\end{footnotesize}'+ls
+
     hs   = '\\hspace{5mm}'
 
+    rIVa = '\\ref{TWINtab:IVAll}'
     rIV2 = '\\ref{TWINtab:IVTwoplus}'
     rIV3 = '\\ref{TWINtab:IVThreeplus}'
     rIV4 = '\\ref{TWINtab:IVFourplus}'
@@ -112,8 +117,8 @@ elif ftype=='csv':
     mcsc = ''
     mcbf = ''   
     mc2  = ''
-    twid = ['','','','','','','','','','']
-    tcm  = ['','','','','','','','','','']
+    twid = ['','','','','','','','','','','']
+    tcm  = ['','','','','','','','','','','']
     mc3  = 'NOTES: '
     lname = "Fertility*desire"
     tname = "Twin*desire"
@@ -124,8 +129,10 @@ elif ftype=='csv':
     mo   = ''
     lineadd = ''
     lA   = '\n'
+    lA2  = '\n'
     hs   = ''
 
+    rIVa = '5'
     rIV2 = '5'
     rIV3 = '6'
     rIV4 = '12'
@@ -208,13 +215,11 @@ for i in ['Two', 'Three', 'Four', 'Five']:
         IVf = open(Tables+'FivePlusIV.'+end, 'w')
 
     TB1, TS1, TN1 = plustable(base, num1, num2,"fert",'normal',1000)
-    TB2, TS2, TN2 = plustable(bord, num1, num2,"fert",'normal',1000)
     TB3, TS3, TN3 = plustable(lowi, num1, num2,"fert",'normal',1000)
     TB4, TS4, TN4 = plustable(midi, num1, num2,"fert",'normal',1000)
     TB5, TS5, TN5 = plustable(thre, num1, num2,"fert",'normal',1000)
     
     TB6, TS6, TN6 = plustable(twIV, num1, num2,"fert",'normal',1000)
-    TB7, TS7, TN7 = plustable(tbIV, num1, num2,"fert",'normal',1000)
 
     FB, FS, FN    = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000)
 
@@ -236,11 +241,6 @@ for i in ['Two', 'Three', 'Four', 'Five']:
     dd+format(float(TN1[0][2]), "n")+ls+"\n"
     "         "+dd+TS1[0][0]+dd+TS1[0][1]+dd+TS1[0][2]+dd+ls+ "\n"
     +dd+dd+dd+dd+ls+"\n" 
-    +mc1+twid[0]+mcbf+"All Families (bord dummies)"+mc2+ls+" \n"
-    "Fertility"+dd+TB2[0][0]+dd+TB2[0][1]+dd+TB2[0][2]+
-    dd+format(float(TN1[0][2]), "n")+ls+"\n"
-    "         "+dd+TS2[0][0]+dd+TS2[0][1]+dd+TS2[0][2]+dd+ls+ "\n"
-    +dd+dd+dd+dd+ls+"\n"
     +mc1+twid[0]+mcbf+"Low-Income Countries"+mc2+ls+" \n"
     "Fertility"+dd+TB3[0][0]+dd+TB3[0][1]+dd+TB3[0][2]+
     dd+format(float(TN3[0][2]), "n")+ls+"\n"
@@ -262,12 +262,7 @@ for i in ['Two', 'Three', 'Four', 'Five']:
     +mc1+twid[0]+mcbf+"All Families"+mc2+ls+" \n"
     "Fertility"+dd+TB6[0][0]+dd+TB6[0][1]+dd+TB6[0][2]+
     dd+format(float(TN6[0][2]), "n")+ls+"\n"
-    "         "+dd+TS6[0][0]+dd+TS6[0][1]+dd+TS6[0][2]+dd+ls+ "\n"
-    +dd+dd+dd+dd+ls+"\n"
-    +mc1+twid[0]+mcbf+"All Families (bord dummies)"+mc2+ls+" \n"
-    "Fertility"+dd+TB7[0][0]+dd+TB7[0][1]+dd+TB7[0][2]+
-    dd+format(float(TN6[0][2]), "n")+ls+"\n"
-    "         "+dd+TS7[0][0]+dd+TS7[0][1]+dd+TS7[0][2]+dd+ls+ "\n"+mr
+    "         "+dd+TS6[0][0]+dd+TS6[0][1]+dd+TS6[0][2]+dd+ls+ "\n"+mr
     +mc1+twid[0]+mcsc+"First Stage (Pre-Twins)"+mc2+ls+" \n"
     +dd+dd+dd+dd+ls+"\n"
     +mc1+twid[0]+mcbf+"All Families"+mc2+ls+" \n"
@@ -282,10 +277,9 @@ for i in ['Two', 'Three', 'Four', 'Five']:
     +t+".  Base controls include child age, mother's age, and mother's age "
     "at birth fixed effects plus country and year-of-birth FEs.  The sample "
     "is made up of all children aged between 6-18 years from families in the "
-    "DHS who fulfill " +t+"-plus requirements. Birth order dummies are "
-    "included only if explicitly stated.  First-stage results in the final "
-    "panel correspond to the second stage in row 1.  Full first stage results "
-    "for each row are available in table "+rFSt+". Standard "
+    "DHS who fulfill " +t+"-plus requirements. First-stage results in the "
+    "final panel correspond to the second stage in row 1.  Full first stage "
+    "results for each row are available in table "+rFSt+". Standard "
     "errors are clustered by mother. \n"
     +foot)
     if ftype=='tex':
@@ -295,9 +289,119 @@ for i in ['Two', 'Three', 'Four', 'Five']:
     IVf.close()
 
 #==============================================================================
+#== (3b) Alternate table Full IVResults
+#==============================================================================
+IV2 = open(Tables+"IVTogether."+end, 'w')
+
+os.chdir(Results+'IV')
+
+if ftype=='tex':
+    IV2.write("\\begin{landscape}\\begin{table}[htpb!]"
+    "\\caption{Principal IV Results}\n"
+    "\\label{TWINtab:IVAll}\n\\begin{center}"
+    "\\begin{tabular}{lcccp{2mm}cccp{2mm}ccc}\n\\toprule \\toprule \n"
+    "&\\multicolumn{3}{c}{2+}&&\\multicolumn{3}{c}{3+}&&\\multicolumn{3}{c}{4+}"
+    "\\\\ \\cmidrule(r){2-4} \\cmidrule(r){6-8} \\cmidrule(r){10-12} \n"
+    "\\textsc{School Z-Score}&Base&+H&+S\&H&&Base&+H&+S\&H&&Base&+H&+S\&H"
+    "\\\\ \\midrule \n"
+    +"\\begin{footnotesize}\\end{footnotesize}& \n"*11+
+    "\\begin{footnotesize}\\end{footnotesize}\\\\ \n")
+elif ftype=='csv':
+    IV2.write(";2+;;;;3+;;;;4+;;;\n"
+    "FERTILITY;Base;+H;+S&H;;Base;+H;+S&H;;Base;+S;+S&H \n")
+
+AllB = []
+AllS = []
+AllN = []
+LowB = []
+LowS = []
+LowN = []
+MidB = []
+MidS = []
+MidN = []
+TwiB = []
+TwiS = []
+TwiN = []
+AdjB = []
+AdjS = []
+AdjN = []
+
+for num in [1,4,7]:
+    BB, BS, BN    = plustable(base, num, num+3,'fert','normal',1000)
+    LB, LS, LN    = plustable(lowi, num, num+3,'fert','normal',1000)
+    MB, MS, MN    = plustable(midi, num, num+3,'fert','normal',1000)
+    TB, TS, TN    = plustable(twIV, num, num+3,'fert','normal',1000)
+    AB, AS, AN    = plustable(adjf, num, num+3,'ADJfert','normal',1000)
+    
+    AllB.append(dd + BB[0][0] + dd + BB[0][1] + dd + BB[0][2])
+    AllS.append(dd + BS[0][0] + dd + BS[0][1] + dd + BS[0][2])
+    AllN.append(dd + BN[0][0] + dd + BN[0][1] + dd + BN[0][2])
+    LowB.append(dd + LB[0][0] + dd + LB[0][1] + dd + LB[0][2])
+    LowS.append(dd + LS[0][0] + dd + LS[0][1] + dd + LS[0][2])
+    LowN.append(dd + LN[0][0] + dd + LN[0][1] + dd + LN[0][2])
+    MidB.append(dd + MB[0][0] + dd + MB[0][1] + dd + MB[0][2])
+    MidS.append(dd + MS[0][0] + dd + MS[0][1] + dd + MS[0][2])
+    MidN.append(dd + MN[0][0] + dd + MN[0][1] + dd + MN[0][2])
+    TwiB.append(dd + TB[0][0] + dd + TB[0][1] + dd + TB[0][2])
+    TwiS.append(dd + TS[0][0] + dd + TS[0][1] + dd + TS[0][2])
+    TwiN.append(dd + TN[0][0] + dd + TN[0][1] + dd + TN[0][2])
+    AdjB.append(dd + AB[0][0] + dd + AB[0][1] + dd + AB[0][2])
+    AdjS.append(dd + AS[0][0] + dd + AS[0][1] + dd + AS[0][2])
+    AdjN.append(dd + AN[0][0] + dd + AN[0][1] + dd + AN[0][2])
+
+
+IV2.write(mc1+twid[10]+mcbf+"All"+mc2+ls+" \n"
+"Fertility"+AllB[0]+dd+AllB[1]+dd+AllB[2]+ls+'\n'
++AllS[0]+dd+AllS[1]+dd+AllS[2]+ls+'\n'+lA2+
+"Observations"+AllN[0]+dd+AllN[1]+dd+AllN[2]+ls+'\n'+
+
+mc1+twid[10]+mcbf+"Low-Income"+mc2+ls+" \n"
+"Fertility"+LowB[0]+dd+LowB[1]+dd+LowB[2]+ls+'\n'
++LowS[0]+dd+LowS[1]+dd+LowS[2]+ls+'\n'+lA+
+"Observations"+LowN[0]+dd+LowN[1]+dd+LowN[2]+ls+'\n'+
+
+mc1+twid[10]+mcbf+"Middle-Income"+mc2+ls+" \n"
+"Fertility"+MidB[0]+dd+MidB[1]+dd+MidB[2]+ls+'\n'
++MidS[0]+dd+MidS[1]+dd+MidS[2]+ls+'\n'+lA+
+"Observations"+MidN[0]+dd+MidN[1]+dd+MidN[2]+ls+'\n'+
+
+mc1+twid[10]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
+"Fertility"+AdjB[0]+dd+AdjB[1]+dd+AdjB[2]+ls+'\n'
++AdjS[0]+dd+AdjS[1]+dd+AdjS[2]+ls+'\n'+lA+
+"Observations"+AdjN[0]+dd+AdjN[1]+dd+AdjN[2]+ls+'\n'+
+
+mc1+twid[10]+mcbf+"Twins and Pre-Twins"+mc2+ls+" \n"
+"Fertility"+TwiB[0]+dd+TwiB[1]+dd+TwiB[2]+ls+'\n'
++TwiS[0]+dd+TwiS[1]+dd+TwiS[2]+ls+'\n'+lA+
+"Observations"+TwiN[0]+dd+TwiN[1]+dd+TwiN[2]+ls+'\n')
+
+IV2.write('\n'+mr+mc1+twid[10]+tcm[10]+mc3+
+"The two plus subsample refers to all first born children in families with "
+"at least two births.  Three plus refers to first- and second-borns in families "
+"with at least three births, and four plus refers to first- to third-borns in "
+"families with at least four births.  Each cell presents the coefficient of a "
+"2SLS regression where fertility is instrumented by twinning at birth order "
+"two, three or four (for 2+, 3+ and 4+ respectively).  Different rows of the "
+"table correspond to different sub-groups or specifications. In order these "
+"correspond to: all children, grouped by country income status, adjusting "
+"fertility to correct exclude children who did not survive to one year, and "
+"including both pre-twins \emph{and} twins in the regression. Base controls include "
+"child age, mother's age, and mother's age at birth fixed effects plus country "
+"and year-of-birth FEs.  In each case the sample is made up of all children aged "
+"between 6-18 years from families in the DHS who fulfill 2+ to 4+ requirements. "
+"First-stage results in the final panel correspond to the second stage in row 1. " 
+"Full first stage results for each row are available in table "+rFSt+". Standard "
+"errors are clustered by mother."+foot+" \n")
+if ftype=='tex':
+    IV2.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
+    "\\end{tabular}\\end{center}\\end{table}\\end{landscape}")
+
+
+
+#==============================================================================
 #== (4) Function to return fertilility beta and SE for OLS tables
 #==============================================================================
-os.chdir(Results1)
+os.chdir(Results+'OLS/')
 
 def olstable(ffile,n1,n2,n3):
     beta = []
@@ -345,9 +449,9 @@ def olstable(ffile,n1,n2,n3):
     return TB, TS, TN, TR, AR1, AR2
 
 
-TBa, TSa, TNa, TRa, A1a, A2a = olstable(ols, 1, 5, 1)
-TBl, TSl, TNl, TRl, A1l, A2l = olstable(ols, 5, 9, 2)
-TBm, TSm, TNm, TRm, A1m, A2m = olstable(ols, 9, 13, 3)
+TBa, TSa, TNa, TRa, A1a, A2a = olstable(ols, 1, 6, 1)
+TBl, TSl, TNl, TRl, A1l, A2l = olstable(ols, 6, 11, 2)
+TBm, TSm, TNm, TRm, A1m, A2m = olstable(ols, 11, 16, 3)
 
 #==============================================================================
 #== (5) Write OLS table
@@ -358,42 +462,52 @@ if ftype=='tex':
     OLSf.write("\\begin{landscape}\\begin{table}[!htbp] \\centering \n"
     "\\caption{OLS Estimates of the Q-Q Trade-off} \n "
     "\\label{TWINtab:OLS} \n"
-    "\\begin{tabular}{lcccccc} \\toprule \\toprule \n")
+    "\\begin{tabular}{lccccccc} \\toprule \\toprule \n")
 
-OLSf.write(dd+"Base"+dd+"+"+dd+"+"+dd+"Desired"+dd+"Altonji"+dd+"Altonji"+ls+"\n"
-+dd+"Controls"+dd+"Socioec"+dd+"Health"+dd+dd+"Ratio 1"+dd+"Ratio 2"+ls+mr+"\n"
-+tsc+"Panel A: All Countries"+ebr+dd+dd+dd+dd+dd+dd+ls+"\n"
-"Fertility "+dd+TBa[0][0]+dd+TBa[0][1]+dd+TBa[0][2]+dd+TBa[0][3]+dd+A1a+dd+A2a+ls+"\n"
-+            dd+TSa[0][0]+dd+TSa[0][1]+dd+TSa[0][2]+dd+TSa[0][3]+dd+dd+ls+  "\n"
-+lname+dd+dd+dd+dd+TBa[1][0]+dd+dd+ls+"\n"
-+            dd+dd+dd+dd+TSa[1][0]+dd+dd+ls+  "\n"
-+dd+dd+dd+dd+dd+dd+ls+"\n"
+OLSf.write(dd+"Base"+dd+"+"+dd+"+Health"+dd+"Bord"+dd+"Desired"+dd+"Altonji"+
+dd+"Altonji"+ls+"\n"
++dd+"Controls"+dd+"Health"+dd+"\&Socioec"+dd+"Controls"+dd+dd+"Ratio 1"+
+dd+"Ratio 2"+ls+mr+"\n"
++tsc+"Panel A: All Countries"+ebr+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
+
+"Fertility "+dd+TBa[0][0]+dd+TBa[0][1]+dd+TBa[0][2]+dd+TBa[0][3]+dd
++            TBa[0][4]+dd+A1a+dd+A2a+ls+"\n"
++            dd+TSa[0][0]+dd+TSa[0][1]+dd+TSa[0][2]+dd+TSa[0][3]+dd
++            TSa[0][4]+dd+dd+ls+  "\n"
++lname+dd+dd+dd+dd+dd+TBa[1][0]+dd+dd+ls+"\n"
++            dd+dd+dd+dd+dd+TSa[1][0]+dd+dd+ls+  "\n"
++dd+dd+dd+dd+dd+dd+dd+ls+"\n"
 "Observations "+dd+str(TNa[0][0])+dd+str(TNa[0][1])+dd+str(TNa[0][2])+dd
-+str(TNa[0][3])+dd+dd+ls+"\n"
-+R2+dd+str(TRa[0][0])+dd+ str(TRa[0][1])+dd+str(TRa[0][2])+dd+str(TRa[0][3])+dd+dd+ls
-+mr+"\n"
++            str(TNa[0][3])+dd+str(TNa[0][4])+dd+dd+ls+"\n"
++R2+dd+str(TRa[0][0])+dd+ str(TRa[0][1])+dd+str(TRa[0][2])+dd
++            str(TRa[0][3])+dd+str(TRa[0][4])+dd+dd+ls+mr+"\n"
 
-+tsc+"Panel B: Low Income"+ebr+dd+dd+dd+dd+dd+dd+ls+"\n"
-"Fertility "+dd+TBl[0][0]+dd+TBl[0][1]+dd+TBl[0][2]+dd+TBl[0][3]+dd+A1l+dd+A2l+ls+"\n"
-+            dd+TSl[0][0]+dd+TSl[0][1]+dd+TSl[0][2]+dd+TSl[0][3]+dd+dd+ls+  "\n"
-+lname+dd+dd+dd+dd+TBl[1][0]+dd+dd+ls+"\n"
-+            dd+dd+dd+dd+TSl[1][0]+dd+dd+ls+  "\n"
-+dd+dd+dd+dd+dd+dd+ls+"\n"
+
++tsc+"Panel B: Low Income"+ebr+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
+"Fertility "+dd+TBl[0][0]+dd+TBl[0][1]+dd+TBl[0][2]+dd+TBl[0][3]+dd
++            TBl[0][4]+dd+A1l+dd+A2l+ls+"\n"
++            dd+TSl[0][0]+dd+TSl[0][1]+dd+TSl[0][2]+dd+TSl[0][3]+dd
++            TSl[0][4]+dd+dd+ls+  "\n"
++lname+dd+dd+dd+dd+dd+TBl[1][0]+dd+dd+ls+"\n"
++            dd+dd+dd+dd+dd+TSl[1][0]+dd+dd+ls+  "\n"
++dd+dd+dd+dd+dd+dd+dd+ls+"\n"
 "Observations "+dd+str(TNl[0][0])+dd+str(TNl[0][1])+dd+str(TNl[0][2])+dd
-+str(TNl[0][3])+dd+dd+ls+"\n"
-+R2+dd+str(TRl[0][0])+dd+ str(TRl[0][1])+dd+str(TRl[0][2])+dd+str(TRl[0][3])+dd+dd+ls
-+mr+"\n"
++str(TNl[0][3])+dd+str(TNl[0][4])+dd+dd+ls+"\n"
++R2+dd+str(TRl[0][0])+dd+ str(TRl[0][1])+dd+str(TRl[0][2])+dd
++            str(TRl[0][3])+dd+str(TRl[0][4])+dd+dd+ls+mr+"\n"
 
-+tsc+"Panel C: Middle Income"+ebr+dd+dd+dd+dd+dd+dd+ls+"\n"
-"Fertility "+dd+TBm[0][0]+dd+TBm[0][1]+dd+TBm[0][2]+dd+TBm[0][3]+dd+A1m+dd+A2m+ls+"\n"
-+            dd+TSm[0][0]+dd+TSm[0][1]+dd+TSm[0][2]+dd+TSm[0][3]+dd+dd+ls+  "\n"
-+lname+dd+dd+dd+dd+TBm[1][0]+dd+dd+ls+"\n"
-+            dd+dd+dd+dd+TSm[1][0]+dd+dd+ls+  "\n"
-+dd+dd+dd+dd+dd+dd+ls+"\n"
++tsc+"Panel C: Middle Income"+ebr+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
+"Fertility "+dd+TBm[0][0]+dd+TBm[0][1]+dd+TBm[0][2]+dd+TBm[0][3]+dd
++            TBm[0][4]+dd+A1m+dd+A2m+ls+"\n"
++            dd+TSm[0][0]+dd+TSm[0][1]+dd+TSm[0][2]+dd+TSm[0][3]+dd
++            TSm[0][4]+dd+dd+ls+  "\n"
++lname+dd+dd+dd+dd+dd+TBm[1][0]+dd+dd+ls+"\n"
++            dd+dd+dd+dd+dd+TSm[1][0]+dd+dd+ls+  "\n"
++dd+dd+dd+dd+dd+dd+dd+ls+"\n"
 "Observations "+dd+str(TNm[0][0])+dd+str(TNm[0][1])+dd+str(TNm[0][2])+dd
-+str(TNm[0][3])+dd+dd+ls+"\n"
-+R2+dd+str(TRm[0][0])+dd+ str(TRm[0][1])+dd+str(TRm[0][2])+dd+str(TRm[0][3])+dd+dd+ls
-+hr+hr+"\n"
++str(TNm[0][3])+dd+str(TNm[0][4])+dd+dd+ls+"\n"
++R2+dd+str(TRm[0][0])+dd+ str(TRm[0][1])+dd+str(TRm[0][2])+dd
++            str(TRm[0][3])+dd+str(TRm[0][4])+dd+dd+ls+hr+hr+"\n"
 +mc1+twid[1]+tcm[1]+mc3+
 "Base controls consist of child gender, mother's age and age squared "
 "mother's age at first birth, child age, country, and year of birth "
@@ -418,7 +532,7 @@ OLSf.close()
 #==============================================================================
 #== (6) Read in balance table, fix formatting
 #==============================================================================
-bali = open(Results2+bala, 'r').readlines()
+bali = open(Results+bala, 'r').readlines()
 balo = open(Tables+"Balance_mother."+end, 'w')
 
 for i,line in enumerate(bali):
@@ -456,7 +570,7 @@ balo.close()
 #==============================================================================
 #== (7) Read in twin predict table, LaTeX format
 #==============================================================================
-twini = open(Results2+"Twin/"+twin, 'r')
+twini = open(Results+"Twin/"+twin, 'r')
 twino = open(Tables+"TwinReg."+end, 'w')
 
 if ftype=='tex':
@@ -514,7 +628,7 @@ twino.close()
 #==============================================================================
 #== (8) Read in summary stats, LaTeX format
 #==============================================================================
-counti = open(Results2+"Summary/"+coun, 'r')
+counti = open(Results+"Summary/"+coun, 'r')
 
 addL = []
 for i,line in enumerate(counti):
@@ -532,9 +646,9 @@ for i,line in enumerate(counti):
         nk = line
 print nk
 
-summi = open(Results2+"Summary/"+summ, 'r')
-summc = open(Results2+"Summary/"+sumc, 'r')
-summf = open(Results2+"Summary/"+sumf, 'r')
+summi = open(Results+"Summary/"+summ, 'r')
+summc = open(Results+"Summary/"+sumc, 'r')
+summf = open(Results+"Summary/"+sumf, 'r')
 summo = open(Tables+"Summary."+end, 'w')
 
 if ftype=='tex':
@@ -633,7 +747,7 @@ summo.close()
 #==============================================================================
 #== (9) Create Conley et al. table
 #==============================================================================
-conli = open(Results2+"Conley/"+conl, 'r').readlines()
+conli = open(Results+"Conley/"+conl, 'r').readlines()
 conlo = open(Tables+"Conley."+end, 'w')
 
 
@@ -683,7 +797,7 @@ conlo.close()
 #==============================================================================
 #== (10) Create country list table
 #==============================================================================
-dhssi = open(Results2+"Summary/"+dhss, 'r').readlines()
+dhssi = open(Results+"Summary/"+dhss, 'r').readlines()
 dhsso = open(Tables+"Countries."+end, 'w')
 
 if ftype=='tex':
@@ -733,14 +847,14 @@ dhsso.close()
 #==============================================================================
 #== (11) Gender table
 #==============================================================================
-genfi = open(Results+gend[0],'r').readlines
-genmi = open(Results+gend[1],'r').readlines
+genfi = open(Results+'IV/'+gend[0],'r').readlines
+genmi = open(Results+'IV/'+gend[1],'r').readlines
 
 gendo = open(Tables+'Gender.'+end, 'w')
 
 
-FB, FS, FN = plustable(Results+gend[0],1,13,"fert",'normal',1000)
-MB, MS, MN = plustable(Results+gend[1],1,13,"fert",'normal',1000)
+FB, FS, FN = plustable(Results+'IV/'+gend[0],1,13,"fert",'normal',1000)
+MB, MS, MN = plustable(Results+'IV/'+gend[1],1,13,"fert",'normal',1000)
 
 
 Ns = format(float(FN[0][0]), "n")+', '+format(float(MN[0][0]), "n")+', '
@@ -781,7 +895,7 @@ gendo.write(
 "Female or male refers to the gender of the index child of the regression. \n"
 "All regressions include full controls including socioeconomic and maternal "
 "health variables.  The full lis of controls are available in \n"
-"the notes to table "+rIV2+".  Full IV results for male and "
+"the notes to table "+rIVa+".  Full IV results for male and "
 "female children are presented in table "+rGen+". Standard errors " 
 "are clustered \n by mother."+foot+"\n")
 if ftype=='tex':
@@ -794,7 +908,7 @@ gendo.close()
 #==============================================================================
 #== (12) IMR Test table
 #==============================================================================
-imrti = open(Results2+"New/"+imrt, 'r').readlines()
+imrti = open(Results+"New/"+imrt, 'r').readlines()
 imrto = open(Tables+"IMRtest."+end, 'w')
 
 if ftype=='tex':
@@ -802,7 +916,7 @@ if ftype=='tex':
     "\\caption{Test of hypothesis that women who bear twins have better prior health}"
     "\\label{TWINtab:IMR}\\begin{center}\\begin{tabular}{lccc}\n"
     "\\toprule \\toprule \n"
-    "\\textsc{Infant Mortality Rate}& Base & +S\\&H & Observations \\\\ \\midrule \n"
+    "\\textsc{Infant Mortality (per 100 births)}& Base & +S\\&H & Observations \\\\ \\midrule \n"
     "\\begin{footnotesize}\\end{footnotesize}& \n"
     "\\begin{footnotesize}\\end{footnotesize}& \n"
     "\\begin{footnotesize}\\end{footnotesize}& \n"
@@ -833,11 +947,10 @@ imrto.write('Treated (2+)'+hs*6+dd+betas[1]+dd+betas[3]+dd+Ns[2]+ls+'\n'
 "exposed to the risk of infant mortality (ie those over 1 year of age). "
 "Subsamples 2+, 3+, 4+ and 5+ are generated to allow comparison of children "
 "born at similar birth orders.  For a full description of these groups see the "
-"the body of the paper or notes to tables "+rIV2+", "+rIV3+", "+rIV4+" or "+rIV5+
-" respectively. Treated=1 refers to children who are "
-"born before a twin while Treated=0 refers to children of similar birth orders "
-"not born before a twin.  Base and S+H controls are described in table "+rIV2+"."
-+foot+" \n")
+"the body of the paper or notes to table "+rIVa+". Treated=1 refers to children "
+"who are born before a twin while Treated=0 refers to children of similar birth "
+"orders not born before a twin.  Base and S+H controls are described in table "
++rIVa+"."+foot+" \n")
 if ftype=='tex':
     imrto.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
     "\\end{tabular}\\end{center}\\end{table}")
@@ -848,90 +961,95 @@ if ftype=='tex':
 #==============================================================================
 fstao = open(Tables+"firstStage."+end, 'w')
 
-os.chdir(Results)
+os.chdir(Results+'IV')
 
 if ftype=='tex':
     fstao.write("\\begin{landscape}\\begin{table}[htpb!]"
-    "\\caption{First Stage Results} \n\\label{TWINtab:FS}"
-    "\\begin{center}\\begin{tabular}{lccccccccc}\n\\toprule \\toprule \n"
-    "&\\multicolumn{3}{c}{2+}&\\multicolumn{3}{c}{3+}&\\multicolumn{3}{c}{4+}"
-    "\\\\ \\cmidrule(r){2-4} \\cmidrule(r){5-7} \\cmidrule(r){8-10} \n"
-    "\\textsc{Fertility}&Base&+S&+S\&H&Base&+S&+S\&H&Base&+S&+S\&H"
+    "\\caption{First Stage Results} \n"
+    "\\label{TWINtab:FS}\\begin{center}"
+    "\\begin{tabular}{lcccp{2mm}cccp{2mm}ccc}\n\\toprule \\toprule \n"
+    "&\\multicolumn{3}{c}{2+}&&\\multicolumn{3}{c}{3+}&&\\multicolumn{3}{c}{4+}"
+    "\\\\ \\cmidrule(r){2-4} \\cmidrule(r){6-8} \\cmidrule(r){10-12} \n"
+    "\\textsc{Fertility}&Base&+H&+S\&H&&Base&+H&+S\&H&&Base&+H&+S\&H"
     "\\\\ \\midrule \n"
     +"\\begin{footnotesize}\\end{footnotesize}& \n"*9+
     "\\begin{footnotesize}\\end{footnotesize}\\\\ \n")
 elif ftype=='csv':
-    fstao.write(";2+;;;3+;;;4+;;;\n"
-    "FERTILITY;Base;+S;+S&H;Base;+S;+S&H;Base;+S;+S&H \n")
+    fstao.write(";2+;;;;3+;;;;4+;;;\n"
+    "FERTILITY;Base;+H;+S&H;;Base;+H;+S&H;;Base;+S;+S&H \n")
 
-
-PreB = []
-PreS = []
-BorB = []
-BorS = []
+AllB = []
+AllS = []
+AllN = []
 LowB = []
 LowS = []
+LowN = []
 MidB = []
 MidS = []
-DesB = []
-DesS = []
-De2B = []
-De2S = []
+MidN = []
 TwiB = []
 TwiS = []
+TwiN = []
+AdjB = []
+AdjS = []
+AdjN = []
 
 for num in ['two','three','four']:
     searcher='twin\_'+num+'\_fam'
+    Asearcher='ADJtwin\_'+num+'\_fam'
     searchup=searcher+'|twin'+num
-    title = num.title()+'-Plus'
 
     FSB, FSS, FSN    = plustable(firs, 1, 4,searcher,'normal',1000)
-    FBB, FBS, FBN    = plustable(fbor, 1, 4,searcher,'normal',1000)
     FLB, FLS, FLN    = plustable(flow, 1, 4,searcher,'normal',1000)
     FMB, FMS, FMN    = plustable(fmid, 1, 4,searcher,'normal',1000)
     FTB, FTS, FTN    = plustable(ftwi, 1, 4,searcher,'normal',1000)
-    FDB, FDS, FDN    = plustable(fdes, 1, 4,searchup,'normal',1000)
+    FAB, FAS, FAN    = plustable(fadj, 1, 4,searcher,'normal',1000)
 
 
-    PreB.append(dd + FSB[0][0] + dd + FSB[0][1] + dd + FSB[0][2])
-    PreS.append(dd + FSS[0][0] + dd + FSS[0][1] + dd + FSS[0][2])
-    BorB.append(dd + FBB[0][0] + dd + FBB[0][1] + dd + FBB[0][2])
-    BorS.append(dd + FBS[0][0] + dd + FBS[0][1] + dd + FBS[0][2])
+    AllB.append(dd + FSB[0][0] + dd + FSB[0][1] + dd + FSB[0][2])
+    AllS.append(dd + FSS[0][0] + dd + FSS[0][1] + dd + FSS[0][2])
+    AllN.append(dd + FSN[0][0] + dd + FSN[0][1] + dd + FSN[0][2])
     LowB.append(dd + FLB[0][0] + dd + FLB[0][1] + dd + FLB[0][2])
     LowS.append(dd + FLS[0][0] + dd + FLS[0][1] + dd + FLS[0][2])
+    LowN.append(dd + FLN[0][0] + dd + FLN[0][1] + dd + FLN[0][2])
     MidB.append(dd + FMB[0][0] + dd + FMB[0][1] + dd + FMB[0][2])
     MidS.append(dd + FMS[0][0] + dd + FMS[0][1] + dd + FMS[0][2])
+    MidN.append(dd + FMN[0][0] + dd + FMN[0][1] + dd + FMN[0][2])
+    AdjB.append(dd + FAB[0][0] + dd + FAB[0][1] + dd + FAB[0][2])
+    AdjS.append(dd + FAS[0][0] + dd + FAS[0][1] + dd + FAS[0][2])
+    AdjN.append(dd + FAN[0][0] + dd + FAN[0][1] + dd + FAN[0][2])
     TwiB.append(dd + FTB[0][0] + dd + FTB[0][1] + dd + FTB[0][2])
     TwiS.append(dd + FTS[0][0] + dd + FTS[0][1] + dd + FTS[0][2])
-    DesB.append(dd + FDB[0][0] + dd + FDB[0][1] + dd + FDB[0][2])
-    DesS.append(dd + FDS[0][0] + dd + FDS[0][1] + dd + FDS[0][2])
-    De2B.append(dd + FDB[1][0] + dd + FDB[1][1] + dd + FDB[1][2])
-    De2S.append(dd + FDS[1][0] + dd + FDS[1][1] + dd + FDS[1][2])
-    
-
-fstao.write(mc1+twid[8]+mcbf+"Pre-Twins"+mc2+ls+" \n"
-"Twin"+PreB[0]+PreB[1]+PreB[2]+ls+'\n'
-+PreS[0]+PreS[1]+PreS[2]+ls+'\n'+lA+
-mc1+twid[8]+mcbf+"Pre-Twins (+bord)"+mc2+ls+" \n"
-"Twin"+BorB[0]+BorB[1]+BorB[2]+ls+'\n'
-+BorS[0]+BorS[1]+BorS[2]+ls+'\n'+lA+
-mc1+twid[8]+mcbf+"Low-Income"+mc2+ls+" \n"
-"Twin"+LowB[0]+LowB[1]+LowB[2]+ls+'\n'
-+LowS[0]+LowS[1]+LowS[2]+ls+'\n'+lA+
-mc1+twid[8]+mcbf+"Middle-Income"+mc2+ls+" \n"
-"Twin"+MidB[0]+MidB[1]+MidB[2]+ls+'\n'
-+MidS[0]+MidS[1]+MidS[2]+ls+'\n'+lA+
-mc1+twid[8]+mcbf+"Desired-Threshold"+mc2+ls+" \n"
-"Twin"+DesB[0]+DesB[1]+DesB[2]+ls+'\n'
-+DesS[0]+DesS[1]+DesS[2]+ls+'\n'
-+tname+De2B[0]+De2B[1]+De2B[2]+ls+'\n'
-+De2S[0]+De2S[1]+De2S[2]+ls+'\n'+lA+
-mc1+twid[8]+mcbf+"Twins and Pre-twins"+mc2+ls+" \n"
-"Twin"+TwiB[0]+TwiB[1]+TwiB[2]+ls+'\n'
-+TwiS[0]+TwiS[1]+TwiS[2]+ls+'\n'+lA)
+    TwiN.append(dd + FTN[0][0] + dd + FTN[0][1] + dd + FTN[0][2])
 
 
-fstao.write('\n'+mr+mc1+twid[8]+tcm[8]+mc3+
+
+fstao.write(mc1+twid[10]+mcbf+"All"+mc2+ls+" \n"
+"Twin"+AllB[0]+dd+AllB[1]+dd+AllB[2]+ls+'\n'
++AllS[0]+dd+AllS[1]+dd+AllS[2]+ls+'\n'+lA2+
+"Observations"+AllN[0]+dd+AllN[1]+dd+AllN[2]+ls+'\n'+lA2+
+
+mc1+twid[10]+mcbf+"Low-Income"+mc2+ls+" \n"
+"Twin"+LowB[0]+dd+LowB[1]+dd+LowB[2]+ls+'\n'
++LowS[0]+dd+LowS[1]+dd+LowS[2]+ls+'\n'+lA2+
+"Observations"+LowN[0]+dd+LowN[1]+dd+LowN[2]+ls+'\n'+lA2+
+
+mc1+twid[10]+mcbf+"Middle-Income"+mc2+ls+" \n"
+"Twin"+MidB[0]+dd+MidB[1]+dd+MidB[2]+ls+'\n'
++MidS[0]+dd+MidS[1]+dd+MidS[2]+ls+'\n'+lA2+
+"Observations"+MidN[0]+dd+MidN[1]+dd+MidN[2]+ls+'\n'+lA2+
+
+mc1+twid[10]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
+"Twin"+AdjB[0]+dd+AdjB[1]+dd+AdjB[2]+ls+'\n'
++AdjS[0]+dd+AdjS[1]+dd+AdjS[2]+ls+'\n'+lA2+
+"Observations"+AdjN[0]+dd+AdjN[1]+dd+AdjN[2]+ls+'\n'+lA2+
+
+mc1+twid[10]+mcbf+"Twins and Pre-Twins"+mc2+ls+" \n"
+"Twin"+TwiB[0]+dd+TwiB[1]+dd+TwiB[2]+ls+'\n'
++TwiS[0]+dd+TwiS[1]+dd+TwiS[2]+ls+'\n'+lA2+
+"Observations"+TwiN[0]+dd+TwiN[1]+dd+TwiN[2]+ls+'\n')
+
+fstao.write('\n'+mr+mc1+twid[10]+tcm[10]+mc3+
 "Each cell represents the coefficient from the first-stage of a two-stage "
 "regression.  The first-stage represents the effect of twinning at parity "
 "$N$ on total fertility where $N$ is 2, 3 or 4 for 2+, 3+ and 4+ groups "
@@ -941,7 +1059,7 @@ fstao.write('\n'+mr+mc1+twid[8]+tcm[8]+mc3+
 "in families with at least four births.  In each regressions the sample is "
 "made up of all children aged between 6-18 years from families in the DHS who "
 "fulfill these birth order conditions.  Controls in each case are "
-"identical to those described in table "+rIV2+".  Standard "
+"identical to those described in table "+rIVa+".  Standard "
 "errors are clustered at the level of the mother."+foot+" \n")
 if ftype=='tex':
     fstao.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
@@ -953,7 +1071,131 @@ if ftype=='tex':
 #==============================================================================
 genio = open(Tables+'GenderIV.'+end, 'w')
 
+AllB = []
+AllS = []
+AllN = []
+LowB = []
+LowS = []
+LowN = []
+MidB = []
+MidS = []
+MidN = []
+TwiB = []
+TwiS = []
+TwiN = []
+AdjB = []
+AdjS = []
+AdjN = []
 
+FirB = []
+FirS = []
+AFiB = []
+AFiS = []
+
+for gg in [0,1]:
+    BB, BS, BN    = plustable(gend[gg], 1, 10,'fert','normal',1000)
+    LB, LS, LN    = plustable(genl[gg], 1, 10,'fert','normal',1000)
+    MB, MS, MN    = plustable(genm[gg], 1, 10,'fert','normal',1000)
+    TB, TS, TN    = plustable(gent[gg], 1, 10,'fert','normal',1000)
+    AB, AS, AN    = plustable(gena[gg], 1, 10,'ADJfert','normal',1000)
+    
+    AllB.append(dd + BB[0][2] + dd + BB[0][5] + dd + BB[0][8])
+    AllS.append(dd + BS[0][2] + dd + BS[0][5] + dd + BS[0][8])
+    AllN.append(dd + BN[0][2] + dd + BN[0][5] + dd + BN[0][8])
+    LowB.append(dd + LB[0][2] + dd + LB[0][5] + dd + LB[0][8])
+    LowS.append(dd + LS[0][2] + dd + LS[0][5] + dd + LS[0][8])
+    LowN.append(dd + LN[0][2] + dd + LN[0][5] + dd + LN[0][8])
+    MidB.append(dd + MB[0][2] + dd + MB[0][5] + dd + MB[0][8])
+    MidS.append(dd + MS[0][2] + dd + MS[0][5] + dd + MS[0][8])
+    MidN.append(dd + MN[0][2] + dd + MN[0][5] + dd + MN[0][8])
+    TwiB.append(dd + TB[0][2] + dd + TB[0][5] + dd + TB[0][8])
+    TwiS.append(dd + TS[0][2] + dd + TS[0][5] + dd + TS[0][8])
+    TwiN.append(dd + TN[0][2] + dd + TN[0][5] + dd + TN[0][8])
+    AdjB.append(dd + AB[0][2] + dd + AB[0][5] + dd + AB[0][8])
+    AdjS.append(dd + AS[0][2] + dd + AS[0][5] + dd + AS[0][8])
+    AdjN.append(dd + AN[0][2] + dd + AN[0][5] + dd + AN[0][8])
+
+    for num in ['two','three','four']:
+        searcher='twin\_'+num+'\_fam'
+        Asearcher='ADJtwin\_'+num+'\_fam'
+
+        FSB, FSS, FSN    = plustable(fgen[gg], 1, 4,searcher,'normal',1000)
+        FAB, FAS, FAN    = plustable(fgna[gg], 1, 4,searcher,'normal',1000)
+
+
+        FirB.append(dd + FSB[0][2])
+        FirS.append(dd + FSS[0][2])
+        AFiB.append(dd + FAB[0][2])
+        AFiS.append(dd + FAS[0][2])
+
+
+if ftype=='tex':
+    genio.write("\\begin{table}[!htbp] \\centering \n"
+    "\\caption{Instrumental Variables Estimates: Female and Male Children} \n"
+    "\\label{TWINtab:IVgend} \n"
+    "\\begin{tabular}{lcccccc} \\toprule \\toprule \n"
+    "&\\multicolumn{3}{c}{Females}""&\\multicolumn{3}{c}{Males}\\\\ \n" 
+    "\\cmidrule(r){2-4} \\cmidrule(r){5-7} \n" 
+    "&2+&3+&4+&2+&3+&4+ \\\\ \\midrule \n")
+elif ftype=='csv':
+    genio.write(";Females;;;Males;; \n"  
+    ";2+;3+;4+;2+;3+;4+ \n")
+genio.write(dd+dd+dd+dd+ls+"\n"
++mc1+twid[9]+mcbf+"All"+mc2+ls+" \n"
+"Fertility"+AllB[0]+AllB[1]+ls+"\n"
+""         +AllS[0]+AllS[1]+ls+ "\n"
++dd+dd+dd+dd+ls+"\n" 
+
++mc1+twid[9]+mcbf+"Low-Income Countries"+mc2+ls+" \n"
+"Fertility"+LowB[0]+LowB[1]+ls+"\n"
+""         +LowS[0]+LowS[1]+ls+ "\n"
++dd+dd+dd+dd+ls+"\n" 
+
++mc1+twid[9]+mcbf+"Middle-Income Countries"+mc2+ls+" \n"
+"Fertility"+MidB[0]+MidB[1]+ls+"\n"
+""         +MidS[0]+MidS[1]+ls+ "\n"
++dd+dd+dd+dd+ls+"\n" 
+
++mc1+twid[9]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
+"Fertility"+AdjB[0]+AdjB[1]+ls+"\n"
+""         +AdjS[0]+AdjS[1]+ls+ "\n"
++dd+dd+dd+dd+ls+"\n" 
+
++mc1+twid[9]+mcbf+"Twins and Pre-Twins"+mc2+ls+" \n"
+"Fertility"+TwiB[0]+TwiB[1]+ls+"\n"
+""         +TwiS[0]+TwiS[1]+ls+ "\n"+mr
+
++mc1+twid[0]+mcsc+"First Stage"+mc2+ls+" \n"
++dd+dd+dd+dd+ls+"\n"
++mc1+twid[9]+mcbf+"All"+mc2+ls+" \n"
+"Twin"+FirB[0]+FirB[1]+FirB[2]+FirB[3]+FirB[4]+FirB[5]+ls+"\n"
+""         +FirS[0]+FirS[1]+FirS[2]+FirS[3]+FirS[4]+FirS[5]+ls+ "\n"
++dd+dd+dd+dd+ls+"\n" 
+
++mc1+twid[9]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
+"Twin"+AFiB[0]+AFiB[1]+AFiB[2]+AFiB[3]+AFiB[4]+AFiB[5]+ls+"\n"
+""         +AFiS[0]+AFiS[1]+AFiS[2]+AFiS[3]+AFiS[4]+AFiS[5]+ls+ "\n"
+
++'\n'+mr+mc1+twid[9]+tcm[9]+mc3+
+"Each cell presents the coefficient from a 2SLS regression of standardised "
+"educational attainment on fertility.  2+, 3+ and 4+ refer to the birth "
+"orders of children included in the regression.  For a full description of "
+"these groups see table "+rIVa+".  Each regression includes full controls "
+"including maternal health and socioeconomic variables.  The sample is made "
+"up of all children aged between 6-18 years from families in the DHS who "
+"fulfill birth order and gender requirements indicated in the header.  "
+"Standard errors are clustered by mother."
++foot+" \n")
+
+if ftype=='tex':
+    genio.write("\\end{footnotesize}}\n"+ls+br+
+    "\\normalsize\\end{tabular}\\end{table} \n")
+genio.close()
+
+
+
+
+"""
 FB1, FS1, FN1 = plustable(geni[0], 1, 6,"fert",'alt',1)
 MB1, MS1, MN1 = plustable(geni[0], 6, 11,"fert",'alt',2)
 FB2, FS2, FN2 = plustable(geni[0], 11, 16,"fert",'alt',3)
@@ -1040,8 +1282,7 @@ dd+S12[0][3]+dd+S13[0][3]+dd+S14[0][3]+ls+ "\n"
 "Each cell presents the coefficient from a 2SLS regression of standardised "
 "educational attainment on fertility.  2+, 3+ and 4+ refer to the birth "
 "orders of children included in the regression.  For a full description of "
-"these groups see tables "+rIV2+", "+rIV3+" and "+rIV4+
-".  Each regression includes full controls "
+"these groups see table "+rIVa+".  Each regression includes full controls "
 "including maternal health and socioeconomic variables.  The sample is made "
 "up of all children aged between 6-18 years from families in the DHS who "
 "fulfill birth order and gender requirements indicated in the header.  "
@@ -1052,6 +1293,7 @@ if ftype=='tex':
     genio.write("\\end{footnotesize}}\n"+ls+br+
     "\\normalsize\\end{tabular}\\end{table} \n")
 genio.close()
+"""
 
 
 print "Terminated Correctly."

@@ -1,42 +1,42 @@
 ;Low Income;;Middle Income; 
 ; Single ; Twins ; Single ; Twins; All 
 FERTILITY ; ; ; ; ; 
-Fertility;3.749;6.223;3.412;5.584;3.689;
-;(2.392);(2.622);(2.308);(2.687);(2.406);
-Desired Family Size;4.193;5.328;3.380;4.190;3.921;
-;(2.530);(2.885);(2.130);(2.555);(2.440);
-Fraction Twin ;;   0.0200;;   0.0179  ;;  0.0191
-;; (0.1402);; (0.1326) ;; (0.1370)
-Birth Order Twin ;;    4.664;;    4.016 ;;   4.410
-;; (2.465);; (2.374);; (2.450)
+Fertility;3.670;6.092;3.348;5.425;3.609;
+;(2.365);(2.581);(2.272);(2.609);(2.372);
+Desired Family Size;4.181;5.296;3.340;4.127;3.892;
+;(2.500);(2.828);(2.084);(2.497);(2.403);
+Fraction Twin ;;   0.0194;;   0.0173  ;;  0.0185
+;; (0.1378);; (0.1305) ;; (0.1348)
+Birth Order Twin ;;    4.680;;    4.017 ;;   4.419
+;; (2.462);; (2.370);; (2.448)
 MOTHER'S CHARACTERISTICS 
- Age;31.22;34.52;32.32;35.61;31.72;
-;(8.238);(7.381);(8.356);(7.428);(8.293);
-Education;3.859;3.222;6.690;5.906;4.885;
-;(4.327);(3.991);(4.795);(5.023);(4.706);
-Height;155.5;157.6;155.6;157.2;155.6;
-;(7.093);(7.065);(6.966);(6.945);(7.053);
-BMI;21.90;22.50;25.90;26.63;23.39;
-;(4.027);(4.175);(5.118);(5.512);(4.867);
-Pr(BMI)<18.5;0.175;0.125;0.0346;0.0276;0.122;
-;(0.380);(0.331);(0.183);(0.164);(0.327);
-Actual Births>Desired;0.310;0.526;0.324;0.575;0.321;
-;(0.463);(0.499);(0.468);(0.494);(0.467);
+ Age;30.92;34.19;31.99;34.93;31.40;
+;(7.980);(7.163);(8.105);(7.156);(8.038);
+Education;3.984;3.339;6.816;6.117;5.030;
+;(4.369);(4.032);(4.794);(5.048);(4.735);
+Height;155.6;157.7;155.6;157.2;155.7;
+;(7.085);(6.987);(6.956);(6.957);(7.042);
+BMI;21.89;22.47;25.83;26.50;23.38;
+;(3.984);(4.098);(5.066);(5.437);(4.822);
+Pr(BMI)<18.5;0.172;0.122;0.0344;0.0276;0.119;
+;(0.377);(0.328);(0.182);(0.164);(0.324);
+Actual Births>Desired;0.297;0.513;0.319;0.567;0.311;
+;(0.457);(0.500);(0.466);(0.495);(0.463);
 CHILDREN'S OUTCOMES 
- Education (Years);3.660;3.204;5.445;5.043;4.446;
-;(3.576);(3.293);(3.867);(3.760);(3.810);
-Education (Z-Score);-0.00843;-0.0156;0.0119;-0.0428;0.000144;
-;(1.001);(0.963);(0.998);(0.987);(1.000);
-No Education (Percent);0.207;0.222;0.0649;0.0786;0.144;
-;(0.405);(0.416);(0.246);(0.269);(0.351);
-Infant Mortality;0.0158;0.0917;0.00946;0.0497;0.0141;
-;(0.125);(0.289);(0.0968);(0.217);(0.118);
-Child Mortality;0.0239;0.108;0.0122;0.0535;0.0199;
-;(0.153);(0.310);(0.110);(0.225);(0.140);
+ Education (Years);3.695;3.214;5.438;4.999;4.465;
+;(3.580);(3.270);(3.859);(3.733);(3.805);
+Education (Z-Score);-0.00871;-0.0120;0.0121;-0.0368;0.000176;
+;(1.001);(0.961);(0.998);(0.986);(1.000);
+No Education (Percent);0.200;0.212;0.0634;0.0765;0.140;
+;(0.400);(0.409);(0.244);(0.266);(0.346);
+Infant Mortality;0.118;0.210;0.0797;0.168;0.109;
+;(0.322);(0.407);(0.271);(0.374);(0.311);
+Child Mortality;0.171;0.277;0.104;0.202;0.151;
+;(0.376);(0.447);(0.305);(0.401);(0.358);
 
-Number of Countries ; 39;39  ; 28;28  ; 67 
-Number of Children ;2,231,844 ;45,654 ;1,614,358 ;29,430 ; 3,921,286 
-Number of Mothers ;875,587 ;12,908 ;653,969 ;8,605 ; 1,586,899 
+Number of Countries ; 42;42  ; 34;34  ; 67 
+Number of Mothers ;798,699 ;11,427 ;570,700 ;7,521 ; 1,444,522 
+Number of Children (Education) ;1,865,445 ;38,111 ;1,350,606 ;24,505 ; 3,278,667 
+Number of Children (Ever Born) ;2,852,388 ;70,442 ;1,955,362 ;40,109 ; 4,918,301 
 
-NOTES:  Group means are presented with standard deviation below in parenthesis.  Education is reported as total years attained, and Z-score presents educational attainment relative to country and cohort (mean 0, std deviation 1).  Infant mortality refers to the proportion of children who die before 1 year of age,  while child mortality refers to the proportion who die before 5 years.  Maternal height is reported in cm, and BMI is weight in kg over height in metres squared.  Summary statistics are for the full sample of 1,586,899
- mothers responding to any publicly available DHS survey.  For a full list of country and years of survey, see appendix table 10.
+NOTES: Summary statistics are presented for the full estimation  sample consisting of all children 18 years of age and under born to the 1,444,522 mothers responding to any publicly available DHS survey. Group means are presented with standard deviation below in parenthesis.  Education is reported as total years attained, and Z-score presents educational attainment relative to country and cohort (mean 0, std deviation 1).  Infant mortality refers to the proportion of children who die before 1 year of age,  while child mortality refers to the proportion who die before 5 years.  Maternal height is reported in centimetres, and BMI is weight in kilograms over height in metres squared.  For a full list of country and years of survey, see appendix table 10.
