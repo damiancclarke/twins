@@ -15,9 +15,9 @@ included.
 This file requires a number of user written ados which can be installed from the
 SSC. These are ivreg2, outreg2, estout, ranktest, mat2txt and plausexog. This is
 automated in lines 46-49.  The file can be completely controlled in Section (0).
-Here directory locations are defined as global variables, and, if desired, swit-
-ches can be set to determine which sections of the file to run. Note that runni-
-ng the entire file can take some time.  On a machine with 16GB of virtual memory
+Here directory locations are defined as global' variables, and, if desired, swi-
+tches can be set to determine which sections of the file to run. Note that runn-
+ing the entire file can take some time. On a machine with 16GB of virtual memory
 the run-time is ~ 30 hours.  The time to run individual sections is considerably
 shorter.
 
@@ -27,13 +27,13 @@ Questions should be directed to damian.clarke@economics.ox.ac.uk.
 
 
 Last edit:
+* May 29th, 2014: instrumenting for desired fertility
 * May 10th, 2014: testing for 35+ as well.
 * December 17th, 2013: considerable rewrite based on comments in 22 Nov email.
-Can revert by going back to git commit Nov 11 2013.
+  Can revert by going back to git commit Nov 11 2013.
 * September 12th, 2013: Address Paul Dev's comment about treatment
-* August 5th, 2013: Update figures and tables based on Sonia's comme-
-nts on early draft.
-
+* August 5th, 2013: Update figures and tables based on Sonia's comments on
+early draft.
 */
 
 clear all
@@ -64,8 +64,10 @@ foreach dirname in Summary Twin OLS RF IV Conley {
 
 
 *SWITCHES (1 if run, else not run)
-local resave        0
-local sumstats      27
+local resave        27
+local samples       27
+local matchrate     27
+local sumstats      1
   local graphs      0
 local sumstats2     0
   local graphs2     0
@@ -75,11 +77,11 @@ local OLS           27
 local RF            27
 local IV            27
 local IVtwin        27
-local desire        1
+local desire        11
 local compl_fert    0
 local twinoccur_ols 27
 local twinoccur_iv  27
-local conley        27
+local conley        11
 local thresholdtest 27
 local balance       27
 local country       0
@@ -123,8 +125,8 @@ local SumBord  Summary_Birthorder
 local TwinPred Twin_Predict
 local IVt      Base_IV_twins
 local IVt1     Base_IV_twins_firststage
-local IVdes    Desire_IV_reg
-local IVdes1   Desire_IV_firststage_reg
+local IVdes    Desire
+local IVdes1   Desire_firststage
 
 
 * FIGURES
@@ -197,9 +199,74 @@ replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
 replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
 encode cat, gen(catnum)
 egen category=concat(income twindfamily)
+egen nonmiss = rowmiss(educf height bmi motherage malec)
 
 if `resave'==1 save "$Data/DHS_twins_mortality", replace
-keep if _merge==3
+
+*******************************************************************************
+*** (1b) Check match rates
+*******************************************************************************
+if `matchrate'==1 {
+	count
+	count if _merge==3
+	local totmatch=r(N)
+	count if _merge==3&age<=18
+	local match18=r(N)
+	dis "Percent of matched offspring under 18: `match18'/`totmatch'"
+	count if _merge==2
+	local totnonmatch=r(N)
+	count if _merge==2&(age>18|childageatdeath!=.)
+	local nonmatch18=r(N)
+	dis "Percent of non-matched offspring 18+/deceased: `nonmatch18'/`totnonmatch'"
+
+	gen matched=1 if _merge==3&age<=18
+	replace matched=0 if _merge==2&age<=18&childageatdeath==.
+
+	foreach var of varlist age child_yob educf height bmi agemay twin malec {
+		ttest `var', by(matched)
+		}
+}
+
+if `samples'!=1 keep if _merge==3
+
+*******************************************************************************
+*** (1c) Sample sizes
+*******************************************************************************
+if `samples'==1 {
+
+	bys id: gen NN=_n
+	gen allsample   =1 `cond' & nonmiss==0
+	gen hhsample    =1 `cond' & nonmiss==0 & _merge==3
+	gen twopsample  =1 `cond' & nonmiss==0 & _merge==3 & two_plus==1   & age>=6
+	gen threepsample=1 `cond' & nonmiss==0 & _merge==3 & three_plus==1 & age>=6
+	gen fourpsample =1 `cond' & nonmiss==0 & _merge==3 & four_plus==1  & age>=6
+	gen fivepsample =1 `cond' & nonmiss==0 & _merge==3 & five_plus==1  & age>=6
+
+	file open sfile using "$Tables/Summary/Samples.txt", write replace
+	file write sfile "Sample&N Children&N Mothers&Mean Age&Min Age&Max Age" _n
+
+	
+	foreach samp of varlist allsam hhsam twopsam threepsam fourpsam fivepsam {
+		count if `samp'==1
+		local kcount="`: display %9.0fc r(N)'"
+		
+		count if `samp'==1 & NN==1
+		local mcount="`: display %9.0fc r(N)'"
+
+		sum age if `samp'==1
+		scalar am = "`: display %7.4f r(mean)'"
+		scalar ami = "`: display %7.1f r(min)'"
+		scalar ama = "`: display %7.1f r(max)'"
+		
+		file write sfile "`samp'&`kcount'&`mcount'"
+		file write sfile "&`=scalar(am)'&`=scalar(ami)'&`=scalar(ama)'" _n		
+	}
+
+	file close sfile
+
+	keep if _merge==3
+	drop allsamp hhsamp twopsamp threepsamp fourpsamp fivepsamp NN
+}
 
 *******************************************************************************
 *** (2) Summary Stats
@@ -222,12 +289,12 @@ if `sumstats'==1 {
 
 	foreach num of numlist 1(1)4 {
 		cap drop count 
-		gen count = 1 `cond'
+		gen count = 1 `cond' & nonmiss==0
 		replace count=. if catnum!=`num'
 		foreach var of local sumstatsC {
 			replace count=. if `var'==.
 		}
-		count if count==1
+		count if count==1 
 		local kk = "`: display %9.0fc r(N)'"
 
 		local numkids "`numkids' `sep'" "`kk'"
@@ -238,15 +305,18 @@ if `sumstats'==1 {
 		local nummothers "`nummothers' `sep'" "`mm'"
 		drop n
 
-		bys _cou count: gen n=_n
-		count if count==1&n==1
-		if `num'==1|`num'==3 {
-			local numcountry "`numcountry' `sep' `r(N)'`sep'`r(N)' "
-		}
-		drop n
 	}
 
-	count `cond'
+	levelsof _cou if income=="low"
+	local lincc: word count `r(levels)'
+	levelsof _cou if income=="mid"
+	local mincc: word count `r(levels)'
+	levelsof _cou
+	local aincc: word count `r(levels)'	
+	local numcountry "`lincc'`sep'`lincc'`sep'`mincc'`sep'`mincc'`sep'`aincc'"
+
+	
+	count `cond' & nonmiss==0
 	local kidcount = "`: display %9.0fc r(N)'"
 	sum twind
 	scalar at = "`: display %7.4f r(mean)'"
@@ -271,7 +341,7 @@ if `sumstats'==1 {
 
 	preserve
 	gen exceedfam=idealfam==1
-	keep `cond'
+	keep `cond'&nonmiss==0
 	collapse $sumstatsM, by(id cat)
 	count
 	local mothercount = "`: display %9.0fc r(N)'"
@@ -286,9 +356,10 @@ if `sumstats'==1 {
 	 columns(statistics)
 	esttab using "$Tables/Summary/`SumC'.txt", replace main(mean) aux(sd) /*
 	*/ nostar unstack noobs nonote nomtitle nonumber
-
+	
 	preserve
 	use "$Data/DHS_twins_mortality.dta", clear
+	keep `cond'
 	estpost tabstat $sumstatsF, by(cate) statistics(mean sd) listwise ///
 	 columns(statistics)
 	esttab using "$Tables/Summary/`SumF'.txt", replace main(mean) aux(sd) /*
@@ -296,7 +367,8 @@ if `sumstats'==1 {
 
 	foreach num of numlist 1(1)4 {
 		cap drop count
-		gen count = 1 `cond'
+		gen count = 1 `cond' & nonmiss==0
+
 		replace count=. if catnum!=`num'
 		foreach var of local sumstatsF {
 			replace count=. if `var'==.
@@ -306,7 +378,7 @@ if `sumstats'==1 {
 
 		local numkidsF "`numkidsF' `sep'" "`kk'"
 	}
-	count `cond'
+	count `cond' & nonmiss==0
 	local kidcountF = "`: display %9.0fc r(N)'"
 	
 	clear
@@ -314,7 +386,7 @@ if `sumstats'==1 {
 
 
 	file open resfile using "$Tables/Summary/Count.txt", write replace
-	file write resfile "`numcountry' & 69 \\" _n
+	file write resfile "`numcountry' \\" _n
 	file write resfile "`nummothers' & `mothercount' \\" _n
 	file write resfile "`numkids' & `kidcount' \\" _n
 	file write resfile "`numkidsF' & `kidcountF' \\" _n
@@ -614,17 +686,17 @@ if `twin'== 1 {
 	fvset base 1 _cou
 	fvset base 1 child_yob
 	
-	eststo: reg twind100 $twinpredict `wt', `se'
+	eststo: reg twind100 $twinpredict `wt' `cond', `se'
 
 	foreach inc in =="L" !="L"  {
-		eststo: reg twind100 $twinpredict `wt' if inc_status`inc', `se'
+		eststo: reg twind100 $twinpredict `wt' `cond'&inc_status`inc', `se'
 	}
 	
 	local cond1 child_yob>1989
 	local cond2 child_yob<=1989
 
 	foreach condtn in cond1 cond2 {
-		eststo: reg twind100 $twinpredict `wt' if ``condtn'', `se'
+		eststo: reg twind100 $twinpredict `wt' `cond'&``condtn'', `se'
 	}
 
 	eststo: reg twind100 $twinpredict /*antenatal*/ prenate* `wt', `se'
@@ -651,9 +723,9 @@ if `twin'== 1 {
 	fvset base 1 _cou
 	fvset base 1 child_yob
 
-	eststo: reg twind100 $twinpredict bmi_sq height_sq `wt', `se'
+	eststo: reg twind100 $twinpredict bmi_sq height_sq `wt' `cond', `se'
 	foreach inc in =="L" !="L"  {
-		eststo: reg twind100 $twinpredict bmi_sq height_sq `wt' if /*
+		eststo: reg twind100 $twinpredict bmi_sq height_sq `wt' `cond'& /*
 		*/ inc_status`inc', `se'
 	}
 	estout est1 est2 est3 using `out', ///
@@ -680,7 +752,7 @@ if `twin'== 1 {
 	}
 
 	eststo: reg twind motherage motheragesq agefirstbirth Zeducf Zbmi Zheight /*
-	*/ i.child_yob i.bord `wt', `se'
+	*/ i.child_yob i.bord `wt' `cond', `se'
 
 	drop Zbmi Zheight Zeducf
 	foreach var of varlist educf height bmi {
@@ -690,7 +762,7 @@ if `twin'== 1 {
 		drop `var'_sd `var'_mean
 	}
 	eststo: reg twind motherage motheragesq agefirstbirth Zeducf Zbmi Zheight /*
-	*/ i.child_yob i.bord `wt', `se'
+	*/ i.child_yob i.bord `wt' `cond', `se'
 	
 	estout est1 est2 using `out', keep(motherage motheragesq agefirstbirth ///
 	  Zeducf Zbmi Zheight) title("Probability of Giving Birth to Twins (DHS)") ///
@@ -862,66 +934,48 @@ if `IVtwin'==1 {
 **** (8) IV with twin threshold
 ********************************************************************************
 if `desire'==1 {
-	gen idealbarrier=floor(idealnumkids)
-	gen idealbarrierIV=floor(desiredfert_region)
-
-	gen educflevel=1 if educf==0
-	replace educflevel=2 if educf>0&educf<=6
- 	replace educflevel=3 if educf>6&educf<=12
- 	replace educflevel=4 if educf>12&educf!=.
-	
-	bys _cou _year educflevel: egen desiredfert_educ=mean(idealnumkids)
-	*gen idealbarrier=floor(desiredfert_educ)	
-	
 	foreach inc in all low mid F M {
 		if "`inc'"=="all" local cex
 		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
 		else if "`inc'"=="F"|"`inc'"=="M" local cex &gender=="`inc'"
 
-		local n1=1
-		local n2=2
-		local n3=3
-		local estimates
-		local firststage
+		*foreach desvar of varlist *DesiredLeaveOut {
+		*	sum `desvar'
+			local estimates
+			local firststage
+			local t1=1
+			local t2=2
+			foreach n in `gplus' {
+				preserve
+				keep `cond'&`n'_plus==1 `cex'
 
-		local t=2
-		foreach n in `gplus' {
-			preserve
-			keep `cond'&`n'_plus==1 `cex'
-			gen threshold=(twin_`n'_fam==1 & idealbarrier==`t')
-			gen fertXthreshold=fert*threshold
-			gen desired=idealbarrier<=`t'
+				gen threshold=(twin_`n'_fam==1 & idealnumkids==`t2')
+				gen fertXthreshold=fert*threshold
+				gen desired=idealnumkids<=`t2'
+				cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
 			
-			cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
+				local endog fert /*fertXthreshold desired*/
+				local insts twin_`n'_fam twin`n'Xthreshold /*`desvar'*/
 
-			local endog fert fertXthreshold desired
-			local insts twin_`n'_fam twin`n'Xthreshold idealbarrierIV
+				foreach y of varlist $outcomes {
+					eststo: ivreg2 `y' `base' $age $S $H (`endog' = `insts') `wt', /*
+					*/ `se' savefirst savefp(f`t1')
 
-			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $H (`endog' = `insts') /*
-				*/ `wt', `se' savefirst savefp(f`n3')
-				eststo: ivreg2 `y' `base' $age $S (`endog' = `insts') /*
-				*/ `wt' if e(sample), `se' savefirst savefp(f`n2')
-				eststo: ivreg2 `y' `base' (`endog' = `insts') /*
-				*/ `wt' if e(sample), `se' savefirst savefp(f`n1')
-
-				local estimates `estimates' est`n3' est`n2' est`n1'
-				local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
-		
-				local n1=`n1'+3
-				local n2=`n2'+3
-				local n3=`n3'+3
+					local estimates `estimates' est`t1'
+					local firststage `firststage' f`t1'fert
+					local ++t1
+				}
+				local ++t2
+				drop threshold fertXthreshold desired
+				restore
 			}
-			local ++t
-			drop threshold fertXthreshold desired
-			restore
-		}
+		*}
+		
+		estout `estimates' using "$Tables/IV/`IVdes'_`inc'.xls", replace ///
+		 keep(fert /*fertXthreshold desired*/ $age $S $H) `estopt' `varlab'
 
-		estout `estimates' using "$Tables/IV/`IVdes'_`inc'Ind.xls", replace ///
-		 keep(fert fertXthreshold desired $age $S $H) `estopt' `varlab'
-
-		estout `firststage' using "$Tables/IV/`IVdes1'_`inc'Ind.xls", replace ///
-		 keep(twin* idealbarrierIV $age $S $H) `estopt' `varlab'
+		estout `firststage' using "$Tables/IV/`IVdes1'_`inc'.xls", replace ///
+		 keep(twin* /*`desvar'*/ $age $S $H) `estopt' `varlab'
 	
 		estimates clear
 	}
@@ -1087,21 +1141,25 @@ if `conley'==1 {
 		matrix mu_eta = J(`items',1,0)
 		matrix mu_eta[1,1] = `estimate'/2
 
-		foreach num of numlist 0(1)5 {
+		foreach num of numlist 0(1)20 {
 			matrix om`num'=omega_eta
-			matrix om`num'[1,1] = ((`num'/5)*2*`estimate'/sqrt(12))^2
+			matrix om`num'[1,1] = ((`num'/20)*2*`estimate'/sqrt(12))^2
 			matrix mu`num'=mu_eta
-			matrix mu`num'[1,1]= (`num'/5)*`estimate'
+			matrix mu`num'[1,1]= (`num'/20)*`estimate'
 		}
 
-		foreach num of numlist 0(1)5{
-			local nd`num'=(`num'/5)*`estimate'*2
+		foreach num of numlist 0(1)20 {
+			local nd`num'=(`num'/20)*`estimate'*2
 		}
 		
-		plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam) `c',      /*
-		*/ omega(omega_eta) mu(mu_eta) level(0.95) graph(fert)                  /*
-		*/ graphomega(om0 om1 om2 om3 om4 om5) graphmu(mu0 mu1 mu2 mu3 mu4 mu5) /*
-		*/ graphdelta(`nd0' `nd1' `nd2' `nd3' `nd4' `nd5')
+		plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam) `c',       /*
+		*/ omega(omega_eta) mu(mu_eta) level(0.95) graph(fert)                   /*
+		*/ graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10 om11 om12     /*
+		*/ om13 om14 om15 om16 om17 om18 om19 om20) graphmu(mu0 mu1 mu2 mu3 mu4  /*
+		*/ mu5 mu6 mu7 mu8 mu9 mu10 mu11 mu12 mu13 mu14 mu15 mu16 mu17 mu18 mu19 /*
+		*/ mu20) graphdelta(`nd0' `nd1' `nd2' `nd3' `nd4' `nd5' `nd6' `nd7'      /*
+		*/ `nd8' `nd9' `nd10' `nd11' `nd12' `nd13' `nd14' `nd15' `nd16' `nd17'   /*
+		*/ `nd18' `nd19' `nd20')
 		graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace
 
 		mat conbounds[`ii',3]=_b[fert]-1.96*_se[fert]

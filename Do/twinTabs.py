@@ -41,7 +41,8 @@ fdes = 'Desire_IV_firststage_reg_all.xls'
 
 ols  = "QQ_ols.txt"
 bala = "Balance_mother.tex"
-twin = "Twin_Predict_none.xls"
+twin = "Twin_Predict.xls"
+samp = "Samples.txt"
 summ = "Summary.txt"
 sumc = "SummaryChild.txt"
 sumf = "SummaryMortality.txt"
@@ -72,10 +73,10 @@ if ftype=='tex':
     mcsc = '}{l}{\\textsc{'
     mcbf = '}{l}{\\textbf{'    
     mc2  = '}}'
-    twid = ['5','8','4','5','9','9','4','6','10','7','12']
+    twid = ['5','8','4','5','9','9','4','6','10','7','12','6']
     tcm  = ['}{p{10.0cm}}','}{p{17.8cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
             '}{p{13.8cm}}','}{p{14.2cm}}','}{p{12.1cm}}','}{p{13.8cm}}',
-            '}{p{18.0cm}}','}{p{12.8cm}}','}{p{19.2cm}}']
+            '}{p{18.0cm}}','}{p{12.8cm}}','}{p{19.2cm}}','}{p{10.0cm}}']
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
     lname = "Fertility$\\times$desire"
     tname = "Twin$\\times$desire"
@@ -96,7 +97,7 @@ if ftype=='tex':
     rIV4 = '\\ref{TWINtab:IVFourplus}'
     rIV5 = '\\ref{TWINtab:IVFiveplus}'
     rTwi = '\\label{TWINtab:twinreg1}'
-    rSuS = '\\label{TWINtab:sumstats}'
+    rSuS = '\\ref{TWINtab:sumstats}'
     rFSt = '\\ref{TWINtab:FS}'
     rCou = '\\ref{TWINtab:countries}'
     rGen = '\\ref{TWINtab:IVgend}'
@@ -117,8 +118,8 @@ elif ftype=='csv':
     mcsc = ''
     mcbf = ''   
     mc2  = ''
-    twid = ['','','','','','','','','','','']
-    tcm  = ['','','','','','','','','','','']
+    twid = ['','','','','','','','','','','','']
+    tcm  = ['','','','','','','','','','','','']
     mc3  = 'NOTES: '
     lname = "Fertility*desire"
     tname = "Twin*desire"
@@ -1192,108 +1193,41 @@ if ftype=='tex':
     "\\normalsize\\end{tabular}\\end{table} \n")
 genio.close()
 
-
-
-
-"""
-FB1, FS1, FN1 = plustable(geni[0], 1, 6,"fert",'alt',1)
-MB1, MS1, MN1 = plustable(geni[0], 6, 11,"fert",'alt',2)
-FB2, FS2, FN2 = plustable(geni[0], 11, 16,"fert",'alt',3)
-MB2, MS2, MN2 = plustable(geni[0], 16, 21,"fert",'alt',4)
-FB3, FS3, FN3 = plustable(geni[0], 21, 26,"fert",'alt',5)
-MB3, MS3, MN4 = plustable(geni[0], 26, 31,"fert",'alt',6)
-
-AB, AS, AN = plustable(geni[1], 1, 13,"fert",'normal',1000)
-
-B12, S12, N12 = plustable(genf, 1, 5,"twin_two_fam",'normal',1000)
-B13, S13, N13 = plustable(genf, 1, 5,"twin_three_fam",'normal',1000)
-B14, S14, N14 = plustable(genf, 1, 5,"twin_four_fam",'normal',1000)
-
+#==============================================================================
+#== (15) Sample table
+#==============================================================================
+sampi = open(Results+"Summary/"+samp, 'r')
+sampo = open(Tables+'Samples.'+end, 'w')
 
 if ftype=='tex':
-    genio.write("\\begin{table}[!htbp] \\centering \n"
-    "\\caption{Instrumental Variables Estimates: Female and Male Children} \n"
-    "\\label{TWINtab:IVgend} \n"
-    "\\begin{tabular}{lcccccc} \\toprule \\toprule \n"
-    "&\\multicolumn{3}{c}{Females}""&\\multicolumn{3}{c}{Males}\\\\ \n" 
-    "\\cmidrule(r){2-4} \\cmidrule(r){5-7} \n" 
-    "&2+&3+&4+&2+&3+&4+ \\\\ \\midrule \n")
-elif ftype=='csv':
-    genio.write(";Females;;;Males;; \n"  
-    ";2+;3+;4+;2+;3+;4+ \n")
-genio.write(mc1+twid[9]+mcsc+"Pre-Twins"+mc2+ls+" \n"
-+dd+dd+dd+dd+ls+"\n"
-+mc1+twid[9]+mcbf+"All Families"+mc2+ls+" \n"
-"Fertility"+dd+FB[0][2]+dd+FB[0][5]+dd+FB[0][8]
-+dd+MB[0][2]+dd+MB[0][5]+dd+MB[0][8]+ls+"\n"
-""+dd+FS[0][2]+dd+FS[0][5]+dd+FS[0][8]+
-dd+MS[0][2]+dd+MS[0][5]+dd+MS[0][8]+ls+ "\n"
-+dd+dd+dd+dd+ls+"\n" 
-+mc1+twid[9]+mcbf+"All Families (bord dummies)"+mc2+ls+" \n"
-"Fertility"+dd+FB1[0][1]+dd+FB2[0][1]+dd+FB3[0][1]
-+dd+MB1[0][1]+dd+MB2[0][1]+dd+MB3[0][1]+ls+"\n"
-""+dd+FS1[0][1]+dd+FS2[0][1]+dd+FS3[0][1]+
-dd+MS1[0][1]+dd+MS2[0][1]+dd+MS3[0][1]+ls+ "\n"
-+dd+dd+dd+dd+ls+"\n"
-+mc1+twid[9]+mcbf+"Low-Income Countries"+mc2+ls+" \n"
-"Fertility"+dd+FB1[0][2]+dd+FB2[0][2]+dd+FB3[0][2]
-+dd+MB1[0][2]+dd+MB2[0][2]+dd+MB3[0][2]+ls+"\n"
-""+dd+FS1[0][2]+dd+FS2[0][2]+dd+FS3[0][2]+
-dd+MS1[0][2]+dd+MS2[0][2]+dd+MS3[0][2]+ls+ "\n"
-+dd+dd+dd+dd+ls+"\n"
-+mc1+twid[9]+mcbf+"Middle-Income Countries"+mc2+ls+" \n"
-"Fertility"+dd+FB1[0][3]+dd+FB2[0][3]+dd+FB3[0][3]
-+dd+MB1[0][3]+dd+MB2[0][3]+dd+MB3[0][3]+ls+"\n"
-""+dd+FS1[0][3]+dd+FS2[0][3]+dd+FS3[0][3]+
-dd+MS1[0][3]+dd+MS2[0][3]+dd+MS3[0][3]+ls+ "\n"
-+dd+dd+dd+dd+ls+"\n"
-+mc1+twid[9]+mcbf+"Desired-Threshold"+mc2+ls+" \n"
-"Fertility"+dd+FB1[0][4]+dd+FB2[0][4]+dd+FB3[0][4]
-+dd+MB1[0][4]+dd+MB2[0][4]+dd+MB3[0][4]+ls+"\n"
-""+dd+FS1[0][4]+dd+FS2[0][4]+dd+FS3[0][4]+
-dd+MS1[0][4]+dd+MS2[0][4]+dd+MS3[0][4]+ls+ "\n"
-+lname     +dd+FB1[1]+dd+FB2[1]+dd+FB3[1]+
-dd+MB1[1]+dd+MB2[1]+dd+MB3[1]+ls+"\n"
-""+dd+FS1[1]+dd+FS2[1]+dd+FS3[1]+
-dd+MS1[1]+dd+MS2[1]+dd+MS3[1]+ls+ "\n" +mr
+    sampo.write("\\begin{table}[!htbp] \\centering \n"
+    "\\caption{Estimation Samples} \n "
+    "\\label{TWINtab:Samples} \n"
+    "\\begin{tabular}{lccccc} \\toprule \\toprule \n")
 
-+mc1+twid[0]+mcsc+"Twins and Pre-Twins"+mc2+ls+" \n"
-+dd+dd+dd+dd+ls+"\n"
-+mc1+twid[9]+mcbf+"All Families"+mc2+ls+" \n"
-"Fertility"+dd+AB[0][0]+dd+AB[0][4]+dd+AB[0][8]
-+dd+AB[0][2]+dd+AB[0][6]+dd+AB[0][10]+ls+"\n"
-"         "+dd+AS[0][0]+dd+AS[0][4]+dd+AS[0][8]
-+dd+AS[0][2]+dd+AS[0][6]+dd+AS[0][10]+ls+"\n"
-+dd+dd+dd+dd+ls+"\n"
-+mc1+twid[9]+mcbf+"All Families (bord dummies)"+mc2+ls+" \n"
-"Fertility"+dd+AB[0][1]+dd+AB[0][5]+dd+AB[0][9]
-+dd+AB[0][3]+dd+AB[0][7]+dd+AB[0][11]+ls+"\n"
-"         "+dd+AS[0][1]+dd+AS[0][5]+dd+AS[0][9]
-+dd+AS[0][3]+dd+AS[0][7]+dd+AS[0][11]+ls+"\n" +mr
 
-+mc1+twid[9]+mcsc+"First Stage (Pre-Twins)"+mc2+ls+" \n"
-+dd+dd+dd+dd+ls+"\n"
-+mc1+twid[9]+mcbf+"All Families"+mc2+ls+" \n"
-"Twins"+dd+B12[0][1]+dd+B13[0][1]+dd+B14[0][1]+
-dd+B12[0][3]+dd+B13[0][3]+dd+B14[0][3]+ls+"\n"
-"         "+dd+S12[0][1]+dd+S13[0][1]+dd+S14[0][1]+
-dd+S12[0][3]+dd+S13[0][3]+dd+S14[0][3]+ls+ "\n"
-+'\n'+mr+mc1+twid[9]+tcm[9]+mc3+
-"Each cell presents the coefficient from a 2SLS regression of standardised "
-"educational attainment on fertility.  2+, 3+ and 4+ refer to the birth "
-"orders of children included in the regression.  For a full description of "
-"these groups see table "+rIVa+".  Each regression includes full controls "
-"including maternal health and socioeconomic variables.  The sample is made "
-"up of all children aged between 6-18 years from families in the DHS who "
-"fulfill birth order and gender requirements indicated in the header.  "
-"Standard errors are clustered by mother."
-+foot+" \n")
+for i,line in enumerate(sampi):
+    line = re.sub('&', dd, line) 
+    line = re.sub('allsample','All', line)
+    line = re.sub('hhsample','Household', line)
+    line = re.sub('twopsample',  '2+', line)
+    line = re.sub('threepsample','3+', line)
+    line = re.sub('fourpsample', '4+', line)
+    line = re.sub('fivepsample', '5+', line)
+    if i==0:
+        sampo.write(line + ls + mr + "\n")
+    else:
+        sampo.write(line + ls + "\n")
+
+
+sampo.write('\n'+mr+mc1+twid[11]+tcm[11]+mc3+
+"Full summary statistics are provided in table " +rSuS+ ".")
 
 if ftype=='tex':
-    genio.write("\\end{footnotesize}}\n"+ls+br+
-    "\\normalsize\\end{tabular}\\end{table} \n")
-genio.close()
-"""
+    sampo.write("\\end{footnotesize}}\\\\  \n"
+    "\\bottomrule \\normalsize\\end{tabular}\\end{table} \n")
+
+sampo.close()
 
 
 print "Terminated Correctly."

@@ -437,6 +437,7 @@ lab var educf_1_4 "Mother has 1-4 years of education (binary)"
 lab var educf_5_6 "Mother has 5-6 years of education (binary)"
 lab var educf_7_10 "Mother has 7-10 years of education (binary)"
 lab var educf_11plus "Mother has 11+ years of education (binary)"
+lab var educf_level "Mother's education level"
 lab var educp "Partner's years of education"
 lab var educp_level "Partner's education level"
 lab var twind "Child is a twin (binary)"
@@ -511,6 +512,10 @@ lab var ADJtwin_two_fam "Adjusted twin birth at second birth"
 lab var ADJtwin_three_fam "Adjusted twin birth at third birth"
 lab var ADJtwin_four_fam "Adjusted twin birth at fourth birth"
 lab var ADJtwin_five_fam "Adjusted twin birth at fifth birth"
+lab var regionDesiredLeaveOut "Average desired fertility at the region"
+lab var clustDesiredLeaveOut "Average desired fertility at cluster leve"
+lab var educDesiredLeaveOut "Average desired fertility by country/education level"
+lab var regionEducDesiredLeaveOut "Average desired fertility by region/education"
 
 lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
 lab val idealfam ideal
@@ -531,10 +536,10 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ five_plus_twins twin_two_fam twin_three_fam twin_four_fam twin_five_fam id  /*
 */ attendance educ school_zscore highschool noeduc infantmortality wealth      /* 
 */ childmortality gender educf educfyrs_sq educf_0 educf_1_4 educf_5_6         /*
-*/ educf_7_10 educf_11plus educp educp_level twind twin twind100 malec height  /*
-*/ weightk bmi poor1 age agemay agesq magesq sweight country _cou _year        /*
+*/ educf_7_10 educf_11plus educf_level educp educp_level twind twin twind100   /*
+*/ malec height weightk bmi poor1 age agemay agesq magesq sweight country _cou /*
 */ twinfamily twin_bord twin_bord_fam nummultiple finaltwinfamily idealnumkids /*
-*/ lastbirth wantedbirth idealfam quant_exceed exceeder twinexceeder           /*
+*/ lastbirth wantedbirth idealfam quant_exceed exceeder twinexceeder _year     /*
 */ twinexceedfamily twin_undesired twin_desired twinexceed singlexceed         /*
 */ twinattain desiredfert_region desiredfert_ethnic inc_stat contracep_intent  /*
 */ _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy  /*
@@ -543,7 +548,8 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ ADJbord ADJtwin ADJtwinfamily ADJtwin_bord ADJtwin_bord_fam ADJnummultiple  /*
 */ ADJtwo_plus ADJthree_plus ADJfour_plus ADJfive_plus ADJtwo_plus_twins       /*
 */ ADJthree_plus_twins ADJfour_plus_twins ADJfive_plus_twins ADJtwin_two_fam   /*
-*/ ADJtwin_three_fam ADJtwin_four_fam ADJtwin_five_fam ADJtwind
+*/ ADJtwin_three_fam ADJtwin_four_fam ADJtwin_five_fam ADJtwind twindfamily    /*
+*/ *DesiredLeaveOut 
 
 save "$OUT/DHS_twins", replace
 log close
