@@ -1,9 +1,0 @@
-\subsection{Quantity-Quality with Twins}
-\label{TWINsscn:QQMeth}
-\input{./Methodology/QQ.tex}
-
-
-\subsection{Bounding the Q-Q Tradeoff}
-\label{TWINsscn:BoundMeth}
-\input{./Methodology/BoundEst.tex}
-
