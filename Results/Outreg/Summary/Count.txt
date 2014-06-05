@@ -1,0 +1,9 @@
+42&42&34&34&68 \\
+Number of Mothers &491,905 &7,457 &297,413 &4,317 & 850,032 \\
+Number of Children (Education) &1,176,513 &25,003 &714,751 &14,333 & 1,930,600 \\
+Number of Children (Ever Born) &1,716,247 &43,866 &940,204 &21,302 & 2,721,619 \\
+Fraction Twin & \multicolumn{2}{c}{  0.0194}& \multicolumn{2}{c}{  0.0173 } &  0.0185\\
+& \multicolumn{2}{c}{( 0.1379)}& \multicolumn{2}{c}{( 0.1306)} & ( 0.1348)\\
+Birth Order Twin & \multicolumn{2}{c}{   4.680}& \multicolumn{2}{c}{   4.017 }&   4.420\\
+& \multicolumn{2}{c}{(  2.463)}& \multicolumn{2}{c}{(  2.370)}& (  2.448)\\
+850,032

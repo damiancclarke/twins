@@ -1,9 +1,15 @@
-\subsection{Quantity-Quality with Twins}
-\label{TWINsscn:QQMeth}
-\input{./Methodology/QQ.tex}
-
-
-\subsection{Bounding the Q-Q Tradeoff}
-\label{TWINsscn:BoundMeth}
-\input{./Methodology/BoundEst.tex}
+Typically, empirical analyses of the quality-quantity trade-off focus on 
+producing consistent estimates of $\beta_1$ in the following specification:
+\begin{equation}
+\label{TWINeqn:secondstage}
+educ_{ij}=\beta_0+\beta_1 fert_{j} + \bm{X}\bm{\beta}_2+u_{ij}.
+\end{equation}
+Here, quality is proxied by the educational attainment of child $i$ in family 
+$j$, ($educ$) and fertility ($fert$) is measured as the total births in a child's
+family.  A vector of family and child controls is included, denoted $\bm{X}$.  As
+has been extensively discussed in prior literature, estimation of $\beta_1$ using
+OLS and cross-sectional data will result in biased coefficients given that child 
+quality and quantity are jointly determined \citep{BeckerLewis1973,BeckerTomes1976}, 
+and given that unobservable parental behaviours and attributes influence both 
+fertility decisions, and investments in children's education \citep{Qian2009}.
 

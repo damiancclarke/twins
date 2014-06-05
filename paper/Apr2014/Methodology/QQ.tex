@@ -1,31 +1,111 @@
-
-\begin{equation}
-\label{TWINeqn:secondstage}
-Quality_{ij}=\beta fert_{j} + W_{ij}^\prime\rho+u_{ij}
-\end{equation}
-
+As a result, 2SLS estimation is employed, where fertility is instrumented using
+twin births.\footnote{Other instruments and methodologies are also used 
+including gender mix of children \citep{Angristetal2010}, policy experiments 
+\citep{Qian2009}, and historical time series variation in schooling 
+\citep{BleakleyLange2009}}  The corresponding first stage is:
 \begin{equation}
 \label{TWINeqn:firststage}
-fert_{j}=\pi_1 twins_{j}+W_{ij}^\prime\pi+\nu_{j}
+fert_{j}=\alpha_0+\alpha_1 twins_{j}+\bm{X}\bm{\alpha}_2+\nu_{j},
 \end{equation}
+where $twins_j$ is an indicator for whether the $n^{th}$ birth in a family is a 
+twin birth. As described in section \ref{TWINsscn:samples}, the sample in each 
+case is the so-called $n+$ group, consisting of children born before birth $n$ 
+in families with at least $n$ births.  As such the twins themselves are excluded 
+from the estimation sample.\footnote{Typically, the argument is made that twins 
+are different to single births, and hence should not be compared in analysis}
+As an alternative specification we do include children from the $n^{th}$ birth 
+(twins in twin families), however generally focus on the typical $n+$ sample as
+our principal sample.
 
-
-%\begin{equation}
-%\label{TWINeqn:IVbias}
-%\hat\beta=\beta+(Z'X)^{-1}Z'u
-%\end{equation}
-
-
+Consistent estimation of $\hat\beta_1$ can thus proceed provided (among other
+things) that instrumental validity holds:
+\begin{equation}
+\label{TWINeqn:IVvalid}
+P\lim N^{-1}twin_ju_{ij}=0 
+\end{equation}
+Given the unobservable nature of the error term $u$, we are unable to test 
+(\ref{TWINeqn:IVvalid}).  There is however nothing which stops us from 
+partially testing (\ref{TWINeqn:IVvalid}) by removing a subset of observable
+components from $u$.  The error term $u$ in (\ref{TWINeqn:secondstage}) is a 
+function of a large number of elements:
 \begin{equation}
 \label{TWINeqn:IVbias}
 \begin{split}
-u=f(\text{maternal health, fertility behaviour, positive pregnancy}  \\
-\text{investments, negative pregnancy investments,}\ldots)
+u=f(\text{maternal health, fertility behaviour, positive pregnancy investments,}  \\
+\text{parental education, negative pregnancy investments,}\ldots)
 \end{split}
 \end{equation}
-
-
+for now we do not specify the signs on any of these variables.  While many of 
+the relevant elements are either completely or partially unobservable to the 
+econometrician, some of these variables, such as maternal education and health
+can be measured.  Thus a partial test of the twin methodology consists of 
+estimating the following regression.
 \begin{equation}
 \label{TWINeqn:twinreg}
-twin_{j}=X_j^\prime\alpha + H_j^\prime\mu +\varepsilon_{j}
+twin_{j}=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
+                  + \bm{H}\bm{\gamma}_3 + \varepsilon_{j}.
 \end{equation}
+Here $\bm{X}$ refers to the initial vector of family and child controls, $\bm{S}$
+to additional family socioeconomic variables such as income and parental 
+education, and $\bm{H}$ to maternal health variables.  
+
+If twin birth is indeed an event which is as good as random, the coefficients
+on maternal health and family socieoeconomic variables in the above regression
+should not be significantly different to zero.  We thus test the following 
+hypothesis in our DHS data:
+\begin{equation}
+\label{TWINeqn:twintest}
+H_0: \bm{\gamma}_2 = \bm{\gamma}_3 = 0.
+\end{equation}
+Rejection of the null would raise difficulties in proceeding with IV estimation 
+using the twin instrument.  Of course, if the rejection of the null were only due 
+to one or a number of \emph{observable} element(s) which predicted twinning, 
+these variables could simply be included in the first and second stages above, 
+much like occurs with maternal age and race in the existing literature.  However, 
+more generally it would be difficult to be argue for instrumental validity if 
+twinning is shown to depend upon (a limited set of) measurable family 
+characteristic or choice variables, while many similar variables are not observed.
+
+Given the biological demands placed on a mother pregnant with twins, we may 
+expect that healthier mothers, or mothers with more resources to invest in their
+pregnancy are more likely to take twin conceptions to term.  Similarly, we may
+suspect that mothers more able to invest their pregnancy will also be more able
+to invest in their child's human capital after birth.  If this is the case, we
+would see that (at the very least) $\bm{\gamma_2}>0$.
+
+If we assume additive separability of the elements in the omitted error term, we
+can re-write $u_{ij}$ from (\ref{TWINeqn:firststage}) and (\ref{TWINeqn:IVbias}) 
+as:
+\[ u_{ij}=u^S_{ij}+u^H_{ij}+u^*_{ij}. \]
+Here $u^S_{ij}$ and $u^H_{ij}$ correspond to the identical (observable) elements
+included as $\bm{S}$ and $\bm{H}$ in (\ref{TWINeqn:twinreg}), while $u^*_{ij}$
+represent the remaining (unobserved) components.  We can thus re-write our IV
+estimate for $\beta_1$ as:
+\begin{equation}
+\label{TWINeqn:betabias}
+\hat\beta_1^{IV} = \beta_1 + P\lim N^{-1}twin_ju^S_{ij} + 
+P\lim N^{-1}twin_ju^H_{ij} + P\lim N^{-1}twin_ju^*_{ij}
+\end{equation}
+Typically, this is the coefficient estimated in the existing twin literature 
+which assumes that twinning is a conditionally exogenous event.  If, however, the 
+likelihood of taking twin conceptions to term increases for healthier and/or 
+wealthier mothers, we should include $\bm{S}$ and $\bm{H}$ in the first and 
+second stages, giving
+\begin{equation}
+\label{TWINeqn:betacloser}
+\hat\beta_1^{IV,S+H} = \beta_1 + P\lim N^{-1}twin_ju^*_{ij},
+\end{equation}
+where the superscript $S+H$ signifies that socioeconomic and health variables 
+have been included as additional controls.  What's more, if both the likelihood
+that a family takes twins to term and a family's investment in child human capital 
+are positively correlated with positive health behaviours and other positive 
+socioeconomic variables such as parental education, we would expect that:
+\[
+\hat\beta_1^{IV}>\hat\beta_1^{IV,S}>\hat\beta_1^{IV,S+H}>\beta_1.
+\]
+It should be noted in the above series of inequalities that even conditional upon
+socioeconomic and health variables, IV estimation will \emph{not} result in a
+consistent estimate of $\beta_1$ if twinning is correlated with unobservable
+elements in $u^*_{ij}$.  We return to this point, and how to bound $\beta_1$ in
+the following sub-section.
+
