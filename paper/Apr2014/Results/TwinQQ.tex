@@ -5,19 +5,16 @@ significant. Table \ref{TWINtab:OLS} shows OLS estimates of child `quality' on
 total fertility. These results suggest that an additional sibling is associated
 with an approximatelty 0.1 sd decrease in standardised schooling outcomes.
 
-
-Of course, this empirically observed relationship between an individual's sibship 
-size and their measured `quality' does not necessarily imply that such a 
-trade-off exists if parental decisions regarding the production of child quality 
-and quantity are jointly made and possibly influenced by unobserved factors 
-\citep{BeckerTomes1976}.  Principally here we are concerned with unobserved 
-parental behaviours which may favour both lower family size and higher child 
-quality. \citet{Qian2009} suggests that such a mechanism will exist where parents 
-who value education more highly also decide to have less children.  The OLS 
-results are consistent with such a result, as the inclusion of maternal education 
-and maternal health controls---likely correlated with desires for smaller 
-family size and higher investments per child---reduce the magnitude of this 
-observed tradeoff.
+Of course, this empirically observed relationship between the quantity of an 
+individual's siblings and their measured `quality' does not necessarily imply 
+that such a trade-off exists if parental decisions regarding the production of 
+child quality and quantity are jointly made and possibly influenced by unobserved
+factors \citep{BeckerTomes1976}.  Principally here we are concerned with 
+unobserved parental behaviours which may favour both lower family size and higher 
+child quality.  The OLS results are consistent with such a result, as the 
+inclusion of maternal education and maternal health controls---likely correlated 
+with desires for smaller family size and higher investments per child---reduce the 
+magnitude of this observed trade-off.
 
 %********************************************************************************
 \subsubsection{Q-Q Tradeoff: Estimates Using Twin Births}
@@ -25,44 +22,93 @@ Rather than focusing on OLS estimates which are likely to be biased, we turn
 to estimates which rely on twin births to identify the Q-Q tradeoff.  As we 
 outline in section \ref{TWINsscn:twinRes}, the assumption of `as good as random' 
 twin births is unlikely to hold, even when conditioning on the augmented set of 
-controls proposed in (\ref{TWINeqn:twinreg}).  If this is the case, we will be 
-unable to consistently estimate $\beta$ using twin births.  
+controls proposed in (\ref{TWINeqn:twinreg}).  If this is the case, we will 
+also be unable to consistently estimate $\beta_1$ using twin births.
 
-However, it is likely that the $\beta$ that we estimate using twin births will 
-provide us with a strict lower bound of the magnitude of the Q-Q trade-off. 
-Given that we expect that the bias in this estimate is due to those mothers who 
-invest more in their children in utero (or with greater initial health endowments) 
-being more likely to give birth to twins (and hence having larger family sizes), 
-and at the same time we expect healthier mothers to invest more in their children
-after birth resulting in higher quality children, then relegating health 
-variables to the error term will result in a positive bias on the fertility 
-coefficient.  In order to determine the effect that these omitted variables have 
-on estimates of the Q-Q trade-off, we turn to results for equation
-(\ref{TWINeqn:secondstage}), both omitting and not omitting maternal health and
-socioeconomic variables.
+However, it is likely that the $\beta_1$ that we estimate using twin births will 
+provide us with a strict lower bound of the magnitude of the Q-Q trade-off as
+outlined in (\ref{TWINsscn:methodQQ}). We expect that the bias in this estimate 
+is due to those mothers who invest more in their children in utero, or who have
+greater initial health endowments, being more likely to give birth to twins 
+resulting in larger family sizes.  At the same time, we expect healthier mothers 
+to invest more in their children after birth resulting in higher quality children.
+By relegating health variables to the error term, these two positive correlations 
+will result in a positive bias on the fertility coefficient estimated via IV.  In 
+order to determine the effect that these omitted variables have on estimates of 
+the Q-Q trade-off, we turn to results for equation (\ref{TWINeqn:secondstage}), 
+both first omitting, and the including, maternal health and socioeconomic 
+variables.
 
-The main specification is presented in row one of tables 
-\ref{TWINtab:IVTwoplus}-\ref{TWINtab:IVFourplus}.  These results suggest that
-the inclusion of maternal health and socioeconomic controls may be of 
-considerable importance.  In each case (for 2+, 3+ and 4+ groups), the base
-case which includes no twin predictor variables as controls results in an 
-insignificant (and at times weakly positive) coefficient on fertility.  However,
-once including the full set of health and socioeconomic variables, this 
-coefficient becomes significantly more negative, resulting (at least in the
-3+ and 4+ case) in point estimates of around $-3$ to $-4$\% of a standard deviation
-in standardised educational attainment.  Further, these results hold even when
-controlling for birth order effects, as can be seen in row 2 of the table.
+We present IV estimates of the Q-Q trade-off in table \ref{TWINtab:IVAll}.  The 
+main specification is displayed in the top row with separate columns for the 2+, 
+3+ and 4+ sample groups.  In each case the base case (controlling for maternal 
+and child age, country, and year of birth) results in insignificant, and at times 
+weakly positive, estimates of the effect of an additional birth on a child's
+educational attainment.  These results suggest that the inclusion of maternal 
+health and socioeconomic controls may be of considerable importance.  Despite
+the lack of results when using the `typical' set of twin controls, including 
+health (columns 2, 4 and 6) reduces point estimates on fertility from an effect
+of approximately 0\% of a standard deviation, to $-3$ or $-4$\% of a standard 
+deviation in standardised educational attainment.  Further, conditioning on
+maternal education results in slightly more precise estimates, suggesting a
+statistically significant\footnote{Or close to statistically significant in the 
+case of the 2+ sample.} Q-Q trade-off of at least 3 or 4\%.
 
-These results are heterogeneous across birth orders, country income level, and
-gender of the affected child (discussion of these latter two groups will be
-delayed until the following subsection.)  The magnitude and significance of the 
-results is lowest when considering the effect on the first-born child of moving 
-from two to three births (the 2+ group), and higher when considering moving from
-three to four births.  \texttt{comment re budget constraint???}
+%********************************************************************************
+\subsubsection{Heterogeneity of the Q-Q Trade-off}
+Estimates of the Q-Q trade-off are heterogeneous across birth orders, country 
+income level, and gender of the child affected by the additional birth.  Such a 
+result is not surprising if parents perceive that returns to education vary for 
+different children or in different circumstances, and invest in human capital in 
+line with this.  
 
-Turning to our second innovation, we are able to examine the effect of an
-additional birth which takes families above their desired fertility threshold
-by interacting the twin instrument with a desired-fertility variable. [EXPLAIN
-AND INTERPRET DESIRED FERTILITY RESULTS FROM TABLES 5-7 (row labelled Desired-%
-Threshold).]   
+The magnitude and significance of the results is lowest when considering the 
+effect on the first-born child of moving from two to three births (the 2+ group), 
+and higher when considering moving from three to four births or four to five 
+births.  However, in lower fertility environments the effect is, as expected, 
+concentrated on lower birth orders. The third row of table \ref{TWINtab:IVAll} 
+suggests that in middle-income countries that the effect is largest on first 
+borns, and progressively smaller, but still considerable, at higher birth orders.
 
+Estimates of the magnitude of the Q-Q trade-off by country income level suggest
+that the trade-off is considerably larger in \emph{middle} rather than low-income
+countries.  In low-income countries point estimates on fertility suggest 
+(insignificant) trade-offs centred around 2-3\% of a standard deviation, while 
+in middle-income countries results are significant, and considerably larger,
+reaching as much as 9\% of a standard deviation: only slightly lower than OLS
+estimates for this group. [ADD TEST HERE LOOKING AT COSTS OF EDUCATION?  HIGHER
+IN COUNTRIES WHERE EDUCATION COSTS MORE? SONIA, DO YOU HAVE THE EDUCATION COST 
+DATABASE THAT I THINK YOU MENTIONED TO ME ONCE?]
+
+Similarly, effects of the Q-Q trade-off are considerably different depending
+upon a child's gender.  In table \ref{TWINtab:IVgend} we present specifications 
+estimated separately by the gender of the index child.  These results suggest
+that females may bear the brunt of additional births, with estimates being 
+negative and significant for girls, while insignificant for boy children.  Such 
+a result suggests that parents may engage in redistributory behaviour.  This 
+idea has been extensively studied by \citet{RosenzweigZhang2009}, however their 
+analysis focuses on the possibility that parents reinforce positive birth 
+endowments based on child health, not based on child gender as we find here.
+
+In order for the results we produce to be comparable to recent literature we
+thus far have only focused on children \emph{preceding} twins.  As an 
+alternative specification we also include the $n^{th}$ birth in the analysis
+sample.\footnote{In the case of of the 2+ group we thus compare first and 
+second born children from families which did not have a twin at the second
+birth to first and second born children from families which did have a twin
+at the second birth.}  Given the lower birth endowments of twins (and potential
+that reinforcing behaviour moves resources away from twins as per 
+\citet{RosenzweigZhang2009}), we expect to see that the trade-off is 
+significantly stronger when including twins in the sample.  These results are 
+displayed in the final row table \ref{TWINtab:IVAll}, and suggest that, if we 
+focus not just on pre-twins, that the trade-off of an additional birth is large: 
+on the order of 5-8\% of a standard deviation. Finally, in row 4 of the table
+we perform an alternative consistency check.  Rather than using the full 
+fertility reported by a family, we adjust birth order and fertility to only 
+account for those children who survived beyond 1 year of age.  Once again, we 
+find that the estimated Q-Q trade-off is larger, and of similar magnitude to 
+the results when including twin births.  However, given that child survival 
+could itself be thought of as a `quality' variable, it is not clear that this
+result is representative of the entire population of children.  Like the results
+based on twins and pre-twins, this result, while interesting, is less
+conservative than our main specification.
