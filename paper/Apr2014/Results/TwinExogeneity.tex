@@ -1,29 +1,56 @@
 %*******************************************************************************
 Table \ref{TWINtab:comp} presents a test of balance of maternal characteristics
-between mothers who have and who have not given birth to twins.
+between mothers who have and who have not given birth to twins.  This table
+presents a comparison of means, and a two-tailed $t$-test of the null that 
+mothers of twins are not statistically different from mothers of non-twins.
+These comparisons suggest that twin mothers are older at the moment of birth,
+begin child-bearing earlier, have more children, and are more (less) likely to
+come from top (bottom) wealth quintiles.  These comparisons of means, however,
+are not surprising given the well established fact that twins occur with higher
+frequency as mothers age, and at higher parities \citep{Hall2003}. Given that
+mother's who have more births (and hence who are more likely to have twins) are
+different in other dimensions, these tests may capture the effect of selection
+into higher fertility, rather than twinning itself.  It is, however, worth 
+pointing out that table \ref{TWINtab:comp} suggests that healthier mothers as
+proxied by height and body mass index (BMI) are unconditionally more likely to 
+have twins.  Similar comparisons of all births suggest that healthier mothers
+on average have less births.
 
-In table \ref{TWINtab:twinreg1} we report the results from specification 
-(\ref{TWINeqn:twinreg}). These results suggest that twin births are 
-not random, even after conditioning on maternal age and child birth order as is
-typical in recent twin literature. The inclusion of a full set of country and 
-year-of-birth dummies (not displayed in table \ref{TWINtab:twinreg1}) will 
-capture any systematic trend in the frequency of twin births across time or 
-regions, and country dummies will absorb all time invariant differences in the 
-probability of a twin birth across countries.  The estimated coefficients and 
-signs support the idea discussed in section \ref{TWINscn:method} that higher 
-`investments' (for example in maternal health) required to maintain multiple 
-healthy fetuses \emph{in utero} may result in non-random twin births. Initially 
-results from the pooled DHS data are presented as this provides a particularly 
-large sample with which to test the hypothesis of twin exogeneity.  This is 
-represented in table \ref{TWINtab:twinreg1} column (1) and provides considerable 
-evidence that live multiple births respond to family `choice' variables such as 
-education (tests for the joint significance of both socioeconomic variables and 
-health variables are rejected with p-values of 0.0000).
+In order to examine partial correlations, we regress a child's twin status
+(1 if a twin, 0 otherwise) on their mother's health, education, and a range
+of other demographic and family characteristics.\footnote{In our principal
+specification, the full set of controls are country, child year of birth, and
+age dummies; a cubic function of mother's age at time of birth; mother's age
+at time of first birth; mother's education and education squared; and mother's
+height and BMI.  We cluster standard errors at the level of the mother.}  In 
+table \ref{TWINtab:twinreg1} we report the results from specification 
+(\ref{TWINeqn:twinreg}). These results suggest that twin births are not random, 
+even after conditioning on maternal age and child birth order as is typical in 
+recent twin literature. The inclusion of a full set of country and year-of-birth 
+dummies (not displayed in table \ref{TWINtab:twinreg1}) will capture any 
+systematic trend in the frequency of twin births across time or regions, and 
+country dummies will absorb all time invariant differences in the probability 
+of a twin birth across countries.  The estimated coefficients and signs support 
+the idea discussed in section \ref{TWINscn:method} that higher `investments' 
+(for example in maternal health) required to maintain multiple healthy fetuses 
+\emph{in utero} may result in non-random twin births. Initially results from the 
+pooled DHS data are presented as this provides a particularly large sample with 
+which to test the hypothesis of twin exogeneity.  This is represented in table 
+\ref{TWINtab:twinreg1} column (1) and provides considerable evidence that live 
+multiple births respond to family `choice' variables such as education (tests 
+for the joint significance of both socioeconomic variables and health variables 
+are rejected with p-values of 0.0000).
 
+These results are robust to all alternative specifications examined. Significant
+and quantitatively similar results are found if a logit model is estimated 
+rather than a linear probability model, and when running separate models for 
+twinning at each birth order.  Similarly, if we run the regression at the level
+of the mother or include any combination of fertility measures, similar 
+patterns are observed.
 
-The fact that maternal health is correlated with twinning is supported by medical 
-literature, although is not a point that has been incorporated into prior 
-economic studies of twinning.  \citet{Hall2003} for example suggests that 
+The fact that maternal health is correlated with twinning is supported by 
+medical literature, although is not a point which has been incorporated into 
+prior economic studies of twinning.  \citet{Hall2003} for example suggests that 
 follicle-stimulating hormone (FSH) is associated with an increased likelihood 
 of twinning, and is found in higher concentrations in older, heavier and taller 
 mothers.  Further, she suggests ``that adequate maternal folic acid consumption 
@@ -34,8 +61,9 @@ children born in a period not potentially affected by IVF.\footnote{In order to
 be conservative, we estimate for the period preceeding 1990, the date which 
 coincides with the first reported successful use of IVF in South Africa, an 
 early-adopter among DHS countries.}  These results are included in columns (4) 
-and (5), and although education is now no longer always significant, mother's 
-height and weight, and family socioeconomic variables remain economically and 
+and (5).  Pre- and post-1990 results are qualitatively similar although education 
+is no longer significant prior to 1990 (in the smaller sample). Mother's height 
+and weight, and family socioeconomic variables remain economically and 
 statistically significant.
 
 If the reason non-random twin births are observed is due to insufficient investment 
@@ -49,9 +77,25 @@ countries.\footnote{The low $R^2$ in these regressions is not at all surprising
 given that twin conception can be thought of as an approximately random process.
 The fact that socioeconomic and health variables have \emph{any} power in 
 explaining twin birth however is sufficient to invalidate IV estimations if these 
-or other relevant predictors are not controlled for.}
+or other relevant predictors are not controlled for.} Finally, we add measures for 
+the availability of prenatal care (for the subset of children for whom this variable 
+is recorded).  The omitted case are those who report prenatal care from relatives
+or traditional health care providers.  We find evidence to suggest that those 
+receiving prenatal care from a doctor are more likely to give live birth to twins,
+and those who receive no prenatal care are less likely to twin.  We treat these
+results with precaution however, given that accessing prenatal care is a choice
+variable, and likely endogenous.
 
 These results call into question the veracity of the conditional exogeneity (or 
-`as good as random') assumption required to estimate $\beta$ consistently in 
-(\ref{TWINeqn:secondstage}).  This implies that omitting factors such as family 
-income...
+`as good as random') assumption regarding twin births required to estimate 
+$\beta_1$ consistently in (\ref{TWINeqn:secondstage}).  This implies that omitting 
+factors such as family socioeconomic and maternal health variables is likely to 
+result in inconsistent IV estimates if these variables are also correlated with 
+child `quality' outcomes.  It seems unlikely, furthermore, that controlling for 
+the factors that we have shown to predict twinning will allow us to recover 
+consistent IV estimates.  Maternal health stocks are both difficult to measure, 
+and multi-dimensional in nature.\footnote{In ongoing work, we find that the 
+probability of twinning falls with maternal alcohol consumption, smoking, drug 
+taking and a range of other behaviours in data from the USA, Chile, UK and 
+Scotland.}  In the following subsections we examine the effect that omitting these
+factors is likely to have on IV estimates of the Q-Q trade-off.

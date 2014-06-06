@@ -1,0 +1,7 @@
+Sample&N Children&N Mothers&Mean Age&Min Age&Max Age
+allsample&2,721,619&837,836& 8.0318&    0.0&   18.0
+hhsample&1,930,600&622,401& 7.0671&    0.0&   18.0
+twopsample&251,752&82,260&11.2544&    6.0&   18.0
+threepsample&378,139&95,469&11.4676&    6.0&   18.0
+fourpsample&387,191&78,599&11.7289&    6.0&   18.0
+fivepsample&342,838&58,217&11.9868&    6.0&   18.0
