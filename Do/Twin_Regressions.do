@@ -64,11 +64,11 @@ foreach dirname in Summary Twin OLS RF IV Conley {
 
 
 *SWITCHES (1 if run, else not run)
-local resave        27
+local resave        0
 local samples       27
 local matchrate     27
-local sumstats      1
-  local graphs      0
+local sumstats      27
+  local graphs      27
 local sumstats2     0
   local graphs2     0
 local trends        0
@@ -77,11 +77,11 @@ local OLS           27
 local RF            27
 local IV            27
 local IVtwin        27
-local desire        11
+local desire        1
 local compl_fert    0
 local twinoccur_ols 27
 local twinoccur_iv  27
-local conley        11
+local conley        27
 local thresholdtest 27
 local balance       27
 local country       0
@@ -207,20 +207,23 @@ if `resave'==1 save "$Data/DHS_twins_mortality", replace
 *** (1b) Check match rates
 *******************************************************************************
 if `matchrate'==1 {
-	count
-	count if _merge==3
+	egen touse=rowmiss(fert idealnumkids agemay educf height bmi underweight)
+	replace touse=. if touse!=0
+	replace touse=1 if touse==0
+	count if touse==1
+	count if _merge==3&touse==1
 	local totmatch=r(N)
-	count if _merge==3&age<=18
+	count if _merge==3&age<=18&touse==1
 	local match18=r(N)
 	dis "Percent of matched offspring under 18: `match18'/`totmatch'"
-	count if _merge==2
+	count if _merge==2touse==1
 	local totnonmatch=r(N)
-	count if _merge==2&(age>18|childageatdeath!=.)
+	count if _merge==2&(age>18|childageatdeath!=.)&touse==1
 	local nonmatch18=r(N)
 	dis "Percent of non-matched offspring 18+/deceased: `nonmatch18'/`totnonmatch'"
 
-	gen matched=1 if _merge==3&age<=18
-	replace matched=0 if _merge==2&age<=18&childageatdeath==.
+	gen matched=1 if _merge==3&age<=18&touse==1
+	replace matched=0 if _merge==2&age<=18&childageatdeath==.&touse==1
 
 	foreach var of varlist age child_yob educf height bmi agemay twin malec {
 		ttest `var', by(matched)
@@ -285,7 +288,7 @@ if `sumstats'==1 {
 	local numkids "Number of Children (Education)"
 	local numkidsF "Number of Children (Ever Born)"
 	local nummothers "Number of Mothers"
-	local numcountry "Number of Countries"
+	local ncou "Number of Countries &"
 
 	foreach num of numlist 1(1)4 {
 		cap drop count 
@@ -313,7 +316,7 @@ if `sumstats'==1 {
 	local mincc: word count `r(levels)'
 	levelsof _cou
 	local aincc: word count `r(levels)'	
-	local numcountry "`lincc'`sep'`lincc'`sep'`mincc'`sep'`mincc'`sep'`aincc'"
+	local numcountry "`nco' `lincc'`sep'`lincc'`sep'`mincc'`sep'`mincc'`sep'`aincc'"
 
 	
 	count `cond' & nonmiss==0
@@ -518,6 +521,7 @@ if `sumstats'==1 {
 		restore
 	}
 
+	local cond if agefirstbirth>=15&age<19
 	local ii=1
 	foreach condition in income=="low" income=="mid" income=="low"|income=="mid" {
 		if `ii'==1 local name "Low"
@@ -934,28 +938,32 @@ if `IVtwin'==1 {
 **** (8) IV with twin threshold
 ********************************************************************************
 if `desire'==1 {
-	foreach inc in all low mid F M {
+	foreach inc in all /*low mid*/ F M {
 		if "`inc'"=="all" local cex
 		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
 		else if "`inc'"=="F"|"`inc'"=="M" local cex &gender=="`inc'"
+		local estimates
+		local firststage
+		local t1=1
 
-		*foreach desvar of varlist *DesiredLeaveOut {
-		*	sum `desvar'
-			local estimates
-			local firststage
-			local t1=1
+		foreach desvar of varlist *DesiredLeaveOut {
+			sum `desvar'
 			local t2=2
 			foreach n in `gplus' {
+				dis "In this loop we're looking at the `n' plus group"
+				dis "Desired children are those born before `t2'"
+				dis "Twins in families which wanted `t2' are thus the true shock."
+
 				preserve
 				keep `cond'&`n'_plus==1 `cex'
 
 				gen threshold=(twin_`n'_fam==1 & idealnumkids==`t2')
-				gen fertXthreshold=fert*threshold
-				gen desired=idealnumkids<=`t2'
+				gen postdesired=bord>idealnumkids
+				gen fertXpostdesired=fert*postdesired
 				cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
 			
-				local endog fert /*fertXthreshold desired*/
-				local insts twin_`n'_fam twin`n'Xthreshold /*`desvar'*/
+				local endog fert fertXpostdesired postdesired
+				local insts twin_`n'_fam twin`n'Xthreshold `desvar'
 
 				foreach y of varlist $outcomes {
 					eststo: ivreg2 `y' `base' $age $S $H (`endog' = `insts') `wt', /*
@@ -966,16 +974,16 @@ if `desire'==1 {
 					local ++t1
 				}
 				local ++t2
-				drop threshold fertXthreshold desired
+				drop thresholdpost desired fertXpostdesired
 				restore
 			}
-		*}
+		}
 		
 		estout `estimates' using "$Tables/IV/`IVdes'_`inc'.xls", replace ///
-		 keep(fert /*fertXthreshold desired*/ $age $S $H) `estopt' `varlab'
+		 keep(fert fertXdesired desired $age $S $H) `estopt' `varlab'
 
 		estout `firststage' using "$Tables/IV/`IVdes1'_`inc'.xls", replace ///
-		 keep(twin* /*`desvar'*/ $age $S $H) `estopt' `varlab'
+		 keep(twin* `desvar' $age $S $H) `estopt' `varlab'
 	
 		estimates clear
 	}
