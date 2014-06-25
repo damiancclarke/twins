@@ -72,19 +72,20 @@ local sumstats      27
 local sumstats2     0
   local graphs2     0
 local trends        0
+local graphsMB      1
 local twin          27
 local OLS           27
 local RF            27
-local IV            27
+local IV            0
 local IVtwin        27
-local desire        1
+local desire        88
 local compl_fert    0
 local twinoccur_ols 27
 local twinoccur_iv  27
 local conley        27
 local thresholdtest 27
 local balance       27
-local country       0
+local country       88
 local adj_fert      11
   local ADJIV       27
   local ADJtwin     27
@@ -681,6 +682,75 @@ if `trends'==1 {
 	}
 }
 
+if `graphsMB'==1 {
+	cap mkdir $Graphs/fitted
+	preserve
+	use "$Data/DHS_twins_mortality", clear
+	keep _cou child_yob infantmortality twind height bmi fert
+	gen totals=1
+	replace infantmortality=0 if twind==1
+
+	reg twind i._cou
+	predict twin_resid, residuals
+	reg twind i._cou i.fert
+	predict twinfert_resid, residuals
+	foreach var of varlist infantmortality height bmi {
+		reg `var' i._cou
+		predict `var'_resid, residuals
+		reg `var' i._cou i.fert
+		predict `var'fert_resid, residuals
+	}
+
+	collapse infantmortality height bmi twind *_resid (sum) totals, by(_cou child_yob)
+	keep if totals>1000
+	keep if infantmortality<0.3	
+
+	foreach var of varlist infantmortality height bmi {
+		if `"`var'"'=="infantmortality" local title "Infant Mortality"
+ 		else if `"`var'"'=="height" local title "Height (cm)"
+ 		else if `"`var'"'=="bmi" local title "BMI"
+		
+		scatter twind `var', scheme(s1color) ytitle(Frequency of twins) ///
+		  xtitle(`title') legend(label(1 "Twins"))
+		graph export "$Graphs/twin_`var'.eps", as(eps) replace
+		
+ 		scatter twin_resid `var'_resid, scheme(s1color) ///
+		  ytitle(Frequency of twins) xtitle(`title') ///
+		  note("Each point represents the deviation from the country mean.") ///
+		  legend(label(1 "Twins"))
+		graph export "$Graphs/twin_`var'_resid.eps", as(eps) replace
+
+ 		scatter twinfert_resid `var'fert_resid, scheme(s1color) ///
+		  ytitle(Frequency of twins) xtitle(`title') legend(label(1 "Twins")) ///
+		  note("Each point represents the deviation from the country mean. Controlling for fertility.")
+		graph export "$Graphs/twin_`var'_fertresid.eps", as(eps) replace
+
+		local outdir "$Graphs/fitted"
+		foreach fit in lfitci qfitci {
+			scatter twind `var' || `fit' twind `var', scheme(s1color) ///
+   		  ytitle(Frequency of twins) xtitle(`title') ///
+	  		  legend(label(1 "Twins") label(2 "Fitted values") label(3 "95% CI"))
+			graph export "`outdir'/twin_`var'_`fit'.eps", as(eps) replace
+
+			scatter twin_resid `var'_resid || `fit' twin_resid `var'_resid, ///
+			 scheme(s1color)  ytitle(Frequency of twins) xtitle(`title') ///
+	  		 legend(label(1 "Twins") label(2 "Fitted values") label(3 "95% CI")) ///
+			 note("Each point represents the deviation from the country mean.")			  
+			graph export "`outdir'/twin_`var'_resid_`fit'.eps", as(eps) replace
+
+			scatter  twinfert_resid `var'fert_resid || ///
+			 `fit' twinfert_resid `var'fert_resid, scheme(s1color) ///
+			  ytitle(Frequency of twins) xtitle(`title') ///
+ 	  		  legend(label(1 "Twins") label(2 "Fitted values") label(3 "95% CI")) ///
+			  note("Each point represents the deviation from the country mean. Controlling for fertility.")
+			  
+			graph export "`outdir'/twin_`var'_fertresid_`fit'.eps", as(eps) replace
+
+		}
+	}
+	sum totals
+	restore
+}
 
 ********************************************************************************
 **** (3) Twin predict regressions
@@ -705,16 +775,16 @@ if `twin'== 1 {
 
 	eststo: reg twind100 $twinpredict /*antenatal*/ prenate* `wt', `se'
 
-	estout est1 est2 est3 est4 est5 est6 using `out', keep($twinout /*ante**/ pre*) ///
-	  title("Probability of Giving Birth to Twins (DHS)") ///
-	  varlabels(motherage "Age" motheragesq "Age Squared"  agefirstbirth ///
-	  "Age First Birth" educf "Education (years)" educfyrs_sq  ///
-	  "Education squared" height "Height" bmi "BMI") `estopt' replace ///
+	estout est1 est2 est3 est4 est5 est6 using `out', keep($twinout pre*) ///
+	  title("Probability of Giving Birth to Twins (DHS)")                 ///
+	  varlabels(motherage "Age" motheragesq "Age Squared"  agefirstbirth  ///
+	  "Age First Birth" educf "Education (years)" educfyrs_sq             ///
+	  "Education squared" height "Height" bmi "BMI") `estopt' replace     ///
 	  note("Notes: All specifications include a full set of year of birth and" ///
-	  " country dummies, and are estimated as linear probability models. " ///
-	  "Twin is multiplied by 100 for presentation.  Height is measured in cm" ///
-	  " and BMI is weight in kg divided by height in metres squared. l" ///
-	  " Prenatal care variables are only recoreded for recent births.  As" ///
+	  " country dummies, and are estimated as linear probability models. "     ///
+	  "Twin is multiplied by 100 for presentation.  Height is measured in cm"  ///
+	  " and BMI is weight in kg divided by height in metres squared. l"      ///
+	  " Prenatal care variables are only recoreded for recent births.  As"   ///
 	  " such, column (6) is estimated only for that subset of births where " ///
 	  "these observations are made.")
 
@@ -946,27 +1016,27 @@ if `desire'==1 {
 		local firststage
 		local t1=1
 
-		foreach desvar of varlist *DesiredLeaveOut {
-			sum `desvar'
+		foreach desvar of varlist regionDesiredLeaveOut educDesiredLeaveOut {
 			local t2=2
 			foreach n in `gplus' {
 				dis "In this loop we're looking at the `n' plus group"
-				dis "Desired children are those born before `t2'"
 				dis "Twins in families which wanted `t2' are thus the true shock."
 
 				preserve
 				keep `cond'&`n'_plus==1 `cex'
 
 				gen threshold=(twin_`n'_fam==1 & idealnumkids==`t2')
-				gen postdesired=bord>idealnumkids
+				gen postdesired=bord>`desvar'
 				gen fertXpostdesired=fert*postdesired
 				cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
+*				sum `desvar' postdesired threshold fertXpostdesired
+
 			
-				local endog fert fertXpostdesired postdesired
-				local insts twin_`n'_fam twin`n'Xthreshold `desvar'
+				local endog fert fertXpostdesired
+				local insts twin_`n'_fam twin`n'Xthreshold 
 
 				foreach y of varlist $outcomes {
-					eststo: ivreg2 `y' `base' $age $S $H (`endog' = `insts') `wt', /*
+					eststo: ivreg2 `y' `base' $age $S $H /*postdesired*/ (`endog' = `insts') `wt', /*
 					*/ `se' savefirst savefp(f`t1')
 
 					local estimates `estimates' est`t1'
@@ -974,16 +1044,16 @@ if `desire'==1 {
 					local ++t1
 				}
 				local ++t2
-				drop thresholdpost desired fertXpostdesired
+				drop threshold postdesired fertXpostdesired
 				restore
 			}
 		}
 		
-		estout `estimates' using "$Tables/IV/`IVdes'_`inc'.xls", replace ///
-		 keep(fert fertXdesired desired $age $S $H) `estopt' `varlab'
+		estout `estimates' using "$Tables/IV/`IVdes'_`inc'1.xls", replace ///
+		 keep(fert fertXpostdesired $age $S $H) `estopt' `varlab'
 
-		estout `firststage' using "$Tables/IV/`IVdes1'_`inc'.xls", replace ///
-		 keep(twin* `desvar' $age $S $H) `estopt' `varlab'
+		estout `firststage' using "$Tables/IV/`IVdes1'_`inc'1.xls", replace ///
+		 keep(twin* $age $S $H) `estopt' `varlab'
 	
 		estimates clear
 	}
