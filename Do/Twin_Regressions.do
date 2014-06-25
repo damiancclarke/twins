@@ -518,7 +518,7 @@ if `sumstats'==1 {
 			scheme(s1color) xtitle("`char'") ytitle("Average Desired Family Size")
 		}
 	   graph save "$Graphs/idealfam_`c'", replace
-	   graph export "$Graphs/idealfam_`c'.`format'", as(`format') replace
+			graph export "$Graphs/idealfam_`c'.`format'", as(`format') replace
 		restore
 	}
 
@@ -686,26 +686,33 @@ if `graphsMB'==1 {
 	cap mkdir $Graphs/fitted
 	preserve
 	use "$Data/DHS_twins_mortality", clear
-	keep _cou child_yob infantmortality twind height bmi fert
+	keep _cou child_yob infantmortality twind height bmi fert malec
 	gen totals=1
 	replace infantmortality=0 if twind==1
-
+	gen maleIMR=infantmortality if malec==1
+	
 	reg twind i._cou
 	predict twin_resid, residuals
-	reg twind i._cou i.fert
+	reg twind i.fert
 	predict twinfert_resid, residuals
+	reg twind i._cou i.fert
+	predict twinfertFE_resid, residuals
 	foreach var of varlist infantmortality height bmi {
 		reg `var' i._cou
 		predict `var'_resid, residuals
-		reg `var' i._cou i.fert
+		reg `var' i.fert
 		predict `var'fert_resid, residuals
+		reg `var' i._cou i.fert
+		predict `var'fertFE_resid, residuals
 	}
 
-	collapse infantmortality height bmi twind *_resid (sum) totals, by(_cou child_yob)
+	collapse infantmortality height bmi twind *_resid maleIMR (count) totals, /*
+	*/ by(_cou child_yob)
 	keep if totals>1000
 	keep if infantmortality<0.3	
-
-	foreach var of varlist infantmortality height bmi {
+	gen logIMR=log(infantmortality)
+	
+	foreach var of varlist infantmortality height bmi maleIMR logIMR {
 		if `"`var'"'=="infantmortality" local title "Infant Mortality"
  		else if `"`var'"'=="height" local title "Height (cm)"
  		else if `"`var'"'=="bmi" local title "BMI"
@@ -713,8 +720,8 @@ if `graphsMB'==1 {
 		scatter twind `var', scheme(s1color) ytitle(Frequency of twins) ///
 		  xtitle(`title') legend(label(1 "Twins"))
 		graph export "$Graphs/twin_`var'.eps", as(eps) replace
-		
- 		scatter twin_resid `var'_resid, scheme(s1color) ///
+
+		scatter twin_resid `var'_resid, scheme(s1color) ///
 		  ytitle(Frequency of twins) xtitle(`title') ///
 		  note("Each point represents the deviation from the country mean.") ///
 		  legend(label(1 "Twins"))
@@ -722,9 +729,14 @@ if `graphsMB'==1 {
 
  		scatter twinfert_resid `var'fert_resid, scheme(s1color) ///
 		  ytitle(Frequency of twins) xtitle(`title') legend(label(1 "Twins")) ///
-		  note("Each point represents the deviation from the country mean. Controlling for fertility.")
+		  note("Scatter plot and conditions on fertility.")
 		graph export "$Graphs/twin_`var'_fertresid.eps", as(eps) replace
 
+ 		scatter twinfertFE_resid `var'fertFE_resid, scheme(s1color) ///
+		  ytitle(Frequency of twins) xtitle(`title') legend(label(1 "Twins")) ///
+		  note("Each point represents the deviation from the country mean. Controlling for fertility.")
+		graph export "$Graphs/twin_`var'_fertFEresid.eps", as(eps) replace
+		
 		local outdir "$Graphs/fitted"
 		foreach fit in lfitci qfitci {
 			scatter twind `var' || `fit' twind `var', scheme(s1color) ///
@@ -742,9 +754,15 @@ if `graphsMB'==1 {
 			 `fit' twinfert_resid `var'fert_resid, scheme(s1color) ///
 			  ytitle(Frequency of twins) xtitle(`title') ///
  	  		  legend(label(1 "Twins") label(2 "Fitted values") label(3 "95% CI")) ///
-			  note("Each point represents the deviation from the country mean. Controlling for fertility.")
-			  
+			  note("Scatter plot and fitted line conditional on fertility.")
 			graph export "`outdir'/twin_`var'_fertresid_`fit'.eps", as(eps) replace
+
+			scatter  twinfertFE_resid `var'fertFE_resid || ///
+			 `fit' twinfertFE_resid `var'fertFE_resid, scheme(s1color) ///
+			  ytitle(Frequency of twins) xtitle(`title') ///
+ 	  		  legend(label(1 "Twins") label(2 "Fitted values") label(3 "95% CI")) ///
+			  note("Each point represents the deviation from the country mean. Controlling for fertility.")	  
+			graph export "`outdir'/twin_`var'_fertFEresid_`fit'.eps", as(eps) replace
 
 		}
 	}
