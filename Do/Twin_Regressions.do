@@ -72,7 +72,8 @@ local sumstats      27
 local sumstats2     0
   local graphs2     0
 local trends        0
-local graphsMB      1
+local graphsMB      27
+local graphsSW      1
 local twin          27
 local OLS           27
 local RF            27
@@ -777,6 +778,31 @@ if `graphsMB'==1 {
 	restore
 }
 
+if `graphsSW'==1 {
+	cap mkdir "$Graphs/SW"
+
+	gen inter=.
+	levelsof _cou, local(levels)
+	foreach c of local levels {
+		cap qui reg twind100 $twinpredict `wt' `cond'&_cou==`c', `se'
+		if _rc==0 replace inter=_b[height] if _cou==`c'
+	}
+	collapse height twind inter, by(country)
+	gen slopepar=0.005/inter
+	gen y=twind
+	gen x=height
+	gen x1=height-slopepar
+	gen x2=height+slopepar
+	gen y1=twind-slopepar*inter
+	gen y2=twind+slopepar*inter
+	twoway pcarrow y1 x1 y2 x2 || scatter twind height, ///
+	  mlabel(country) mlabsize(vsmall) scheme(s1color) ytitle("Frequency Twin") ///
+	  xtitle("Mother's Height (cm)") title("Cross and Within Country Variation") ///
+	  subtitle("Height and Twinning") ///
+	  legend(label(1 "Within Country Variation") label(2 "Country Mean")) ///
+	  note("Country specific trends condition on full controls from twin regression.")
+	graph export "$Graphs/SW/height_country.eps", as(eps) replace
+}
 ********************************************************************************
 **** (3) Twin predict regressions
 ********************************************************************************
