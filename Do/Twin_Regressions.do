@@ -697,7 +697,7 @@ if `graphsMB'==1 {
 	predict twinfert_resid, residuals
 	reg twind i._cou i.fert
 	predict twinfertFE_resid, residuals
-	foreach var of varlist infantmortality height bmi {
+	foreach var of varlist infantmortality height bmi maleIMR {
 		reg `var' i._cou
 		predict `var'_resid, residuals
 		reg `var' i.fert
@@ -706,11 +706,18 @@ if `graphsMB'==1 {
 		predict `var'fertFE_resid, residuals
 	}
 
-	collapse infantmortality height bmi twind *_resid maleIMR (count) totals, /*
-	*/ by(_cou child_yob)
+	collapse infantmortality height bmi twind *_resid maleIMR fert /*
+	*/ (count) totals, by(_cou child_yob)
 	keep if totals>1000
 	keep if infantmortality<0.3	
 	gen logIMR=log(infantmortality)
+
+	reg logIMR i._cou
+	predict logIMR_resid, residuals
+	reg logIMR fert
+	predict logIMRfert_resid, residuals
+	reg logIMR i._cou fert
+	predict logIMRfertFE_resid, residuals
 	
 	foreach var of varlist infantmortality height bmi maleIMR logIMR {
 		if `"`var'"'=="infantmortality" local title "Infant Mortality"
