@@ -780,7 +780,7 @@ if `graphsMB'==1 {
 
 if `graphsSW'==1 {
 	cap mkdir "$Graphs/SW"
-
+	preserve
 	gen inter=.
 	levelsof _cou, local(levels)
 	foreach c of local levels {
@@ -802,7 +802,9 @@ if `graphsSW'==1 {
 	  legend(label(1 "Within Country Variation") label(2 "Country Mean")) ///
 	  note("Country specific trends condition on full controls from twin regression.")
 	graph export "$Graphs/SW/height_country.eps", as(eps) replace
+	restore
 }
+
 ********************************************************************************
 **** (3) Twin predict regressions
 ********************************************************************************
