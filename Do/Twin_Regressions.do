@@ -779,6 +779,7 @@ if `graphsMB'==1 {
 }
 
 if `graphsSW'==1 {
+	/*
 	cap mkdir "$Graphs/SW"
 	preserve
 	gen inter=.
@@ -802,6 +803,41 @@ if `graphsSW'==1 {
 	  legend(label(1 "Within Country Variation") label(2 "Country Mean")) ///
 	  note("Country specific trends condition on full controls from twin regression.")
 	graph export "$Graphs/SW/height_country.eps", as(eps) replace
+	restore
+	*/
+	
+	preserve
+	use "$Data/DHS_twins_mortality", clear
+	gen IMRnotwin=infantmortality if twind!=1
+	collapse IMRnotwin twind motherage motheragesq agefirstbirth educf educfyrs_sq /*
+	*/ height bmi child_yob fert, by(id country)
+	replace fert=round(fert)
+	gen IMR=1 if IMRnotwin>0
+	replace IMR=0 if IMRnotwin==0
+	gen twinmother=100 if twind>0
+	replace twinmother=0 if twind==0
+	gen inter=.
+	levelsof country, local(levels)
+	foreach c of local levels {
+		cap reg twinmother $twinpred height bmi child_yob IMR i.fert /*
+		*/ if country==`"`c'"'
+		if _rc==0 replace inter=_b[IMR] if country==`"`c'"'
+	}
+	collapse IMR twinmother inter, by(country)
+	gen slopepar=0.005/inter
+	gen y=twinmother
+	gen x=IMR
+	gen x2=IMR-slopepar
+	gen x1=IMR+slopepar
+	gen y2=twinmother-slopepar*inter
+	gen y1=twinmother+slopepar*inter
+	twoway pcarrow y1 x1 y2 x2 || scatter twinmother IMR, ///
+	  mlabel(country) mlabsize(vsmall) scheme(s1color) ytitle("Frequency Twin") ///
+	  xtitle("Infant Mortality") title("Cross and Within Country Variation") ///
+	  subtitle("Infant Mortality and Twinning") ///
+	  legend(label(1 "Within Country Variation") label(2 "Country Mean")) ///
+	  note("Country specific trends condition on full controls from twin regression.")
+	graph export "$Graphs/SW/IMR_country.eps", as(eps) replace
 	restore
 }
 
