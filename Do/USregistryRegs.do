@@ -48,61 +48,94 @@ local FetDeath VS82FETL.DETUSPUB VS83FETL.DETUSPUB VS84FETL.DETUSPUB
 ********************************************************************************
 *** (2) Import and process birth data
 ********************************************************************************
-	
-1968  datayear stateres frace mrace birmon dmage birattnd dlegit dplural dbirwt dgestat
+use "$DAT/Births/dta/natl1968", clear
+count
+keep datayear stateres frace mrace birmon dmage birattnd dlegit dplural dbirwt/*
+*/ dgestat
 
-1969  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb
-1970  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb
+foreach yy of numlist 1969 1970 {
+	use "$DAT/Births/dta/natl`yy'", clear
+	count
+	keep datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt /*
+	*/ dgestat nlbd dtotord dmeduc llbyr disllb
+}
 
-1971  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural
+use "$DAT/Births/dta/natl1971", clear
+count
+keep datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat /*
+*/ nlbd dtotord dmeduc llbyr disllb dplural
 
-1972  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural
-1973  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural
-1974  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural
-1975  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural
-1976  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural
-1977  datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural
+foreach yy of numlist 1972(1)1977 {
+	use "$DAT/Births/dta/natl`yy'", clear
+	count
+	keep datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt /*
+	*/ dgestat nlbd dtotord dmeduc llbyr disllb dplural
+}
 
-1978  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1979  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1980  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1981  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1982  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1983  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1984  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1985  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1986  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1987  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
-1988  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
+foreach yy of numlist 1978(1)1988 {
+	use "$DAT/Births/dta/natl`yy'", clear
+	count
+	keep datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat /*
+	*/ nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
+}
 
-1989  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc llbyr disllb dplural omaps fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1990  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc llbyr disllb dplural omaps fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1991  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc llbyr disllb dplural omaps fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1992  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc llbyr disllb dplural omaps fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1993  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc llbyr disllb dplural omaps fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1994  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc llbyr disllb dplural omaps fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
+foreach yy of numlist 1989(1)1994 {
+	use "$DAT/Births/dta/natl`yy'", clear
+	count
+	keep datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat /*
+	*/ nlbnd dtotord dmeduc llbyr disllb dplural omaps fmaps anemia cardiac lung /*
+	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol /*
+	*/ drink wtgain
+}
 
-1995  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1996  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1997  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1998  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-1999  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-2000  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-2001  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
-2002  datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
+foreach yy of numlist 1995(1)2002 {
+	use "$DAT/Births/dta/natl`yy'", clear
+	count
+	keep datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat /*
+	*/ nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper    /*
+	*/ phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
+}
 
-2003 dob_yy dob_mm ostate ubfacil umagerpt mrace mar meduc fagerpt priordead lbo precare wtgain cig_0 cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000 urf_preterm apgar5 dplural estgest combgest dbwt
+use "$DAT/Births/dta/natl2003", clear
+count
+keep dob_yy dob_mm ostate ubfacil umagerpt mrace mar meduc fagerpt priordead lbo /*
+*/ precare wtgain cig_0 cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia  /*
+*/ urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000        /*
+*/ urf_preterm apgar5 dplural estgest combgest dbwt
 
-2004 dob_yy dob_mm ostate ubfacil mager mrace mar meduc fagerpt priordead lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000 urf_preterm apgar5 dplural estgest combgest dbwt
+use "$DAT/Births/dta/natl2004", clear
+count
+keep dob_yy dob_mm ostate ubfacil mager mrace mar meduc fagerpt priordead        /*
+*/ lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia    /*
+*/ urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000        /*
+*/ urf_preterm apgar5 dplural estgest combgest dbwt
 
-2005 dob_yy dob_mm xostate ubfacil mager mrace mar meduc fagerpt priordead lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000 urf_preterm apgar5 dplural estgest combgest dbwt
+use "$DAT/Births/dta/natl2005", clear
+count
+keep dob_yy dob_mm xostate ubfacil mager mrace mar meduc fagerpt priordead       /*
+*/ lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia    /*
+*/ urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000        /*
+*/ urf_preterm apgar5 dplural estgest combgest dbwt
 
-2006 dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000 urf_preterm apgar5 dplural estgest combgest dbwt
+use "$DAT/Births/dta/natl2006", clear
+count
+keep dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_1 /*
+*/ cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia urf_card urf_lung urf_diab   /*
+*/ urf_chyper urf_phyper urf_eclam urf_pre4000 urf_preterm apgar5 dplural estgest /*
+*/ combgest dbwt
 
-2007 dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt
-2008  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt
+foreach yy of numlist 2007 2008 {
+	use "$DAT/Births/dta/natl`yy'", clear
+	count
+	keep dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain    /*
+	*/ cig_1 cig_2 cig_3 tobuse cigs rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm    /*
+	*/ apgar5 dplural estgest combgest dbwt
+}
 
-2009  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
-2010  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
-2011  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
-2012  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
+foreach yy of numlist 2009(1)2012 {
+	use "$DAT/Births/dta/natl`yy'", clear
+	count
+	keep dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain    /*
+	*/ cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm  /*
+	*/ apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
+}
