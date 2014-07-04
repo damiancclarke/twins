@@ -101,3 +101,8 @@ local FetDeath VS82FETL.DETUSPUB VS83FETL.DETUSPUB VS84FETL.DETUSPUB
 
 2007 dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt
 2008  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt
+
+2009  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
+2010  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
+2011  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
+2012  dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
