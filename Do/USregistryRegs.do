@@ -51,13 +51,51 @@ local FetDeath VS82FETL.DETUSPUB VS83FETL.DETUSPUB VS84FETL.DETUSPUB
 use "$DAT/Births/dta/natl1968", clear
 count
 keep datayear stateres frace mrace birmon dmage birattnd dlegit dplural dbirwt/*
-*/ dgestat
+*/ dgestat dlivord
+
+gen twin=dplural==2
+drop if dplural>2
+rename dmage motherAge
+rename stateres state
+rename birmon birthMonth
+rename dlivord birthOrder
+replace birthOrder=. if birthOrder==99
+replace birthOrder=11 if birthOrder>10
+gen africanAmerican=mrace==2
+gen white=mrace==1
+gen otherRace=mrace>2
+gen year=1968
+gen married=dlegit==1
+
+keep twin motherAge africanAm white otherRace birthMon year birthOrder married /*
+*/ state
+save "$DAT/Births/dta/clean/n1968", replace
 
 foreach yy of numlist 1969 1970 {
 	use "$DAT/Births/dta/natl`yy'", clear
 	count
 	keep datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt /*
 	*/ dgestat nlbd dtotord dmeduc llbyr disllb
+
+	rename dmage motherAge
+	rename stateres state
+	rename birmon birthMonth
+	rename dtotord birthOrder
+	replace birthOrder=. if birthOrder==99
+	replace birthOrder=11 if birthOrder>10
+	gen africanAmerican=mrace==2
+	gen white=mrace==1
+	gen otherRace=mrace>2
+	gen year=`yy'
+	gen married=dlegit==1
+	gen educYrs=dmeduc if dmeduc<66
+	gen meducPrimary=dmeduc<=8
+	gen meducSecondary=dmeduc>8&dmeduc<=12
+	gen meducTertiary=dmeduc>12&dmeduc<=17
+
+	keep motherAge africanAm white otherRace birthMon year birthOrder /*
+	*/ married meducP meducS meducT educYrs state
+	save "$DAT/Births/dta/clean/n`yy'", replace
 }
 
 use "$DAT/Births/dta/natl1971", clear
@@ -65,11 +103,54 @@ count
 keep datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt dgestat /*
 */ nlbd dtotord dmeduc llbyr disllb dplural
 
+gen twin=dplural==2
+drop if dplural>2
+rename dmage motherAge
+rename stateres state
+rename birmon birthMonth
+rename dtotord birthOrder
+replace birthOrder=. if birthOrder==99
+replace birthOrder=11 if birthOrder>10
+gen africanAmerican=mrace==2
+gen white=mrace==1
+gen otherRace=mrace>2
+gen year=1971
+gen married=dlegit==1
+gen educYrs=dmeduc if dmeduc<66
+gen meducPrimary=dmeduc<=8
+gen meducSecondary=dmeduc>8&dmeduc<=12
+gen meducTertiary=dmeduc>12&dmeduc<=17
+
+keep twin motherAge africanAm white otherRace birthMon year birthOrder /*
+*/ married meducP meducS meducT educYrs state
+save "$DAT/Births/dta/clean/n1971", replace
+
 foreach yy of numlist 1972(1)1977 {
 	use "$DAT/Births/dta/natl`yy'", clear
 	count
 	keep datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt /*
 	*/ dgestat nlbd dtotord dmeduc llbyr disllb dplural
+
+	rename dmage motherAge
+	rename stateres state
+	rename birmon birthMonth
+	rename dtotord birthOrder
+	replace birthOrder=. if birthOrder==99
+	replace birthOrder=11 if birthOrder<10
+	gen africanAmerican=mrace==2
+	gen white=mrace==1
+	gen otherRace=mrace>2
+	gen year=`yy'
+	gen married=dlegit==1
+	gen educYrs=dmeduc if dmeduc<66
+	gen meducPrimary=dmeduc<=8
+	gen meducSecondary=dmeduc>8&dmeduc<=12
+	gen meducTertiary=dmeduc>12&dmeduc<=17
+
+	keep motherAge africanAm white otherRace birthMon year birthOrder /*
+	*/ married meducP meducS meducT educYrs state
+	save "$DAT/Births/dta/clean/n`yy'", replace
+
 }
 
 foreach yy of numlist 1978(1)1988 {
@@ -77,8 +158,30 @@ foreach yy of numlist 1978(1)1988 {
 	count
 	keep datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat /*
 	*/ nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
+
+	rename dmage motherAge
+	rename stateres state
+	rename birmon birthMonth
+	rename dtotord birthOrder
+	replace birthOrder=. if birthOrder==99
+	replace birthOrder=11 if birthOrder<10
+	gen africanAmerican=mrace==2
+	gen white=mrace==1
+	gen otherRace=mrace>2
+	gen year=`yy'
+	gen married=dmar==1
+	gen marryUnreported=dmar==9
+	gen educYrs=dmeduc if dmeduc<66
+	gen meducPrimary=dmeduc<=8
+	gen meducSecondary=dmeduc>8&dmeduc<=12
+	gen meducTertiary=dmeduc>12&dmeduc<=17
+
+	keep motherAge africanAm white otherRace birthMon year birthOrder /*
+	*/ married marryU meducP meducS meducT educYrs state
+	
 }
 
+kill here
 foreach yy of numlist 1989(1)1994 {
 	use "$DAT/Births/dta/natl`yy'", clear
 	count
