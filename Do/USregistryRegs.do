@@ -280,7 +280,7 @@ drop if dplural>2
 rename mager41 motherAge
 rename ostate state
 rename dob_mm birthMonth
-rename lbo birthOrder
+rename lbo_rec birthOrder
 gen africanAmerican=mrace==2
 gen white=mrace==1
 gen otherRace=mrace>2
@@ -305,21 +305,82 @@ keep motherAge africanAm white otherRace birthMon year birthOrder /*
 */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR /*
 */ tobaccoUse alcoholNR alcoholUse twin
 
-kill here
 use "$DAT/Births/dta/natl2004", clear
 count
-keep dob_yy dob_mm ostate ubfacil mager mrace mar meduc fagerpt priordead        /*
-*/ lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia    /*
-*/ urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000        /*
-*/ urf_preterm apgar5 dplural estgest combgest dbwt
+keep dob_yy dob_mm ostate ubfacil mager mrace mar meduc fagerpt priordead         /*
+*/ lbo_red precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia /*
+*/ urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000         /*
+*/ urf_preterm urf_renal apgar5 dplural estgest combgest dbwt
+
+gen twin=dplural==2
+drop if dplural>2
+rename mager motherAge
+rename ostate state
+rename dob_mm birthMonth
+rename lbo_rec birthOrder
+gen africanAmerican=mrace==2
+gen white=mrace==1
+gen otherRace=mrace>2
+gen year=2003
+gen married=mar==1
+gen marryUnreported=mar==9
+gen educYrs=dmeduc if dmeduc<66
+gen meducPrimary=dmeduc>0&dmeduc<=8
+gen meducSecondary=dmeduc>8&dmeduc<=12
+gen meducTertiary=dmeduc>12&dmeduc<=17
+foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
+*/ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
+	replace `var'=. if `var'==9|`var'==8
+}
+gen tobaccoNR=tobuse==9
+gen tobaccoUse=tobuse==1
+gen alcoholNR=alcohol==9
+gen alcoholUse=alcohol==1
+
+keep motherAge africanAm white otherRace birthMon year birthOrder        /*
+*/ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
+*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
+*/ tobaccoUse alcoholNR alcoholUse twin
+
 
 use "$DAT/Births/dta/natl2005", clear
 count
-keep dob_yy dob_mm xostate ubfacil mager mrace mar meduc fagerpt priordead       /*
-*/ lbo precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia    /*
-*/ urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000        /*
-*/ urf_preterm apgar5 dplural estgest combgest dbwt
+keep dob_yy dob_mm xostate ubfacil mager mrace mar meduc fagerpt priordead        /*
+*/ lbo_rec precare wtgain cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia /*
+*/ urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000         /*
+*/ urf_preterm urf_renal apgar5 dplural estgest combgest dbwt
 
+gen twin=dplural==2
+drop if dplural>2
+rename mager motherAge
+*rename ostate state
+rename dob_mm birthMonth
+rename lbo_rec birthOrder
+gen africanAmerican=mrace==2
+gen white=mrace==1
+gen otherRace=mrace>2
+gen year=2003
+gen married=mar==1
+gen marryUnreported=mar==9
+gen educYrs=dmeduc if dmeduc<66
+gen meducPrimary=dmeduc>0&dmeduc<=8
+gen meducSecondary=dmeduc>8&dmeduc<=12
+gen meducTertiary=dmeduc>12&dmeduc<=17
+foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
+*/ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
+	replace `var'=. if `var'==9|`var'==8
+}
+gen tobaccoNR=tobuse==9
+gen tobaccoUse=tobuse==1
+gen alcoholNR=alcohol==9
+gen alcoholUse=alcohol==1
+
+keep motherAge africanAm white otherRace birthMon year birthOrder        /*
+*/ married marryU meducP meducS meducT educYrs anemia cardiac lung /*
+*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
+*/ tobaccoUse alcoholNR alcoholUse twin
+
+kill here
 use "$DAT/Births/dta/natl2006", clear
 count
 keep dob_yy dob_mm ubfacil mager mrace mar meduc fagerpt lbo precare wtgain cig_1 /*
