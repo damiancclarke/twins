@@ -89,7 +89,7 @@ foreach yy of numlist 1969 1970 {
 	gen year=`yy'
 	gen married=dlegit==1
 	gen educYrs=dmeduc if dmeduc<66
-	gen meducPrimary=dmeduc<=8
+	gen meducPrimary=dmeduc>0&dmeduc<=8
 	gen meducSecondary=dmeduc>8&dmeduc<=12
 	gen meducTertiary=dmeduc>12&dmeduc<=17
 
@@ -117,7 +117,7 @@ gen otherRace=mrace>2
 gen year=1971
 gen married=dlegit==1
 gen educYrs=dmeduc if dmeduc<66
-gen meducPrimary=dmeduc<=8
+gen meducPrimary=dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary=dmeduc>12&dmeduc<=17
 
@@ -131,6 +131,8 @@ foreach yy of numlist 1972(1)1977 {
 	keep datayear stateres frace mrace birmon dmage birattnd dlegit dbirwt /*
 	*/ dgestat nlbd dtotord dmeduc llbyr disllb dplural
 
+	gen twin=dplural==2
+	drop if dplural>2
 	rename dmage motherAge
 	rename stateres state
 	rename birmon birthMonth
@@ -143,12 +145,12 @@ foreach yy of numlist 1972(1)1977 {
 	gen year=`yy'
 	gen married=dlegit==1
 	gen educYrs=dmeduc if dmeduc<66
-	gen meducPrimary=dmeduc<=8
+	gen meducPrimary=dmeduc>0&dmeduc<=8
 	gen meducSecondary=dmeduc>8&dmeduc<=12
 	gen meducTertiary=dmeduc>12&dmeduc<=17
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder /*
-	*/ married meducP meducS meducT educYrs state
+	*/ married meducP meducS meducT educYrs state twin
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -159,6 +161,8 @@ foreach yy of numlist 1978(1)1988 {
 	keep datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat /*
 	*/ nlbd dtotord dmeduc llbyr disllb dplural omaps fmaps
 
+	gen twin=dplural==2
+	drop if dplural>2
 	rename dmage motherAge
 	rename stateres state
 	rename birmon birthMonth
@@ -172,16 +176,15 @@ foreach yy of numlist 1978(1)1988 {
 	gen married=dmar==1
 	gen marryUnreported=dmar==9
 	gen educYrs=dmeduc if dmeduc<66
-	gen meducPrimary=dmeduc<=8
+	gen meducPrimary=dmeduc>0&dmeduc<=8
 	gen meducSecondary=dmeduc>8&dmeduc<=12
 	gen meducTertiary=dmeduc>12&dmeduc<=17
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder /*
-	*/ married marryU meducP meducS meducT educYrs state
+	*/ married marryU meducP meducS meducT educYrs state twin
 	
 }
 
-kill here
 foreach yy of numlist 1989(1)1994 {
 	use "$DAT/Births/dta/natl`yy'", clear
 	count
@@ -189,6 +192,39 @@ foreach yy of numlist 1989(1)1994 {
 	*/ nlbnd dtotord dmeduc llbyr disllb dplural omaps fmaps anemia cardiac lung /*
 	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobacco cigar alcohol /*
 	*/ drink wtgain
+
+	gen twin=dplural==2
+	drop if dplural>2
+	rename dmage motherAge
+	rename stateres state
+	rename birmon birthMonth
+	rename dtotord birthOrder
+	replace birthOrder=. if birthOrder==99
+	replace birthOrder=11 if birthOrder<10
+	gen africanAmerican=mrace==2
+	gen white=mrace==1
+	gen otherRace=mrace>2
+	gen year=`yy'
+	gen married=dmar==1
+	gen marryUnreported=dmar==9
+	gen educYrs=dmeduc if dmeduc<66
+	gen meducPrimary=dmeduc>0&dmeduc<=8
+	gen meducSecondary=dmeduc>8&dmeduc<=12
+	gen meducTertiary=dmeduc>12&dmeduc<=17
+	foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
+	*/ pre4000 preterm renal {
+		replace `var'=. if `var'==9
+	}
+	replace pre4000=2 if pre4000==8
+	gen tobaccoNR=tobacco==9
+	gen tobaccoUse=tobacco==1
+	gen alcoholNR=alcohol==9
+	gen alcoholUse=alcohol==1
+
+	keep motherAge africanAm white otherRace birthMon year birthOrder /*
+	*/ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
+	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR /*
+	*/ tobaccoUse alcoholNR alcoholUse twin	
 }
 
 foreach yy of numlist 1995(1)2002 {
@@ -197,15 +233,79 @@ foreach yy of numlist 1995(1)2002 {
 	keep datayear stateres frace mrace birmon dmage birattnd dmar dbirwt dgestat /*
 	*/ nlbnd dtotord dmeduc dplural fmaps anemia cardiac lung diabetes chyper    /*
 	*/ phyper eclamp pre4000 preterm renal tobacco cigar alcohol drink wtgain
+
+	gen twin=dplural==2
+	drop if dplural>2
+	rename dmage motherAge
+	rename stateres state
+	rename birmon birthMonth
+	rename dtotord birthOrder
+	replace birthOrder=. if birthOrder==99
+	replace birthOrder=11 if birthOrder<10
+	gen africanAmerican=mrace==2
+	gen white=mrace==1
+	gen otherRace=mrace>2
+	gen year=`yy'
+	gen married=dmar==1
+	gen marryUnreported=dmar==9
+	gen educYrs=dmeduc if dmeduc<66
+	gen meducPrimary=dmeduc>0&dmeduc<=8
+	gen meducSecondary=dmeduc>8&dmeduc<=12
+	gen meducTertiary=dmeduc>12&dmeduc<=17
+	foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
+	*/ pre4000 preterm renal {
+		replace `var'=. if `var'==9
+	}
+	replace pre4000=2 if pre4000==8
+	gen tobaccoNR=tobacco==9
+	gen tobaccoUse=tobacco==1
+	gen alcoholNR=alcohol==9
+	gen alcoholUse=alcohol==1
+
+	keep motherAge africanAm white otherRace birthMon year birthOrder /*
+	*/ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
+	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR /*
+	*/ tobaccoUse alcoholNR alcoholUse twin
 }
 
 use "$DAT/Births/dta/natl2003", clear
 count
-keep dob_yy dob_mm ostate ubfacil umagerpt mrace mar meduc fagerpt priordead lbo /*
+keep dob_yy dob_mm ostate ubfacil mager41 mrace mar dmeduc priordead lbo_rec /*
 */ precare wtgain cig_0 cig_1 cig_2 cig_3 tobuse cigs alcohol drinks urf_anemia  /*
 */ urf_card urf_lung urf_diab urf_chyper urf_phyper urf_eclam urf_pre4000        /*
-*/ urf_preterm apgar5 dplural estgest combgest dbwt
+*/ urf_preterm urf_renal apgar5 dplural estgest combgest dbwt
 
+gen twin=dplural==2
+drop if dplural>2
+rename mager41 motherAge
+rename ostate state
+rename dob_mm birthMonth
+rename lbo birthOrder
+gen africanAmerican=mrace==2
+gen white=mrace==1
+gen otherRace=mrace>2
+gen year=2003
+gen married=mar==1
+gen marryUnreported=mar==9
+gen educYrs=dmeduc if dmeduc<66
+gen meducPrimary=dmeduc>0&dmeduc<=8
+gen meducSecondary=dmeduc>8&dmeduc<=12
+gen meducTertiary=dmeduc>12&dmeduc<=17
+foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
+*/ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
+	replace `var'=. if `var'==9|`var'==8
+}
+gen tobaccoNR=tobuse==9
+gen tobaccoUse=tobuse==1
+gen alcoholNR=alcohol==9
+gen alcoholUse=alcohol==1
+
+keep motherAge africanAm white otherRace birthMon year birthOrder /*
+*/ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
+*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR /*
+*/ tobaccoUse alcoholNR alcoholUse twin
+
+kill here
 use "$DAT/Births/dta/natl2004", clear
 count
 keep dob_yy dob_mm ostate ubfacil mager mrace mar meduc fagerpt priordead        /*
