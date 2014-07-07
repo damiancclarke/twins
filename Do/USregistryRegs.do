@@ -295,6 +295,16 @@ foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
 */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
 	replace `var'=. if `var'==9|`var'==8
 }
+rename urf_anemia anemia
+rename urf_card cardiac
+rename urf_lung lung
+rename urf_diab diabetes
+rename urf_chyper chyper
+rename urf_phyper phyper
+rename urf_eclam eclamp
+rename urf_pre4000 pre4000
+rename urf_preterm preterm
+rename urf_renal renal
 gen tobaccoNR=tobuse==9
 gen tobaccoUse=tobuse==1
 gen alcoholNR=alcohol==9
