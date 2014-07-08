@@ -33,7 +33,7 @@ global OUT "~/investigacion/Activa/Twins/Results/NVSS_USA"
 global LOG "~/investigacion/Activa/Twins/Log"
 
 cap mkdir $OUT
-log using "$LOG/USregistryRegs.txt", text replace
+log using "$LOG/USregistryPrep.txt", text replace
 
 #delimit ;
 local FetDeath VS82FETL.DETUSPUB VS83FETL.DETUSPUB VS84FETL.DETUSPUB
@@ -49,7 +49,10 @@ local FetDeath VS82FETL.DETUSPUB VS83FETL.DETUSPUB VS84FETL.DETUSPUB
 #delimit cr
 
 local cleanBirths  0
-local appendBirths 1
+local appendBirths 0
+local cleanFDeath  1
+local appendFDeath 0
+
 ********************************************************************************
 *** (2a) Import and process birth data
 ********************************************************************************
@@ -288,6 +291,7 @@ keep dob_yy dob_mm ostate ubfacil mager41 mrace mar dmeduc priordead lbo_rec /*
 gen twin=dplural==2
 drop if dplural>2
 rename mager41 motherAge
+replace motherAge=motherAge+13
 rename ostate state
 rename dob_mm birthMonth
 rename lbo_rec birthOrder
@@ -557,8 +561,15 @@ foreach yy of numlist 2003(1)2012 {
 	append using "$DAT/Births/dta/clean/n`yy'"
 	count
 }
+save "$DAT/Births/AppendedBirths.dta", replace
 }
+
 
 ********************************************************************************
 *** (3) Import and process fetal death data
 ********************************************************************************
+if `cleanFDeath'==1 {
+use $DAT/FetalDeaths/dta/fetl2002
+
+	
+}
