@@ -32,26 +32,62 @@ global LOG "~/investigacion/Activa/Twins/Log"
 cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
 
+local birthregs 0
+local fdeathregs 1
+
 ********************************************************************************
 *** (2) Birth Regressions
 ********************************************************************************
-use "$DAT/Births/AppendedBirths.dta", clear
-gen twin100=twin*100
-gen motherAgeSq=motherAge*motherAge
+if `birthregs'==1 {
+	use "$DAT/Births/AppendedBirths.dta", clear
+	gen twin100=twin*100
+	gen motherAgeSq=motherAge*motherAge
 
-local base africanAmerican white meduc* tobacco*
-local health anemia cardiac lung diabetes chyper phyper eclamp
+	local base africanAmerican white meduc* tobacco*
+	local health anemia cardiac lung diabetes chyper phyper eclamp
 
+	reg twin100 `base'  motherAge* i.birthOrder i.year
+	outreg2 using "$OUT/USBirths.xls", excel replace
+	reg twin100 `base' i.motherAge i.birthOrder i.year
+	outreg2 using "$OUT/USBirths.xls", excel append
+	reg twin100 `base' alcohol* motherAge* i.birthOrder i.year
+	outreg2 using "$OUT/USBirths.xls", excel append
+	reg twin100 `base' alcohol* i.motherAge i.birthOrder i.year
+	outreg2 using "$OUT/USBirths.xls", excel append
+	reg twin100 `base' alcohol* `health' i.motherAge i.birthOrder i.year 
+	outreg2 using "$OUT/USBirths.xls", excel append
+}
 
-reg twin100 `base'  motherAge* i.birthOrder i.year
-outreg2 using "$OUT/USBirths.xls", excel replace
-reg twin100 `base' i.motherAge i.birthOrder i.year
-outreg2 using "$OUT/USBirths.xls", excel append
-reg twin100 `base' alcohol* motherAge* i.birthOrder i.year
-outreg2 using "$OUT/USBirths.xls", excel append
-reg twin100 `base' alcohol* i.motherAge i.birthOrder i.year
-outreg2 using "$OUT/USBirths.xls", excel append
-reg twin100 `base' alcohol* `health' i.motherAge i.birthOrder i.year 
-outreg2 using "$OUT/USBirths.xls", excel append
+********************************************************************************
+*** (3) Fetal Deaths Regressions
+********************************************************************************
+if `fdeathregs'==1 {
+	use "$DAT/Births/AppendedBirths.dta", clear
+	gen fetaldeath=0
+	append using "$DAT/FetalDeaths/AppendedFDeaths.dta"
+	replace fetaldeath=1 if fetaldeath==.
+	gen twin100=twin*100
+	gen motherAgeSq=motherAge*motherAge
+	gen Twin100fetaldeath=twin100*fetaldeath
+	drop if year<2003
+	
+	local base africanAmerican white meduc* tobacco*
+	local health diabetes chyper phyper eclamp
 
+	foreach var of varlist fetaldeath Twin100fetaldeath {
+		reg `var' `base'  motherAge* i.birthOrder i.year
+		outreg2 using "$OUT/US`var'.xls", excel replace
+		reg `var' `base' i.motherAge i.birthOrder i.year
+		outreg2 using "$OUT/US`var'.xls", excel append
+		reg `var' `base' alcohol* motherAge* i.birthOrder i.year
+		outreg2 using "$OUT/US`var'.xls", excel append
+		reg `var' `base' alcohol* i.motherAge i.birthOrder i.year
+		outreg2 using "$OUT/US`var'.xls", excel append
+		reg `var' `base' `health' i.motherAge i.birthOrder i.year 
+		outreg2 using "$OUT/US`var'.xls", excel append
+		reg `var' `base' alcohol* `health' i.motherAge i.birthOrder i.year 
+		outreg2 using "$OUT/US`var'.xls", excel append
+	}
+}
 
+log close
