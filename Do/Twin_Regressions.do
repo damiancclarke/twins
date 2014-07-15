@@ -27,6 +27,7 @@ Questions should be directed to damian.clarke@economics.ox.ac.uk.
 
 
 Last edit:
+* Jul 14th, 2014: Alternative health var (height only)
 * May 29th, 2014: instrumenting for desired fertility
 * May 10th, 2014: testing for 35+ as well.
 * December 17th, 2013: considerable rewrite based on comments in 22 Nov email.
@@ -73,11 +74,11 @@ local sumstats2     0
   local graphs2     0
 local trends        0
 local graphsMB      27
-local graphsSW      1
+local graphsSW      27
 local twin          27
 local OLS           27
 local RF            27
-local IV            0
+local IV            1
 local IVtwin        27
 local desire        88
 local compl_fert    0
@@ -104,7 +105,7 @@ global twinout motherage motheragesq agefirstbirth educf educfyrs_sq height bmi
 global base malec i._cou i.year_birth i.age i.contracep_intent 
 global age motherage motheragesq motheragecub agefirstbirth 
 global S educf educfyrs_sq
-global H height bmi 
+global H height /*bmi*/ 
 global HP height bmi prenate*
 global bal1 fert idealnumkids agefirstbirth educf educp height underweight
 global balance $bal1 prenate* motherage childmortality infantmortal 
