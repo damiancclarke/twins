@@ -27,6 +27,7 @@ Questions should be directed to damian.clarke@economics.ox.ac.uk.
 
 
 Last edit:
+* Jul 15th, 2014: Overidentification test
 * Jul 14th, 2014: Alternative health var (height only)
 * May 29th, 2014: instrumenting for desired fertility
 * May 10th, 2014: testing for 35+ as well.
@@ -65,7 +66,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID {
 
 
 *SWITCHES (1 if run, else not run)
-local resave        1
+local resave        0
 local samples       27
 local matchrate     27
 local sumstats      27
@@ -78,7 +79,7 @@ local graphsSW      27
 local twin          27
 local OLS           27
 local RF            27
-local IV            1000
+local IV            1
 local IVtwin        27
 local desire        88
 local compl_fert    0
@@ -117,7 +118,7 @@ local wt [pw=sweight]
 local cond if agefirstbirth>=15&age<19
 
 * FILE SPECIFICATIONS
-local gplus two three four /*five*/
+local gplus two three four five
 local MAGE 0
 
 
@@ -147,6 +148,9 @@ local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par))
 local varlab varlabels(agemay "Mother's age" magesq "Mother's Age Squared"
       agefirstbirth "Age First Birth" educf "Mother's Education" educfyrs_sq
       "Mother's Education Squared" height "Height" bmi "BMI");
+local varlab varlabels(agemay "Mother's age" magesq "Mother's Age Squared"
+      agefirstbirth "Age First Birth" educf "Mother's Education" educfyrs_sq
+      "Mother's Education Squared" height "Height");
 
 local conditions
   ALL==1
@@ -172,8 +176,8 @@ local fnames
   Boys
 ;
 #delimit cr
-local conditions ALL==1 income=="mid"
-local fnames All_noBMI MidIncome_noBMI
+local conditions ALL==1 income=="mid" gender=="F"
+local fnames All_noBMI MidIncome_noBMI Girls_noBMI
 
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
@@ -1727,6 +1731,7 @@ if `gender'==1 {
 **** (17) Program same sex IV estimates to have an over-identifying test
 ********************************************************************************
 if `overID'==1 {
+	local gplus two three four
 	local jj=1
 	local n1=1
 	local n2=2
@@ -1741,12 +1746,12 @@ if `overID'==1 {
 	gen int4b = (1-smix123)*boy4
 
 	
-	local twoSel boy1 boy2
-	local threeSel boy1 boy2 boy3 boy12 girl12 int3
-	local fourSel boy1 boy2 boy3 boy4 boy12 girl12 boy123 girl123 int3 int4*
-	local twoIns smix12
-	local threeIns smix123
-	local fourIns smix1234
+	local twoSel     boy1 boy2
+	local threeSel   boy1 boy2 boy3 boy12 girl12 int3
+	local fourSel    boy1 boy2 boy3 boy4 boy12 girl12 boy123 girl123 int3 int4*
+	local twoInsts   smix12   twin_two_fam
+	local threeInsts smix123  twin_three_fam
+	local fourInsts  smix1234 twin_four_fam
 
 	mat SarganStat = J(3,3,.)
 	mat SarganP    = J(3,3,.)
@@ -1756,27 +1761,24 @@ if `overID'==1 {
 		keep `cond'&`n'_plus==1			
 
 		foreach y of varlist $outcomes {
-			eststo: ivreg2 `y' `base' $age $S $H ``n'Sel' (fert=twin_`n'_fam `n'Ins) /*
-			*/ `wt', `se' savefirst savefp(f`n3')
-			mat SarganStat[`jj',1]=e(sargan)
-			mat SarganP[`jj',1]   =e(sarganp)
+			eststo: ivreg2 `y' `base' $age $S $H ``n'Sel' (fert = ``n'Insts') `wt', /*
+			*/ `se' partial(`base') savefirst savefp(f`n3')
+			mat SarganStat[`jj',1] = `e(sargan)'
+			mat SarganP[`jj',1]    = `e(sarganp)'
 
+			eststo: ivreg2 `y' `base' $age $H ``n'Sel' (fert = ``n'Insts') `wt'     /*
+			*/ if e(sample), `se' partial(`base') savefirst savefp(f`n2')
+			mat SarganStat[`jj',2] = `e(sargan)'
+			mat SarganP[`jj',2]    = `e(sarganp)'
+
+			eststo: ivreg2 `y' `base' ``n'Sel' (fert = ``n'Insts') `wt'             /*
+			*/ if e(sample), `se' partial(`base') savefirst savefp(f`n1')
+			mat SarganStat[`jj',3] = `e(sargan)'
+			mat SarganP[`jj',3]    = `e(sarganp)'
 			mat list SarganStat
 			mat list SarganP
+
 			
-			eststo: ivreg2 `y' `base' $age $H ``n'Sel' (fert=twin_`n'_fam `n'Ins)    /*
-			*/ `wt' if e(sample), `se' savefirst savefp(f`n2')
-			mat SarganStat[`jj',2]=e(sargan)
-			mat SarganP[`jj',2]   =e(sarganp)
-
-			mat list SarganStat
-			mat list SarganP
-
-			eststo: ivreg2 `y' `base' ``n'Sel' (fert=twin_`n'_fam `n'Ins)            /*
-			*/ `wt' if e(sample), `se' savefirst savefp(f`n1')
-			mat SarganStat[`jj',3]=e(sargan)
-			mat SarganP[`jj',3]   =e(sarganp)
-
 			local estimates `estimates'  est`n3' est`n2' est`n1' 
 			local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert
 			local n1=`n1'+3
