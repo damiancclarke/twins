@@ -67,7 +67,7 @@ foreach num of numlist 1(1)7 {
 	*/ v504 v602 v605 v715 v701 v730 bord b0 b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 b11/*
 	*/ b12 b13 b14 b15 b16 v613 v614 m19 m19a v367 v312 v364 m4 m5 m8 m9 m10 /*
 	*/ m12 m14 m15 m16 m17 m18 m19 m19a m2a m2b m2n bidx
-	
+		
 	cap rename v010 year_birth
 	cap rename v012 agemay
 	cap rename v106 educlevel_f
@@ -286,6 +286,10 @@ gen antenateDummy=antenatal!=0 if antenatal!=.
 foreach var of varlist prenate_doc prenate_nurse prenate_none {
 	replace `var'=. if `var'==9
 }
+gen prenateEither=1(prenate_doc==1|prenate_nurse==1)
+bys _cou _year v001: egen prenateCluster=max(prenateEither)
+bys _cou _year v101: egen prenateRegion=max(prenateEither)
+
 
 gen poor1=wealth==1
 gen agesq=age*age
@@ -400,6 +404,39 @@ foreach group in group1 group2 group3 group4 {
 	drop gtotal N
 	macro shift
 }
+
+********************************************************************************
+*** (2G) Sex composition variables
+********************************************************************************
+foreach num of numlist 1(1)5 {
+	gen sex`num'=sex if bord==`num'
+	bys id: egen g`num'=min(sex`num')
+
+	gen gend`num'="g" if g`num'==2
+	replace gend`num'="b" if g`num'==1
+	drop g`num' sex`num'
+}
+gen  mix1=gend1
+egen mix2=concat(gend1 gend2)
+egen mix3=concat(gend1 gend2 gend3)
+egen mix4=concat(gend1 gend2 gend3 gend4)
+egen mix5=concat(gend1 gend2 gend3 gend4 gend5)
+
+gen boy1     = gend1=="b"
+gen boy2     = gend2=="b"
+gen boy3     = gend3=="b"
+gen boy4     = gend4=="b"
+gen boy12    = mix2=="bb"   if fert>1
+gen girl12   = mix2=="gg"   if fert>1
+gen boy123   = mix3=="bbb"  if fert>2
+gen girl123  = mix3=="ggg"  if fert>2
+gen boy1234  = mix4=="bbbb" if fert>3
+gen girl1234 = mix4=="gggg" if fert>3
+gen smix12   = mix2=="bb"  |mix2=="gg"   if fert>1
+gen smix123  = mix3=="bbb" |mix2=="ggg"  if fert>2
+gen smix1234 = mix3=="bbbb"|mix2=="gggg" if fert>3
+
+
 ********************************************************************************
 *** (3) Labels
 ********************************************************************************
@@ -456,6 +493,8 @@ lab var antenateDummy "Antenatal checkup (binary)"
 lab var prenate_doc "Prenatal care by doctor"
 lab var prenate_nurse "Prenatal care by nurse"
 lab var prenate_none "No prenatal care"
+lab var prenateCluster "Prenatal care reported in cluster"
+lab var prenateRegion "Prenatal care reported in region"
 lab var poor1 "In lowest asset quintile"
 lab var age "Child's age in years"
 lab var agemay "Mother's age in years"
@@ -516,6 +555,25 @@ lab var regionDesiredLeaveOut "Average desired fertility at the region"
 lab var clustDesiredLeaveOut "Average desired fertility at cluster leve"
 lab var educDesiredLeaveOut "Average desired fertility by country/education level"
 lab var regionEducDesiredLeaveOut "Average desired fertility by region/education"
+lab var mix1     "Gender mix of first 1 births"
+lab var mix2     "Gender mix of first 2 births"
+lab var mix3     "Gender mix of first 3 births"
+lab var mix4     "Gender mix of first 4 births"
+lab var mix5     "Gender mix of first 5 births"
+lab var boy1     "First born was a boy"
+lab var boy2     "Second born was a boy"
+lab var boy3     "Third born was a boy"
+lab var boy4     "Fourth born was a boy"
+lab var boy12    "First and second born were boys (at least 2 births)"
+lab var girl12   "First and second born were girls (at least 2 births)"
+lab var boy123   "First to third born were boys (at least 3 births)"
+lab var girl123  "First to third born were girls (at least 3 births)"
+lab var boy1234  "First to fourth born were boys (at least 4 births)"
+lab var girl1234 "First to fourth born were girls (at least 4 births)"
+lab var smix12   "1st and 2nd born were of the same gender (at least 2 births)"
+lab var smix123  "1st to 3rd born were of the same gender (at least 3 births)"
+lab var smix1234 "1st to 4th born were of the same gender (at least 4 births)"
+
 
 lab def ideal -1 "< ideal number" 0 "Ideal number" 1 "> than ideal number"
 lab val idealfam ideal
@@ -543,13 +601,15 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ twinexceedfamily twin_undesired twin_desired twinexceed singlexceed         /*
 */ twinattain desiredfert_region desiredfert_ethnic inc_stat contracep_intent  /*
 */ _merge birthspacing m* childageatdeath child_alive antenatal antenateDummy  /*
-*/ prenate_doc prenate_nurse prenate_none WBcountry v001 desiredfert_cluster*  /*
-*/ income motherage* antesq bmi_sq height_sq underweigh overweight ALL ADJfert /*
-*/ ADJbord ADJtwin ADJtwinfamily ADJtwin_bord ADJtwin_bord_fam ADJnummultiple  /*
-*/ ADJtwo_plus ADJthree_plus ADJfour_plus ADJfive_plus ADJtwo_plus_twins       /*
-*/ ADJthree_plus_twins ADJfour_plus_twins ADJfive_plus_twins ADJtwin_two_fam   /*
-*/ ADJtwin_three_fam ADJtwin_four_fam ADJtwin_five_fam ADJtwind twindfamily    /*
-*/ *DesiredLeaveOut 
+*/ prenate_doc prenate_nurse prenate_none prenateCluster prenateRegion v001    /*
+*/ WBcountry desiredfert_cluster* income motherage* antesq bmi_sq height_sq    /*
+*/ underweight overweight ALL ADJfert ADJbord ADJtwin ADJtwinfamily            /*
+*/ ADJtwin_bord ADJtwin_bord_fam ADJnummultiple ADJtwo_plus ADJthree_plus      /*
+*/ ADJfour_plus ADJfive_plus ADJtwo_plus_twins ADJthree_plus_twins             /*
+*/ ADJfour_plus_twins ADJfive_plus_twins ADJtwin_two_fam ADJtwin_three_fam     /*
+*/ ADJtwin_four_fam ADJtwin_five_fam ADJtwind twindfamily *DesiredLeaveOut     /*
+*/ mix1 mix2 mix3 mix4 mix5 boy1 boy2 boy3 boy4 girl12 girl123 girl1234 boy12  /*
+*/ boy123 boy1234 smix12 smix123 smix1234
 
 save "$OUT/DHS_twins", replace
 log close

@@ -59,13 +59,13 @@ global Log     "~/investigacion/Activa/Twins/Log"
 global Graphs  "~/investigacion/Activa/Twins/Results/Graphs"
 global Tables  "~/investigacion/Activa/Twins/Results/Outreg"
 
-foreach dirname in Summary Twin OLS RF IV Conley {
+foreach dirname in Summary Twin OLS RF IV Conley OverID {
 	cap mkdir "$Tables/`dirname'"
 }
 
 
 *SWITCHES (1 if run, else not run)
-local resave        0
+local resave        1
 local samples       27
 local matchrate     27
 local sumstats      27
@@ -78,7 +78,7 @@ local graphsSW      27
 local twin          27
 local OLS           27
 local RF            27
-local IV            1
+local IV            1000
 local IVtwin        27
 local desire        88
 local compl_fert    0
@@ -93,6 +93,7 @@ local adj_fert      11
   local ADJtwin     27
   local ADJdesire   11
 local gender        27
+local overID        1
 
 * VARIABLES
 global outcomes school_zscore
@@ -116,7 +117,7 @@ local wt [pw=sweight]
 local cond if agefirstbirth>=15&age<19
 
 * FILE SPECIFICATIONS
-local gplus two three four five
+local gplus two three four /*five*/
 local MAGE 0
 
 
@@ -170,9 +171,9 @@ local fnames
   Girls
   Boys
 ;
-
 #delimit cr
-
+local conditions ALL==1 income=="mid"
+local fnames All_noBMI MidIncome_noBMI
 
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
@@ -1720,4 +1721,82 @@ if `gender'==1 {
 			local ++ii
 		}
 	}
+}
+
+********************************************************************************
+**** (17) Program same sex IV estimates to have an over-identifying test
+********************************************************************************
+if `overID'==1 {
+	local jj=1
+	local n1=1
+	local n2=2
+	local n3=3
+	local estimates
+	local fstage
+
+	local OUT "$Tables/OverID/OverID"
+
+	gen int3  = (1-smix12)*boy3
+	gen int4a = (1-smix12)*boy4
+	gen int4b = (1-smix123)*boy4
+
+	
+	local twoSel boy1 boy2
+	local threeSel boy1 boy2 boy3 boy12 girl12 int3
+	local fourSel boy1 boy2 boy3 boy4 boy12 girl12 boy123 girl123 int3 int4*
+	local twoIns smix12
+	local threeIns smix123
+	local fourIns smix1234
+
+	mat SarganStat = J(3,3,.)
+	mat SarganP    = J(3,3,.)
+
+	foreach n in `gplus' {
+		preserve
+		keep `cond'&`n'_plus==1			
+
+		foreach y of varlist $outcomes {
+			eststo: ivreg2 `y' `base' $age $S $H ``n'Sel' (fert=twin_`n'_fam `n'Ins) /*
+			*/ `wt', `se' savefirst savefp(f`n3')
+			mat SarganStat[`jj',1]=e(sargan)
+			mat SarganP[`jj',1]   =e(sarganp)
+
+			mat list SarganStat
+			mat list SarganP
+			
+			eststo: ivreg2 `y' `base' $age $H ``n'Sel' (fert=twin_`n'_fam `n'Ins)    /*
+			*/ `wt' if e(sample), `se' savefirst savefp(f`n2')
+			mat SarganStat[`jj',2]=e(sargan)
+			mat SarganP[`jj',2]   =e(sarganp)
+
+			mat list SarganStat
+			mat list SarganP
+
+			eststo: ivreg2 `y' `base' ``n'Sel' (fert=twin_`n'_fam `n'Ins)            /*
+			*/ `wt' if e(sample), `se' savefirst savefp(f`n1')
+			mat SarganStat[`jj',3]=e(sargan)
+			mat SarganP[`jj',3]   =e(sarganp)
+
+			local estimates `estimates'  est`n3' est`n2' est`n1' 
+			local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert
+			local n1=`n1'+3
+			local n2=`n2'+3
+			local n3=`n3'+3
+			local ++jj
+		}
+		restore
+	}
+
+	mat2txt, matrix(SarganStat) saving("$Tables/OverID/SarganStat.txt") /*
+	*/ format(%6.4f) replace
+	mat2txt, matrix(SarganP) saving("$Tables/OverID/ConleyResults.txt") /*
+	*/ format(%6.4f) replace
+
+	estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
+	*/ keep(fert $age $S $H)
+	estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
+	*/ keep(twin_* $age $S $H)
+
+	estimates clear
+	macro shift	
 }
