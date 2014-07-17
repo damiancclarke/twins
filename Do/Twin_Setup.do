@@ -433,8 +433,8 @@ gen girl123  = mix3=="ggg"  if fert>2
 gen boy1234  = mix4=="bbbb" if fert>3
 gen girl1234 = mix4=="gggg" if fert>3
 gen smix12   = mix2=="bb"  |mix2=="gg"   if fert>1
-gen smix123  = mix3=="bbb" |mix2=="ggg"  if fert>2
-gen smix1234 = mix3=="bbbb"|mix2=="gggg" if fert>3
+gen smix123  = mix3=="bbb" |mix3=="ggg"  if fert>2
+gen smix1234 = mix4=="bbbb"|mix4=="gggg" if fert>3
 
 
 ********************************************************************************

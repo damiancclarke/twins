@@ -79,7 +79,7 @@ local graphsSW      27
 local twin          27
 local OLS           27
 local RF            27
-local IV            1
+local IV            27
 local IVtwin        27
 local desire        88
 local compl_fert    0
@@ -176,8 +176,6 @@ local fnames
   Boys
 ;
 #delimit cr
-local conditions ALL==1 income=="mid" gender=="F"
-local fnames All_noBMI MidIncome_noBMI Girls_noBMI
 
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
@@ -1033,11 +1031,11 @@ if `IV'==1 {
 
 			foreach y of varlist $outcomes {
 				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
-				*/ `se' savefirst savefp(f`n3')
+				*/ `se' savefirst savefp(f`n3') partial(`base')
 				eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'        /*
-				*/ if e(sample), `se' savefirst savefp(f`n2')
+				*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
 				eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),  /*
-				*/ `se' savefirst savefp(f`n1')
+				*/ `se' savefirst savefp(f`n1') partial(`base')
 
 				local estimates `estimates'  est`n3' est`n2' est`n1' 
 				local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert
@@ -1742,7 +1740,7 @@ if `overID'==1 {
 	local OUT "$Tables/OverID/OverID"
 
 	gen int3  = (1-smix12)*boy3
-	gen int4a = (1-smix12)*boy4
+	gen int4a = (1-smix123)*boy3
 	gen int4b = (1-smix123)*boy4
 
 	
@@ -1763,18 +1761,18 @@ if `overID'==1 {
 		foreach y of varlist $outcomes {
 			eststo: ivreg2 `y' `base' $age $S $H ``n'Sel' (fert = ``n'Insts') `wt', /*
 			*/ `se' partial(`base') savefirst savefp(f`n3')
-			mat SarganStat[`jj',1] = `e(sargan)'
-			mat SarganP[`jj',1]    = `e(sarganp)'
+			mat SarganStat[`jj',1] = `e(j)'
+			mat SarganP[`jj',1]    = `e(jp)'
 
 			eststo: ivreg2 `y' `base' $age $H ``n'Sel' (fert = ``n'Insts') `wt'     /*
 			*/ if e(sample), `se' partial(`base') savefirst savefp(f`n2')
-			mat SarganStat[`jj',2] = `e(sargan)'
-			mat SarganP[`jj',2]    = `e(sarganp)'
+			mat SarganStat[`jj',2] = `e(j)'
+			mat SarganP[`jj',2]    = `e(jp)'
 
 			eststo: ivreg2 `y' `base' ``n'Sel' (fert = ``n'Insts') `wt'             /*
 			*/ if e(sample), `se' partial(`base') savefirst savefp(f`n1')
-			mat SarganStat[`jj',3] = `e(sargan)'
-			mat SarganP[`jj',3]    = `e(sarganp)'
+			mat SarganStat[`jj',3] = `e(j)'
+			mat SarganP[`jj',3]    = `e(jp)'
 			mat list SarganStat
 			mat list SarganP
 
