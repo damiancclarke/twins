@@ -95,6 +95,7 @@ local adj_fert      11
   local ADJdesire   11
 local gender        27
 local overID        1
+local ConGamma      1
 
 * VARIABLES
 global outcomes school_zscore
@@ -1800,3 +1801,47 @@ if `overID'==1 {
 	estimates clear
 	macro shift	
 }
+
+********************************************************************************
+**** (18) Conley gamma estimates via IV using same sex...
+********************************************************************************
+if `ConGamma'==1 {
+
+	cap gen int3  = (1-smix12)*boy3
+	cap gen int4a = (1-smix123)*boy3
+	cap gen int4b = (1-smix123)*boy4
+
+	preserve
+	keep `cond'&two_plus==1
+	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 twin_two_family            /*
+	*/ (fert = smix12) `wt', `se' partial(`base') savefirst savefp(f2)
+	local et2 = _b[twin_two_family]
+	restore
+	
+	preserve
+	keep `cond'&three_plus==1
+	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 boy3 boy12 girl12 int3     /*
+	*/ twin_three_family (fert=smix123) `wt', `se' partial(`base') savefirst  /*
+	*/ savefp(f3)
+	local et3 = _b[twin_three_family]
+	restore
+
+	preserve	
+	keep `cond'&four_plus==1
+	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 boy3 boy4 boy12 girl12     /*
+	*/ boy123 girl123 int3 int4* twin_four_family (fert=smix1234) `wt', `se'  /*
+	*/ partial(`base') savefirst savefp(f4)
+	local et4 = _b[twin_four_family]
+	restore
+
+	estout est1 est2 est3 using "$TABLES/Conley/GammaEst.xls", replace  /*
+	*/ `estopt' `varlab' keep(fert twin_* $age $S $H)
+	estout f2fert f3fert f4fert using "$TABLES/Conley/GammaEst_first.xls", /*
+	*/ replace `estopt' `varlab' keep(smix* twin_* $age $S $H)
+
+	dis "twin two: `et2'"
+	dis "twin three: `et3'"
+	dis "twin four: `et4'"
+}
+
+log close
