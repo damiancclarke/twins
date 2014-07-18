@@ -94,7 +94,7 @@ local adj_fert      11
   local ADJtwin     27
   local ADJdesire   11
 local gender        27
-local overID        1
+local overID        27
 local ConGamma      1
 
 * VARIABLES
@@ -1790,7 +1790,7 @@ if `overID'==1 {
 
 	mat2txt, matrix(SarganStat) saving("$Tables/OverID/SarganStat.txt") /*
 	*/ format(%6.4f) replace
-	mat2txt, matrix(SarganP) saving("$Tables/OverID/ConleyResults.txt") /*
+	mat2txt, matrix(SarganP) saving("$Tables/OverID/SarganP.txt") /*
 	*/ format(%6.4f) replace
 
 	estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
@@ -1813,25 +1813,25 @@ if `ConGamma'==1 {
 
 	preserve
 	keep `cond'&two_plus==1
-	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 twin_two_family            /*
+	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 twin_two_fam               /*
 	*/ (fert = smix12) `wt', `se' partial(`base') savefirst savefp(f2)
-	local et2 = _b[twin_two_family]
+	local et2 = _b[twin_two_fam]
 	restore
 	
 	preserve
 	keep `cond'&three_plus==1
 	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 boy3 boy12 girl12 int3     /*
-	*/ twin_three_family (fert=smix123) `wt', `se' partial(`base') savefirst  /*
+	*/ twin_three_fam    (fert=smix123) `wt', `se' partial(`base') savefirst  /*
 	*/ savefp(f3)
-	local et3 = _b[twin_three_family]
+	local et3 = _b[twin_three_fam]
 	restore
 
 	preserve	
 	keep `cond'&four_plus==1
 	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 boy3 boy4 boy12 girl12     /*
-	*/ boy123 girl123 int3 int4* twin_four_family (fert=smix1234) `wt', `se'  /*
+	*/ boy123 girl123 int3 int4* twin_four_fam    (fert=smix1234) `wt', `se'  /*
 	*/ partial(`base') savefirst savefp(f4)
-	local et4 = _b[twin_four_family]
+	local et4 = _b[twin_four_fam]
 	restore
 
 	estout est1 est2 est3 using "$TABLES/Conley/GammaEst.xls", replace  /*
