@@ -27,6 +27,7 @@ Questions should be directed to damian.clarke@economics.ox.ac.uk.
 
 
 Last edit:
+* Jul 22nd, 2014: Adding MMR test
 * Jul 15th, 2014: Overidentification test
 * Jul 14th, 2014: Alternative health var (height only)
 * May 29th, 2014: instrumenting for desired fertility
@@ -60,7 +61,7 @@ global Log     "~/investigacion/Activa/Twins/Log"
 global Graphs  "~/investigacion/Activa/Twins/Results/Graphs"
 global Tables  "~/investigacion/Activa/Twins/Results/Outreg"
 
-foreach dirname in Summary Twin OLS RF IV Conley OverID {
+foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 	cap mkdir "$Tables/`dirname'"
 }
 
@@ -75,7 +76,7 @@ local sumstats2     0
   local graphs2     0
 local trends        0
 local graphsMB      27
-local graphsSW      27
+local graphsSW      1
 local twin          27
 local OLS           27
 local RF            27
@@ -95,7 +96,8 @@ local adj_fert      11
   local ADJdesire   11
 local gender        27
 local overID        27
-local ConGamma      1
+local ConGamma      0
+local MMR           11
 
 * VARIABLES
 global outcomes school_zscore
@@ -784,33 +786,18 @@ if `graphsMB'==1 {
 }
 
 if `graphsSW'==1 {
-	/*
 	cap mkdir "$Graphs/SW"
-	preserve
-	gen inter=.
-	levelsof _cou, local(levels)
-	foreach c of local levels {
-		cap qui reg twind100 $twinpredict `wt' `cond'&_cou==`c', `se'
-		if _rc==0 replace inter=_b[height] if _cou==`c'
-	}
-	collapse height twind inter, by(country)
-	gen slopepar=0.005/inter
-	gen y=twind
-	gen x=height
-	gen x1=height-slopepar
-	gen x2=height+slopepar
-	gen y1=twind-slopepar*inter
-	gen y2=twind+slopepar*inter
-	twoway pcarrow y1 x1 y2 x2 || scatter twind height, ///
-	  mlabel(country) mlabsize(vsmall) scheme(s1color) ytitle("Frequency Twin") ///
-	  xtitle("Mother's Height (cm)") title("Cross and Within Country Variation") ///
-	  subtitle("Height and Twinning") ///
-	  legend(label(1 "Within Country Variation") label(2 "Country Mean")) ///
-	  note("Country specific trends condition on full controls from twin regression.")
+	arrowplot twind height `cond' `wt', groupvar(country) linesize(0.0025) /*
+	*/ controls(motherage motheragesq agefirstbirth educf /*
+	*/ educfyrs_sq _yb*) regopts(`se') scheme(s1color) /*
+	*/ groupname(Country) ytitle("Frequency Twin") /*
+	*/ xtitle("Mother's Height (cm)") subtitle("Height and Twinning") /*
+	*/ title("Cross and Within Country Variation") /*
+	*/ note("Country specific trends condition on full controls from twin regression.")
 	graph export "$Graphs/SW/height_country.eps", as(eps) replace
-	restore
-	*/
-	
+
+
+	/*
 	preserve
 	use "$Data/DHS_twins_mortality", clear
 	gen IMRnotwin=infantmortality if twind!=1
@@ -844,6 +831,7 @@ if `graphsSW'==1 {
 	  note("Country specific trends condition on full controls from twin regression.")
 	graph export "$Graphs/SW/IMR_country.eps", as(eps) replace
 	restore
+	*/
 }
 
 ********************************************************************************
@@ -1803,7 +1791,8 @@ if `overID'==1 {
 }
 
 ********************************************************************************
-**** (18) Conley gamma estimates via IV using same sex...
+*** (18) Conley gamma estimates via IV using same sex...
+***  Think about this code: here confounding gamma with extra birth due to smpl
 ********************************************************************************
 if `ConGamma'==1 {
 
@@ -1813,35 +1802,69 @@ if `ConGamma'==1 {
 
 	preserve
 	keep `cond'&two_plus==1
-	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 twin_two_fam               /*
-	*/ (fert = smix12) `wt', `se' partial(`base') savefirst savefp(f2)
+	eststo: ivreg2 school_zscore `base' boy1 boy2 twin_two_fam     /*
+	*/ (fert = smix12) `wt', `se' savefirst savefp(f2)
 	local et2 = _b[twin_two_fam]
 	restore
+	dis "twin two: `et2'"
 	
 	preserve
 	keep `cond'&three_plus==1
-	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 boy3 boy12 girl12 int3     /*
-	*/ twin_three_fam    (fert=smix123) `wt', `se' partial(`base') savefirst  /*
-	*/ savefp(f3)
+	eststo: ivreg2 school_zscore `base' boy1 boy2 boy3 boy12 girl12 /*
+	*/ int3 twin_three_fam (fert=smix123) `wt', `se' savefirst savefp(f3)
 	local et3 = _b[twin_three_fam]
 	restore
+	dis "twin three: `et3'"
 
 	preserve	
 	keep `cond'&four_plus==1
-	eststo: ivreg2 `y' `base' $age $S $H boy1 boy2 boy3 boy4 boy12 girl12     /*
-	*/ boy123 girl123 int3 int4* twin_four_fam    (fert=smix1234) `wt', `se'  /*
-	*/ partial(`base') savefirst savefp(f4)
+	eststo: ivreg2 school_zscore `base' boy1 boy2 boy3 boy4 boy12  /*
+	*/ girl12 boy123 girl123 int3 int4* twin_four_fam  (fert=smix1234) `wt',  /*
+	*/ `se' savefirst savefp(f4)
 	local et4 = _b[twin_four_fam]
 	restore
+	dis "twin four: `et4'"
 
 	estout est1 est2 est3 using "$TABLES/Conley/GammaEst.xls", replace  /*
-	*/ `estopt' `varlab' keep(fert twin_* $age $S $H)
+	*/ `estopt' `varlab' keep(fert twin_*)
 	estout f2fert f3fert f4fert using "$TABLES/Conley/GammaEst_first.xls", /*
-	*/ replace `estopt' `varlab' keep(smix* twin_* $age $S $H)
+	*/ replace `estopt' `varlab' keep(smix* twin_*)
 
-	dis "twin two: `et2'"
-	dis "twin three: `et3'"
-	dis "twin four: `et4'"
+	dis "twin estimates: `et2, `et3', `et4'"
 }
 
+********************************************************************************
+**** (19) MMR Tests
+********************************************************************************
+if `MMR'==1 {
+	local outfile "$Tables/MMR/MMRTest"
+	cap rm "`outfile'.txt"
+	cap rm "`outfile'.xls"
+	cap rm "`outfile'.tex"
+	
+	preserve
+	bys id: gen mothercount=_n
+	keep if mothercount==1
+	merge 1:1 id using "$Data/TwinsMMR", gen(_mergeMM)
+
+	gen anyMMR=numMaternalDeaths!=0
+	gen deathsperSister=numMaternalDeaths/numSisters
+	gen SMA2=SiblingMeanAge^2
+	gen SMA3=SiblingMeanAge^3
+	
+	foreach y of varlist anyMMR numMaternalDeaths deathsperSister {
+		reg `y' numSister SiblingMeanAge SMA* `base' $age $S $H `wt', robust
+		outreg2 numSister SiblingMeanAge SMA* $age $S $H using "`outfile'.xls",/*
+		*/ excel append
+		outreg2 numSister SiblingMeanAge SMA* $age $S $H using "`outfile'.tex",/*
+		*/ tex(pretty) append
+	}
+
+	restore
+}
+
+
+********************************************************************************
+**** (20) Clean up
+********************************************************************************
 log close
