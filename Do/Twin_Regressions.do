@@ -76,7 +76,7 @@ local sumstats2     0
   local graphs2     0
 local trends        0
 local graphsMB      27
-local graphsSW      1
+local graphsSW      27
 local twin          27
 local OLS           27
 local RF            27
@@ -97,7 +97,7 @@ local adj_fert      11
 local gender        27
 local overID        27
 local ConGamma      0
-local MMR           11
+local MMR           1
 
 * VARIABLES
 global outcomes school_zscore
@@ -1720,13 +1720,16 @@ if `gender'==1 {
 if `overID'==1 {
 	local gplus two three four
 	local jj=1
-	local n1=1
-	local n2=2
-	local n3=3
+	foreach ii of numlist 1(1)6 {
+		local n`ii'=`ii'
+	}
 	local estimates
 	local fstage
+	local estimates2
+	local fstage2
 
 	local OUT "$Tables/OverID/OverID"
+	local OUT2 "$Tables/OverID/SameSex"
 
 	gen int3  = (1-smix12)*boy3
 	gen int4a = (1-smix123)*boy3
@@ -1736,9 +1739,9 @@ if `overID'==1 {
 	local twoSel     boy1 boy2
 	local threeSel   boy1 boy2 boy3 boy12 girl12 int3
 	local fourSel    boy1 boy2 boy3 boy4 boy12 girl12 boy123 girl123 int3 int4*
-	local twoInsts   smix12   twin_two_fam
-	local threeInsts smix123  twin_three_fam
-	local fourInsts  smix1234 twin_four_fam
+	local twoInsts   smix12
+	local threeInsts smix123
+	local fourInsts  smix1234
 
 	mat SarganStat = J(3,3,.)
 	mat SarganP    = J(3,3,.)
@@ -1749,42 +1752,58 @@ if `overID'==1 {
 
 		foreach y of varlist $outcomes {
 			eststo: ivreg2 `y' `base' $age $S $H ``n'Sel' (fert = ``n'Insts') `wt', /*
-			*/ `se' partial(`base') savefirst savefp(f`n3')
+			*/ `se' partial(`base') savefirst savefp(f`n6')
+			eststo: ivreg2 `y' `base' $age $S $H ``n'Sel' (fert = ``n'Insts' /*
+			*/ twin_`n'_fam) `wt', `se' partial(`base') savefirst savefp(f`n5')
 			mat SarganStat[`jj',1] = `e(j)'
 			mat SarganP[`jj',1]    = `e(jp)'
 
 			eststo: ivreg2 `y' `base' $age $H ``n'Sel' (fert = ``n'Insts') `wt'     /*
-			*/ if e(sample), `se' partial(`base') savefirst savefp(f`n2')
+			*/ if e(sample), `se' partial(`base') savefirst savefp(f`n4')
+			eststo: ivreg2 `y' `base' $age $H ``n'Sel' (fert=``n'Insts' twin_`n'_fam) /*
+			*/ `wt' if e(sample), `se' partial(`base') savefirst savefp(f`n3')
 			mat SarganStat[`jj',2] = `e(j)'
 			mat SarganP[`jj',2]    = `e(jp)'
 
 			eststo: ivreg2 `y' `base' ``n'Sel' (fert = ``n'Insts') `wt'             /*
-			*/ if e(sample), `se' partial(`base') savefirst savefp(f`n1')
+			*/ if e(sample), `se' partial(`base') savefirst savefp(f`n2')
+			eststo: ivreg2 `y' `base' ``n'Sel' (fert = ``n'Insts' twin_`n'_fam)  /*
+			*/ `wt' if e(sample), `se' partial(`base') savefirst savefp(f`n1')
 			mat SarganStat[`jj',3] = `e(j)'
 			mat SarganP[`jj',3]    = `e(jp)'
 			mat list SarganStat
 			mat list SarganP
 
 			
-			local estimates `estimates'  est`n3' est`n2' est`n1' 
-			local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert
-			local n1=`n1'+3
-			local n2=`n2'+3
-			local n3=`n3'+3
+			local estimates `estimates'  est`n6' est`n4' est`n2' 
+			local fstage `fstage' f`n1'fert f`n3'fert f`n5'fert
+			local estimates2 `estimates2'  est`n5' est`n3' est`n1' 
+			local fstage2 `fstage2' f`n2'fert f`n4'fert f`n6'fert
+			foreach ii of numlist 1(1)6 {
+				local n`ii'=`n`ii''+6
+			}
 			local ++jj
 		}
 		restore
 	}
 
+	matrix rownames SarganStat = TwoPlus ThreePlus FourPlus
+	matrix colnames SarganStat = S+H H Base
+	matrix rownames SarganP    = TwoPlus ThreePlus FourPlus
+	matrix colnames SarganP    = S+H H Base
 	mat2txt, matrix(SarganStat) saving("$Tables/OverID/SarganStat.txt") /*
 	*/ format(%6.4f) replace
 	mat2txt, matrix(SarganP) saving("$Tables/OverID/SarganP.txt") /*
 	*/ format(%6.4f) replace
 
+	estout `estimates2' using "`OUT2'.xls", replace `estopt' `varlab' /*
+	*/ keep(fert $age $S $H)
+	estout `fstage2' using "`OUT2'_first.xls", replace `estopt' `varlab' /*
+	*/ keep(smix* $age $S $H)
 	estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
 	*/ keep(fert $age $S $H)
 	estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-	*/ keep(twin_* $age $S $H)
+	*/ keep(twin_* smix* $age $S $H)
 
 	estimates clear
 	macro shift	
