@@ -39,11 +39,13 @@ Last edit:
 early draft.
 */
 
+set max_memory 6000m
+
 clear all
 version 11.2
 cap log close
 set more off
-set mem 2000m
+*set mem 2000m
 set matsize 2000
 
 foreach ado in ivreg2 outreg2 estout ranktest mat2txt plausexog {
@@ -95,9 +97,9 @@ local adj_fert      11
   local ADJtwin     27
   local ADJdesire   11
 local gender        27
-local overID        27
+local overID        1
 local ConGamma      0
-local MMR           1
+local MMR           27
 
 * VARIABLES
 global outcomes school_zscore
@@ -1718,6 +1720,7 @@ if `gender'==1 {
 **** (17) Program same sex IV estimates to have an over-identifying test
 ********************************************************************************
 if `overID'==1 {
+	local base _country* _yb* _age* _contracep* `add'
 	local gplus two three four
 	local jj=1
 	foreach ii of numlist 1(1)6 {
@@ -1736,12 +1739,12 @@ if `overID'==1 {
 	gen int4b = (1-smix123)*boy4
 
 	
-	local twoSel     boy1 boy2
-	local threeSel   boy1 boy2 boy3 boy12 girl12 int3
-	local fourSel    boy1 boy2 boy3 boy4 boy12 girl12 boy123 girl123 int3 int4*
-	local twoInsts   smix12
-	local threeInsts smix123
-	local fourInsts  smix1234
+	local twoSel     boy1
+	local threeSel   malec boy12 girl12 int3 
+	local fourSel    malec boy12 girl12 boy123 girl123 int3 int4*
+	local twoInsts   boy12 girl12
+	local threeInsts boy123 girl123
+	local fourInsts  boy1234 girl1234
 
 	mat SarganStat = J(3,3,.)
 	mat SarganP    = J(3,3,.)
@@ -1803,10 +1806,11 @@ if `overID'==1 {
 	estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
 	*/ keep(fert $age $S $H)
 	estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-	*/ keep(twin_* smix* $age $S $H)
+	*/ keep(twin_* boy1* girl1* $age $S $H)
 
-	estimates clear
-	macro shift	
+	*estimates clear
+
+	local base malec _country* _yb* _age* _contracep* `add'
 }
 
 ********************************************************************************
@@ -1850,6 +1854,7 @@ if `ConGamma'==1 {
 	*/ replace `estopt' `varlab' keep(smix* twin_*)
 
 	dis "twin estimates: `et2, `et3', `et4'"
+
 }
 
 ********************************************************************************
