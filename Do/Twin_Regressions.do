@@ -75,10 +75,10 @@ local sumstats      27
 local sumstats2     0
   local graphs2     0
 local trends        0
-local graphsMB      27
+local graphsMB      1
 local graphsSW      27
 local twin          27
-local OLS           27
+local OLS           1
 local RF            27
 local IV            1
 local IVtwin        27
@@ -111,7 +111,7 @@ global base malec i._cou i.year_birth i.age i.contracep_intent
 global age motherage motheragesq motheragecub agefirstbirth 
 global S educf educfyrs_sq
 global H height /*bmi*/ 
-global HP height bmi prenate*
+global HP height prenateCluster
 global bal1 fert idealnumkids agefirstbirth educf educp height underweight
 global balance $bal1 prenate* motherage childmortality infantmortal 
 
@@ -180,8 +180,6 @@ local fnames
 ;
 #delimit cr
 
-local conditions ALL==1
-local fnames All_altsamp
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
 *******************************************************************************
@@ -799,38 +797,16 @@ if `graphsSW'==1 {
 	graph export "$Graphs/SW/height_country.eps", as(eps) replace
 
 
-	/*
 	preserve
 	use "$Data/DHS_twins_mortality", clear
 	gen IMRnotwin=infantmortality if twind!=1
-	collapse IMRnotwin twind motherage motheragesq agefirstbirth educf educfyrs_sq /*
-	*/ height bmi child_yob fert, by(id country)
-	replace fert=round(fert)
-	gen IMR=1 if IMRnotwin>0
-	replace IMR=0 if IMRnotwin==0
-	gen twinmother=100 if twind>0
-	replace twinmother=0 if twind==0
-	gen inter=.
-	levelsof country, local(levels)
-	foreach c of local levels {
-		cap reg twinmother $twinpred height bmi child_yob IMR i.fert /*
-		*/ if country==`"`c'"'
-		if _rc==0 replace inter=_b[IMR] if country==`"`c'"'
-	}
-	collapse IMR twinmother inter, by(country)
-	gen slopepar=0.005/inter
-	gen y=twinmother
-	gen x=IMR
-	gen x2=IMR-slopepar
-	gen x1=IMR+slopepar
-	gen y2=twinmother-slopepar*inter
-	gen y1=twinmother+slopepar*inter
-	twoway pcarrow y1 x1 y2 x2 || scatter twinmother IMR, ///
-	  mlabel(country) mlabsize(vsmall) scheme(s1color) ytitle("Frequency Twin") ///
-	  xtitle("Infant Mortality") title("Cross and Within Country Variation") ///
-	  subtitle("Infant Mortality and Twinning") ///
-	  legend(label(1 "Within Country Variation") label(2 "Country Mean")) ///
-	  note("Country specific trends condition on full controls from twin regression.")
+	arrowplot twindfamily IMRnotwin `cond' `wt', groupvar(country) /*
+	*/ linesize(0.005) controls(motherage motheragesq agefirstbirth educf /*
+	*/ educfyrs_sq _yb*) regopts(`se') scheme(s1color) /*
+	*/ groupname(Country) ytitle("Frequency Twin") /*
+	*/ xtitle("Any Infant Mortality") subtitle("Infant Mortality and Twinning") /*
+	*/ title("Cross and Within Country Variation") /*
+	*/ note("Country specific trends condition on full controls from twin regression.")
 	graph export "$Graphs/SW/IMR_country.eps", as(eps) replace
 	restore
 	*/
@@ -958,9 +934,28 @@ if `OLS'==1 {
 			outreg2 fert $age $S $H using `out', excel append
 			reg `y' fert fertXdesired `base' $age $S $H `wt', `se'
 			outreg2 fert* $age $S $H using `out', excel append
-			}
+		}
 		restore
 	}
+	local out "$Tables/OLS/QQ_plusgroups.xls"
+	cap rm `out'
+	cap rm "$Tables/OLS/QQ_plusgroups.txt"
+	foreach n in `gplus' {
+		preserve
+		keep `cond'&`n'_plus==1			
+		foreach y of varlist $outcomes {
+			qui reg `y' fert `base' $age $S $HP, `se'
+			reg `y' fert `base' $age `wt' if e(sample), `se'
+			outreg2 fert $age using `out', excel append
+			reg `y' fert `base' $age $S `wt' if e(sample), `se'
+			outreg2 fert $age $S using `out', excel append
+			reg `y' fert `base' $age $S $H `wt', `se'
+			outreg2 fert $age $S $H using `out', excel append
+			reg `y' fert `base' $age $S $HP `wt', `se'
+			outreg2 fert $age $S $HP using `out', excel append
+		}
+		restore
+	}	
 }
 
 ********************************************************************************
@@ -1806,7 +1801,7 @@ if `overID'==1 {
 	estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
 	*/ keep(fert $age $S $H)
 	estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-	*/ keep(smix* boy1* girl1* $age $S $H)
+	*/ keep(smix* boy1* girl1* twin_* $age $S $H)
 
 	estimates clear
 	local base malec _country* _yb* _age* _contracep* `add'
