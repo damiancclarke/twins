@@ -39,13 +39,11 @@ Last edit:
 early draft.
 */
 
-set max_memory 6000m
 
 clear all
 version 11.2
-cap log close
 set more off
-*set mem 2000m
+cap log close
 set matsize 2000
 
 foreach ado in ivreg2 outreg2 estout ranktest mat2txt plausexog {
@@ -82,7 +80,7 @@ local graphsSW      27
 local twin          27
 local OLS           27
 local RF            27
-local IV            27
+local IV            1
 local IVtwin        27
 local desire        88
 local compl_fert    0
@@ -120,7 +118,7 @@ global balance $bal1 prenate* motherage childmortality infantmortal
 * ECONOMETRIC SPECIFICATIONS
 local se cluster(id)
 local wt [pw=sweight]
-local cond if agefirstbirth>=15&age<19
+local cond if age<19
 
 * FILE SPECIFICATIONS
 local gplus two three four five
@@ -182,6 +180,8 @@ local fnames
 ;
 #delimit cr
 
+local conditions ALL==1
+local fnames All_altsamp
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
 *******************************************************************************
