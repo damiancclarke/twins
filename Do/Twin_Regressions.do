@@ -1742,9 +1742,9 @@ if `overID'==1 {
 	local twoSel     boy1
 	local threeSel   malec boy12 girl12 int3 
 	local fourSel    malec boy12 girl12 boy123 girl123 int3 int4*
-	local twoInsts   boy12 girl12
-	local threeInsts boy123 girl123
-	local fourInsts  boy1234 girl1234
+	local twoInsts   smix12
+	local threeInsts smix123
+	local fourInsts  smix1234
 
 	mat SarganStat = J(3,3,.)
 	mat SarganP    = J(3,3,.)
@@ -1806,10 +1806,9 @@ if `overID'==1 {
 	estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
 	*/ keep(fert $age $S $H)
 	estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-	*/ keep(twin_* boy1* girl1* $age $S $H)
+	*/ keep(smix* boy1* girl1* $age $S $H)
 
-	*estimates clear
-
+	estimates clear
 	local base malec _country* _yb* _age* _contracep* `add'
 }
 
