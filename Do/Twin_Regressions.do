@@ -86,7 +86,7 @@ local desire        88
 local compl_fert    0
 local twinoccur_ols 27
 local twinoccur_iv  27
-local conley        27
+local conley        1
 local thresholdtest 27
 local balance       27
 local country       88
@@ -1273,7 +1273,7 @@ if `conley'==1 {
 	*****************************************************************************
 	*** (10a) Union of Confidence Intervals (have now removed $S and $H)
 	*****************************************************************************	
-	matrix conbounds = J(5,4,1)
+	matrix conbounds = J(7,4,1)
 	local ii=1
 	foreach n in `gplus' {
 		*local c `cond'&`n'_plus==1&income=="`inc'"
@@ -1284,7 +1284,8 @@ if `conley'==1 {
 		reg school_zscore fert twin_`n'_fam `base' $age `c'
 		outreg2 twin_`n'_fam fert using "$Tables/Conley/ConleyReg.xls", excel append
 		local estimate `=_b[twin_`n'_fam]'
-
+		local seest    `=_se[twin_`n'_fam]'
+		
 		foreach num of numlist 1 /*2*/ {
 			dis "estimating for `num' times the estimated coefficient on twins"
 			local est2=`estimate'*`num'
@@ -1326,15 +1327,46 @@ if `conley'==1 {
 		mat conbounds[`ii',3]=_b[fert]-1.96*_se[fert]
 		mat conbounds[`ii',4]=_b[fert]+1.96*_se[fert]
 
-		mat conbounds[5,`ii']=`estimate'
+		*NORMAL
+		matrix omega_eta = J(`items',`items',0)
+		matrix omega_eta[1,1] = `estimate'
+		matrix mu_eta = J(`items',1,0)
+		matrix mu_eta[1,1] = `seest'
+
+		foreach num of numlist 0(1)20 {
+			matrix om`num'=omega_eta
+			matrix om`num'[1,1] = ((`num'/20)*`estimate')
+			matrix mu`num'=mu_eta
+			matrix mu`num'[1,1]= (`num'/20)*`seest'
+		}
+
+		foreach num of numlist 0(1)20 {
+			local nd`num'=(`num'/20)*`estimate'*2
+		}
+		
+		plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam) `c',       /*
+		*/ omega(omega_eta) mu(mu_eta) level(0.95) graph(fert)                   /*
+		*/ graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10 om11 om12     /*
+		*/ om13 om14 om15 om16 om17 om18 om19 om20) graphmu(mu0 mu1 mu2 mu3 mu4  /*
+		*/ mu5 mu6 mu7 mu8 mu9 mu10 mu11 mu12 mu13 mu14 mu15 mu16 mu17 mu18 mu19 /*
+		*/ mu20) graphdelta(`nd0' `nd1' `nd2' `nd3' `nd4' `nd5' `nd6' `nd7'      /*
+		*/ `nd8' `nd9' `nd10' `nd11' `nd12' `nd13' `nd14' `nd15' `nd16' `nd17'   /*
+		*/ `nd18' `nd19' `nd20')
+		graph export "$Graphs/Conley/LTZ_`n'Normal.eps", as(eps) replace
+
+		mat conbounds[`ii',5]=_b[fert]-1.96*_se[fert]
+		mat conbounds[`ii',6]=_b[fert]+1.96*_se[fert]
+
+		
+		mat conbounds[7,`ii']=`estimate'
 		local ++ii
 		
-		mat colnames conbounds = LowerBound UpperBound LowerBound UpperBound
-		mat rownames conbounds = TwoPlus ThreePlus FourPlus FivePlus deltas
 	}
 	*****************************************************************************
 	*** (10c) Write Conley et al results to file
 	*****************************************************************************
+	mat colnames conbounds = LowerBound UpperBound LowerBound UpperBound
+	mat rownames conbounds = TwoPlus ThreePlus FourPlus FivePlus deltas
 	mat2txt, matrix(conbounds) saving("$Tables/Conley/ConleyResults.txt") /*
 		*/ format(%6.4f) replace
 }
