@@ -96,7 +96,7 @@ local adj_fert      11
   local ADJdesire   11
 local gender        27
 local overID        1
-local ConGamma      0
+local ConGamma      1
 local MMR           27
 
 * VARIABLES
@@ -1006,6 +1006,7 @@ if `IV'==1 {
 		local n1=1
 		local n2=2
 		local n3=3
+		local n4=4
 		local estimates
 		local fstage
 
@@ -1016,6 +1017,8 @@ if `IV'==1 {
 			keep `cond'&`condition'&`n'_plus==1			
 
 			foreach y of varlist $outcomes {
+				eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',    /*
+				*/ `se' savefirst savefp(f`n3') partial(`base')
 				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
 				*/ `se' savefirst savefp(f`n3') partial(`base')
 				eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'        /*
@@ -1023,11 +1026,12 @@ if `IV'==1 {
 				eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),  /*
 				*/ `se' savefirst savefp(f`n1') partial(`base')
 
-				local estimates `estimates'  est`n3' est`n2' est`n1' 
-				local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert
-				local n1=`n1'+3
-				local n2=`n2'+3
-				local n3=`n3'+3
+				local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
+				local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert f`n4'fert
+				local n1=`n1'+4
+				local n2=`n2'+4
+				local n3=`n3'+4
+				local n4=`n4'+4				
 			}
 			restore
 		}
@@ -1842,9 +1846,9 @@ if `ConGamma'==1 {
 	restore
 	dis "twin four: `et4'"
 
-	estout est1 est2 est3 using "$TABLES/Conley/GammaEst.xls", replace  /*
+	estout est1 est2 est3 using "$Tables/Conley/GammaEst.xls", replace  /*
 	*/ `estopt' `varlab' keep(fert twin_*)
-	estout f2fert f3fert f4fert using "$TABLES/Conley/GammaEst_first.xls", /*
+	estout f2fert f3fert f4fert using "$Tables/Conley/GammaEst_first.xls", /*
 	*/ replace `estopt' `varlab' keep(smix* twin_*)
 
 	dis "twin estimates: `et2, `et3', `et4'"
