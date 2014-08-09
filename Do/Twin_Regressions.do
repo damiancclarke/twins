@@ -1018,7 +1018,7 @@ if `IV'==1 {
 
 			foreach y of varlist $outcomes {
 				eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',    /*
-				*/ `se' savefirst savefp(f`n3') partial(`base')
+				*/ `se' savefirst savefp(f`n4') partial(`base')
 				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
 				*/ `se' savefirst savefp(f`n3') partial(`base')
 				eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'        /*
