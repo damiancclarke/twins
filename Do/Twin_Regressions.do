@@ -1925,42 +1925,30 @@ if `pool'==1 {
 	tokenize `fnames'
 	foreach condition of local conditions {
 		
-		local n1=1
-		local n2=2
-		local n3=3
-		local n4=4
-		local estimates
-		local fstage
-
-		local OUT "$Tables/IV/`1'"
+		local OUT "$Tables/IV/Pool`1'"
 
 		preserve
 		gen poolsample=(two_plus==1|three_plus==1|four_plus==1|five_plus==1)
+		local insts twin_two_family twin_three_family twin_four_family /*
+		*/ twin_five_family 
 		keep `cond'&`condition'&poolsample==1			
-
+		
 		foreach y of varlist $outcomes {
-			eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',    /*
-			*/ `se' savefirst savefp(f`n4') partial(`base')
-			eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
-			*/ `se' savefirst savefp(f`n3') partial(`base')
-			eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'        /*
-			*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
-			eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),  /*
-			*/ `se' savefirst savefp(f`n1') partial(`base')
-
-			local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
-			local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert f`n4'fert
-			local n1=`n1'+4
-			local n2=`n2'+4
-			local n3=`n3'+4
-			local n4=`n4'+4				
+			eststo: ivreg2 `y' `base' $age $S $HP (fert = `insts') `wt',    /*
+			*/ `se' savefirst savefp(f1) partial(`base')
+			eststo: ivreg2 `y' `base' $age $S $H (fert = `insts') `wt',    /*
+			*/ `se' savefirst savefp(f2) partial(`base')
+			eststo: ivreg2 `y' `base' $age $H (fert = `insts') `wt'        /*
+			*/ if e(sample), `se' savefirst savefp(f3) partial(`base')
+			eststo: ivreg2 `y' `base' (fert = `insts') `wt' if e(sample),  /*
+			*/ `se' savefirst savefp(f4) partial(`base')
 		}
 		restore
 
-		estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
+		estout est4 est3 est2 est1 using "`OUT'.xls", replace `estopt' `varlab' /*
 		*/ keep(fert $age $S $H)
-		estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-		*/ keep(twin_* $age $S $H)
+		estout f4fert f3fert f2fert f1fert using "`OUT'_first.xls", replace     /*
+		*/ `estopt' `varlab' keep(twin_* $age $S $H)
 
 		estimates clear
 		macro shift
