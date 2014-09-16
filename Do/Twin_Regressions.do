@@ -1929,8 +1929,7 @@ if `pool'==1 {
 
 		preserve
 		gen poolsample=(two_plus==1|three_plus==1|four_plus==1|five_plus==1)
-		local insts twin_two_family twin_three_family twin_four_family /*
-		*/ twin_five_family 
+		local insts twin_two_fam twin_three_fam twin_four_fam twin_five_fam
 		keep `cond'&`condition'&poolsample==1			
 		
 		foreach y of varlist $outcomes {
