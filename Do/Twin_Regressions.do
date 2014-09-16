@@ -75,18 +75,18 @@ local sumstats      27
 local sumstats2     0
   local graphs2     0
 local trends        0
-local graphsMB      1
+local graphsMB      111
 local graphsSW      27
 local twin          27
-local OLS           1
+local OLS           111
 local RF            27
-local IV            1
+local IV            111
 local IVtwin        27
 local desire        88
 local compl_fert    0
 local twinoccur_ols 27
 local twinoccur_iv  27
-local conley        1
+local conley        199
 local thresholdtest 27
 local balance       27
 local country       88
@@ -95,9 +95,10 @@ local adj_fert      11
   local ADJtwin     27
   local ADJdesire   11
 local gender        27
-local overID        1
-local ConGamma      1
+local overID        12
+local ConGamma      12
 local MMR           27
+local pool          1
 
 * VARIABLES
 global outcomes school_zscore
@@ -1917,6 +1918,54 @@ if `MMR'==1 {
 	restore
 }
 
+********************************************************************************
+**** (20) Pooled IV (see Angrist Lavy Schlosser, 2010)
+********************************************************************************
+if `pool'==1 {
+	tokenize `fnames'
+	foreach condition of local conditions {
+		
+		local n1=1
+		local n2=2
+		local n3=3
+		local n4=4
+		local estimates
+		local fstage
+
+		local OUT "$Tables/IV/`1'"
+
+		preserve
+		gen poolsample=(two_plus==1|three_plus==1|four_plus==1|five_plus==1)
+		keep `cond'&`condition'&poolsample==1			
+
+		foreach y of varlist $outcomes {
+			eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',    /*
+			*/ `se' savefirst savefp(f`n4') partial(`base')
+			eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
+			*/ `se' savefirst savefp(f`n3') partial(`base')
+			eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'        /*
+			*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
+			eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),  /*
+			*/ `se' savefirst savefp(f`n1') partial(`base')
+
+			local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
+			local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert f`n4'fert
+			local n1=`n1'+4
+			local n2=`n2'+4
+			local n3=`n3'+4
+			local n4=`n4'+4				
+		}
+		restore
+
+		estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
+		*/ keep(fert $age $S $H)
+		estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
+		*/ keep(twin_* $age $S $H)
+
+		estimates clear
+		macro shift
+	}
+}
 
 ********************************************************************************
 **** (20) Clean up
