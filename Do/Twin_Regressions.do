@@ -158,8 +158,6 @@ local varlab varlabels(agemay "Mother's age" magesq "Mother's Age Squared"
 
 local conditions
   ALL==1
-  age>=11
-  age<11
   child_yob<=1984
   child_yob>1984
   income=="low"
@@ -170,8 +168,6 @@ local conditions
 
 local fnames
   All
-  Over11
-  Under10
   BornPre1985
   BornPost1984
   LowIncome
@@ -1933,13 +1929,13 @@ if `pool'==1 {
 		keep `cond'&`condition'&poolsample==1			
 		
 		foreach y of varlist $outcomes {
-			eststo: ivreg2 `y' `base' $age $S $HP (fert = `insts') `wt',    /*
+			eststo: ivreg2 `y' `base' $age $S $HP _bord* (fert = `insts') `wt',  /*
 			*/ `se' savefirst savefp(f1) partial(`base')
-			eststo: ivreg2 `y' `base' $age $S $H (fert = `insts') `wt',    /*
+			eststo: ivreg2 `y' `base' $age $S $H _bord* (fert = `insts') `wt',   /*
 			*/ `se' savefirst savefp(f2) partial(`base')
-			eststo: ivreg2 `y' `base' $age $H (fert = `insts') `wt'        /*
+			eststo: ivreg2 `y' `base' $age $H _bord* (fert = `insts') `wt'       /*
 			*/ if e(sample), `se' savefirst savefp(f3) partial(`base')
-			eststo: ivreg2 `y' `base' (fert = `insts') `wt' if e(sample),  /*
+			eststo: ivreg2 `y' `base' _bord* (fert = `insts') `wt' if e(sample), /*
 			*/ `se' savefirst savefp(f4) partial(`base')
 		}
 		restore
