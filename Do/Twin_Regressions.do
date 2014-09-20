@@ -1925,7 +1925,7 @@ if `pool'==1 {
 
 		preserve
 		gen poolsample=(two_plus==1|three_plus==1|four_plus==1|five_plus==1)
-		local insts purgedtwo purgedthree purgedfour purgedfive
+		local ins purgedtwo purgedthree purgedfour purgedfive
 		keep `cond'&`condition'&poolsample==1			
 		
 		foreach y of varlist $outcomes {
@@ -1936,9 +1936,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' `base' $age $S $HP (fert = `insts') `wt',  /*
-			*/ `se' savefirst savefp(f1) partial(`base')
-			drop `insts'
+			eststo: ivreg2 `y' (fert = `ins') `wt', `se' savefirst savefp(f1)
+			drop `ins'
 
 			*PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
 			foreach group in two three four five  {
@@ -1947,10 +1946,9 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' `base' $age $S $H (fert = `insts') `wt',   /*
-			*/ `se' savefirst savefp(f2) partial(`base')
-			drop `insts'
-			gen samegroup=e(sample)
+			eststo: ivreg2 `y' (fert = `ins') `wt', `se' savefirst savefp(f2)
+			drop `ins'
+			gen sg=e(sample)
 
          *PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
 			foreach group in two three four five  {
@@ -1959,9 +1957,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' `base' $age $H (fert = `insts') `wt'       /*
-			*/ if samegroup==1, `se' savefirst savefp(f3) partial(`base')
-			drop `insts'
+			eststo: ivreg2 `y' (fert=`ins') `wt' if sg==1, `se' savefirst savefp(f3)
+			drop `ins'
 			
 			*PURGE INSTRUMENTS AND RUN FOR BASE CONTROLS
 			foreach group in two three four five  {
@@ -1970,15 +1967,15 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' `base' (fert = `insts') `wt' if samegroup==1, /*
-			*/ `se' savefirst savefp(f4) partial(`base')
+			eststo: ivreg2 `y' (fert=`ins') `wt' if sg==1, `se' savefirst savefp(f4)
+			drop `ins'
 		}
 		restore
 
 		estout est4 est3 est2 est1 using "`OUT'.xls", replace `estopt' `varlab' /*
-		*/ keep(fert $age $S $H)
+		*/ keep(fert)
 		estout f4fert f3fert f2fert f1fert using "`OUT'_first.xls", replace     /*
-		*/ `estopt' `varlab' keep(twin_* $age $S $H)
+		*/ `estopt' `varlab' keep(twin_*)
 
 		estimates clear
 		macro shift
