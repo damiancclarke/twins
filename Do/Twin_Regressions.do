@@ -1937,7 +1937,7 @@ if `pool'==1 {
 				drop WPT
 			}
 			eststo: ivreg2 `y' `base' $age $S $HP  (fert = `ins') `wt', /*
-			*/ `se' savefirst savefp(f1)
+			*/ `se' savefirst savefp(f1) partial(`base')
 			drop `ins'
 
 			*PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
@@ -1948,7 +1948,7 @@ if `pool'==1 {
 				drop WPT
 			}
 			eststo: ivreg2 `y' `base' $age $S $H (fert = `ins') `wt', /*
-			*/ `se' savefirst savefp(f2)
+			*/ `se' savefirst savefp(f2) partial(`base')
 			drop `ins'
 			gen sg=e(sample)
 
@@ -1960,7 +1960,7 @@ if `pool'==1 {
 				drop WPT
 			}
 			eststo: ivreg2 `y' `base' $age $H (fert=`ins') `wt' /*
-			*/ if sg==1, `se' savefirst savefp(f3)
+			*/ if sg==1, `se' savefirst savefp(f3) partial(`base')
 			drop `ins'
 			
 			*PURGE INSTRUMENTS AND RUN FOR BASE CONTROLS
@@ -1971,7 +1971,7 @@ if `pool'==1 {
 				drop WPT
 			}
 			eststo: ivreg2 `y' `base' (fert=`ins') `wt' if sg==1, /*
-			*/ `se' savefirst savefp(f4)
+			*/ `se' savefirst savefp(f4) partial(`base')
 			drop `ins'
 		}
 		restore
