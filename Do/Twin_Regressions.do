@@ -1925,17 +1925,52 @@ if `pool'==1 {
 
 		preserve
 		gen poolsample=(two_plus==1|three_plus==1|four_plus==1|five_plus==1)
-		local insts twin_two_fam twin_three_fam twin_four_fam twin_five_fam
+		local insts purgedtwo purgedthree purgedfour purgedfive
 		keep `cond'&`condition'&poolsample==1			
 		
 		foreach y of varlist $outcomes {
-			eststo: ivreg2 `y' `base' $age $S $HP _bord* (fert = `insts') `wt',  /*
+			*PURGE INSTRUMENTS AND RUN FOR FULL CONTROLS
+			foreach group in two three four five  {
+				reg twin_`group'_fam `base' $age $S $HP `wt', `se' if `group'_plus==1
+				predict WPT
+				gen purged`group'= twin_`group'_fam - WPT
+				drop WPT
+			}
+			eststo: ivreg2 `y' `base' $age $S $HP (fert = `insts') `wt',  /*
 			*/ `se' savefirst savefp(f1) partial(`base')
-			eststo: ivreg2 `y' `base' $age $S $H _bord* (fert = `insts') `wt',   /*
+			drop `insts'
+
+			*PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
+			foreach group in two three four five  {
+				reg twin_`group'_fam `base' $age $S $H `wt', `se' if `group'_plus==1
+				predict WPT
+				gen purged`group'= twin_`group'_fam - WPT
+				drop WPT
+			}
+			eststo: ivreg2 `y' `base' $age $S $H (fert = `insts') `wt',   /*
 			*/ `se' savefirst savefp(f2) partial(`base')
-			eststo: ivreg2 `y' `base' $age $H _bord* (fert = `insts') `wt'       /*
-			*/ if e(sample), `se' savefirst savefp(f3) partial(`base')
-			eststo: ivreg2 `y' `base' _bord* (fert = `insts') `wt' if e(sample), /*
+			drop `insts'
+			gen samegroup=e(sample)
+
+         *PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
+			foreach group in two three four five  {
+				reg twin_`group'_fam `base' $age $H `wt', `se' if `group'_plus==1
+				predict WPT
+				gen purged`group'= twin_`group'_fam - WPT
+				drop WPT
+			}
+			eststo: ivreg2 `y' `base' $age $H (fert = `insts') `wt'       /*
+			*/ if samegroup==1, `se' savefirst savefp(f3) partial(`base')
+			drop `insts'
+			
+			*PURGE INSTRUMENTS AND RUN FOR BASE CONTROLS
+			foreach group in two three four five  {
+				reg twin_`group'_fam `base' `wt', `se' if `group'_plus==1
+				predict WPT
+				gen purged`group'= twin_`group'_fam - WPT
+				drop WPT
+			}
+			eststo: ivreg2 `y' `base' (fert = `insts') `wt' if samegroup==1, /*
 			*/ `se' savefirst savefp(f4) partial(`base')
 		}
 		restore
