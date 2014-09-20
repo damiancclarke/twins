@@ -1979,7 +1979,7 @@ if `pool'==1 {
 		estout est4 est3 est2 est1 using "`OUT'.xls", replace `estopt' `varlab' /*
 		*/ keep(fert)
 		estout f4fert f3fert f2fert f1fert using "`OUT'_first.xls", replace     /*
-		*/ `estopt' `varlab' keep(twin_*)
+		*/ `estopt' `varlab' keep(purged*)
 
 		estimates clear
 		macro shift
