@@ -1931,7 +1931,7 @@ if `pool'==1 {
 		foreach y of varlist $outcomes {
 			*PURGE INSTRUMENTS AND RUN FOR FULL CONTROLS
 			foreach group in two three four five  {
-				reg twin_`group'_fam `base' $age $S $HP `wt', `se' if `group'_plus==1
+				reg twin_`group'_fam `base' $age $S $HP `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
@@ -1941,7 +1941,7 @@ if `pool'==1 {
 
 			*PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
 			foreach group in two three four five  {
-				reg twin_`group'_fam `base' $age $S $H `wt', `se' if `group'_plus==1
+				reg twin_`group'_fam `base' $age $S $H `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
@@ -1952,7 +1952,7 @@ if `pool'==1 {
 
          *PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
 			foreach group in two three four five  {
-				reg twin_`group'_fam `base' $age $H `wt', `se' if `group'_plus==1
+				reg twin_`group'_fam `base' $age $H `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
@@ -1962,7 +1962,7 @@ if `pool'==1 {
 			
 			*PURGE INSTRUMENTS AND RUN FOR BASE CONTROLS
 			foreach group in two three four five  {
-				reg twin_`group'_fam `base' `wt', `se' if `group'_plus==1
+				reg twin_`group'_fam `base' `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
