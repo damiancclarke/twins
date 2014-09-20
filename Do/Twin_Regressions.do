@@ -1936,7 +1936,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' (fert = `ins') `wt', `se' savefirst savefp(f1)
+			eststo: ivreg2 `y' `base' $age $S $HP  (fert = `ins') `wt', /*
+			*/ `se' savefirst savefp(f1)
 			drop `ins'
 
 			*PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
@@ -1946,7 +1947,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' (fert = `ins') `wt', `se' savefirst savefp(f2)
+			eststo: ivreg2 `y' `base' $age $S $H (fert = `ins') `wt', /*
+			*/ `se' savefirst savefp(f2)
 			drop `ins'
 			gen sg=e(sample)
 
@@ -1957,7 +1959,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' (fert=`ins') `wt' if sg==1, `se' savefirst savefp(f3)
+			eststo: ivreg2 `y' `base' $age $H (fert=`ins') `wt' /*
+			*/ if sg==1, `se' savefirst savefp(f3)
 			drop `ins'
 			
 			*PURGE INSTRUMENTS AND RUN FOR BASE CONTROLS
@@ -1967,7 +1970,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' (fert=`ins') `wt' if sg==1, `se' savefirst savefp(f4)
+			eststo: ivreg2 `y' `base' (fert=`ins') `wt' if sg==1, /*
+			*/ `se' savefirst savefp(f4)
 			drop `ins'
 		}
 		restore
