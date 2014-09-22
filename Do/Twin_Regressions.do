@@ -1927,6 +1927,10 @@ if `pool'==1 {
 		gen poolsample=(two_plus==1|three_plus==1|four_plus==1|five_plus==1)
 		local ins purgedtwo purgedthree purgedfour purgedfive
 		keep `cond'&`condition'&poolsample==1			
+
+		local s1 two_plus==1|three_plus==1
+		local s2 two_plus==1|three_plus==1|four_plus==1
+		local s3 two_plus==1|three_plus==1|four_plus==1|five_plus==1
 		
 		foreach y of varlist $outcomes {
 			*PURGE INSTRUMENTS AND RUN FOR FULL CONTROLS
@@ -1936,8 +1940,10 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' `base' (fert = `ins') `wt', /*
-			*/ `se' savefirst savefp(f1) partial(`base')
+			foreach sample of numlist 1 2 3 {
+				eststo: ivreg2 `y' `base' (fert = `ins') `wt' if `s`sample'', /*
+				*/ `se' savefirst savefp(f1`sample') partial(`base')
+			}
 			drop `ins'
 
 			*PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
@@ -1947,8 +1953,10 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' `base' (fert = `ins') `wt', `se' savefirst /*
-			*/ savefp(f2) partial(`base')
+			foreach sample of numlist 1 2 3 {
+				eststo: ivreg2 `y' `base' (fert = `ins') `wt' if `s`sample'', /*
+				*/ `se' savefirst savefp(f2`sample') partial(`base')
+			}
 			drop `ins'
 			gen sg=e(sample)
 
@@ -1959,8 +1967,10 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' `base' (fert=`ins') `wt' /*
-			*/ if sg==1, `se' savefirst savefp(f3) partial(`base')
+			foreach sample of numlist 1 2 3 {
+				eststo: ivreg2 `y' `base' (fert=`ins') `wt' if `s`sample''&sg==1, /*
+				*/ `se' savefirst savefp(f3`sample') partial(`base')
+			}
 			drop `ins'
 			
 			*PURGE INSTRUMENTS AND RUN FOR BASE CONTROLS
@@ -1970,17 +1980,19 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' `base' (fert=`ins') `wt' if sg==1, /*
-			*/ `se' savefirst savefp(f4) partial(`base')
+			foreach sample of numlist 1 2 3 {
+				eststo: ivreg2 `y' `base' (fert=`ins') `wt' if `s`sample''&sg==1, /*
+				*/ `se' savefirst savefp(f4`sample') partial(`base')
+			}
 			drop `ins'
 		}
 		restore
 
-		estout est4 est3 est2 est1 using "`OUT'.xls", replace `estopt' `varlab' /*
-		*/ keep(fert)
-		estout f4fert f3fert f2fert f1fert using "`OUT'_first.xls", replace     /*
+		estout est10 est7 est4 est1 est11 est8 est5 est2 est12 est9 est6 est3   /*
+		*/ using "`OUT'.xls", replace `estopt' `varlab' keep(fert)
+		estout f41fert f31fert f21fert f11fert f42fert f32fert f22fert f12fert /*
+		*/ f43fert f33fert f23fert f13fert using "`OUT'_first.xls", replace     /*
 		*/ `estopt' `varlab' keep(purged*)
-
 		estimates clear
 		macro shift
 	}
