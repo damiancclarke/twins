@@ -46,7 +46,7 @@ set more off
 cap log close
 set matsize 2000
 
-foreach ado in ivreg2 outreg2 estout ranktest mat2txt plausexog {
+foreach ado in ivreg2 outreg2 estout ranktest mat2txt plausexog arrowplot {
 	cap which `ado'
 	if _rc!=0 ssc install `ado'
 }
