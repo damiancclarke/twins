@@ -180,7 +180,7 @@ local fnames
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
 *******************************************************************************
-log using "$Log/Twin_RegressionsALT.log", text replace
+log using "$Log/Twin_Regressions.log", text replace
 use "$Data/DHS_twins", clear
 
 replace bmi=. if bmi>50
@@ -1921,7 +1921,7 @@ if `pool'==1 {
 	tokenize `fnames'
 	foreach condition of local conditions {
 		
-		local OUT "$Tables/IV/PoolAlt`1'"
+		local OUT "$Tables/IV/PoolAlt2`1'"
 
 		preserve
 		gen poolsample=(two_plus==1|three_plus==1|four_plus==1|five_plus==1)
@@ -1936,8 +1936,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' (fert = `ins') `wt', /*
-			*/ `se' savefirst savefp(f1)
+			eststo: ivreg2 `y' `base' (fert = `ins') `wt', /*
+			*/ `se' savefirst savefp(f1) partial(`base')
 			drop `ins'
 
 			*PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
@@ -1947,8 +1947,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' (fert = `ins') `wt', /*
-			*/ `se' savefirst savefp(f2)
+			eststo: ivreg2 `y' `base' (fert = `ins') `wt', `se' savefirst /*
+			*/ savefp(f2) partial(`base')
 			drop `ins'
 			gen sg=e(sample)
 
@@ -1959,8 +1959,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' (fert=`ins') `wt' /*
-			*/ if sg==1, `se' savefirst savefp(f3)
+			eststo: ivreg2 `y' `base' (fert=`ins') `wt' /*
+			*/ if sg==1, `se' savefirst savefp(f3) partial(`base')
 			drop `ins'
 			
 			*PURGE INSTRUMENTS AND RUN FOR BASE CONTROLS
@@ -1970,8 +1970,8 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			eststo: ivreg2 `y' (fert=`ins') `wt' if sg==1, /*
-			*/ `se' savefirst savefp(f4) 
+			eststo: ivreg2 `y' `base' (fert=`ins') `wt' if sg==1, /*
+			*/ `se' savefirst savefp(f4) partial(`base')
 			drop `ins'
 		}
 		restore
