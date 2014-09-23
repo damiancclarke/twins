@@ -1965,8 +1965,7 @@ if `pool'==1 {
 
          *PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
 			foreach group in two three four five  {
-				qui reg twin_`group'_fam `base' $age $H `wt' if `group'_plus==1 /*
-				*/ &sg`samp'==1, `se'
+				qui reg twin_`group'_fam `base' $age $H `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
@@ -1984,7 +1983,7 @@ if `pool'==1 {
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			foreach sample of numlist 1 2 3 {
+			foreach samp of numlist 1 2 3 {
 				eststo: ivreg2 `y' `base' (fert=`ins`samp'') `wt' if `s`samp''/*
 				*/ &sg`samp'==1, `se' savefirst savefp(f4`samp') partial(`base')
 			}
