@@ -158,22 +158,22 @@ local varlab varlabels(agemay "Mother's age" magesq "Mother's Age Squared"
 
 local conditions
   ALL==1
-  child_yob<=1984
-  child_yob>1984
-  income=="low"
-  income=="mid"
   gender=="F"
   gender=="M"
+  income=="low"
+  income=="mid"
+  child_yob<=1984
+  child_yob>1984
 ;
 
 local fnames
   All
-  BornPre1985
-  BornPost1984
-  LowIncome
-  MidIncome
   Girls
   Boys
+  LowIncome
+  MidIncome
+  BornPre1985
+  BornPost1984
 ;
 #delimit cr
 
@@ -1925,7 +1925,10 @@ if `pool'==1 {
 
 		preserve
 		gen poolsample=(two_plus==1|three_plus==1|four_plus==1|five_plus==1)
-		local ins purgedtwo purgedthree purgedfour purgedfive
+		local ins1 purgedtwo purgedthree
+		local ins2 purgedtwo purgedthree purgedfour
+		local ins3 purgedtwo purgedthree purgedfour purgedfive
+
 		keep `cond'&`condition'&poolsample==1			
 
 		local s1 two_plus==1|three_plus==1
@@ -1935,62 +1938,63 @@ if `pool'==1 {
 		foreach y of varlist $outcomes {
 			*PURGE INSTRUMENTS AND RUN FOR FULL CONTROLS
 			foreach group in two three four five  {
-				reg twin_`group'_fam `base' $age $S $HP `wt' if `group'_plus==1, `se'
+				qui reg twin_`group'_fam `base' $age $S $HP `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			foreach sample of numlist 1 2 3 {
-				eststo: ivreg2 `y' `base' (fert = `ins') `wt' if `s`sample'', /*
-				*/ `se' savefirst savefp(f1`sample') partial(`base')
+			foreach samp of numlist 1 2 3 {
+				eststo: ivreg2 `y' `base' (fert = `ins`samp'') `wt' if `s`samp'', /*
+				*/ `se' savefirst savefp(f1`samp') partial(`base')
 			}
-			drop `ins'
+			drop `ins3'
 
 			*PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
 			foreach group in two three four five  {
-				reg twin_`group'_fam `base' $age $S $H `wt' if `group'_plus==1, `se'
+				qui reg twin_`group'_fam `base' $age $S $H `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			foreach sample of numlist 1 2 3 {
-				eststo: ivreg2 `y' `base' (fert = `ins') `wt' if `s`sample'', /*
-				*/ `se' savefirst savefp(f2`sample') partial(`base')
+			foreach samp of numlist 1 2 3 {
+				eststo: ivreg2 `y' `base' (fert = `ins`samp'') `wt' if `s`samp'', /*
+				*/ `se' savefirst savefp(f2`samp') partial(`base')
+				gen sg`samp'=e(sample)
 			}
-			drop `ins'
-			gen sg=e(sample)
+			drop `ins3'
 
          *PURGE INSTRUMENTS AND RUN FOR PARTIAL CONTROLS
 			foreach group in two three four five  {
-				reg twin_`group'_fam `base' $age $H `wt' if `group'_plus==1, `se'
+				qui reg twin_`group'_fam `base' $age $H `wt' if `group'_plus==1 /*
+				*/ &sg`samp'==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
-			foreach sample of numlist 1 2 3 {
-				eststo: ivreg2 `y' `base' (fert=`ins') `wt' if `s`sample''&sg==1, /*
-				*/ `se' savefirst savefp(f3`sample') partial(`base')
+			foreach samp of numlist 1 2 3 {
+				eststo: ivreg2 `y' `base' (fert=`ins`samp'') `wt' if `s`samp'' /*
+				*/ &sg`samp'==1, `se' savefirst savefp(f3`samp') partial(`base')
 			}
-			drop `ins'
+			drop `ins3'
 			
 			*PURGE INSTRUMENTS AND RUN FOR BASE CONTROLS
 			foreach group in two three four five  {
-				reg twin_`group'_fam `base' `wt' if `group'_plus==1, `se'
+				qui reg twin_`group'_fam `base' `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
 			foreach sample of numlist 1 2 3 {
-				eststo: ivreg2 `y' `base' (fert=`ins') `wt' if `s`sample''&sg==1, /*
-				*/ `se' savefirst savefp(f4`sample') partial(`base')
+				eststo: ivreg2 `y' `base' (fert=`ins`samp'') `wt' if `s`samp''/*
+				*/ &sg`samp'==1, `se' savefirst savefp(f4`samp') partial(`base')
 			}
-			drop `ins'
+			drop `ins3'
 		}
 		restore
 
 		estout est10 est7 est4 est1 est11 est8 est5 est2 est12 est9 est6 est3   /*
 		*/ using "`OUT'.xls", replace `estopt' `varlab' keep(fert)
-		estout f41fert f31fert f21fert f11fert f42fert f32fert f22fert f12fert /*
+		estout f41fert f31fert f21fert f11fert f42fert f32fert f22fert f12fert  /*
 		*/ f43fert f33fert f23fert f13fert using "`OUT'_first.xls", replace     /*
 		*/ `estopt' `varlab' keep(purged*)
 		estimates clear
