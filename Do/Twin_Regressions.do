@@ -1945,8 +1945,8 @@ if `pool'==1 {
 				drop WPT
 			}
 			foreach samp of numlist 1 2 3 {
-				eststo: ivreg2 `y' `base' (fert = `ins`samp'') `wt' if `s`samp'', /*
-				*/ `se' savefirst savefp(f1`samp') partial(`base')
+				eststo: ivreg2 `y' `base' $age  $S $HP (fert = `ins`samp'') `wt' if /*
+				*/ `s`samp'', `se' savefirst savefp(f1`samp') partial(`base')
 			}
 			drop `ins3'
 
@@ -1959,8 +1959,8 @@ if `pool'==1 {
 				drop WPT
 			}
 			foreach samp of numlist 1 2 3 {
-				eststo: ivreg2 `y' `base' (fert = `ins`samp'') `wt' if `s`samp'', /*
-				*/ `se' savefirst savefp(f2`samp') partial(`base')
+				eststo: ivreg2 `y' `base' $age $S $H (fert = `ins`samp'') `wt' if /*
+				*/ `s`samp'', `se' savefirst savefp(f2`samp') partial(`base')
 				gen sg`samp'=e(sample)
 			}
 			drop `ins3'
@@ -1974,7 +1974,7 @@ if `pool'==1 {
 				drop WPT
 			}
 			foreach samp of numlist 1 2 3 {
-				eststo: ivreg2 `y' `base' (fert=`ins`samp'') `wt' if `s`samp'' /*
+				eststo: ivreg2 `y' `base' $age $H (fert=`ins`samp'') `wt' if `s`samp'' /*
 				*/ &sg`samp'==1, `se' savefirst savefp(f3`samp') partial(`base')
 			}
 			drop `ins3'
@@ -1996,10 +1996,10 @@ if `pool'==1 {
 		restore
 
 		estout est10 est7 est4 est1 est11 est8 est5 est2 est12 est9 est6 est3   /*
-		*/ using "`OUT'.xls", replace `estopt' `varlab' keep(fert)
+		*/ using "`OUT'.xls", replace `estopt' `varlab' keep(fert $S $H)
 		estout f41fert f31fert f21fert f11fert f42fert f32fert f22fert f12fert  /*
 		*/ f43fert f33fert f23fert f13fert using "`OUT'_first.xls", replace     /*
-		*/ `estopt' `varlab' keep(purged*)
+		*/ `estopt' `varlab' keep(purged* $S $H)
 		estimates clear
 		macro shift
 	}
