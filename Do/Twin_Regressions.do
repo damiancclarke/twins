@@ -1941,6 +1941,7 @@ if `pool'==1 {
 				qui reg twin_`group'_fam `base' $age $S $HP `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
+				replace purged`group'=purged`group'*twin_`group'_fam
 				drop WPT
 			}
 			foreach samp of numlist 1 2 3 {
@@ -1954,6 +1955,7 @@ if `pool'==1 {
 				qui reg twin_`group'_fam `base' $age $S $H `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
+				replace purged`group'=purged`group'*twin_`group'_fam
 				drop WPT
 			}
 			foreach samp of numlist 1 2 3 {
@@ -1968,6 +1970,7 @@ if `pool'==1 {
 				qui reg twin_`group'_fam `base' $age $H `wt' if `group'_plus==1, `se'
 				predict WPT
 				gen purged`group'= twin_`group'_fam - WPT
+				replace purged`group'=purged`group'*twin_`group'_fam
 				drop WPT
 			}
 			foreach samp of numlist 1 2 3 {
@@ -1980,6 +1983,7 @@ if `pool'==1 {
 			foreach group in two three four five  {
 				qui reg twin_`group'_fam `base' `wt' if `group'_plus==1, `se'
 				predict WPT
+				replace purged`group'=purged`group'*twin_`group'_fam
 				gen purged`group'= twin_`group'_fam - WPT
 				drop WPT
 			}
