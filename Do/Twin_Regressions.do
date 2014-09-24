@@ -1954,7 +1954,7 @@ if `pool'==1 {
 			foreach group in two three four five  {
 				qui reg twin_`group'_fam `base' $age $S $H `wt' if `group'_plus==1, `se'
 				predict WPT
-				gen purged`group'= twin_`group'_fam - WPT
+				gen purged`group'= twin_`gr3B3Coup'_fam - WPT
 				replace purged`group'=purged`group'*twin_`group'_fam
 				drop WPT
 			}
