@@ -109,8 +109,13 @@ if `SumStats'==1 {
 	gen fetaldeath=0
 	append using "$DAT/FetalDeaths/AppendedFDeaths.dta"
 	replace fetaldeath=1 if fetaldeath==.
+	gen yearalc=year if alcoholUse!=.
 
+	sum twin africanAmerica otherRace white meduc* tobaccoUse alcoholUse anemia /*
+	*/ cardiac lung diabetes chyper phyper eclamp year yearalc if fetaldeath==0
 
+	sum twin africanAmerican otherRace white meduc* tobaccoUse alcoholUse       /*
+	*/ diabetes chyper phyper eclamp year yearalc if fetaldeath==1
 
 }
 
