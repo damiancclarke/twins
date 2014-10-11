@@ -32,8 +32,9 @@ global LOG "~/investigacion/Activa/Twins/Log"
 cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
 
-local birthregs 0
+local birthregs  1
 local fdeathregs 1
+local SumStats   1
 
 local fmt tex
 
@@ -47,19 +48,19 @@ if `birthregs'==1 {
 	gen twin100=twin*100
 	gen motherAgeSq=motherAge*motherAge
 
-	local base africanAmerican white meduc* tobacco*
+	local base africanAmerican otherRace meducSecond meducTert tobacco*
 	local health anemia cardiac lung diabetes chyper phyper eclamp
 
-	reg twin100 `base'  motherAge* i.birthOrder i.year
-	outreg2 using "$OUT/USBirths.`fmt'", `sheet' replace
+	reg twin100 `base' motherAge* i.birthOrder i.year
+	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
 	reg twin100 `base' i.motherAge i.birthOrder i.year
-	outreg2 using "$OUT/USBirths.`fmt'", `sheet' append
+	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' append
 	reg twin100 `base' alcohol* motherAge* i.birthOrder i.year
-	outreg2 using "$OUT/USBirths.`fmt'", `sheet' append
+	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
 	reg twin100 `base' alcohol* i.motherAge i.birthOrder i.year
-	outreg2 using "$OUT/USBirths.`fmt'", `sheet' append
+	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
 	reg twin100 `base' alcohol* `health' i.motherAge i.birthOrder i.year 
-	outreg2 using "$OUT/USBirths.`fmt'", `sheet' append
+	outreg2 `base' alcohol* `health' using "$OUT/USBirths.`fmt'", `sheet' append
 }
 
 ********************************************************************************
@@ -75,27 +76,42 @@ if `fdeathregs'==1 {
 	gen Twin100fetaldeath=twin100*fetaldeath
 	drop if year<2003
 	
-	local base africanAmerican white meduc* tobacco*
+	local base africanAmerican otherRace meducSecond meducTert tobacco*
 	local health diabetes chyper phyper eclamp
-
-	foreach var of varlist fetaldeath Twin100fetaldeath {
-		reg `var' `base'  motherAge* i.birthOrder i.year
-		outreg2 using "$OUT/US`var'.`fmt'", `sheet' replace
-		reg `var' `base' i.motherAge i.birthOrder i.year
-		outreg2 using "$OUT/US`var'.`fmt'", `sheet' append
-		reg `var' `base' alcohol* motherAge* i.birthOrder i.year
-		outreg2 using "$OUT/US`var'.`fmt'", `sheet' append
-		reg `var' `base' alcohol* i.motherAge i.birthOrder i.year
-		outreg2 using "$OUT/US`var'.`fmt'", `sheet' append
-		reg `var' `base' `health' i.motherAge i.birthOrder i.year 
-		outreg2 using "$OUT/US`var'.`fmt'", `sheet' append
-		reg `var' `base' alcohol* `health' i.motherAge i.birthOrder i.year 
-		outreg2 using "$OUT/US`var'.`fmt'", `sheet' append
+	foreach var of varlist tobaccoUse meducS meducT `health' alcoholUse {
+		gen TwinX`var'=twin*`var'
 	}
+	local Tbase twin TwinXtobacco TwinXmeduc* 
+	local T2    twin TwinXtobacco TwinXmeduc* TwinXalcohol
+	local TH    `Tbase' TwinXdiab TwinXchyper TwinXphyper TwinXeclamp
+	local FEs   i.birthOrder i.year
+	
+	reg fetaldeath `base' `Tbase' motherAge* `FEs'
+	outreg2 `base' `Tbase' using "$OUT/US`var'.`fmt'", `sheet' replace
+	reg fetaldeath `base' `Tbase' i.motherAge `FEs'
+	outreg2 `base' `Tbase' using "$OUT/US`var'.`fmt'", `sheet' append
+	reg fetaldeath `base' `T2' alcohol* motherAge* `FEs'
+	outreg2 `base' `T2' alcohol* using "$OUT/US`var'.`fmt'", `sheet' append
+	reg fetaldeath `base' `T2' alcohol* i.motherAg `FEs'
+	outreg2 using `base' `T2' alcohol* "$OUT/US`var'.`fmt'", `sheet' append
+	reg fetaldeath `base' `TH' `health' i.motherAge `FEs'
+	outreg2 `base' `TH' `health' using "$OUT/US`var'.`fmt'", `sheet' append
+	reg fetaldeath `base' `TH' TwinXal alcohol* `health' i.motherAge `FEs' 
+	outreg2 `base' `TH' TwinX* alcohol* `health' using "$OUT/US`var'.`fmt'", /*
+	*/ `sheet' append
 }
-
-log close
 
 ********************************************************************************
 *** (4) Summary stats
 ********************************************************************************
+if `SumStats'==1 {
+	use "$DAT/Births/AppendedBirths.dta", clear
+	gen fetaldeath=0
+	append using "$DAT/FetalDeaths/AppendedFDeaths.dta"
+	replace fetaldeath=1 if fetaldeath==.
+
+
+
+}
+
+log close
