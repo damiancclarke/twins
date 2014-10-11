@@ -138,14 +138,28 @@ cap rm "$OUT/NepalRegs.txt"
 cap rm "$OUT/NepalRegsNonLin.xls"
 cap rm "$OUT/NepalRegsNonLin.txt"
 
-foreach var of varlist twind100 miscarry* twinMiscarry* {
-	reg `var' motherage motheragesq agefirstbirth educf educfyrs_sq height bmi /*
-	*/ i.year_birth, cluster(caseid)
-	outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi /*
-	*/ using "$OUT/NepalRegs.xls", excel append
-
-	reg `var' motherage motheragesq agefirstbirth educf educfyrs_sq height* /*
-	*/ bmi* i.year_birth, cluster(caseid)
-	outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height* bmi* /*
-	*/ using "$OUT/NepalRegsNonLin.xls", excel append
+foreach var of varlist educf educfyrs_sq height bmi {
+	gen twinX`var'=twin*`var'
 }
+
+reg miscarry motherage motheragesq agefirstbirth educf educfyrs_sq height bmi /*
+*/ i.year_birth, cluster(caseid)
+outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi /*
+*/ using "$OUT/NepalRegs.xls", excel append
+reg miscarry motherage motheragesq agefirstbirth educf educfyrs_sq height* /*
+*/ bmi* i.year_birth, cluster(caseid)
+outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi*  /*
+*/ using "$OUT/NepalRegs.xls", excel append
+
+
+
+reg miscarry motherage motheragesq agefirstbirth educf educfyrs_sq height bmi /*
+*/ i.year_birth twin twinX, cluster(caseid)
+outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi twin /*
+*/ twinX* using "$OUT/NepalRegs.xls", excel append
+gen twinXheightsq=twin*heightsq
+gen twinXbmisq=twin*bmisq
+reg miscarry motherage motheragesq agefirstbirth educf educfyrs_sq height* /*
+*/ bmi* i.year_birth twin twinX, cluster(caseid)
+outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi*  /*
+*/ twin* twinX* using "$OUT/NepalRegs.xls", excel append
