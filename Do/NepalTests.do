@@ -67,7 +67,7 @@ foreach yy in 1996 2001 2006 2011 {
 	}
 
 	keep v000-v026 v133 v201 v212 v438 v445 b0_x_* b1_x_* b2_x_* b3_x_* b4_x_* /*
-	*/ b5_x_* b8_x_* s217_* s230_* s229_* caseid
+	*/ b5_x_* b8_x_* s217_* s230_* s229_* caseid v106
 
 
 	local stub b0_x_ b1_x_ b2_x_ b3_x_ b4_x_ b5_x_ b8_x_ s217_ s230_ s229_
@@ -92,11 +92,15 @@ foreach yy in 1996 2001 2006 2011 {
 	rename s230_ abort
 	rename v010 year_birth
 	rename v012 agemay
-	rename v133 educf
+	*rename v133 educf
 	rename v201 fert
 	rename v212 agefirstbirth
 	rename v438 height
 	rename v445 bmi
+	gen educNo  =v106==0
+	gen educPrim=v106==1
+	gen educSec =v106==2
+	gen educTer =v106==3
 	
 	gen twind=twin>0
 	gen twind100=twind*100
@@ -110,7 +114,7 @@ foreach yy in 1996 2001 2006 2011 {
 	replace twinMiscarryNoAbort=0 if twinMiscarryNoAbort==.
 	gen twinMiscarryAbort=twinMiscarry*(abort)
 	replace twinMiscarryAbort=0 if twinMiscarryAbort==.
-	gen educfyrs_sq=educf*educf
+	*gen educfyrs_sq=educf*educf
 	gen motherage = agemay - age
 	replace motherage=24.3 if motherage==.
 	gen motheragesq = motherage^2
@@ -138,28 +142,40 @@ cap rm "$OUT/NepalRegs.txt"
 cap rm "$OUT/NepalRegsNonLin.xls"
 cap rm "$OUT/NepalRegsNonLin.txt"
 
-foreach var of varlist educf educfyrs_sq height bmi {
+foreach var of varlist educPrim educSec educTer {
 	gen twinX`var'=twin*`var'
 }
 
-reg miscarry motherage motheragesq agefirstbirth educf educfyrs_sq height bmi /*
-*/ i.year_birth, cluster(caseid)
-outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi /*
-*/ using "$OUT/NepalRegs.xls", excel append
-reg miscarry motherage motheragesq agefirstbirth educf educfyrs_sq height* /*
-*/ bmi* i.year_birth, cluster(caseid)
-outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi*  /*
-*/ using "$OUT/NepalRegs.xls", excel append
+drop miscarry
+rename miscarryNoAbort Miscarriage
+
+qui reg Miscarriage motherage motheragesq agefirstbirth educP educS educT bmi* /*
+*/ height* fert i.child_yob, cluster(caseid)
+reg Miscarriage motherage motheragesq agefirstbirth educP educS educT      /*
+*/ fert i.child_yob if e(sample), cluster(caseid)
+outreg2 motherage motheragesq agefirstbirth educP educS educT              /*
+*/ using "$OUT/NepalRegs.tex", tex(pretty) replace
+reg Miscarriage motherage motheragesq agefirstbirth educP educS educT bmi* /*
+*/ height* fert i.child_yob, cluster(caseid)
+outreg2 motherage motheragesq agefirstbirth educP educS educT              /*
+*/ using "$OUT/NepalRegs.tex", tex(pretty) append
 
 
+reg Miscarriage motherage motheragesq agefirstbirth educP educS educT twin /*
+*/ twinX* fert i.child_yob if e(sample), cluster(caseid) 
+outreg2 motherage motheragesq agefirstbirth educP educS educT twin twinX*  /*
+*/ using "$OUT/NepalRegs.tex", tex(pretty) append
 
-reg miscarry motherage motheragesq agefirstbirth educf educfyrs_sq height bmi /*
-*/ i.year_birth twin twinX, cluster(caseid)
-outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi twin /*
-*/ twinX* using "$OUT/NepalRegs.xls", excel append
+gen twinXheight=twin*height
+gen twinXbmi=twin*bmi
+
+reg Miscarriage motherage motheragesq agefirstbirth  educP educS educT height /*
+*/ bmi twin twinX* fert i.child_yob, cluster(caseid)
+outreg2 motherage motheragesq agefirstbirth educP educS educT height bmi twin /*
+*/ twinX* using "$OUT/NepalRegs.tex", tex(pretty) append
 gen twinXheightsq=twin*heightsq
 gen twinXbmisq=twin*bmisq
-reg miscarry motherage motheragesq agefirstbirth educf educfyrs_sq height* /*
-*/ bmi* i.year_birth twin twinX, cluster(caseid)
-outreg2 motherage motheragesq agefirstbirth educf educfyrs_sq height bmi*  /*
-*/ twin* twinX* using "$OUT/NepalRegs.xls", excel append
+reg Miscarriage  motherage motheragesq agefirstbirth  educP educS educT       /*
+*/ height* bmi* twin twinX* fert i.child_yob, cluster(caseid)
+outreg2 motherage motheragesq agefirstbirth  educP educS educT height* bmi*   /*
+*/ twin twinX* using "$OUT/NepalRegs.tex", tex(pretty) append
