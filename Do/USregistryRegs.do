@@ -33,8 +33,8 @@ cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
 
 local birthregs  1
-local fdeathregs 1
-local SumStats   1
+local fdeathregs 0
+local SumStats   0
 
 local fmt tex
 
@@ -50,16 +50,17 @@ if `birthregs'==1 {
 
 	local base africanAmerican otherRace meducSecond meducTert tobacco*
 	local health anemia cardiac lung diabetes chyper phyper eclamp
-
-	reg twin100 `base' motherAge* i.birthOrder i.year
-	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
-	reg twin100 `base' i.motherAge i.birthOrder i.year
-	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' append
-	reg twin100 `base' alcohol* motherAge* i.birthOrder i.year
+	local a absorb(year)
+	
+*	areg twin100 `base' motherAge* i.birthOrder, `a'
+*	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
+	*reg twin100 `base' i.motherAge i.birthOrder
+	*outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' append
+*	areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
+*	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
+	areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
 	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
-	reg twin100 `base' alcohol* i.motherAge i.birthOrder i.year
-	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
-	reg twin100 `base' alcohol* `health' i.motherAge i.birthOrder i.year 
+	areg twin100 `base' alcohol* `health' motherAge* i.birthOrder, `a'
 	outreg2 `base' alcohol* `health' using "$OUT/USBirths.`fmt'", `sheet' append
 }
 
@@ -84,20 +85,20 @@ if `fdeathregs'==1 {
 	local Tbase twin TwinXtobacco TwinXmeduc* 
 	local T2    twin TwinXtobacco TwinXmeduc* TwinXalcohol
 	local TH    `Tbase' TwinXdiab TwinXchyper TwinXphyper TwinXeclamp
-	local FEs   i.birthOrder i.year
+	local FEs   i.birthOrder
 	
-	reg fetaldeath `base' `Tbase' motherAge* `FEs'
-	outreg2 `base' `Tbase' using "$OUT/US`var'.`fmt'", `sheet' replace
-	reg fetaldeath `base' `Tbase' i.motherAge `FEs'
-	outreg2 `base' `Tbase' using "$OUT/US`var'.`fmt'", `sheet' append
-	reg fetaldeath `base' `T2' alcohol* motherAge* `FEs'
-	outreg2 `base' `T2' alcohol* using "$OUT/US`var'.`fmt'", `sheet' append
-	reg fetaldeath `base' `T2' alcohol* i.motherAg `FEs'
-	outreg2 using `base' `T2' alcohol* "$OUT/US`var'.`fmt'", `sheet' append
-	reg fetaldeath `base' `TH' `health' i.motherAge `FEs'
-	outreg2 `base' `TH' `health' using "$OUT/US`var'.`fmt'", `sheet' append
-	reg fetaldeath `base' `TH' TwinXal alcohol* `health' i.motherAge `FEs' 
-	outreg2 `base' `TH' TwinX* alcohol* `health' using "$OUT/US`var'.`fmt'", /*
+	areg fetaldeath `base' `Tbase' motherAge* `FEs', `a'
+	outreg2 `base' `Tbase' using "$OUT/USfdeaths.`fmt'", `sheet' replace
+	*areg fetaldeath `base' `Tbase' i.motherAge `FEs', `a'
+	*outreg2 `base' `Tbase' using "$OUT/USfdeaths.`fmt'", `sheet' append
+	areg fetaldeath `base' `T2' alcohol* motherAge* `FEs', `a'
+	outreg2 `base' `T2' alcohol* using "$OUT/USfdeaths.`fmt'", `sheet' append
+	*areg fetaldeath `base' `T2' alcohol* i.motherAg `FEs', `a'
+	*outreg2 using `base' `T2' alcohol* "$OUT/USfdeaths.`fmt'", `sheet' append
+	areg fetaldeath `base' `TH' `health' motherAge* `FEs', `a'
+	outreg2 `base' `TH' `health' using "$OUT/USfdeaths.`fmt'", `sheet' append
+	areg fetaldeath `base' `TH' TwinXal alcohol* `health' motherAge* `FEs', `a'
+	outreg2 `base' `TH' TwinXa* alcohol* `health' using "$OUT/USfdeaths.`fmt'", /*
 	*/ `sheet' append
 }
 
@@ -111,12 +112,12 @@ if `SumStats'==1 {
 	replace fetaldeath=1 if fetaldeath==.
 	gen yearalc=year if alcoholUse!=.
 
-	sum twin africanAmerica otherRace white meduc* tobaccoUse alcoholUse anemia /*
-	*/ cardiac lung diabetes chyper phyper eclamp year yearalc if fetaldeath==0
+	estpost sum twin africanAmeric otherRace white meduc* tobaccoUse alcoholUse /*
+	*/ anemia cardiac lung diabetes chyper phyper eclamp year yearalc           /*
+	*/ if fetaldeath==0, d
 
-	sum twin africanAmerican otherRace white meduc* tobaccoUse alcoholUse       /*
-	*/ diabetes chyper phyper eclamp year yearalc if fetaldeath==1
-
+	estpost sum twin africanAmeric otherRace white meduc* tobaccoUse alcoholUse /*
+	*/ diabetes chyper phyper eclamp year yearalc if fetaldeath==1, d
 }
 
 log close
