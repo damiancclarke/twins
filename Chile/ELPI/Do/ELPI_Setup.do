@@ -27,8 +27,8 @@ global RESULTS "~/investigacion/Activa/Twins/Scientific/Results"
 
 log using "$LOG/ELPI_Setup.txt", text replace
 
-local initialreg 0
-local cleanreg 1
+local initialreg 1
+local cleanreg 0
 
 
 local base m_age_birth m_age_sq indigenous 
@@ -41,6 +41,9 @@ local region i.region i.age rural
 
 local w [pw=fexp_enc]
 local c if a16==13
+local out tex
+if `"`out'"'=="tex" local add tex(pretty)
+if `"`out'"'=="xls" local add excel
 
 ********************************************************************************
 *** (1) Create relevant vars from Hogar database
@@ -159,7 +162,7 @@ gen pregSmokedQuant = g07b
 gen pregDrugs=g11b
 gen pregAlcohol=g09
 gen pregHosp=g16==1
-gen pregPrivateHosp=g16==3
+gen pregPublicHosp=g16==3
 gen lowWeightPre = g05b==1
 gen obesePre = g05b==4
 gen nutritionPre = g05b
@@ -196,34 +199,38 @@ label var pregSmokedQuant "Quantity cigarettes smoked per month during pregnancy
 label var pregDrugs "Mother consumed recreational drugs during pregnancy"
 label var pregAlcohol "Mother consumed alcohol during pregnancy"
 label var pregHosp "Birth took place in public hospital"
-label var pregPrivateHosp "Birth took place in private system"
+label var pregPublicHosp "Birth took place in private system"
 
 ********************************************************************************
 *** (3a) Run twin predict regressions: crude used in early presentations
 ********************************************************************************
 if `initialreg'==1 {
 	reg twin `base' `region' `c' `w'
-	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel replace
+	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' replace
 
 	reg twin `base' `twincontrols_2' `region' `c' `w'
-	outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+	outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' append
 
-	reg twin `base' `twincontrols_1' `region' if `c' `w'
-	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+	reg twin `base' `twincontrols_1' `region' `c' `w'
+	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' append
 
 	reg twin i.birthorder `base' `region' `c' `w'
-	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel
+	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.`out', `add'
 
 	reg twin i.birthorder `base' `twincontrols_2' `region' `c' `w'
-	outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+	outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' append
 
 	reg twin i.birthorder `base' `twincontrols_1' `region' `c' `w'
-	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.xls, excel append
+	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' append
 
-
-	sum birthorder `base' fert poor mother_educ preg_nutrition age rural /*
-	*/ preg_nutrition preg_nutrition_dur preg_anemia preg_No_attention   /*
-	*/ preg_smoked preg_drugs preg_alcohol preg_publichosp if a16==13
+	estpost sum birthorder `base' fert poor mother_educ pregNutrition age   /*
+	*/ rural nutritionPre pregNoAttention pregSmoked pregDrugs pregAlcohol  /*
+	*/ pregPublicHosp if a16==13, d
+	
+	esttab using "$PATH/Results/ELPISum.tex", ///
+	replace cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")  ///
+	style(tex) label collabels("N" "Mean" "S.Dev." "Min." "Max.") ///
+	nomtitles nonumbers addnotes("Sample of individuals of all index children ELPI")
 } 
 
 ********************************************************************************
