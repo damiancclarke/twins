@@ -33,10 +33,10 @@ local cleanreg 0
 
 local base m_age_birth m_age_sq indigenous 
 local tc_educ i.mother_educ
-local twincontrols_1 poor i.mother_educ i.nutritionPre pregAnemia  /*
-*/ pregNoAttention pregSmoked i.pregDrugs i.pregAlcohol pregPublicHosp
-local twincontrols_2 poor mother_educ i.nutritionPre pregAnemia  /*
-*/ pregNoAttention pregSmoked i.pregDrugs i.pregAlcohol pregPublicHosp
+local twincontrols_1 poor MEduc* PreNutrition*  pregNoAttention /*
+*/ pregSmoked PregDrugs2 PregDrugs3 PregAlcohol2 PregAlcohol3 pregPublicHosp
+local twincontrols_2 poor mother_educ PreNutrition* pregNoAttention pregSmoked /*
+*/ PregDrugs2 PregDrugs3 PregAlcohol2 PregAlcohol3 pregPublicHosp
 local region i.region i.age rural
 
 local w [pw=fexp_enc]
@@ -204,24 +204,31 @@ label var pregPublicHosp "Birth took place in private system"
 ********************************************************************************
 *** (3a) Run twin predict regressions: crude used in early presentations
 ********************************************************************************
+global OUT $PATH/Results/Outreg/
 if `initialreg'==1 {
+
+	tab mother_educ, gen(MEduc)
+	tab nutritionPre, gen(PreNutrition)
+	tab pregDrugs, gen(PregDrugs)
+	tab pregAlcohol, gen(PregAlcohol)
+	
 	reg twin `base' `region' `c' `w'
-	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' replace
+	outreg2 `base' using $OUT/ELPI_twinpredict.`out', `add' replace
 
 	reg twin `base' `twincontrols_2' `region' `c' `w'
-	outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' append
+	outreg2 `base' `twincontrols_2' using $OUT/ELPI_twinpredict.`out', `add' append
 
 	reg twin `base' `twincontrols_1' `region' `c' `w'
-	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' append
+	outreg2 `base' `twincontrols_1' using $OUT/ELPI_twinpredict.`out', `add' append
 
 	reg twin i.birthorder `base' `region' `c' `w'
-	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.`out', `add'
+	outreg2 `base' using $OUT/ELPI_twinpredict.`out', `add'
 
 	reg twin i.birthorder `base' `twincontrols_2' `region' `c' `w'
-	outreg2 using  $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' append
+	outreg2 `base' `twincontrols_2' using $OUT/ELPI_twinpredict.`out', `add' append
 
 	reg twin i.birthorder `base' `twincontrols_1' `region' `c' `w'
-	outreg2 using $PATH/Results/Outreg/ELPI_twinpredict.`out', `add' append
+	outreg2 `base' `twincontrols_1' using $OUT/ELPI_twinpredict.`out', `add' append
 
 	estpost sum birthorder `base' fert poor mother_educ pregNutrition age   /*
 	*/ rural nutritionPre pregNoAttention pregSmoked pregDrugs pregAlcohol  /*
