@@ -32,8 +32,8 @@ global LOG "~/investigacion/Activa/Twins/Log"
 cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
 
-local birthregs  1
-local fdeathregs 0
+local birthregs  0
+local fdeathregs 1
 local SumStats   0
 
 local fmt tex
@@ -52,12 +52,12 @@ if `birthregs'==1 {
 	local health anemia cardiac lung diabetes chyper phyper eclamp
 	local a absorb(year)
 	
-*	areg twin100 `base' motherAge* i.birthOrder, `a'
-*	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
+	areg twin100 `base' motherAge* i.birthOrder, `a'
+	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
 	*reg twin100 `base' i.motherAge i.birthOrder
 	*outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' append
-*	areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
-*	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
+	areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
+	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
 	areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
 	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
 	areg twin100 `base' alcohol* `health' motherAge* i.birthOrder, `a'
@@ -86,6 +86,7 @@ if `fdeathregs'==1 {
 	local T2    twin TwinXtobacco TwinXmeduc* TwinXalcohol
 	local TH    `Tbase' TwinXdiab TwinXchyper TwinXphyper TwinXeclamp
 	local FEs   i.birthOrder
+	local a     absorb(year)
 	
 	areg fetaldeath `base' `Tbase' motherAge* `FEs', `a'
 	outreg2 `base' `Tbase' using "$OUT/USfdeaths.`fmt'", `sheet' replace
@@ -115,9 +116,17 @@ if `SumStats'==1 {
 	estpost sum twin africanAmeric otherRace white meduc* tobaccoUse alcoholUse /*
 	*/ anemia cardiac lung diabetes chyper phyper eclamp year yearalc           /*
 	*/ if fetaldeath==0, d
-
+	esttab using "$OUT/USDescriptivesBirths.tex", ///
+	replace cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")  ///
+	style(tex) label collabels("N" "Mean" "S.Dev." "Min." "Max.") ///
+	nomtitles nonumbers addnotes("All births 2003-2012")
+	
 	estpost sum twin africanAmeric otherRace white meduc* tobaccoUse alcoholUse /*
 	*/ diabetes chyper phyper eclamp year yearalc if fetaldeath==1, d
+	esttab using "$OUT/USDescriptivesDeaths.tex", ///
+	replace cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")  ///
+	style(tex) label collabels("N" "Mean" "S.Dev." "Min." "Max.") ///
+	nomtitles nonumbers addnotes("All fetal deaths 2003-2012")
 }
 
 log close
