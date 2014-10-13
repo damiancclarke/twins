@@ -85,8 +85,7 @@ if `fdeathregs'==1 {
 	
 	local base africanAmerican otherRace meducSecond meducTert tobacco*
 	local health diabetes chyper phyper eclamp
-	foreach v of varlist `base' tobaccoUse meducS meducT `health' alcoholUse /*
-	*/ motherAge* {
+	foreach v of varlist `base' `health' alcoholUse motherAge* {
 		gen TwinX`v'=twin*`v'
 	}
 	local Tbase twin TwinXtobacco TwinXmeduc* TwinXafrican TwinXotherR TwinXmot*
