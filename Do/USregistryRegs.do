@@ -76,14 +76,21 @@ if `fdeathregs'==1 {
 	gen motherAgeSq=motherAge*motherAge
 	gen Twin100fetaldeath=twin100*fetaldeath
 	drop if year<2003
+
+	##take 10% sample
+	set seed 2727
+	gen bin=runiform()
+	keep if bin>0.9
+	drop bin
 	
 	local base africanAmerican otherRace meducSecond meducTert tobacco*
 	local health diabetes chyper phyper eclamp
-	foreach var of varlist tobaccoUse meducS meducT `health' alcoholUse {
-		gen TwinX`var'=twin*`var'
+	foreach v of varlist `base' tobaccoUse meducS meducT `health' alcoholUse /*
+	*/ motherAge* {
+		gen TwinX`v'=twin*`v'
 	}
-	local Tbase twin TwinXtobacco TwinXmeduc* 
-	local T2    twin TwinXtobacco TwinXmeduc* TwinXalcohol
+	local Tbase twin TwinXtobacco TwinXmeduc* TwinXafrican TwinXotherR TwinXmot*
+	local T2    `Tbase' TwinXalcohol
 	local TH    `Tbase' TwinXdiab TwinXchyper TwinXphyper TwinXeclamp
 	local FEs   i.birthOrder
 	local a     absorb(year)
