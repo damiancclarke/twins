@@ -88,8 +88,8 @@ if `fdeathregs'==1 {
 	foreach v of varlist `base' `health' alcoholUse motherAge* {
 		gen TwinX`v'=twin*`v'
 	}
-	local Tbase twin TwinXtobacco TwinXmeduc* TwinXafrican TwinXotherR TwinXmot*
-	local T2    `Tbase' TwinXalcohol
+	local Tbase twin TwinXtobacco* TwinXmeduc* TwinXafrican TwinXotherR TwinXmot*
+	local T2    `Tbase' TwinXalcohol*
 	local TH    `Tbase' TwinXdiab TwinXchyper TwinXphyper TwinXeclamp
 	local FEs   i.birthOrder
 	local a     absorb(year)
