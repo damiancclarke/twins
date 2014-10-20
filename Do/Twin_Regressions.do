@@ -78,7 +78,8 @@ local trends        0
 local graphsMB      111
 local graphsSW      27
 local twin          27
-local OLS           1
+local OLS           11
+local Oster         1
 local RF            27
 local IV            111
 local IVtwin        27
@@ -915,7 +916,6 @@ if `OLS'==1 {
 	gen desiredbirth=bord<=idealnumkids
 	gen fertXdesired=fert*desiredbirth
 
-	local pp
 	foreach inc in ALL==1 income=="low" income=="mid" {
 		preserve
 		keep `cond'&`inc'
@@ -926,24 +926,15 @@ if `OLS'==1 {
 			outreg2 fert $age using `out', excel append
 			reg `y' fert `base' $age $H `wt' if e(sample), `se'
 			outreg2 fert $age $H using `out', excel append
-			psacalc fert delta
-			local OsterH`pp'=`r(output)'
 			reg `y' fert `base' $age $S $H `wt', `se'
 			outreg2 fert $age $S $H using `out', excel append
-			psacalc fert delta
-			local OsterSH`pp'=`r(output)'
 			reg `y' fert `base' $age $S $H i.bord `wt', `se'
 			outreg2 fert $age $S $H using `out', excel append
 			reg `y' fert fertXdesired `base' $age $S $H `wt', `se'
 			outreg2 fert* $age $S $H using `out', excel append
-			local +pp
 		}
 		restore
 	}
-	dis "Oster coefs (All): `OsterH1' `OsterSH1'"
-	dis "Oster coefs (Low inc): `OsterH2' `OsterSH2'"
-	dis "Oster coefs (Mid inc): `OsterH3' `OsterSH3'"
-	exit
 	local out "$Tables/OLS/QQ_plusgroups.xls"
 	cap rm `out'
 	cap rm "$Tables/OLS/QQ_plusgroups.txt"
@@ -963,6 +954,30 @@ if `OLS'==1 {
 		}
 		restore
 	}
+}
+
+if `Oster'==1 {
+	local pp
+	foreach inc in ALL==1 income=="low" income=="mid" {
+		preserve
+		keep `cond'&`inc'
+
+		foreach y of varlist $outcomes {
+			reg `y' fert `base' $age $S $H
+			gen Osample=e(sample)
+			psacalc fert delta, mcontrol(`base' $age)
+			local OsterSH`pp'=`r(output)'
+		
+			reg `y' fert `base' $age $H if Osample==1
+			psacalc fert delta, mcontrol(`base' $age)
+			local OsterH`pp'=`r(output)'
+		}
+		restore
+		local ++pp
+	}
+	dis "Oster coefs (All): `OsterH1' `OsterSH1'"
+	dis "Oster coefs (Low inc): `OsterH2' `OsterSH2'"
+	dis "Oster coefs (Mid inc): `OsterH3' `OsterSH3'"
 }
 
 ********************************************************************************
