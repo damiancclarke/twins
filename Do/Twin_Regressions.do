@@ -957,7 +957,7 @@ if `OLS'==1 {
 }
 
 if `Oster'==1 {
-	local pp
+	local pp=1
 	foreach inc in ALL==1 income=="low" income=="mid" {
 		preserve
 		keep `cond'&`inc'
@@ -965,11 +965,11 @@ if `Oster'==1 {
 		foreach y of varlist $outcomes {
 			reg `y' fert `base' $age $S $H
 			gen Osample=e(sample)
-			psacalc fert delta, mcontrol(`base' $age)
+			psacalc fert delta, mcontrol(`base' $age) rmax(0.55)
 			local OsterSH`pp'=`r(output)'
 		
 			reg `y' fert `base' $age $H if Osample==1
-			psacalc fert delta, mcontrol(`base' $age)
+			psacalc fert delta, mcontrol(`base' $age) rmax(0.55)
 			local OsterH`pp'=`r(output)'
 		}
 		restore
