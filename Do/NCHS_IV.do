@@ -32,7 +32,53 @@ global LOG "~/investigacion/Activa/Twins/Log"
 cap mkdir $OUT
 log using "$LOG/NCHS_IV.txt", text replace
 
+tempfile NCHSfile people
+
 ********************************************************************************
 *** (2) Open data
 ********************************************************************************
 use "$DAT/familyxx.dta"
+keep hhx fmx wtfa_fam fint_y_p fint_m_p fm_size fm_kids fm_type fm_strcp /*
+*/ fm_educ1 incgrp2 incgrp3
+
+save `NCHSfile'
+
+use "$DAT/househld.dta"
+keep hhx region
+merge 1:m hhx using `NCHSfile'
+
+save `NCHSfile', replace
+
+use "$DAT/personsx"
+keep hhx fmx fpx sex origin_i racerpi2 rrp dob_m dob_y_p age_p r_maritl        /*
+*/ fmother1 mom_ed dad_ed latime29 launit29 ladura29 ladurb29 lachrc29 phstat /*
+*/ plborn regionbr citizenp headst headstv educ1 wrkhrs2 wrkftall wrkmyr 
+
+********************************************************************************
+*** (3) Create relationship file
+********************************************************************************
+egen famid=concat(hhx  fmx)
+egen id=concat(hhx fmx fpx)
+destring fpx, replace
+save `people'
+
+gen mother=.
+gen child=.
+
+keep famid fpx fmother1 rrp mother child
+destring fmother1, replace
+reshape wide fmother1 rrp mother child, i(famid) j(fpx)
+
+foreach num of numlist 1(1)18  {
+	egen yes=anymatch(fmother*), v(`num')
+	replace mother`num'=1 if yes==1
+	drop yes
+	replace child`num'=1 if fmother1`num'!=0
+}
+
+reshape long fmother1 rrp mother child, i(famid) j(fpx)
+drop if rrp==.
+keep famid fpx mother child
+
+merge 1:1 famid fpx using `people'
+
