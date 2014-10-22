@@ -26,6 +26,7 @@ cap log close
 *** (1) Globals and locals
 ********************************************************************************
 global DAT "~/database/NCHS/Data/dta/2013"
+global SAV "~/investigacion/Activa/Twins/Data"
 global OUT "~/investigacion/Activa/Twins/Results/Outreg/NCHS"
 global LOG "~/investigacion/Activa/Twins/Log"
 
@@ -82,3 +83,24 @@ keep famid fpx mother child
 
 merge 1:1 famid fpx using `people'
 
+preserve
+keep if mother==1
+save "$SAV/NCHSMother", replace
+restore
+
+keep if child==1
+destring dob_y_p, replace
+destring dob_m, replace
+keep if dob_y_p<9000
+keep if dob_m<90
+
+gen birthdate=dob_y_p+(dob_m-1)/12
+
+gen twin=.
+foreach n of numlist 1(1)18 {
+	gen bd=birthdate if fpx==`n'
+	bys famid: egen mbd=mean(bd)
+	gen bddif = birthdate-mbd
+	replace twin=1 if bddif==0&fpx!=`n'
+	drop bd mbd bddif
+}
