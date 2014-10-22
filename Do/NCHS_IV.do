@@ -41,13 +41,15 @@ tempfile NCHSfile people
 use "$DAT/familyxx.dta"
 keep hhx fmx wtfa_fam fint_y_p fint_m_p fm_size fm_kids fm_type fm_strcp /*
 */ fm_educ1 incgrp2 incgrp3
+egen famid=concat(hhx  fmx)
 
 save `NCHSfile'
 
 use "$DAT/househld.dta"
 keep hhx region
 merge 1:m hhx using `NCHSfile'
-
+drop _merge
+drop if fmx==""
 save `NCHSfile', replace
 
 use "$DAT/personsx"
@@ -83,8 +85,33 @@ keep famid fpx mother child
 
 merge 1:1 famid fpx using `people'
 
+
+********************************************************************************
+*** (4) Gen mother, child, twin variables
+********************************************************************************
 preserve
 keep if mother==1
+drop mother child mom_ed dad_ed sex fmother1 headst* _merge
+destring dob_m, replace
+destring dob_y_p, replace
+
+rename dob_m motherMOB
+rename dob_y_p motherYOB
+rename racerpi2 motherRace
+rename id motherid
+rename rrp motherRRP
+rename age_p motherAge
+rename r_maritl motherMarriage
+rename phstat motherHealthStatus
+rename plborn motherUSAborn
+rename citizenp motherCitizen
+rename educ1 motherEduc
+rename wrkhrs2 motherWorkHrs
+rename wrkmyr motherWorkMths
+
+bys famid: gen n=_n
+keep if n==1
+drop n
 save "$SAV/NCHSMother", replace
 restore
 
@@ -103,4 +130,67 @@ foreach n of numlist 1(1)18 {
 	gen bddif = birthdate-mbd
 	replace twin=1 if bddif==0&fpx!=`n'
 	drop bd mbd bddif
+}
+replace twin=0 if twin==.
+
+bys famid (birthdate fpx): gen bord=_n
+bys famid: egen twinfamily=max(twin)
+replace twinfamily=0 if twinfamily==.
+
+bys famid twin (fpx): gen twinnum=_n
+replace twinnum=. if twin!=1
+gen bordtwin=bord if twin==1
+replace bordtwin=bord-1 if twin==2
+
+bys famid: egen twinfamilyT=max(twinnum)
+drop if twinfamilyT==3|twinfamilyT==4
+drop twinfamilyT _merge
+
+save "$SAV/NCHSChild", replace
+
+merge m:1 famid using "$SAV/NCHSMother"
+drop if _merge==1
+drop _merge
+
+merge m:1 famid using `NCHSfile'
+bys famid: gen fert=_N
+
+local max 1
+local fert 2
+
+foreach num in two three four five {
+	gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'
+	replace `num'_plus=0 if twin!=0
+	gen twin`num'=(twin==1 & bordtwin==`fert')
+	bys famid: egen twin_`num'_fam=max(twin`num')
+	drop twin`num'
+	local ++max
+	local ++fert
+}
+
+drop _merge
+save $SAV/NCHSTwins, replace
+
+
+********************************************************************************
+*** (5) Other covariates
+********************************************************************************
+replace educ=. if educ>=96
+replace motherEduc=. if motherEduc>96
+tab age, gen(_age)
+tab motherYOB, gen(_mYOB)
+tab region, gen(_region)
+tab motherRace, gen(_motherRace)
+
+tab motherEduc, gen(S_motherEduc)
+
+bys age: egen educmean=mean(educ1)
+bys age: egen educsd  =sd(educ1)
+gen educZscore=(educ1-educmean)/educsd
+
+foreach n in two three four { 
+	reg educZs _* fert if age<20&`n'_plus==1
+	ivreg2 educZscore _age* _region* (fert=twin_`n'_fam) if age<20&`n'_plus==1
+	ivreg2 educZscore _* (fert=twin_`n'_fam) if age<20&`n'_plus==1
+	ivreg2 educZscore _* S_* (fert=twin_`n'_fam) if age<20&`n'_plus==1	
 }
