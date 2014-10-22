@@ -67,6 +67,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
+local samp5         1
 local resave        0
 local samples       27
 local matchrate     27
@@ -79,7 +80,7 @@ local graphsMB      111
 local graphsSW      27
 local twin          27
 local OLS           11
-local Oster         1
+local Oster         100
 local RF            27
 local IV            111
 local IVtwin        27
@@ -90,6 +91,7 @@ local twinoccur_iv  27
 local conley        199
 local thresholdtest 27
 local balance       27
+local balanceG      1
 local country       88
 local adj_fert      11
   local ADJIV       27
@@ -183,6 +185,11 @@ local fnames
 *******************************************************************************
 log using "$Log/Twin_Regressions.log", text replace
 use "$Data/DHS_twins", clear
+if `samp5'==1 {
+	set seed 2727
+	gen sampler=runiform()
+	keep if sampler>0.95
+}
 
 replace bmi=. if bmi>50
 replace height=. if height>240
@@ -1059,9 +1066,9 @@ if `IV'==1 {
 		}
 
 		estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
-		*/ keep(fert $age $S $H)
+		*/ keep(fert $age $S $H $HP)
 		estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-		*/ keep(twin_* $age $S $H)
+		*/ keep(twin_* $age $S $H $HP)
 
 		estimates clear
 		macro shift
@@ -1520,6 +1527,42 @@ if `balance'==1 {
 	}
 }
 
+if `balanceG'==1 {
+	do "$Source/myttests.ado"
+	cap drop Treated
+	global balanceG educf height prenateCluster motherage agefirstbirth fert /*
+		*/ infantmortality educ school_zscore malec
+	
+	foreach n in `gplus' {
+		preserve
+		keep `cond'&`n'_plus==1			
+		gen Treated=1 if twinfamily>0&twinfamily!=.
+		replace Treated=0 if twinfamily==0
+
+		collapse $balanceG Treated, by(id)
+
+		lab var fert "Total Fertilty"
+		lab var agefirstbirth "Age First Birth"
+		lab var educf "Mother's Education"
+		lab var height "Mother's Height (cm)"
+		lab var prenateCluster "Prenatal care available"
+		lab var infantmortality "Infant Mortality (pre-twin)"
+		lab var motherage "Mother's Age in Years"
+		lab var educ "Child education (pre-twin children)"
+		lab var school_zscore "School Z-score (pre-twin)"
+		lab var malec "Percent male child (pre-twin)"
+
+		myttests $balanceG, by(Treated)
+		ereturn list
+
+		esttab using "$Tables/Balance/Balance_`n'.tex", nomtitle nonumbers noobs ///
+		  booktabs title(Test of Balance of Observables: Twins versus Non-twins ///
+		  \label{TWINtab:comp}) label ///
+		  cells("mu_1(fmt(a3)) mu_2 d(star pvalue(d_p))" " . . d_se(par)") replace
+		
+		restore
+	}
+}
 ********************************************************************************
 **** (14) Run for each country
 ********************************************************************************
