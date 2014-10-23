@@ -67,7 +67,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         1
+local samp5         0
 local resave        0
 local samples       27
 local matchrate     27
@@ -82,7 +82,7 @@ local twin          27
 local OLS           11
 local Oster         100
 local RF            27
-local IV            111
+local IV            1
 local IVtwin        27
 local desire        88
 local compl_fert    0
@@ -178,19 +178,22 @@ local fnames
   BornPre1985
   BornPost1984
 ;
+local conditions
+  ALL==1
+;
+
+local fnames
+  All
+;
 #delimit cr
 
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
 *******************************************************************************
 log using "$Log/Twin_Regressions.log", text replace
-use "$Data/DHS_twins", clear
-if `samp5'==1 {
-	set seed 2727
-	gen sampler=runiform()
-	keep if sampler>0.95
-}
 
+if `samp5'!=1 {
+	use "$Data/DHS_twins", clear
 replace bmi=. if bmi>50
 replace height=. if height>240
 replace height=. if height<80
@@ -216,6 +219,15 @@ egen category=concat(income twindfamily)
 egen nonmiss = rowmiss(educf height bmi motherage malec)
 
 if `resave'==1 save "$Data/DHS_twins_mortality", replace
+}
+	
+if `samp5'==1 {
+*	set seed 2727
+*	gen sampler=runiform()
+*	keep if sampler>0.9
+	use "$Data/DHS_twins10samp"
+}
+
 
 *******************************************************************************
 *** (1b) Check match rates
@@ -1536,8 +1548,7 @@ if `balanceG'==1 {
 	foreach n in `gplus' {
 		preserve
 		keep `cond'&`n'_plus==1			
-		gen Treated=1 if twinfamily>0&twinfamily!=.
-		replace Treated=0 if twinfamily==0
+		gen Treated=twin_`n'_fam==1
 
 		collapse $balanceG Treated, by(id)
 
