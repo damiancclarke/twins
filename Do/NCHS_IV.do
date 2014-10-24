@@ -33,10 +33,10 @@ global LOG "~/investigacion/Activa/Twins/Log"
 cap mkdir $OUT
 log using "$LOG/NCHS_IV.txt", text replace
 
-tempfile NCHSfile people
+tempfile family child mother
 
 ********************************************************************************
-*** (2) Open data
+*** (2) Use family and household files, keeping all with children--mother link
 ********************************************************************************
 use "$DAT/familyxx.dta"
 keep hhx fmx wtfa_fam fint_y_p fint_m_p fm_size fm_kids fm_type fm_strcp /*
@@ -46,25 +46,80 @@ egen famid=concat(hhx fmx)
 drop if fm_strp==11|fm_strp==12 // drops all people living alone or not with fam
 drop if fm_strp==21|fm_strp==22|fm_strp==23 // adult only families
 drop if fm_strp==45|fm_strp==99 // no biological parents or unknown
+drop if fm_strp==32 // no mother to link to mother record
+drop if fm_strp==.
 
 gen fert = fm_kids // actually identical to using famsize - adults
 
-save `NCHSfile'
+save `family'
 
 
 use "$DAT/househld.dta"
 keep hhx region
-merge 1:m hhx using `NCHSfile'
+merge 1:m hhx using `family'
+keep if _merge==3
 drop _merge
 drop if fmx==""
-save `NCHSfile', replace
+save `family', replace
 
+********************************************************************************
+*** (3) Create child file
+********************************************************************************
+use "$DAT/personsx"
+drop if fmother=="00"|fmother=="96"
+
+keep if age_p<=18
+
+replace mracrpi2=4 if mracrpi2==1&origin_i==1
+
+order hhx fmx fpx rrp frrp fmother
+rename srvy_yr  surveyYear
+rename intv_mon surveyMonth
+rename wtfa     sWeight
+rename sex      childSex
+rename mracrpi2 childRace
+rename dob_m    childMonthBirth
+rename dob_y_p  childYearBirth
+rename age_p    childAge
+rename mom_ed   motherEduc
+rename dad_ed   fatherEduc
+rename cstatflg childFlag
+rename plaplylm childLimitPlay
+rename la1ar    childLimitAny
+rename lahcc5   childLimitBirth
+rename lahcc13  childLimitADHD
+rename phstat   childHealthStatus
+rename lcondrt  childChronicCond
+rename hikindna childHealthPrivate
+rename hikindnb childHealthMedicar
+rename hikindnc childHealthMedigap
+rename hikindnd childHealthMedicai
+rename hikindne childHealthSCHIP
+rename hikindnf childHealthMilitar
+rename hikindng childHealthIndian
+rename hikindnh childHealthState
+rename hikindni childHealthGovt
+rename hikindnj childHealthSSP
+rename hikindnk childHealthNone
+rename citizenp childUSCitizen
+rename plborn   childUSBorn
+rename educ1    childEducation
+
+
+keep hhx fmx fpx rrp frrp fmother surveyYear surveyMonth sWeight childSex    /*
+*/ childRace childMonthBirth childYearBirth childAge motherEduc fatherEduc   /*
+*/ childFlag childLimit* childHealthStatus childChronicCond childHealth*     /*
+*/ childUSCitizen childUSBorn childEducation
+
+save `child'
+merge m:1 hhx fmx using `family'
+drop if _merge==1 //  People for whom we have no measure of family structure
+drop if _merge==2 //  Children who do not have observations for mother
+drop _merge
+
+save `child', replace
 exit
 
-use "$DAT/personsx"
-keep hhx fmx fpx sex origin_i racerpi2 rrp dob_m dob_y_p age_p r_maritl        /*
-*/ fmother1 mom_ed dad_ed latime29 launit29 ladura29 ladurb29 lachrc29 phstat /*
-*/ plborn regionbr citizenp headst headstv educ1 wrkhrs2 wrkftall wrkmyr 
 
 ********************************************************************************
 *** (3) Create relationship file
@@ -98,6 +153,15 @@ merge 1:1 famid fpx using `people'
 ********************************************************************************
 *** (4) Gen mother, child, twin variables
 ********************************************************************************
+**use "$DAT/samadult"
+
+**exit
+
+
+
+
+
+
 preserve
 keep if mother==1
 drop mother child mom_ed dad_ed sex fmother1 headst* _merge
