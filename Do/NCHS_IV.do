@@ -1,7 +1,7 @@
 /* NCHS_IV.do v0.00              damiancclarke             yyyy-mm-dd:2014-10-21
 ----|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 
-This file takes raw data from the NCHS, and converts it into one line per child
+This file takes raw data from the NHIS, and converts it into one line per child
 with measures of child quality, sibling twin status, and maternal health.  This
 can then be used for twin 2sls regressions of the following form:
 
@@ -13,7 +13,7 @@ where the quality regression is the second stage.
     Contact: mailto:damian.clarke@ecnomics.ox.ac.uk
 
 Version history
-   v0.00: Running only with 2013 NCHS
+   v0.00: Running only with 2013 NHIS
 
 */
 
@@ -25,7 +25,7 @@ cap log close
 ********************************************************************************
 *** (1) Globals and locals
 ********************************************************************************
-global DAT "~/database/NCHS/Data/dta/2013"
+global DAT "~/database/NHIS/Data/dta/2012"
 global SAV "~/investigacion/Activa/Twins/Data"
 global OUT "~/investigacion/Activa/Twins/Results/Outreg/NCHS"
 global LOG "~/investigacion/Activa/Twins/Log"
@@ -40,10 +40,17 @@ tempfile NCHSfile people
 ********************************************************************************
 use "$DAT/familyxx.dta"
 keep hhx fmx wtfa_fam fint_y_p fint_m_p fm_size fm_kids fm_type fm_strcp /*
-*/ fm_educ1 incgrp2 incgrp3
-egen famid=concat(hhx  fmx)
+*/fm_strp fm_educ1 incgrp2 incgrp3
+egen famid=concat(hhx fmx)
+
+drop if fm_strp==11|fm_strp==12 // drops all people living alone or not with fam
+drop if fm_strp==21|fm_strp==22|fm_strp==23 // adult only families
+drop if fm_strp==45|fm_strp==99 // no biological parents or unknown
+
+gen fert = fm_kids // actually identical to using famsize - adults
 
 save `NCHSfile'
+
 
 use "$DAT/househld.dta"
 keep hhx region
@@ -51,6 +58,8 @@ merge 1:m hhx using `NCHSfile'
 drop _merge
 drop if fmx==""
 save `NCHSfile', replace
+
+exit
 
 use "$DAT/personsx"
 keep hhx fmx fpx sex origin_i racerpi2 rrp dob_m dob_y_p age_p r_maritl        /*
