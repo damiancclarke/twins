@@ -33,7 +33,7 @@ global DAT "~/database/NHIS/Data/dta/2013"
 
 log using "$LOG/NCHS_IV.txt", text replace
 
-foreach yrr of numlist 2013 2012 2011 2010 2009 2008 {
+foreach yrr of numlist 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 {
 global DAT "~/database/NHIS/Data/dta/`yrr'"
 
 tempfile family child mother
@@ -76,7 +76,7 @@ keep if age_p<=18
 replace mracrpi2=4 if mracrpi2==1&origin_i==1
 cap rename fmother1 fmother
 
-if `yrr'==2010|`yrr'==2009|`yrr'==2008 gen intv_mon=intv_qrt*3
+if `yrr'<=2010 gen intv_mon=intv_qrt*3
 	
 order hhx fmx fpx rrp frrp fmother
 rename srvy_yr  surveyYear
