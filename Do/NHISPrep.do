@@ -36,14 +36,14 @@ log using "$LOG/NCHS_IV.txt", text replace
 foreach yrr of numlist 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 {
 global DAT "~/database/NHIS/Data/dta/`yrr'"
 
-tempfile family child mother
+tempfile family child mother adult
 
 ********************************************************************************
 *** (2) Use family and household files, keeping all with children--mother link
 ********************************************************************************
 use "$DAT/familyxx.dta"
-keep hhx fmx wtfa_fam fint_y_p fint_m_p fm_size fm_kids fm_type fm_strcp /*
-*/fm_strp fm_educ1 incgrp2 incgrp3
+keep hhx fmx wtfa_fam fint_y_p fint_m_p fm_size fm_kids fm_type fint_m_p /*
+*/fm_strp fm_educ1 /*incgrp2 incgrp3 fm_strcp*/
 egen famid=concat(hhx fmx)
 
 drop if fm_strp==11|fm_strp==12 // drops all people living alone or not with fam
@@ -53,7 +53,9 @@ drop if fm_strp==32 // no mother to link to mother record
 drop if fm_strp==.
 
 gen fert = fm_kids // actually identical to using famsize - adults
+rename fint_m_p surveyMonth
 
+	
 save `family'
 
 
@@ -64,23 +66,36 @@ keep if _merge==3
 drop _merge
 drop if fmx==""
 save `family', replace
-
+	
 ********************************************************************************
 *** (3) Create child file
 ********************************************************************************
 use "$DAT/personsx"
-drop if fmother=="00"|fmother=="96"
+if `yrr'<=2005 {
+	tostring fmother, replace force
+	foreach num of numlist 0(1)9 {
+		replace fmother="0`num'" if fmother=="`num'"
+	}
+}
 
+drop if fmother=="00"|fmother=="96"
+else if `yrr'<=2005 drop if fmother==0|fmother==96
+	
 keep if age_p<=18
 
 replace mracrpi2=4 if mracrpi2==1&origin_i==1
 cap rename fmother1 fmother
 
-if `yrr'<=2010 gen intv_mon=intv_qrt*3
+*if `yrr'<=2010 gen intv_mon=intv_qrt*3
+if `yrr'<=2007 {
+	foreach let in a b c d e f g h i j k {
+		rename hikind`let' hikindn`let'
+	}	
+}
 	
 order hhx fmx fpx rrp frrp fmother
 rename srvy_yr  surveyYear
-rename intv_mon surveyMonth
+*rename intv_mon surveyMonth
 rename wtfa     sWeight
 rename sex      childSex
 rename mracrpi2 childRace
@@ -114,7 +129,7 @@ rename rrp      childRefRelate
 rename frrp     childRefRelateFam
 rename fpx      childfpx
 
-keep hhx fmx childfpx fmother surveyYear surveyMont sWeight childSex childRac /*
+keep hhx fmx childfpx fmother surveyYear sWeight childSex childRac            /*
 */ childMonthBirth childYearBirth childAge motherEduc fatherEduc childFlag    /*
 */ childLimit* childHealthStatus childChronicCond childHealth* childUSCitizen /*
 */ childUSBorn childEducation childRef*
@@ -134,6 +149,11 @@ use "$DAT/personsx"
 keep if age_p>=18&sex==2
 
 replace mracrpi2=4 if mracrpi2==1&origin_i==1
+if `yrr'<=2007 {
+	foreach let in a b c d e f g h i j k {
+		rename hikind`let' hikindn`let'
+	}	
+}
 
 rename wtfa     mWeight
 rename mracrpi2 motherRace
@@ -185,8 +205,7 @@ keep if childMonthBirth<90
 
 gen motherAge2=motherAge^2
 gen birthdate=childYearBirth+(childMonthBirth-1)/12
-
-sum birthdate
+gen ageInterview=(surveyYear-childYearBirth)+(surveyMont-childMonthBirth-1)/12
 
 gen twin=.
 bys motherID (birthdate): gen kidID=_n
@@ -246,5 +265,25 @@ foreach var in LimitAny USCitizen USBorn HealthPrivate HealthNone {
 gen childCondition   =childLimitAny==1&childLimitBirth!=1
 gen childADHD        =childLimitADHD==1
 
+********************************************************************************
+*** (7) Merge to index adult (mother) for cases where mother is index 
+********************************************************************************
+preserve
+use "$DAT/samadult", clear
+keep fmx fpx hhx smkev smkreg aheight aweightp bmi 	
+save `adult'
+restore	
+
+merge m:1 hhx fmx fpx using `adult'
+drop if _merge==2	
+gen smokePrePreg=smkreg<ageFirstBirth
+gen smokeMissing=smkev==.|smkev>2
+gen motherHeight=aheight if aheight<96
+gen heightMiss  =motherHeight==.
+replace motherHeight=0 if heightMiss==1
+
+drop smkev smkreg aheightp _merge
+
 save $SAV/NCIS`yrr', replace
 }
+
