@@ -1,4 +1,4 @@
-/* NCHS_IV.do v0.00              damiancclarke             yyyy-mm-dd:2014-10-21
+/* NHISPrep.do v1.00             damiancclarke             yyyy-mm-dd:2014-10-21
 ----|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 
 This file takes raw data from the NHIS, and converts it into one line per child
@@ -14,6 +14,7 @@ where the quality regression is the second stage.
 
 Version history
    v0.00: Running only with 2013 NHIS
+   v1.00: NHIS, merge mother -> child seperately
 
 */
 
