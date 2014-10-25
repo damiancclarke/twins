@@ -167,88 +167,29 @@ keep if _merge==3 //Only mothers merge in, so about half should be _merge==1
 drop _merge
 
 ********************************************************************************
-*** (5) Create fertility variables, cleaning
+*** (5) Create fertility variables
 ********************************************************************************
-exit
+*egen childID=concat(hhx fmx childfpx)
+egen famID=concat(hhx fmx)
+egen motherID=concat(hhx fmx fpx)
 
-egen famid=concat(hhx  fmx)
-egen id=concat(hhx fmx fpx)
-destring fpx, replace
-save `people'
+destring childYearBirth,  replace
+destring childMonthBirth, replace
+keep if childYearBirth<9000
+keep if childMonthBirth<90
 
-gen mother=.
-gen child=.
-
-keep famid fpx fmother1 rrp mother child
-destring fmother1, replace
-reshape wide fmother1 rrp mother child, i(famid) j(fpx)
-
-foreach num of numlist 1(1)18  {
-	egen yes=anymatch(fmother*), v(`num')
-	replace mother`num'=1 if yes==1
-	drop yes
-	replace child`num'=1 if fmother1`num'!=0
-}
-
-reshape long fmother1 rrp mother child, i(famid) j(fpx)
-drop if rrp==.
-keep famid fpx mother child
-
-merge 1:1 famid fpx using `people'
-
-
-********************************************************************************
-*** (4) Gen mother, child, twin variables
-********************************************************************************
-**use "$DAT/samadult"
-
-**exit
-
-
-
-
-
-
-preserve
-keep if mother==1
-drop mother child mom_ed dad_ed sex fmother1 headst* _merge
-destring dob_m, replace
-destring dob_y_p, replace
-
-rename dob_m motherMOB
-rename dob_y_p motherYOB
-rename racerpi2 motherRace
-rename id motherid
-rename rrp motherRRP
-rename age_p motherAge
-rename r_maritl motherMarriage
-rename phstat motherHealthStatus
-rename plborn motherUSAborn
-rename citizenp motherCitizen
-rename educ1 motherEduc
-rename wrkhrs2 motherWorkHrs
-rename wrkmyr motherWorkMths
-
-bys famid: gen n=_n
-keep if n==1
-drop n
-save "$SAV/NCHSMother", replace
-restore
-
-keep if child==1
-destring dob_y_p, replace
-destring dob_m, replace
-keep if dob_y_p<9000
-keep if dob_m<90
-
-gen birthdate=dob_y_p+(dob_m-1)/12
+gen birthdate=childYearBirth+(childMonthBirth-1)/12
 
 gen twin=.
-foreach n of numlist 1(1)18 {
-	gen bd=birthdate if fpx==`n'
+bys famid (birthdate): gen kidID=_n
+levelsof kidID 
+local num: word count `r(levels)'
+
+foreach n of numlist 1(1)`num' {
+	gen bd=birthdate if kidID==`n'
 	bys famid: egen mbd=mean(bd)
 	gen bddif = birthdate-mbd
-	replace twin=1 if bddif==0&fpx!=`n'
+	replace twin=1 if bddif==0&kidID!=`n'
 	drop bd mbd bddif
 }
 replace twin=0 if twin==.
@@ -260,24 +201,14 @@ replace twinfamily=0 if twinfamily==.
 bys famid twin (fpx): gen twinnum=_n
 replace twinnum=. if twin!=1
 gen bordtwin=bord if twin==1
-replace bordtwin=bord-1 if twin==2
+replace bordtwin=bord-1 if twinnum==2
 
 bys famid: egen twinfamilyT=max(twinnum)
 drop if twinfamilyT==3|twinfamilyT==4
-drop twinfamilyT _merge
-
-save "$SAV/NCHSChild", replace
-
-merge m:1 famid using "$SAV/NCHSMother"
-drop if _merge==1
-drop _merge
-
-merge m:1 famid using `NCHSfile'
-bys famid: gen fert=_N
+drop twinfamilyT
 
 local max 1
 local fert 2
-
 foreach num in two three four five {
 	gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'
 	replace `num'_plus=0 if twin!=0
@@ -288,12 +219,9 @@ foreach num in two three four five {
 	local ++fert
 }
 
-drop _merge
-save $SAV/NCHSTwins, replace
-
-
+exit
 ********************************************************************************
-*** (5) Other covariates
+*** (6) Clean outcomes, other covariates
 ********************************************************************************
 replace educ=. if educ>=96
 replace motherEduc=. if motherEduc>96
