@@ -37,7 +37,7 @@ local base B_* childSex
 local H    H_* `age'
 local SH   S_* `H'  
 
-local wt   pw=sWeight
+local wt   pw=wtfa_fam
 local se   cluster(motherID)
 
 local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
@@ -90,10 +90,11 @@ foreach y of varlist excellentHealth schoolZscore {
 	estimates clear
 }
 }	
+
 ********************************************************************************
 *** (4) IV regressions
 ********************************************************************************
-foreach y of varlist /*excellentHealth*/ schoolZscore {
+foreach y of varlist excellentHealth schoolZscore childEducation {
 	foreach f in two three four {
 		eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) if `f'_plus==1 [`wt'],     /*
 		*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
@@ -122,3 +123,42 @@ foreach y of varlist /*excellentHealth*/ schoolZscore {
 }
 
 count
+
+********************************************************************************
+*** (5) IV regressions by gender
+********************************************************************************
+cap mkdir "$OUT/Gender"
+foreach gend of numlist 1 2 { 	
+	foreach y of varlist excellentHealth schoolZscore childEducation {
+		foreach f in two three four {
+			preserve
+			keep if childSex==`gend'&`f'_plus==1
+			eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) [`wt'],     /*
+			*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
+			dis "`f' base"
+			dis _b[fert]
+			dis _b[fert]/_se[fert]
+
+			eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) [`wt'], /*
+			*/ `se' first ffirst savefirst savefp(`f'h) partial(`base')
+			dis "`f' H"
+			dis _b[fert]
+			dis _b[fert]/_se[fert]
+
+			eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
+			*/ `se' first ffirst savefirst savefp(`f's) partial(`base')
+			dis "`f' SH"
+			dis _b[fert]
+			dis _b[fert]/_se[fert]
+			restore
+		}
+		local estimates est1 est2 est3 est4 est5 est6 est7 est8 est9
+		local fstage twobfert twohfert twosfert threebfert threehfert threesfert /*
+		*/ fourbfert fourhfert foursfert
+		estout `estimates' using "$OUT/Gender/IVFert`y'G`gend'.xls", replace     /*
+		*/ `estopt' keep(fert `SH')
+		estout `fstage'    using "$OUT/Gender/IVFert`y'1G`gend'.xls", replace    /*
+		*/ `estopt' keep(twin* `SH')
+		estimates clear
+	}
+}
