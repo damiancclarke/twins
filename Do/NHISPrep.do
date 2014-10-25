@@ -26,13 +26,15 @@ cap log close
 ********************************************************************************
 *** (1) Globals and locals
 ********************************************************************************
-global DAT "~/database/NHIS/Data/dta/2012"
-global SAV "~/investigacion/Activa/Twins/Data"
+global SAV "~/investigacion/Activa/Twins/Data/NCIS"
 global OUT "~/investigacion/Activa/Twins/Results/Outreg/NCHS"
 global LOG "~/investigacion/Activa/Twins/Log"
+global DAT "~/database/NHIS/Data/dta/2013"
 
-cap mkdir $OUT
 log using "$LOG/NCHS_IV.txt", text replace
+
+foreach yrr of numlist 2013 2012 2011 2010 {
+global DAT "~/database/NHIS/Data/dta/`yrr'"
 
 tempfile family child mother
 
@@ -72,6 +74,7 @@ drop if fmother=="00"|fmother=="96"
 keep if age_p<=18
 
 replace mracrpi2=4 if mracrpi2==1&origin_i==1
+cap rename fmother1 fmother
 
 order hhx fmx fpx rrp frrp fmother
 rename srvy_yr  surveyYear
@@ -233,42 +236,13 @@ replace motherEducation=. if motherEducation>90
 bys motherID: egen maxAge=max(childAge)
 gen ageFirstBirth=motherAge-maxAge
 
+foreach var in LimitAny USCitizen USBorn HealthPrivate HealthNone {
+	foreach p in mother child {
+		replace `p'`var'=2 if `p'`var'>=3
+	}
+}
+gen childCondition   =childLimitAny==1&childLimitBirth!=1
+gen childADHD        =childLimitADHD==1
 
-tab birthdate,  gen(_Bdate)
-tab region,     gen(_region)
-tab motherRace, gen(_mrace)
-tab motherHealthStatus, gen(M_mhealth)
-tab motherEducation, gen(E_meduc)
-
-reg childEducation _* fert, cluster(motherID)
-ivreg2 childEducation _* (fert=twin_three_fam) if three_plus==1, cluster(motherID)
-dis _b[fert]
-dis _b[fert]/_se[fert]
-ivreg2 childEducation _* M_* (fert=twin_three_fam) if three_plus==1, cluster(motherID)
-dis _b[fert]
-dis _b[fert]/_se[fert]
-ivreg2 childEducation _* M_* E_* (fert=twin_three_fam) if three_plus==1, cluster(motherID)
-dis _b[fert]
-dis _b[fert]/_se[fert]
-exit
-
-
-exit
-
-tab age, gen(_age)
-tab motherYOB, gen(_mYOB)
-tab region, gen(_region)
-tab motherRace, gen(_motherRace)
-
-tab motherEduc, gen(S_motherEduc)
-
-bys age: egen educmean=mean(educ1)
-bys age: egen educsd  =sd(educ1)
-gen educZscore=(educ1-educmean)/educsd
-
-foreach n in two three four { 
-	reg educZs _* fert if age<20&`n'_plus==1
-	ivreg2 educZscore _age* _region* (fert=twin_`n'_fam) if age<20&`n'_plus==1
-	ivreg2 educZscore _* (fert=twin_`n'_fam) if age<20&`n'_plus==1
-	ivreg2 educZscore _* S_* (fert=twin_`n'_fam) if age<20&`n'_plus==1	
+save $SAV/NCIS`yrr', replace
 }
