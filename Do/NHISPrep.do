@@ -105,12 +105,14 @@ rename hikindnk childHealthNone
 rename citizenp childUSCitizen
 rename plborn   childUSBorn
 rename educ1    childEducation
+rename rrp      childRefRelate
+rename frrp     childRefRelateFam
+rename fpx      childfpx
 
-
-keep hhx fmx fpx rrp frrp fmother surveyYear surveyMonth sWeight childSex    /*
-*/ childRace childMonthBirth childYearBirth childAge motherEduc fatherEduc   /*
-*/ childFlag childLimit* childHealthStatus childChronicCond childHealth*     /*
-*/ childUSCitizen childUSBorn childEducation
+keep hhx fmx childfpx fmother surveyYear surveyMont sWeight childSex childRac /*
+*/ childMonthBirth childYearBirth childAge motherEduc fatherEduc childFlag    /*
+*/ childLimit* childHealthStatus childChronicCond childHealth* childUSCitizen /*
+*/ childUSBorn childEducation childRef*
 
 save `child'
 merge m:1 hhx fmx using `family'
@@ -119,12 +121,56 @@ drop if _merge==2 //  Children who do not have observations for mother
 drop _merge
 
 save `child', replace
+
+********************************************************************************
+*** (4) Create mother file
+********************************************************************************
+use "$DAT/personsx"
+keep if age_p>=18&sex==2
+
+replace mracrpi2=4 if mracrpi2==1&origin_i==1
+
+rename wtfa     mWeight
+rename mracrpi2 motherRace
+rename dob_m    motherMonthBirth
+rename dob_y_p  motherYearBirth
+rename age_p    motherAge
+rename la1ar    motherLimitAny
+rename lahcc5   motherLimitBirth
+rename lahcc13  motherLimitADHD
+rename phstat   motherHealthStatus
+rename lcondrt  motherChronicCond
+rename citizenp motherUSCitizen
+rename plborn   motherUSBorn
+rename educ1    motherEducation
+rename r_maritl motherMarriage
+rename hikindna motherHealthPrivate
+rename hikindnb motherHealthMedicar
+rename hikindnc motherHealthMedigap
+rename hikindnd motherHealthMedicai
+rename hikindne motherHealthSCHIP
+rename hikindnf motherHealthMilitar
+rename hikindng motherHealthIndian
+rename hikindnh motherHealthState
+rename hikindni motherHealthGovt
+rename hikindnj motherHealthSSP
+rename hikindnk motherHealthNone
+
+keep hhx fmx fpx rrp frrp mWeight motherRace motherMonthBirth motherYearBirth /*
+*/ motherAge motherLimitAny motherLimitBirt motherLimitADHD motherHealthStatu /*
+*/ motherChronicCond motherUSCitizen motherUSBorn motherEducation motherHealth*
+
+gen fmother=fpx
+merge 1:m hhx fmx fmother using `child'
+
+keep if _merge==3 //Only mothers merge in, so about half should be _merge==1
+drop _merge
+
+********************************************************************************
+*** (5) Create fertility variables, cleaning
+********************************************************************************
 exit
 
-
-********************************************************************************
-*** (3) Create relationship file
-********************************************************************************
 egen famid=concat(hhx  fmx)
 egen id=concat(hhx fmx fpx)
 destring fpx, replace
