@@ -178,32 +178,37 @@ destring childMonthBirth, replace
 keep if childYearBirth<9000
 keep if childMonthBirth<90
 
+gen motherAge2=motherAge^2
 gen birthdate=childYearBirth+(childMonthBirth-1)/12
 
+sum birthdate
+
 gen twin=.
-bys famid (birthdate): gen kidID=_n
+bys motherID (birthdate): gen kidID=_n
 levelsof kidID 
 local num: word count `r(levels)'
 
 foreach n of numlist 1(1)`num' {
 	gen bd=birthdate if kidID==`n'
-	bys famid: egen mbd=mean(bd)
+	bys motherID: egen mbd=mean(bd)
 	gen bddif = birthdate-mbd
 	replace twin=1 if bddif==0&kidID!=`n'
 	drop bd mbd bddif
 }
 replace twin=0 if twin==.
 
-bys famid (birthdate fpx): gen bord=_n
-bys famid: egen twinfamily=max(twin)
+bys motherID (birthdate): gen bord=_n
+
+bys motherID: egen twinfamily=max(twin)
 replace twinfamily=0 if twinfamily==.
 
-bys famid twin (fpx): gen twinnum=_n
-replace twinnum=. if twin!=1
-gen bordtwin=bord if twin==1
-replace bordtwin=bord-1 if twinnum==2
+gen tbord=bord if twin==1
+bys motherID: egen bordtwin=min(tbord)
+replace bordtwin=. if twin==0
 
-bys famid: egen twinfamilyT=max(twinnum)
+bys motherID twin: gen twinnum=_n
+replace twinnum=. if twin!=1
+bys motherID: egen twinfamilyT=max(twinnum)
 drop if twinfamilyT==3|twinfamilyT==4
 drop twinfamilyT
 
@@ -213,18 +218,43 @@ foreach num in two three four five {
 	gen `num'_plus=(bord>=1&bord<=`max')&fert>=`fert'
 	replace `num'_plus=0 if twin!=0
 	gen twin`num'=(twin==1 & bordtwin==`fert')
-	bys famid: egen twin_`num'_fam=max(twin`num')
+	bys motherID: egen twin_`num'_fam=max(twin`num')
 	drop twin`num'
 	local ++max
 	local ++fert
 }
 
-exit
 ********************************************************************************
 *** (6) Clean outcomes, other covariates
 ********************************************************************************
-replace educ=. if educ>=96
-replace motherEduc=. if motherEduc>96
+replace childEducation=. if childEducation>90
+replace motherEducation=. if motherEducation>90
+
+bys motherID: egen maxAge=max(childAge)
+gen ageFirstBirth=motherAge-maxAge
+
+
+tab birthdate,  gen(_Bdate)
+tab region,     gen(_region)
+tab motherRace, gen(_mrace)
+tab motherHealthStatus, gen(M_mhealth)
+tab motherEducation, gen(E_meduc)
+
+reg childEducation _* fert, cluster(motherID)
+ivreg2 childEducation _* (fert=twin_three_fam) if three_plus==1, cluster(motherID)
+dis _b[fert]
+dis _b[fert]/_se[fert]
+ivreg2 childEducation _* M_* (fert=twin_three_fam) if three_plus==1, cluster(motherID)
+dis _b[fert]
+dis _b[fert]/_se[fert]
+ivreg2 childEducation _* M_* E_* (fert=twin_three_fam) if three_plus==1, cluster(motherID)
+dis _b[fert]
+dis _b[fert]/_se[fert]
+exit
+
+
+exit
+
 tab age, gen(_age)
 tab motherYOB, gen(_mYOB)
 tab region, gen(_region)
