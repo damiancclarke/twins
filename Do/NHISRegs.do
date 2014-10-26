@@ -32,13 +32,14 @@ global LOG "~/investigacion/Activa/Twins/Log"
 cap mkdir $OUT
 log using "$LOG/NCISRegs.txt", text replace
 
-local age  ageFirstBirth motherAge motherAge2
-local base B_* childSex
-local H    H_* `age'
-local SH   S_* `H'  
+local yvars childHealthPrivate excellentHealth schoolZscore childEducation
+local age   ageFirstBirth motherAge motherAge2
+local base  B_* childSex
+local H     H_* `age' smoke* heightMiss
+local SH    S_* `H'  
 
-local wt   pw=sWeight
-local se   cluster(motherID)
+local wt    pw=sWeight
+local se    cluster(motherID)
 
 local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 */ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
@@ -62,21 +63,24 @@ tab surveyYear,   gen(B_Syear)
 tab ageInterview, gen(B_Bdate)
 tab region,       gen(B_region)
 tab motherRace,   gen(B_mrace)
+tab childRace,    gen(B_crace)
 
-tab motherHealthStatus, gen(H_mhealth)
-*tab motherHeight, gen(H_mheight)
-*tab motherEducation, gen(S_meduc)
 
+*tab motherHealthStatus, gen(H_mhealth)
+gen H_mGoodHealth   =motherHealthStatus==1|motherHealthStatus==2
+gen H_mPoorHealth   =motherHealthStatus==4|motherHealthStatus==5
+gen H_mMissingHealth=motherHealthStatus==6|motherHealthStatus==7
 gen H_mheight=motherHeight
 gen H_mheight2=motherHeight^2
 gen S_meduc=motherEducation
 gen S_meduc2=motherEducation^2
+gen S_mUSCit=motherUSCitizen==1
 
 ********************************************************************************
 *** (3) OLS regressions
 ********************************************************************************
 if `ols'==1 {
-foreach y of varlist excellentHealth schoolZscore childHealthPrivate {
+foreach y of varlist `yvars' {
 
 	eststo: reg `y' `base' `age' fert [`wt'], `se'
 	eststo: reg `y' `base' `H'   fert [`wt'], `se'
@@ -86,9 +90,9 @@ foreach y of varlist excellentHealth schoolZscore childHealthPrivate {
 	estimates clear
 
 	foreach f in two three four {
-		eststo: reg `y' `base' `age' fert [`wt'] if `f'_plus==1, `se'
-		eststo: reg `y' `base' `H'   fert [`wt'] if `f'_plus==1, `se'
-		eststo: reg `y' `base' `SH'  fert [`wt'] if `f'_plus==1, `se'
+		eststo: reg `y' `base' `SH' fert [`wt'] if `f'_plus==1, `se'
+		eststo: reg `y' `base' `H'  fert [`wt'] if `f'_plus==1, `se'
+		eststo: reg `y' `base'      fert [`wt'] if `f'_plus==1, `se'
 	}
 	local estimates est1 est2 est3 est4 est5 est6 est7 est8 est9
 	estout `estimates' using "$OUT/OLSFert`y'.xls", replace `estopt' keep(fert `SH')
@@ -99,65 +103,70 @@ foreach y of varlist excellentHealth schoolZscore childHealthPrivate {
 ********************************************************************************
 *** (4) IV regressions
 ********************************************************************************
-foreach y of varlist childHealthPrivate excellentHealth schoolZscore childEducation {
+foreach y of varlist `yvars' {
 	foreach f in two three four {
-		eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) if `f'_plus==1 [`wt'],     /*
-		*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
-		dis "`f' base"
-		dis _b[fert]
-		dis _b[fert]/_se[fert]
-
-		eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) if `f'_plus==1 [`wt'], /*
-		*/ `se' first ffirst savefirst savefp(`f'h) partial(`base')
-		dis "`f' H"
-		dis _b[fert]
-		dis _b[fert]/_se[fert]
-
-		eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam) if `f'_plus==1 [`wt'], /*
+		local F`f'
+		preserve
+		keep if `f'_plus==1
+		eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam)             [`wt'], /*
 		*/ `se' first ffirst savefirst savefp(`f's) partial(`base')
-		dis "`f' SH"
-		dis _b[fert]
-		dis _b[fert]/_se[fert]	
+		unab svars : S_*
+		test `svars'
+		local F`f' `F`f'' `=`r(F)''
+		
+		eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
+		*/ `se' first ffirst savefirst savefp(`f'h) partial(`base')
+		unab hvars : H_* smoke*
+		test `hvars'
+		local F`f' `F`f'' `=`r(F)''
+
+		eststo: ivreg29 `y' `base'     (fert=twin_`f'_fam) if e(sample) [`wt'], /*
+		*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
+		restore
+		dis `F`f''
 	}
-	local estimates est1 est2 est3 est4 est5 est6 est7 est8 est9
+	local estimates est3 est2 est1 est6 est5 est4 est9 est8 est7
 	local fstage twobfert twohfert twosfert threebfert threehfert threesfert /*
 	*/ fourbfert fourhfert foursfert
 	estout `estimates' using "$OUT/IVFert`y'.xls", replace `estopt' keep(fert `SH')
-	estout `fstage'    using "$OUT/IVFert`y'1.xls", replace `estopt' keep(twin* `SH')
+	estout `fstage'  using "$OUT/IVFert`y'1.xls", replace `estopt' keep(twin* `SH')
+	dis "F-test two plus (S, H)  : `Ftwo'"
+	dis "F-test three plus (S, H): `Fthree'"
+	dis "F-test four plus (S, H) : `Ffour'"
 	estimates clear
 }
 
 count
-
+exit 
 ********************************************************************************
 *** (5) IV regressions by gender
 ********************************************************************************
 cap mkdir "$OUT/Gender"
-foreach gend of numlist 1 2 { 	
-	foreach y of varlist childHealthPrivate excellentHealth schoolZscore childEducation {
+foreach gend of numlist 1 2 {
+	foreach y of varlist  `yvars' {
 		foreach f in two three four {
 			preserve
 			keep if childSex==`gend'&`f'_plus==1
-			eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) [`wt'],     /*
-			*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
+			eststo: ivreg29 `y' `SH' (fert=twin_`f'_fam) [`wt'],               /*
+			*/ `se' first ffirst savefirst savefp(`f's) partial(`base')
 			dis "`f' base"
 			dis _b[fert]
 			dis _b[fert]/_se[fert]
 
-			eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) [`wt'], /*
+			eststo: ivreg29 `y'  `H' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
 			*/ `se' first ffirst savefirst savefp(`f'h) partial(`base')
 			dis "`f' H"
 			dis _b[fert]
 			dis _b[fert]/_se[fert]
 
-			eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
-			*/ `se' first ffirst savefirst savefp(`f's) partial(`base')
+			eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
+			*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
 			dis "`f' SH"
 			dis _b[fert]
 			dis _b[fert]/_se[fert]
 			restore
 		}
-		local estimates est1 est2 est3 est4 est5 est6 est7 est8 est9
+		local estimates est3 est2 est2 est6 est5 est4 est9 est8 est7
 		local fstage twobfert twohfert twosfert threebfert threehfert threesfert /*
 		*/ fourbfert fourhfert foursfert
 		estout `estimates' using "$OUT/Gender/IVFert`y'G`gend'.xls", replace     /*
