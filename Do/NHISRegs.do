@@ -112,13 +112,13 @@ foreach y of varlist `yvars' {
 		*/ `se' first ffirst savefirst savefp(`f's) partial(`base')
 		unab svars : S_*
 		test `svars'
-		local F`f' `F`f'' `=`r(F)''
+		local F`f' `F`f'' `=`r(chi2)''
 		
 		eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
 		*/ `se' first ffirst savefirst savefp(`f'h) partial(`base')
 		unab hvars : H_* smoke*
 		test `hvars'
-		local F`f' `F`f'' `=`r(F)''
+		local F`f' `F`f'' `=`r(chi2)''
 
 		eststo: ivreg29 `y' `base'     (fert=twin_`f'_fam) if e(sample) [`wt'], /*
 		*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
