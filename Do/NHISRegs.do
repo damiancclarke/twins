@@ -37,7 +37,7 @@ local base B_* childSex
 local H    H_* `age'
 local SH   S_* `H'  
 
-local wt   pw=wtfa_fam
+local wt   pw=sWeight
 local se   cluster(motherID)
 
 local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
@@ -56,6 +56,7 @@ gen excellentHealth=childHealthStatus==1
 bys ageInterview: egen mE=mean(childEducation)
 bys ageInterview: egen sd=sd(childEducation)
 gen schoolZscore=(childEducation-mE)/sd
+replace childHealthPrivate=0 if childHealthPrivate==2
 
 tab surveyYear,   gen(B_Syear)
 tab ageInterview, gen(B_Bdate)
@@ -63,15 +64,19 @@ tab region,       gen(B_region)
 tab motherRace,   gen(B_mrace)
 
 tab motherHealthStatus, gen(H_mhealth)
-tab motherHeight, gen(H_mheight)
-tab motherEducation, gen(S_meduc)
+*tab motherHeight, gen(H_mheight)
+*tab motherEducation, gen(S_meduc)
 
+gen H_mheight=motherHeight
+gen H_mheight2=motherHeight^2
+gen S_meduc=motherEducation
+gen S_meduc2=motherEducation^2
 
 ********************************************************************************
 *** (3) OLS regressions
 ********************************************************************************
 if `ols'==1 {
-foreach y of varlist excellentHealth schoolZscore {
+foreach y of varlist excellentHealth schoolZscore childHealthPrivate {
 
 	eststo: reg `y' `base' `age' fert [`wt'], `se'
 	eststo: reg `y' `base' `H'   fert [`wt'], `se'
@@ -94,7 +99,7 @@ foreach y of varlist excellentHealth schoolZscore {
 ********************************************************************************
 *** (4) IV regressions
 ********************************************************************************
-foreach y of varlist excellentHealth schoolZscore childEducation {
+foreach y of varlist childHealthPrivate excellentHealth schoolZscore childEducation {
 	foreach f in two three four {
 		eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) if `f'_plus==1 [`wt'],     /*
 		*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
@@ -129,7 +134,7 @@ count
 ********************************************************************************
 cap mkdir "$OUT/Gender"
 foreach gend of numlist 1 2 { 	
-	foreach y of varlist excellentHealth schoolZscore childEducation {
+	foreach y of varlist childHealthPrivate excellentHealth schoolZscore childEducation {
 		foreach f in two three four {
 			preserve
 			keep if childSex==`gend'&`f'_plus==1
