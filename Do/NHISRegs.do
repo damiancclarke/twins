@@ -33,6 +33,7 @@ cap mkdir $OUT
 log using "$LOG/NCISRegs.txt", text replace
 
 local yvars childHealthPrivate excellentHealth schoolZscore childEducation
+local yvars excellentHealth schoolZscore
 local age   ageFirstBirth motherAge motherAge2
 local base  B_* childSex
 local H     H_* `age' smoke* heightMiss
@@ -63,18 +64,22 @@ tab surveyYear,   gen(B_Syear)
 tab ageInterview, gen(B_Bdate)
 tab region,       gen(B_region)
 tab motherRace,   gen(B_mrace)
-tab childRace,    gen(B_crace)
+*tab childRace,    gen(B_crace)
 
 
-*tab motherHealthStatus, gen(H_mhealth)
-gen H_mGoodHealth   =motherHealthStatus==1|motherHealthStatus==2
-gen H_mPoorHealth   =motherHealthStatus==4|motherHealthStatus==5
-gen H_mMissingHealth=motherHealthStatus==6|motherHealthStatus==7
+tab motherHealthStatus, gen(H_mhealth)
+drop H_mhealth6
+drop H_mhealth7
+drop H_mhealth8
+
+*gen H_mGoodHealth   =motherHealthStatus==1|motherHealthStatus==2
+*gen H_mPoorHealth   =motherHealthStatus==4|motherHealthStatus==5
+*gen H_mMissingHealth=motherHealthStatus==6|motherHealthStatus==7
 gen H_mheight=motherHeight
 gen H_mheight2=motherHeight^2
 gen S_meduc=motherEducation
 gen S_meduc2=motherEducation^2
-gen S_mUSCit=motherUSCitizen==1
+*gen S_mUSCit=motherUSCitizen==1
 
 ********************************************************************************
 *** (3) OLS regressions
