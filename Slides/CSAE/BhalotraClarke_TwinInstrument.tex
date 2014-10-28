@@ -72,11 +72,11 @@
 \section{Introduction}
 \frame{\frametitle{This Talk}
 \begin{enumerate}
-\item Twin births \emph{are not} exogenous
-\item Taking twins to term depends on health stocks and behaviours of mothers during pregnancy
-\item This is a widespread (unrecognised) phenomenon in rich and poor countries
-\item This results in inconsistent estimates of the Q-Q trade-off
-\item Our revised estimates (Developing countries and USA) suggest that this may help to explain the insignificant findings in the literature
+\item Twin births \emph{are not} exogenous: even if twin conceptions are exogenous, taking twins to term depends on health stocks and behaviours of mothers during pregnancy
+\item We present the first evidence that this is a widespread phenomenon in rich and poor countries
+\item This results in violation of the exclusion restriction and hence inconsistent estimates in studies that use twins to instrument fertility in studies of the Q-Q trade-off
+\item The bias is positive (in contrast to the OLS bias which is negative). We show that bias-correction approaches produce stronger evidence of a trade-off
+\item  Previous ignorance of this bias contributes to explaining the tendency for recent studies to reject the presence of a Q-Q tradeoff (Angrist et al.\ 2010, Black et al.\ 2005)
 \end{enumerate}
 }
 
@@ -90,7 +90,7 @@
 
 \frame{\frametitle{The Quantity--Quality Trade-off}
 \begin{itemize}
- \item \hyperlink{Macro}{\textcolor{blue}{Ample evidence}} from cross-sectional data within and across regions suggests that children from larger families have weaker educational outcomes, e.g. Hanushek 1992, Blake 1989.
+ \item Ample evidence from \hyperlink{Macro}{\textcolor{blue}{cross-sectional data}} within and across regions suggests that children from larger families have weaker educational outcomes, e.g. Hanushek 1992, Blake 1989.
  \item This empirical regularity is often attributed to a quantity-quality (QQ) trade-off in parental investments: Becker 1960, Becker and Lewis 1973, Becker and Tomes 1976.
  \item Child quality and child quantity enter multiplicatively in the budget constraint. It follows that (Galor 2012):
 \begin{itemize}
@@ -238,7 +238,7 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
                   + \bm{H}\bm{\gamma}_3 + \varepsilon_{j}.
 \end{equation}
 \begin{itemize}
-\item $\bm{X}, \bm{S}$ and $\bm{H}$ are mother characteristics potentially correlated with child quality: age, wealth, education, height, BMI, antenatal care, smoking/drinking/drugs during pregnancy.
+\item $\bm{X}, \bm{S}$ and $\bm{H}$ are mother characteristics potentially correlated with child quality: age, wealth, education, height, BMI during pregnancy, antenatal care availability, smoking/drinking/drugs during pregnancy.
 \item If twin birth is a random event $\bm{\gamma_1}=\bm{\gamma_2}=\bm{\gamma_3}=0$
 \item Can typically condition on only a subset of predictors $X$
 \item Equivalent: test of balance of characteristics between mothers who have twins (quasi-treatment) and mothers who do not (quasi-control)
@@ -246,7 +246,7 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
 }
 
 \frame{\frametitle{Investigating Exogeneity of Twins (II)}
-Examine whether women who have twins are healthier before twins or twin conception has occurred:
+Examine whether women who have twins are healthier before twins or twins occurr:
 \vspace{2mm}
 \[Quality_{t-k}=\alpha twins_{t}+\bm{X}\delta + \varepsilon \]
 \vspace{5mm}
@@ -325,7 +325,7 @@ identification and bounds techniques
 \begin{itemize}
 \item Large sample useful given twin are rare (sample mean 1.89\%)
 \item Outcome: schooling (z-score). Retain children age 6-17 at survey date.
-\item Birth cohorts 1971-2012
+\item Birth cohorts 1971-2012 (include country and birth cohort FE)
 \end{itemize}
 \item Countries classified as low vs middle income by the World Bank
 \begin{itemize}
@@ -745,9 +745,8 @@ effect of health on twinning and child quality (eg Bhalotra and Venkataramani, 2
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
 
- \begin{frame}[label=USA2]
-
-FORMAT AND ADD NHIS TWIN REGRESSION
+\begin{frame}[label=USA2]
+\input{./tables/NHIStwin.tex}
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
 
@@ -776,7 +775,7 @@ FORMAT AND ADD NHIS TWIN REGRESSION
 \end{frame}
 
 \begin{frame}[label=Sweden]
-RUN AND ADD SWEDEN TWIN REGRESSION
+\input{./tables/SwedenTwin.tex}
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
 
@@ -794,6 +793,14 @@ RUN AND ADD SWEDEN TWIN REGRESSION
 \hyperlink{robust}{\beamergotobutton{Back}}
 \end{frame}
 
+\begin{frame}
+\frametitle{Height and Selective Survival}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/MMRcuts.eps}
+\end{figure}
+\hyperlink{robust}{\beamergotobutton{Back}}
+\end{frame}
 
 
 \frame{
