@@ -80,9 +80,9 @@ local graphsMB      111
 local graphsSW      27
 local twin          27
 local OLS           11
-local Oster         100
+local Oster         110
 local RF            27
-local IV            1
+local IV            110
 local IVtwin        27
 local desire        88
 local compl_fert    0
@@ -91,7 +91,7 @@ local twinoccur_iv  27
 local conley        199
 local thresholdtest 27
 local balance       27
-local balanceG      1
+local balanceG      110
 local country       88
 local adj_fert      11
   local ADJIV       27
@@ -100,7 +100,7 @@ local adj_fert      11
 local gender        27
 local overID        12
 local ConGamma      12
-local MMR           27
+local MMR           1
 local pool          12
 
 * VARIABLES
@@ -190,35 +190,35 @@ local fnames
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
 *******************************************************************************
-log using "$Log/Twin_Regressions.log", text replace
+log using "$Log/Twin_RegressionsEssex.log", text replace
 
 if `samp5'!=1 {
 	use "$Data/DHS_twins", clear
-replace bmi=. if bmi>50
-replace height=. if height>240
-replace height=. if height<80
-replace educ=. if age<6
-replace educ=. if educ>25
-replace educf=. if educf>25
-replace birthspacing=. if birthspacing<8|birthspacing==999
+	replace bmi=. if bmi>50
+	replace height=. if height>240
+	replace height=. if height<80
+	replace educ=. if age<6
+	replace educ=. if educ>25
+	replace educf=. if educf>25
+	replace birthspacing=. if birthspacing<8|birthspacing==999
 
-tab _cou, gen(_country)
-tab year_birth, gen(_yb)
-tab age, gen(_age)
-tab contracep_intent, gen(_contracep)
-tab bord, gen(_bord)
-local base malec _country* _yb* _age* _contracep* `add'
-drop if twinfamily>2
+	tab _cou, gen(_country)
+	tab year_birth, gen(_yb)
+	tab age, gen(_age)
+	tab contracep_intent, gen(_contracep)
+	tab bord, gen(_bord)
+	local base malec _country* _yb* _age* _contracep* `add'
+	drop if twinfamily>2
 
-gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
-replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
-replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
-replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
-encode cat, gen(catnum)
-egen category=concat(income twindfamily)
-egen nonmiss = rowmiss(educf height bmi motherage malec)
+	gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
+	replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
+	replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
+	replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
+	encode cat, gen(catnum)
+	egen category=concat(income twindfamily)
+	egen nonmiss = rowmiss(educf height bmi motherage malec)
 
-if `resave'==1 save "$Data/DHS_twins_mortality", replace
+	if `resave'==1 save "$Data/DHS_twins_mortality", replace
 }
 	
 if `samp5'==1 {
@@ -1971,7 +1971,7 @@ if `MMR'==1 {
 	cap rm "`outfile'.txt"
 	cap rm "`outfile'.xls"
 	cap rm "`outfile'.tex"
-	
+
 	preserve
 	bys id: gen mothercount=_n
 	keep if mothercount==1
@@ -1981,12 +1981,43 @@ if `MMR'==1 {
 	gen deathsperSister=numMaternalDeaths/numSisters
 	gen SMA2=SiblingMeanAge^2
 	gen SMA3=SiblingMeanAge^3
+	gen heightLess140=height<140
+	gen cut=.
+
+	reg anyMMR $age `base'
+	predict concentratedMMR, residuals
+	local it=1
+	foreach cut of numlist 140 150 160 170 180 190 200 {
+		replace cut=`it' if height<`cut'&cut==.
+		local ++it
+	}
+	label define ht 1 "<140" 2 "150" 3 "160" 4 "170" 5 "180" 6 "190" 7 "200+"
+	label values cut ht
+	
+	collapse concentratedMMR, by(cut)
+	scatter concentratedMMR cut, scheme(s1mono) xlabel(1 2 3 4 5 6 7, valuelabel) ///
+	  note("Concentrates out country and age FEs.") xtitle("Height (woman)")      ///
+	  ytitle("Maternal Mortality (sisters)")
+	graph export "$Graphs/MMRcuts.eps", as(eps) replace
+	restore
+
+	exit
+	preserve
+	bys id: gen mothercount=_n
+	keep if mothercount==1
+	merge 1:1 id using "$Data/TwinsMMR", gen(_mergeMM)
+
+	gen anyMMR=numMaternalDeaths!=0
+	gen deathsperSister=numMaternalDeaths/numSisters
+	gen SMA2=SiblingMeanAge^2
+	gen SMA3=SiblingMeanAge^3
+	gen heightLess140=height<140
 	
 	foreach y of varlist anyMMR numMaternalDeaths deathsperSister {
-		reg `y' numSister SiblingMeanAge SMA* `base' $age $S $H `wt', robust
-		outreg2 numSister SiblingMeanAge SMA* $age $S $H using "`outfile'.xls",/*
+		reg `y' numSister SiblingMeanAge SMA* `base' $age $S heightL `wt', robust
+		outreg2 numSister SiblingMeanAge SMA* $age $S heightL using "`outfile'.xls",/*
 		*/ excel append
-		outreg2 numSister SiblingMeanAge SMA* $age $S $H using "`outfile'.tex",/*
+		outreg2 numSister SiblingMeanAge SMA* $age $S heightL using "`outfile'.tex",/*
 		*/ tex(pretty) append
 	}
 
