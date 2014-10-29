@@ -1967,11 +1967,8 @@ if `ConGamma'==1 {
 **** (19) MMR Tests
 ********************************************************************************
 if `MMR'==1 {
-	local outfile "$Tables/MMR/MMRTest"
-	cap rm "`outfile'.txt"
-	cap rm "`outfile'.xls"
-	cap rm "`outfile'.tex"
-
+	local MMRgraph=0
+	if `MMRgraph'==1 {
 	preserve
 	bys id: gen mothercount=_n
 	keep if mothercount==1
@@ -1993,15 +1990,26 @@ if `MMR'==1 {
 	}
 	label define ht 1 "<140" 2 "150" 3 "160" 4 "170" 5 "180" 6 "190" 7 "200+"
 	label values cut ht
+
+	sum height, d
+	local mid = r(p50)
+	local psd = r(p50)+r(sd)
+	local msd = r(p50)-r(sd)
+	dis "`mid'"
 	
 	collapse concentratedMMR, by(cut)
 	scatter concentratedMMR cut, scheme(s1mono) xlabel(1 2 3 4 5 6 7, valuelabel) ///
 	  note("Concentrates out country and age FEs.") xtitle("Height (woman)")      ///
-	  ytitle("Maternal Mortality (sisters)")
+	  ytitle("Maternal Mortality (sisters)") xline(2.6, lpattern(solid))       
+	  *xline(`msd' `psd', lpattern(dash))
 	graph export "$Graphs/MMRcuts.eps", as(eps) replace
 	restore
+	}
 
-	exit
+	local outfile "$Tables/MMR/MMRTest"
+	cap rm "`outfile'.txt"
+	cap rm "`outfile'.xls"
+	cap rm "`outfile'.tex"
 	preserve
 	bys id: gen mothercount=_n
 	keep if mothercount==1
@@ -2011,7 +2019,11 @@ if `MMR'==1 {
 	gen deathsperSister=numMaternalDeaths/numSisters
 	gen SMA2=SiblingMeanAge^2
 	gen SMA3=SiblingMeanAge^3
-	gen heightLess140=height<140
+	gen heightLess155=height<155.5
+
+	count
+	sum anyMMR height if heightLess155==1
+	sum anyMMR height if heightLess155==0	
 	
 	foreach y of varlist anyMMR numMaternalDeaths deathsperSister {
 		reg `y' numSister SiblingMeanAge SMA* `base' $age $S heightL `wt', robust
