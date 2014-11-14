@@ -617,7 +617,8 @@ keep year_birth religion fert bord agefirstbirth child_yob two_plus three_plus /
 */ ADJfour_plus_twins ADJfive_plus_twins ADJtwin_two_fam ADJtwin_three_fam     /*
 */ ADJtwin_four_fam ADJtwin_five_fam ADJtwind twindfamily *DesiredLeaveOut     /*
 */ mix1 mix2 mix3 mix4 mix5 boy1 boy2 boy3 boy4 girl12 girl123 girl1234 boy12  /*
-*/ boy123 boy1234 smix12 smix123 smix1234
+*/ boy123 boy1234 smix12 smix123 smix1234 Qvariance3p Qvariance4p Qvariance5p  /*
+*/ Qvariance6p
 
 save "$OUT/DHS_twins", replace
 log close
