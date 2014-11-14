@@ -257,6 +257,10 @@ replace infantmortality=. if age<1
 gen childmortality=childageatdeath<=5
 replace childmortality=. if age<5
 
+foreach n of numlist 3(1)6 {
+    bys id: egen Qvariance`n'p=sd(school_zscore) if bord<`n'
+}
+
 ********************************************************************************
 *** (2C) Control variables
 ********************************************************************************
@@ -466,6 +470,10 @@ lab var highschool "Attends or attended highschool (>=12 years)"
 lab var noeduc "No education (>7 years)"
 lab var infantmortality "child died before 1 year of age"
 lab var childmortality "child died before 5 years of age"
+lab var Qvariance3p "Variance in quality of 1st and 2nd borns in the family"
+lab var Qvariance4p "Variance in quality of 1st to 3rd borns in the family"
+lab var Qvariance5p "Variance in quality of 1st to 4th borns in the family"
+lab var Qvariance6p "Variance in quality of 1st to 5th borns in the family"
 lab var gender "string variable: F or M"
 lab var educf "Mother's years of education"
 lab var educfyrs_sq "Mother's years of education squared"
