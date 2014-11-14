@@ -290,7 +290,7 @@ gen antenateDummy=antenatal!=0 if antenatal!=.
 foreach var of varlist prenate_doc prenate_nurse prenate_none {
 	replace `var'=. if `var'==9
 }
-gen prenateEither=1(prenate_doc==1|prenate_nurse==1)
+gen prenateEither=(prenate_doc==1|prenate_nurse==1)
 bys _cou _year v001: egen prenateCluster=max(prenateEither)
 bys _cou _year v101: egen prenateRegion=max(prenateEither)
 
