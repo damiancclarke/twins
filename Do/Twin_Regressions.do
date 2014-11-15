@@ -104,7 +104,7 @@ local MMR           1
 local pool          12
 
 * VARIABLES
-global outcomes school_zscore
+global outcomes /*school_zscore*/ Qvariance
 global sumstatsM fert idealnumkids agemay educf height bmi underweight exceedfam
 global sumstatsC educ school_zscore noeduc
 global sumstatsF infantmortality childmortality
@@ -1051,20 +1051,22 @@ if `IV'==1 {
 		local estimates
 		local fstage
 
-		local OUT "$Tables/IV/`1'"
-
-		foreach n in `gplus' {
+		local OUT "$Tables/IV/Variance`1'"
+    local ll=3
+    
+		*foreach n in `gplus' {
+		foreach n in three four five {
 			preserve
 			keep `cond'&`condition'&`n'_plus==1			
 
 			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',    /*
+				eststo: ivreg2 `y'`ll'p `base' $age $S $HP (fert=twin_`n'_fam) `wt',    /*
 				*/ `se' savefirst savefp(f`n4') partial(`base')
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
+				eststo: ivreg2 `y'`ll'p `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
 				*/ `se' savefirst savefp(f`n3') partial(`base')
-				eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'        /*
+				eststo: ivreg2 `y'`ll'p `base' $age $H (fert=twin_`n'_fam) `wt'        /*
 				*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
-				eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),  /*
+				eststo: ivreg2 `y'`ll'p `base' (fert=twin_`n'_fam) `wt' if e(sample),  /*
 				*/ `se' savefirst savefp(f`n1') partial(`base')
 
 				local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
@@ -1075,6 +1077,7 @@ if `IV'==1 {
 				local n4=`n4'+4				
 			}
 			restore
+      local ++ll
 		}
 
 		estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
