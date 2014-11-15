@@ -1052,14 +1052,14 @@ if `IV'==1 {
 		local fstage
 
 		local OUT "$Tables/IV/Variance`1'"
-    local ll=3
+    local ll=2
     
 		*foreach n in `gplus' {
 		foreach n in three four five {
 			preserve
 			keep `cond'&`condition'&`n'_plus==1			
 
-			foreach y of varlist $outcomes {
+			foreach y in $outcomes {
 				eststo: ivreg2 `y'`ll'p `base' $age $S $HP (fert=twin_`n'_fam) `wt',    /*
 				*/ `se' savefirst savefp(f`n4') partial(`base')
 				eststo: ivreg2 `y'`ll'p `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
