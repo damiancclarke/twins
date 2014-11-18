@@ -33,8 +33,9 @@ cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
 
 local birthregs  0
-local fdeathregs 1
+local fdeathregs 0
 local SumStats   0
+local graph      1
 
 local fmt tex
 
@@ -77,7 +78,7 @@ if `fdeathregs'==1 {
 	gen Twin100fetaldeath=twin100*fetaldeath
 	drop if year<2003
 
-	##take 10% sample
+	**take 10% sample
 	set seed 2727
 	gen bin=runiform()
 	keep if bin>0.9
@@ -133,6 +134,16 @@ if `SumStats'==1 {
 	replace cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")  ///
 	style(tex) label collabels("N" "Mean" "S.Dev." "Min." "Max.") ///
 	nomtitles nonumbers addnotes("All fetal deaths 2003-2012")
+}
+
+if `graph'==1 {
+	use "$DAT/Births/AppendedBirths.dta", clear
+  collapse twin, by(year)
+
+  twoway line twin year if year>1969, scheme(s1mono) xtitle("Year")      ///
+     ytitle("Proportion Twin") note("Data from NVSS Birth Certificate Data")
+  graph export "$OUT/USTwin.eps", as(eps) replace
+
 }
 
 log close
