@@ -137,11 +137,20 @@ if `SumStats'==1 {
 }
 
 if `graph'==1 {
-	use "$DAT/Births/AppendedBirths.dta", clear
+  local files
+  foreach y of numlist 1971(1)2012 {
+      use $DAT/Births/dta/clean/n`y'
+      collapse twin, by(year)
+      list
+      tempfile f`y'
+      save `f`y''
+      local files `files' `f`y''
+  }
+  append using `files'
   collapse twin, by(year)
 
-  twoway line twin year if year>1969, scheme(s1mono) xtitle("Year")      ///
-     ytitle("Proportion Twin") note("Data from NVSS Birth Certificate Data")
+  twoway line twin year, xtitle("Year") ytitle("Proportion Twin") ///
+    scheme(s1mono) note("Data from NVSS Birth Certificate Data")
   graph export "$OUT/USTwin.eps", as(eps) replace
 
 }
