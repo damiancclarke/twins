@@ -150,9 +150,10 @@ if `graph'==1 {
   collapse twin, by(year)
 
   twoway line twin year, xtitle("Year") ytitle("Proportion Twin") ///
-    scheme(s1mono) note("Data from NVSS Birth Certificate Data")
+    scheme(s1mono) xline(1981.9, lpattern(dash))                  ///
+    note("Data from NVSS Birth Certificate Data."                 ///
+         "Dotted line represents first ever IVF birth in USA.")
   graph export "$OUT/USTwin.eps", as(eps) replace
-
 }
 
 log close
