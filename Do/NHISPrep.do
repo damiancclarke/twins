@@ -133,6 +133,7 @@ keep hhx fmx childfpx fmother surveyYear sWeight childSex childRac            /*
 */ childMonthBirth childYearBirth childAge motherEduc fatherEduc childFlag    /*
 */ childLimit* childHealthStatus childChronicCond childHealth* childUSCitizen /*
 */ childUSBorn childEducation childRef*
+destring fmother, replace
 
 save `child'
 merge m:1 hhx fmx using `family'
@@ -186,6 +187,9 @@ keep hhx fmx fpx rrp frrp mWeight motherRace motherMonthBirth motherYearBirth /*
 */ motherChronicCond motherUSCitizen motherUSBorn motherEducation motherHealth*
 
 gen fmother=fpx
+destring fmother, replace
+destring motherMonthBirth, replace
+destring motherYearBirth, replace
 merge 1:m hhx fmx fmother using `child'
 
 keep if _merge==3 //Only mothers merge in, so about half should be _merge==1

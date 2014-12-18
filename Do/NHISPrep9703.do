@@ -227,6 +227,8 @@ keep hhx fmx fpx rrp frrp mWeight motherRace motherMonthBirth motherYearBirth   
 
 gen fmother=fpx
 destring fmother, replace
+destring motherMonthBirth, replace
+destring motherYearBirth, replace
 merge 1:m hhx fmx fmother using `child'
 
 keep if _merge==3 //Only mothers merge in, so about half should be _merge==1

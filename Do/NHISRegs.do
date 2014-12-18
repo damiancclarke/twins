@@ -32,12 +32,13 @@ global LOG "~/investigacion/Activa/Twins/Log"
 cap mkdir $OUT
 log using "$LOG/NCISRegs.txt", text replace
 
-local yvars childHealthPrivate excellentHealth schoolZscore childEducation
+local yvars excellentHealth schoolZscore childEducation /*childHealthPrivate*/ 
 local yvars excellentHealth schoolZscore
 local age   ageFirstBirth motherAge motherAge2
 local base  B_* childSex
 local H     H_* `age' smoke* heightMiss
 local SH    S_* `H'  
+local tcon  i.surveyYear i.motherRace i.region `age'
 
 local wt    pw=sWeight
 local se    cluster(motherID)
@@ -52,13 +53,15 @@ local ols 0
 append using "$DAT/NCIS2010" "$DAT/NCIS2011" "$DAT/NCIS2012" "$DAT/NCIS2013"
 append using "$DAT/NCIS2006" "$DAT/NCIS2007" "$DAT/NCIS2008" "$DAT/NCIS2009"
 append using "$DAT/NCIS2002" "$DAT/NCIS2003" "$DAT/NCIS2004" "$DAT/NCIS2005"  
+append using "$DAT/NCIS1998" "$DAT/NCIS1999" "$DAT/NCIS2000" "$DAT/NCIS2001"
+
 
 gen childHealth=childHealthStatus if childHealthStatus<=5
 gen excellentHealth=childHealthStatus==1
 bys ageInterview: egen mE=mean(childEducation)
 bys ageInterview: egen sd=sd(childEducation)
 gen schoolZscore=(childEducation-mE)/sd
-replace childHealthPrivate=0 if childHealthPrivate==2
+*replace childHealthPrivate=0 if childHealthPrivate==2
 
 tab surveyYear,   gen(B_Syear)
 tab ageInterview, gen(B_Bdate)
@@ -71,18 +74,33 @@ tab motherHealthStatus, gen(H_mhealth)
 drop H_mhealth6
 drop H_mhealth7
 drop H_mhealth8
+replace motherHeight=. if motherHeight==0
 
-*gen H_mGoodHealth   =motherHealthStatus==1|motherHealthStatus==2
-*gen H_mPoorHealth   =motherHealthStatus==4|motherHealthStatus==5
-*gen H_mMissingHealth=motherHealthStatus==6|motherHealthStatus==7
+gen mGoodHealth   =motherHealthStatus==1|motherHealthStatus==2
+gen mPoorHealth   =motherHealthStatus==4|motherHealthStatus==5
+gen mMissingHealth=motherHealthStatus==6|motherHealthStatus==7
 gen H_mheight=motherHeight
 gen H_mheight2=motherHeight^2
 gen S_meduc=motherEducation
 gen S_meduc2=motherEducation^2
 *gen S_mUSCit=motherUSCitizen==1
 
+gen bmi2=bmi^2
 ********************************************************************************
-*** (3) OLS regressions
+*** (3) Twin Regression
+********************************************************************************
+gen twin100=twin*100
+
+reg twin100 H_mheight S_meduc smoke* i.motherRac i.region motherAge* /*
+*/ ageFirstBirth i.surveyYear bmi heightMiss
+outreg2 `age' H_* S_* smoke* bmi using "$OUT/NHIStwin.xls", excel replace
+reg twin100 H_mheight S_meduc smoke* i.motherRac i.region motherAge* /*
+*/ ageFirstBirth i.surveyYear bmi heightMiss mGood mPoor mMissing
+outreg2 `age' H_* S_* smoke* bmi m*  using "$OUT/NHIStwin.xls", excel append
+
+exit 
+********************************************************************************
+*** (4) OLS regressions
 ********************************************************************************
 if `ols'==1 {
 foreach y of varlist `yvars' {
@@ -106,7 +124,7 @@ foreach y of varlist `yvars' {
 }	
 
 ********************************************************************************
-*** (4) IV regressions
+*** (5) IV regressions
 ********************************************************************************
 foreach y of varlist `yvars' {
 	foreach f in two three four {
@@ -142,9 +160,8 @@ foreach y of varlist `yvars' {
 }
 
 count
-exit 
 ********************************************************************************
-*** (5) IV regressions by gender
+*** (6) IV regressions by gender
 ********************************************************************************
 cap mkdir "$OUT/Gender"
 foreach gend of numlist 1 2 {
