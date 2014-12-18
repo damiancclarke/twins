@@ -33,7 +33,7 @@ global LOG "~/investigacion/Activa/Twins/Log"
 
 log using "$LOG/NHISPrep9703.txt", text replace
 
-foreach yrr of numlist 2002 2003 1998 {
+foreach yrr of numlist 1998 1999 2000 2001 2002 2003 {
 global DAT "~/database/NHIS/Data/dta/`yrr'"
 
 tempfile family child mother adult
@@ -75,16 +75,19 @@ use "$DAT/personsx"
 rename mother fmother
 rename px fpx
 
-drop if fmother=="00"|fmother=="96"|fmother=="97"|fmother=="99"
+destring fmother, replace
+drop if fmother==0|fmother==96|fmother==97|fmother==99
 	
 keep if age_p<=18
 
 cap rename mracrp_i mracrpi2 
 cap rename mrace_p mracrpi2 
+cap rename mracer_p mracrpi2 
 cap rename origin origin_i
 replace mracrpi2=4 if mracrpi2==1&origin_i==1
 cap rename fmother1 fmother
 
+/*
 if `yrr'==1998 {
 	gen hikindl=1 if hikinda!=1&hikindb!=1&hikindc!=1/*
    */ &hikindd!=1&hikinde!=1&hikindf!=1&hikindg!=1&hikindh!=1&hikindi!=1
@@ -103,7 +106,8 @@ if `yrr'!=1998 {
 		macro shift
 	}
 }
-	
+*/
+
 order hhx fmx fpx rrp frrp fmother
 rename srvy_yr  surveyYear
 *rename intv_mon surveyMonth
@@ -122,6 +126,7 @@ rename lahcc5   childLimitBirth
 *rename lahcc13  childLimitADHD
 rename phstat   childHealthStatus
 rename lcondrt  childChronicCond
+/*
 rename hikindna childHealthPrivate
 rename hikindnb childHealthMedicar
 rename hikindnc childHealthMedigap
@@ -133,6 +138,7 @@ rename hikindnh childHealthState
 rename hikindni childHealthGovt
 rename hikindnj childHealthSSP
 rename hikindnk childHealthNone
+*/
 rename citizenp childUSCitizen
 *rename plborn   childUSBorn
 rename educ    childEducation
@@ -160,11 +166,15 @@ rename mother fmother
 rename px fpx
 keep if age_p>=18&sex==2
 cap rename mracrp_i mracrpi2 
+cap rename mrace_p mracrpi2 
+cap rename mracer_p mracrpi2 
+cap rename origin origin_i
 
 replace mracrpi2=4 if mracrpi2==1&origin_i==1
 cap rename fmother1 fmother
 
-	if `yrr'==1998 {
+/*
+if `yrr'==1998 {
 	gen hikindl=1 if hikinda!=1&hikindb!=1&hikindc!=1/*
    */ &hikindd!=1&hikinde!=1&hikindf!=1&hikindg!=1&hikindh!=1&hikindi!=1
 	foreach let in a b c d e f g h i j k l {
@@ -182,6 +192,7 @@ if `yrr'!=1998 {
 		macro shift
 	}
 }
+*/
 
 rename wtfa     mWeight
 rename mracrpi2 motherRace
@@ -190,13 +201,14 @@ rename dob_y_p  motherYearBirth
 rename age_p    motherAge
 rename la1ar    motherLimitAny
 rename lahcc5   motherLimitBirth
-rename lahcc13  motherLimitADHD
+*rename lahcc13  motherLimitADHD
 rename phstat   motherHealthStatus
 rename lcondrt  motherChronicCond
 rename citizenp motherUSCitizen
 *rename plborn  motherUSBorn
 rename educ     motherEducation
 rename r_maritl motherMarriage
+/*
 rename hikindna motherHealthPrivate
 rename hikindnb motherHealthMedicar
 rename hikindnc motherHealthMedigap
@@ -208,12 +220,13 @@ rename hikindnh motherHealthState
 rename hikindni motherHealthGovt
 rename hikindnj motherHealthSSP
 rename hikindnk motherHealthNone
-
-keep hhx fmx fpx rrp frrp mWeight motherRace motherMonthBirth motherYearBirth /*
-*/ motherAge motherLimitAny motherLimitBirt motherLimitADHD motherHealthStatu /*
-*/ motherChronicCond motherUSCitizen motherEducation motherHealth*
+*/
+keep hhx fmx fpx rrp frrp mWeight motherRace motherMonthBirth motherYearBirth   /*
+*/ motherAge motherLimitAny motherLimitBirt motherHealthStatu motherChronicCond /*
+*/ motherUSCitizen motherEducation motherHealth* /*motherLimitADHD*/
 
 gen fmother=fpx
+destring fmother, replace
 merge 1:m hhx fmx fmother using `child'
 
 keep if _merge==3 //Only mothers merge in, so about half should be _merge==1
@@ -286,7 +299,7 @@ replace motherEducation=. if motherEducation>90
 bys motherID: egen maxAge=max(childAge)
 gen ageFirstBirth=motherAge-maxAge
 
-foreach var in LimitAny USCitizen HealthPrivate HealthNone {
+foreach var in LimitAny USCitizen /*HealthPrivate HealthNone*/ {
 	foreach p in mother child {
 		replace `p'`var'=2 if `p'`var'>=3
 	}
