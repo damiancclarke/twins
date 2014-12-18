@@ -28,6 +28,7 @@ clear all
 global DAT "~/database/NVSS"
 global OUT "~/investigacion/Activa/Twins/Results/NVSS_USA"
 global LOG "~/investigacion/Activa/Twins/Log"
+global FLE "~/investigacion/Activa/Twins/Data/FemaleLifeExpUSA"
 
 cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
@@ -137,6 +138,17 @@ if `SumStats'==1 {
 }
 
 if `graph'==1 {
+  insheet using "$FLE/sp.dyn.le00.fe.in_Indicator_en_csv_v2.csv", names comma
+  keep if countryname=="United States"
+  drop indicator*
+  reshape long v, i(countryname) j(year)
+  rename v LifeExpectancy
+  replace year=year+1956
+  keep if year>=1971&year<=2012
+  tempfile lifeexp
+  save `lifeexp'
+
+
   local files
   foreach y of numlist 1971(1)2012 {
       use $DAT/Births/dta/clean/n`y'
@@ -148,12 +160,24 @@ if `graph'==1 {
   }
   append using `files'
   collapse twin, by(year)
-
+  merge 1:1 year using `lifeexp'
+  
   twoway line twin year, xtitle("Year") ytitle("Proportion Twin") ///
     scheme(s1mono) xline(1981.9, lpattern(dash))                  ///
     note("Data from NVSS Birth Certificate Data."                 ///
          "Dotted line represents first ever IVF birth in USA.")
   graph export "$OUT/USTwin.eps", as(eps) replace
+
+  local WB "Female Life Expectancy data from World Bank."
+  local lp lpattern(dash_dot)
+  twoway (line twin year) (line LifeExpectancy year, yaxis(2) `lp'),      ///
+    ytitle("Proportion Twin") ytitle("Female Life Expectancy", axis(2))   ///
+    xtitle("Year") scheme(s1mono) xline(1981.9, lpattern(dash))           ///
+    legend(label(1 "Proportion Twins") label(2 "Female Life Expectancy")) ///
+    note("Twin data from NVSS Birth Certificate Data.  `WB'"              ///
+         "Dotted line represents first ever IVF birth in USA.")
+   graph export "$OUT/USTwinFLE.eps", as(eps) replace
+
 }
 
 log close
