@@ -83,8 +83,8 @@ if `birthregs'==1 {
   lab var married         "Married"
   lab var meducSecondary  "Secondary Education"
   lab var meducTertiary   "Tertiary Education"
-  lab var tobacco         "Smoked (pre-birth)"
-  lab var alcohol         "Drank alcohol (pre-birth)"
+  lab var tobaccoUse      "Consumed tobacco (pre-birth)"
+  lab var alcoholUse      "Consumed alcohol (pre-birth)"
   
 	local base africanAmerican otherRace meducSecond meducTert tobacco*
 	local health anemia cardiac lung diabetes chyper phyper eclamp
