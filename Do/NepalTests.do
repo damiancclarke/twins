@@ -179,3 +179,56 @@ reg Miscarriage  motherage motheragesq agefirstbirth  educP educS educT       /*
 */ height* bmi* twin twinX* fert i.child_yob, cluster(caseid)
 outreg2 motherage motheragesq agefirstbirth  educP educS educT height* bmi*   /*
 */ twin twinX* using "$OUT/NepalRegs.tex", tex(pretty) append
+
+********************************************************************************
+*** (3) Run regessions cast as negative health
+********************************************************************************
+
+gen underweight  = bmi<18.5&bmi>=15
+gen vunderweight = bmi<15.0
+*gen short        = height<150&height>140
+gen short        = height<145
+foreach var of varlist educNo underweight vunderweight short motherage /*
+*/ motheragesq agefirstbirth fert{
+	gen twinX`var' = twin*`var'
+}
+
+lab var underweight "Underweight"
+lab var vunderweight "Very Underweight"
+lab var short "Short"
+*lab var vshort "Very Short"
+lab var educNo "No Education"
+lab var educPrim "Primary Education"
+lab var educSec "Secondary Education"
+lab var educTer "Tertiary Education"
+lab var twinXunder "Twin $\times$ Underweight"
+lab var twinXvunder "Twin $\times$ Very underweight"
+lab var twinXshort "Twin $\times$ Short"
+*lab var twinXvshort "Twin $\times$ Very Short"
+lab var twinXeducNo "Twin $\times$ No Education"
+lab var twinXeducPri "Twin $\times$ Primary"
+lab var twinXeducSec "Twin $\times$ Secondary"
+
+local base motherage motheragesq agefirstbirth fert i.child_yob
+local educ educN educP educS
+local health underweight vunderweight short
+local Teduc twinXeducNo twinXeducP twinXeducS
+local Thealth twinXunderweight twinXvunderweight twinXshort
+local Tbase motherage* agefirst fert i.child_yob twinXmotherage* twinXagef twinXfert
+
+local se cluster(caseid)
+
+qui reg Miscarriage `base' `educ' bmi height*, `se'
+reg Miscarriage `base' `educ' if e(sample), `se'
+outreg2 `educ' using "$OUT/NepalRegs2.tex", tex(pretty) label replace
+
+reg Miscarriage `base' `educ' `health'  if e(sample), `se'
+outreg2 `educ' `health' using "$OUT/NepalRegs2.tex", tex(pretty) label append
+
+reg Miscarriage `Tbase' `educ' twin `Teduc' if e(sample), `se'
+outreg2 `educ' twin `Teduc' using "$OUT/NepalRegs2.tex", tex(pretty) label
+
+reg Miscarriage `Tbase' `educ' `health' twin `Teduc' `Thealth' if e(sample), `se'
+outreg2 `educ' `health' twin `Teduc' `Thealth' using "$OUT/NepalRegs2.tex", /*
+*/ tex(pretty) label append
+
