@@ -1,21 +1,21 @@
-* USregistryPrep.do v0.00        damiancclarke             yyyy-mm-dd:2014-06-30
-*---|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
-*
+/*USregistryPrep.do v0.00        damiancclarke             yyyy-mm-dd:2014-06-30
+----|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 
-/* Import raw text files of US birth and fetal death data and clean variables to
-create a set of standardised variables which exist (where possible) over all ye-
-ars. The location of raw fixed width text files (zipped) is:
+Import raw text files of US birth and fetal death data and clean variables to c-
+reate a set of standardised variables which exist (where possible) over all yea-
+rs. The location of raw fixed width text files (zipped) is:
 http://www.cdc.gov/nchs/data_access/Vitalstatsonline.htm#Tools
 
-Processed files along with dictionary files are located on NBER's data reposit-
-ory: http://www.nber.org/data/vital-statistics-natality-data.html
+Processed files along with dictionary files are located on NBER's data reposito-
+ry: http://www.nber.org/data/vital-statistics-natality-data.html
 
 For optimal viewing of this file, set tab width=2.
 
-For further details including download details of birth and fetal death files
+For further details, including download details of birth and fetal death files
 along with dictionary files for fetal death data:
-EMAIL: damian.clarke@economics.ox.ac.uk
-CODE: https://github.com/damiancclarke/nchs-fetaldata
+
+contact: mailto:damian.clarke@economics.ox.ac.uk
+code: https://github.com/damiancclarke/nchs-fetaldata
 
 NOTES: 1969 has no plurality variable
        1970 has no plurality variable 
@@ -38,9 +38,9 @@ log using "$LOG/USregistryPrep.txt", text replace
 
 
 local cleanBirths  0
-local appendBirths 0
+local appendBirths 1
 local cleanFDeath  0
-local appendFDeath 1
+local appendFDeath 0
 
 ********************************************************************************
 *** (2a) Import and process birth data
@@ -545,12 +545,19 @@ foreach yy of numlist 2009(1)2012 {
 *** (2b) Optionally append desired files into a huge all year file
 ********************************************************************************
 if `appendBirths'==1 {
-clear
-foreach yy of numlist 2003(1)2012 {
-	append using "$DAT/Births/dta/clean/n`yy'"
-	count
-}
-save "$DAT/Births/AppendedBirths.dta", replace
+    clear
+    foreach yy of numlist 2003(1)2012 {
+        append using "$DAT/Births/dta/clean/n`yy'"
+        count
+    }
+    save "$DAT/Births/AppendedBirths.dta", replace
+
+    clear
+    foreach yy of numlist 1971(1)1983 {
+        append using "$DAT/Births/dta/clean/n`yy'"
+        count
+    }
+    save "$DAT/Births/AppendedBirthsEarly.dta", replace
 }
 
 

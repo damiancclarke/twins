@@ -33,33 +33,64 @@ global FLE "~/investigacion/Activa/Twins/Data/FemaleLifeExpUSA"
 cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
 
-local birthregs  0
+local birthregs  1
 local fdeathregs 0
 local SumStats   0
-local graph      1
+local graph      0
 
 local fmt tex
 
-if `"`fmt'"'=="tex" local sheet tex(pretty)
-if `"`fmt'"'=="xls" local sheet excel
+if `"`fmt'"'=="tex" local sheet tex(pretty frag) label
+if `"`fmt'"'=="xls" local sheet excel label
 ********************************************************************************
 *** (2) Birth Regressions
 ********************************************************************************
 if `birthregs'==1 {
-	use "$DAT/Births/AppendedBirths.dta", clear
+	use "$DAT/Births/AppendedBirthsEarly.dta", clear
+	**take 10% sample
+	set seed 2727
+	gen bin=runiform()
+	keep if bin>0.9
+	drop bin
+
+  gen twin100=twin*100
+  gen motherAgeSq=motherAge^2
+
+  lab var africanAmerican "African American"
+  lab var otherRace       "Other Race"
+  lab var married         "Married"
+  lab var meducSecondary  "Secondary Education"
+  lab var meducTertiary   "Tertiary Education"
+
+  local base africanAm otherRa meducSeco meducTer married
+	local a absorb(year)
+
+  areg twin100 `base' motherAge* i.birthOrder, `a'
+	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
+
+  use "$DAT/Births/AppendedBirths.dta", clear
+	**take 10% sample
+	set seed 2727
+	gen bin=runiform()
+	keep if bin>0.9
+	drop bin
+
 	gen twin100=twin*100
 	gen motherAgeSq=motherAge*motherAge
 
+  lab var africanAmerican "African American"
+  lab var otherRace       "Other Race"
+  lab var married         "Married"
+  lab var meducSecondary  "Secondary Education"
+  lab var meducTertiary   "Tertiary Education"
+  lab var tobacco         "Smoked (pre-birth)"
+  lab var alcohol         "Drank alcohol (pre-birth)"
+  
 	local base africanAmerican otherRace meducSecond meducTert tobacco*
 	local health anemia cardiac lung diabetes chyper phyper eclamp
-	local a absorb(year)
 	
 	areg twin100 `base' motherAge* i.birthOrder, `a'
-	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
-	*reg twin100 `base' i.motherAge i.birthOrder
-	*outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' append
-	areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
-	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
+	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' append
 	areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
 	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
 	areg twin100 `base' alcohol* `health' motherAge* i.birthOrder, `a'
