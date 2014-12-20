@@ -46,9 +46,10 @@ set more off
 cap log close
 set matsize 2000
 
-foreach ado in ivreg2 outreg2 estout ranktest mat2txt plausexog arrowplot psacalc {
+foreach ado in ivreg2 outreg2 estout ranktest mat2txt plausexog arrowplot /*
+*/ psacalc leebounds {
 	cap which `ado'
-	if _rc!=0 ssc install `ado'
+ 	if _rc!=0 ssc install `ado'
 }
 
 *******************************************************************************
@@ -82,7 +83,7 @@ local twin          27
 local OLS           11
 local Oster         110
 local RF            27
-local IV            110
+local IV            10001
 local IVtwin        27
 local desire        88
 local compl_fert    0
@@ -100,8 +101,10 @@ local adj_fert      11
 local gender        27
 local overID        12
 local ConGamma      12
-local MMR           1
+local MMR           1000
+local select        1
 local pool          12
+
 
 * VARIABLES
 global outcomes /*school_zscore*/ Qvariance
@@ -177,13 +180,6 @@ local fnames
   MidIncome
   BornPre1985
   BornPost1984
-;
-local conditions
-  ALL==1
-;
-
-local fnames
-  All
 ;
 #delimit cr
 
@@ -1034,7 +1030,7 @@ if `RF'==1 {
 		*/ keep(twin_* $age $S $H)
 		estimates clear
 		macro shift
-	}
+ }
 }
 
 ********************************************************************************
@@ -1051,22 +1047,22 @@ if `IV'==1 {
 		local estimates
 		local fstage
 
-		local OUT "$Tables/IV/Variance`1'"
-    local ll=2
+		local OUT "$Tables/IV/`1'"
+    local ll=3
     
-		*foreach n in `gplus' {
-		foreach n in three four five {
+		foreach n in `gplus' {
 			preserve
-			keep `cond'&`condition'&`n'_plus==1			
+			keep `cond'&`condition'&`n'_plus==1
 
 			foreach y in $outcomes {
-				eststo: ivreg2 `y'`ll'p `base' $age $S $HP (fert=twin_`n'_fam) `wt',    /*
+        *`y'`ll'p
+        eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',      /*
 				*/ `se' savefirst savefp(f`n4') partial(`base')
-				eststo: ivreg2 `y'`ll'p `base' $age $S $H (fert=twin_`n'_fam) `wt',    /*
+				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',       /*
 				*/ `se' savefirst savefp(f`n3') partial(`base')
-				eststo: ivreg2 `y'`ll'p `base' $age $H (fert=twin_`n'_fam) `wt'        /*
+				eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'           /*
 				*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
-				eststo: ivreg2 `y'`ll'p `base' (fert=twin_`n'_fam) `wt' if e(sample),  /*
+				eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),     /*
 				*/ `se' savefirst savefp(f`n1') partial(`base')
 
 				local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
@@ -1970,45 +1966,6 @@ if `ConGamma'==1 {
 **** (19) MMR Tests
 ********************************************************************************
 if `MMR'==1 {
-	local MMRgraph=0
-	if `MMRgraph'==1 {
-	preserve
-	bys id: gen mothercount=_n
-	keep if mothercount==1
-	merge 1:1 id using "$Data/TwinsMMR", gen(_mergeMM)
-
-	gen anyMMR=numMaternalDeaths!=0
-	gen deathsperSister=numMaternalDeaths/numSisters
-	gen SMA2=SiblingMeanAge^2
-	gen SMA3=SiblingMeanAge^3
-	gen heightLess140=height<140
-	gen cut=.
-
-	reg anyMMR $age `base'
-	predict concentratedMMR, residuals
-	local it=1
-	foreach cut of numlist 140 150 160 170 180 190 200 {
-		replace cut=`it' if height<`cut'&cut==.
-		local ++it
-	}
-	label define ht 1 "<140" 2 "150" 3 "160" 4 "170" 5 "180" 6 "190" 7 "200+"
-	label values cut ht
-
-	sum height, d
-	local mid = r(p50)
-	local psd = r(p50)+r(sd)
-	local msd = r(p50)-r(sd)
-	dis "`mid'"
-	
-	collapse concentratedMMR, by(cut)
-	scatter concentratedMMR cut, scheme(s1mono) xlabel(1 2 3 4 5 6 7, valuelabel) ///
-	  note("Concentrates out country and age FEs.") xtitle("Height (woman)")      ///
-	  ytitle("Maternal Mortality (sisters)") xline(2.6, lpattern(solid))       
-	  *xline(`msd' `psd', lpattern(dash))
-	graph export "$Graphs/MMRcuts.eps", as(eps) replace
-	restore
-	}
-
 	local outfile "$Tables/MMR/MMRTest"
 	cap rm "`outfile'.txt"
 	cap rm "`outfile'.xls"
@@ -2039,8 +1996,62 @@ if `MMR'==1 {
 	restore
 }
 
+
 ********************************************************************************
-**** (20) Pooled IV (see Angrist Lavy Schlosser, 2010)
+**** (20) Selection into twinning based on healthy survival
+********************************************************************************
+if `select'==1 {
+	preserve
+	bys id: gen mothercount=_n
+	keep if mothercount==1
+	merge 1:1 id using "$Data/TwinsMMR", gen(_mergeMM)
+
+	gen anyMMR=numMaternalDeaths!=0
+	gen deathsperSister=numMaternalDeaths/numSisters
+	gen SMA2=SiblingMeanAge^2
+	gen SMA3=SiblingMeanAge^3
+	gen heightLess140=height<140
+	gen cut=.
+
+	reg anyMMR $age `base'
+	predict concentratedMMR, residuals
+	local it=1
+	foreach cut of numlist 140 150 160 170 180 190 200 {
+		replace cut=`it' if height<`cut'&cut==.
+		local ++it
+	}
+	label define ht 1 "<140" 2 "150" 3 "160" 4 "170" 5 "180" 6 "190" 7 "200+"
+	label values cut ht
+
+	sum height, d
+	local mid = r(p50)
+	local psd = r(p50)+r(sd)
+	local msd = r(p50)-r(sd)
+	dis "`mid'"
+
+  local condit if motherage>18&motherage<40&_mergeMM==3
+  gen twinner=twinfamily==1|twinfamily==2
+  gen tall185=height>185
+  gen tall160=height>160
+
+  leebounds twinner tall185 `condit' `wt', select(anyMMR) tight(motherage) cieffect
+  leebounds twinner tall160 `condit' `wt', select(anyMMR) tight(motherage) cieffect
+
+  local n1 "Each point represents the average per age group, "
+  local n2 "concentrating out country and age FEs."
+  local n3 "The vertical line represents that mean height of `mid'cm."
+	collapse concentratedMMR, by(cut)
+	scatter concentratedMMR cut, scheme(s1mono) xlabel(1 2 3 4 5 6 7, valuelabel) ///
+	note("`n1'`n2'" "`n3'") xtitle("Height (woman)")      ///
+	  ytitle("Maternal Mortality (sisters)") xline(2.6, lpattern(solid))       
+	  *xline(`msd' `psd', lpattern(dash))
+	graph export "$Graphs/MMRcuts.eps", as(eps) replace
+	restore
+}
+
+
+********************************************************************************
+**** (21) Pooled IV (see Angrist Lavy Schlosser, 2010)
 ********************************************************************************
 if `pool'==1 {
 	tokenize `fnames'
@@ -2131,6 +2142,6 @@ if `pool'==1 {
 }
 
 ********************************************************************************
-**** (21) Clean up
+**** (22) Clean up
 ********************************************************************************
 log close

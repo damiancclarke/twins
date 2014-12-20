@@ -5,9 +5,9 @@ James Fenske, Cheti Nicoletti, Atheen Venkataramani and Marcos Vera-Hernandez,
 along with seminar audiences and discussants at CMPO Bristol, ESPE, NEUDC, CSAE, 
 The University of Essex, The University of Oxford and the Barcelona GSE summer 
 forum for helpful comments.  We also are indebted to Emilia Del Bono, Climent 
-Quintana-Domeque, Pedro R\'odenas, Anna Aevarsdottir, Martin Foureaux 
-Koppensteiner and Ryan Palmer who have very kindly shared data and source code 
-from their work.}}
+Quintana-Domeque, Pedro R\'odenas, Libertad Gonz\'alez, Anna Aevarsdottir,
+Martin Foureaux Koppensteiner and Ryan Palmer who have very kindly shared data 
+and source code from their work.}}
 \author{Sonia Bhalotra\thanks{The University of Essex.
 Contact: srbhal@essex.ac.uk} 
 \and Damian Clarke\thanks{The University of Oxford. 
@@ -89,14 +89,26 @@ Contact: damian.clarke@economics.ox.ac.uk}}
 \subsection{Estimation Samples}                    \label{TWINsscn:samples}
 \subsection{Descriptive Statistics}                \label{TWINsscn:descriptives}
 \section{Methodology}                              \label{TWINscn:method}
+
+In a wide variety of contexts, healthier women are more likely to give birth to
+twins.  There are a number of competing hypotheses which may explain why this is
+the case.  Firstly, it may be the case that healthier mothers are more likely to
+conceive twins.  This may reflect some underlying biological process, such as 
+that mediated by follicle stimulating hormone as discussed in \citet{Hall2003}.
+Secondly, it may be the case that, conditional on conceiving twins, healthier 
+mothers are more likely to take both fetuses to term.  Finally, selective 
+survival may explain these results.  Finally, conditional on conceiving twins, 
+healthier mothers may be more likely to survive the birth, and hence appear in
+surveys or vital statistics data. 
+
 \subsection{Quantity-Quality with Twins}           \label{TWINsscn:methodQQ}
 \subsection{Bounding the Q-Q Trade-off}            \label{TWINsscn:methodBounds}
 \section{Results}                                  \label{TWINscn:results}
 \subsection{Twinning}                              \label{TWINsscn:twinning}
 Table \ref{TWINtab:TwinDHS}, \ref{TWINtab:TwinNHIS}.
-
+Appendix tables: \ref{TWINtab:TwinNVSS}
 \subsection{Selection into twinning: mechanisms}   \label{TWINsscn:selection}
-
+Table \ref{TWINtab:Miscarry}
 
 \subsection{The twin instrument and the Q-Q trade-off} \label{TWINsscn:QQtwins}
 \subsection{Bounding the Q-Q trade-off}            \label{TWINsscn:resultBounds}
@@ -105,7 +117,6 @@ Table \ref{TWINtab:TwinDHS}, \ref{TWINtab:TwinNHIS}.
 
 \section{Conclusion}                               \label{TWINscn:conclusion}
 
-Section \ref{TWINscn:intro}
 \newpage
 \section*{Figures}
 \input{./figures.tex}
@@ -122,13 +133,18 @@ Section \ref{TWINscn:intro}
 \appendix
 \section*{Appendices}
 \section{Data Appendix}
+\newpage
+\end{spacing}
+
 \section{Appendix Tables}
+\input{./appendixTables.tex}
+\newpage
+
 \section{Appendix Figures}
 \input{./appendixFigs.tex}
 
 
 
-\end{spacing}
 \end{document}
 
 
