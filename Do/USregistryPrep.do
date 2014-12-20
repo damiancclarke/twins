@@ -553,7 +553,7 @@ if `appendBirths'==1 {
     save "$DAT/Births/AppendedBirths.dta", replace
 
     clear
-    foreach yy of numlist 1971(1)1983 {
+    foreach yy of numlist 1980(1)1989 {
         append using "$DAT/Births/dta/clean/n`yy'"
         count
     }
