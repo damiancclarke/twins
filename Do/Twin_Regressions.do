@@ -68,7 +68,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         1
+local samp5         0
 local resave        0
 local samples       27
 local matchrate     27
@@ -2001,72 +2001,82 @@ if `MMR'==1 {
 **** (20) Selection into twinning based on healthy survival
 ********************************************************************************
 if `select'==1 {
-    local lee      = 0
+    local lee      = 1
     local alderman = 1
-    local htgraph  = 0
+    local htgraph  = 1
     
-    *preserve
+    preserve
     bys id: gen mothercount=_n
     keep if mothercount==1
     merge 1:1 id using "$Data/TwinsMMR", gen(_mergeMM)
 
-    gen anyMMR=numMaternalDeaths!=0
+    gen anyMMR=numMaternalDeaths>=1&numMaternalDeaths<=5 if numMaternalDeaths!=.
   	gen deathsperSister=numMaternalDeaths/numSisters
     gen SMA2=SiblingMeanAge^2
     gen SMA3=SiblingMeanAge^3
   	gen heightLess140=height<140
 
     qui reg anyMMR $age `base'
-	  predict concentratedMMR, residuals
+	  predict concentratedMMR if e(sample), residuals
 
-    gen unhealthy  = height<150|bmi<16.0
-    gen healthy    = (unhealthy-1)*-1
-    gen unhealthy1 = height<155|bmi<18.5
-    gen healthy1   = (unhealthy1-1)*-1
+    foreach num of numlist 1(1)5 {
+       gen unhealthy`num' = height<(135+5*`num')|bmi<(15.5+0.5*`num')
+       gen healthy`num'  = (unhealthy`num'-1)*-1
+    }
 
     ****************************************************************************
     *** (a) Lee Bounds
     ****************************************************************************
     if `lee'==1 {
-        local condit if motherage>18&motherage<40&_mergeMM==3
-        gen twinner=twinfamily==1|twinfamily==2
-        gen tall185=height>185
-        gen tall160=height>160
+        local con if motherage>18&motherage<49&_mergeMM==3&/*
+        */ agefirstbirth>15&agefirstbirth<40
+
+        gen twinfam100=100 if twinfamily==1|twinfamily==2
+        replace twinfam100=0 if twinfamily==0
 
         local tight tight(motherage)
-        leebounds twinner healthy  `condit' `wt', select(anyMMR) `tight' cieffect
-        leebounds twinner healthy1 `condit' `wt', select(anyMMR) `tight' cieffect
+        foreach n of numlist 1(1)5 {
+            leebounds twinfam100 healthy`n' `con' `wt', select(anyMMR) cie
+        }
+        drop twinfam100
     }
     ****************************************************************************
     *** (b) Alderman-style bounds
     ****************************************************************************
     if `alderman'==1 {
+        local out "$Tables/MMR/Alderman.tex"
 
-        sum deathsperSister if healthy1==1
-        local healthexp   =round(`r(mean)'*`r(N)')
-        dis `healthexp'
-        sum deathsperSister if healthy1==0
-        local unhealthexp =round(`r(mean)'*`r(N)')
-        dis `unhealthexp'
-
-        set seed 2203
-        gen rnumb = runiform()
-        sort healthy1 rnumb
-        bys healthy1: gen counter=_n
-        gen     repeat=1 if counter<=`healthexp'&healthy1==1
-        replace repeat=1 if counter<=`unhealthexp'&healthy1==0
-
-
-        gen twinfam100=twinfamily*100
+        tab educf
+        gen twinfam100=100 if twinfamily==1|twinfamily==2
+        replace twinfam100=0 if twinfamily==0
         reg twinfam100 $twinpredict `wt' `cond'
+        outreg2 mother* agefir educf* height bmi using `out', replace tex(pr)
 
-        expand if repeat==1, gen(created)
-        replace twinfam100 = 100 if created==1&healthy1==0
-        replace twinfamq00 = 0   if created==1&healthy1==1
-        reg twinfam100 $twinpredict `wt' `cond'
+        foreach num of numlist 1(1)5 {
+            sum deathsperSister if healthy`num'==1
+            local healthexp   =round(`r(mean)'*`r(N)')
+            dis `healthexp'
+            sum deathsperSister if healthy`num'==0
+            local unhealthexp =round(`r(mean)'*`r(N)')
+            dis `unhealthexp'
+
+            set seed 2203
+            gen rnumb = runiform()
+            sort healthy`num' rnumb
+            bys healthy`num': gen counter=_n
+            gen     repeat=1 if counter<=`healthexp'&healthy`num'==1
+            replace repeat=1 if counter<=`unhealthexp'&healthy`num'==0
+
+            expand 2 if repeat==1, gen(created)
+            replace twinfam100 = 100 if created==1&healthy`num'==0
+            replace twinfam100 = 0   if created==1&healthy`num'==1
+            reg twinfam100 $twinpredict `wt' `cond'
+            outreg2 mother* agefir educf* height bmi using `out', append tex(pr)
+
+            drop if created==1
+            drop rnumb repeat counter created
+        }
     }
-
-
 
     ****************************************************************************
     *** (c) Graph of sister height and MMR
@@ -2074,11 +2084,11 @@ if `select'==1 {
     if `htgraph'==1 {
   	  	 gen cut=.
     		 local it=1
-    		 foreach cut of numlist 140 150 160 170 180 190 200 {
+    		 foreach cut of numlist 140 145 150 155 160 165 170 175 {
         	   replace cut=`it' if height<`cut'&cut==.
 	    	   	 local ++it
   		   }
-	    	 label define ht 1 "<140" 2 "150" 3 "160" 4 "170" 5 "180" 6 "190" 7 "200+"
+	    	 label def ht 1 "<140" 2 "145" 3 "150" 4 "155" 5 "160" 6 "165" 7 "170" 8 ">175"
 	    	 label values cut ht
 
   	  	 sum height, d
@@ -2091,13 +2101,13 @@ if `select'==1 {
          local n1 "Each point represents the average per age group, "
          local n2 "concentrating out country and age FEs."
          local n3 "The vertical line represents that mean height of `mid'cm."
-	       collapse concentratedMMR, by(cut)
+	       collapse concentratedMMR `wt', by(cut)
 	       scatter concentratedMMR cut, xlabel(1 2 3 4 5 6 7, valuelabel)     ///
 	       note("`n1'`n2'" "`n3'") xtitle("Height (woman)") scheme(s1mono)    ///
-	       ytitle("Maternal Mortality (sisters)") xline(2.6, lpattern(solid))       
+	       ytitle("Maternal Mortality (sisters)") xline(4.1, lpattern(solid))       
 	       *xline(`msd' `psd', lpattern(dash))
 	       graph export "$Graphs/MMRcuts.eps", as(eps) replace
-	       *restore
+	       restore
     }
 }
 
