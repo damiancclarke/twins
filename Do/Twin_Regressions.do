@@ -2019,7 +2019,7 @@ if `select'==1 {
     qui reg anyMMR $age `base'
 	  predict concentratedMMR if e(sample), residuals
 
-    foreach num of numlist 1(1)5 {
+    foreach num of numlist 1(1)4 {
        gen unhealthy`num' = height<(135+5*`num')|bmi<(15.5+0.5*`num')
        gen healthy`num'  = (unhealthy`num'-1)*-1
     }
@@ -2028,15 +2028,21 @@ if `select'==1 {
     *** (a) Lee Bounds
     ****************************************************************************
     if `lee'==1 {
-        local con if motherage>18&motherage<49&_mergeMM==3&/*
+        cap rm "$Tables/MMR/LeeBounds.txt"
+        local con if motherage>18&motherage<40&_mergeMM==3&/*
         */ agefirstbirth>15&agefirstbirth<40
 
         gen twinfam100=100 if twinfamily==1|twinfamily==2
         replace twinfam100=0 if twinfamily==0
 
-        local tight tight(motherage)
-        foreach n of numlist 1(1)5 {
-            leebounds twinfam100 healthy`n' `con' `wt', select(anyMMR) cie
+        local ti tight(motherage)
+        file open lee using "$Tables/MMR/LeeBounds.txt", write replace
+        foreach n of numlist 1(1)4 {
+            leebounds twinfam100 healthy`n' `con' `wt', select(anyMMR) `ti' cie
+            mat def est=e(b)
+            mat def ser=e(V)
+            mat2txt, matrix(est) saving("$Tables/MMR/LeeBounds.txt") append
+            mat2txt, matrix(ser) saving("$Tables/MMR/LeeBounds.txt") append
         }
         drop twinfam100
     }
@@ -2052,7 +2058,7 @@ if `select'==1 {
         reg twinfam100 $twinpredict `wt' `cond'
         outreg2 mother* agefir educf* height bmi using `out', replace tex(pr)
 
-        foreach num of numlist 1(1)5 {
+        foreach num of numlist 1(1)4 {
             sum deathsperSister if healthy`num'==1
             local healthexp   =round(`r(mean)'*`r(N)')
             dis `healthexp'
@@ -2101,8 +2107,8 @@ if `select'==1 {
          local n1 "Each point represents the average per age group, "
          local n2 "concentrating out country and age FEs."
          local n3 "The vertical line represents that mean height of `mid'cm."
-	       collapse concentratedMMR `wt', by(cut)
-	       scatter concentratedMMR cut, xlabel(1 2 3 4 5 6 7, valuelabel)     ///
+	       collapse concentratedMMR, by(cut)
+	       scatter concentratedMMR cut, xlabel(1 2 3 4 5 6 7 8, valuelabel)   ///
 	       note("`n1'`n2'" "`n3'") xtitle("Height (woman)") scheme(s1mono)    ///
 	       ytitle("Maternal Mortality (sisters)") xline(4.1, lpattern(solid))       
 	       *xline(`msd' `psd', lpattern(dash))
