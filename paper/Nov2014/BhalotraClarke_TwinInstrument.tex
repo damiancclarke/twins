@@ -1,4 +1,4 @@
-\documentclass{article}[11pt,subeqn]
+\documentclass[subeqn]{article}
 
 \title{The Twin Instrument\footnote{We are grateful to Paul Devereux, 
 James Fenske, Cheti Nicoletti, Atheen Venkataramani and Marcos Vera-Hernandez, 
@@ -89,25 +89,69 @@ Contact: damian.clarke@economics.ox.ac.uk}}
 \subsection{Estimation Samples}                    \label{TWINsscn:samples}
 \subsection{Descriptive Statistics}                \label{TWINsscn:descriptives}
 \section{Methodology}                              \label{TWINscn:method}
-
-In a wide variety of contexts, healthier women are more likely to give birth to
-twins.  There are a number of competing hypotheses which may explain why this is
-the case.  Firstly, it may be the case that healthier mothers are more likely to
-conceive twins.  This may reflect some underlying biological process, such as 
-that mediated by follicle stimulating hormone as discussed in \citet{Hall2003}.
-Secondly, it may be the case that, conditional on conceiving twins, healthier 
-mothers are more likely to take both fetuses to term.  Finally, conditional on 
-conceiving twins, healthier mothers may be more likely to survive the birth, and 
-hence appear in surveys or vital statistics data. 
-
 \subsection{Quantity-Quality with Twins}           \label{TWINsscn:methodQQ}
 \subsection{Bounding the Q-Q Trade-off}            \label{TWINsscn:methodBounds}
 \section{Results}                                  \label{TWINscn:results}
 \subsection{Twinning}                              \label{TWINsscn:twinning}
 Table \ref{TWINtab:TwinDHS}, \ref{TWINtab:TwinNHIS}.
 Appendix tables: \ref{TWINtab:TwinNVSS}
+Add as appendix table balance of characteristics.
+
 \subsection{Selection into twinning: mechanisms}   \label{TWINsscn:selection}
-Table \ref{TWINtab:Miscarry}
+In a wide variety of contexts, healthier women are more likely to give birth to
+twins.  There are a number of competing hypotheses which may explain why this is
+the case.  Firstly, it may simply be the case that healthier mothers are more 
+likely to conceive twins.  This may reflect some underlying biological process, 
+such as that mediated by follicle stimulating hormone as discussed in 
+\citet{Hall2003}.  Secondly, conditional on conceiving twins, healthier mothers 
+may be more likely to take both fetuses to term.  Finally, it may be the case 
+that (conditional on conceiving twins and taking them to term), healthier mothers 
+may be more likely to survive the birth, and hence appear in surveys or vital 
+statistics data.  In broad terms we will refer to these as the conception 
+mechanism, the gestation mechanism and the birth survival mechanism.
+
+When considering instrumental estimates, any of these processes is sufficient to
+invalidate causal inference insofar as observing twins now depends upon hard to
+measure maternal behaviours and characteristics..  Nonetheless, we may be 
+interested in determing which of these are the relevant channels to explain the
+results from the previous section.  Particularly, the mechanism may be relevant
+when considering the use of the instrument.  For example, if twins are less 
+likely \emph{only} due to selective maternal death, then as mothers are more 
+likely to survive childbirth (ie moving from high maternal mortality countries 
+to low maternal mortality countries), threats to instrumental validity become 
+less relevant.
+
+We test these mechanisms below.  While credible data on twin conceptions is hard 
+to come by, we are able to test each of the other two mechanisms.  Firstly, when
+considering the gestation mechanism, we are able to test whether less healthy
+mothers are more likely to miscarry twins.  While data on miscarriages as well
+as the type of miscarriage (single or multiple fetuses), are somewhat hard to 
+come by, in one DHS survey (Nepal) this is recorded.  We thus run a series of 
+regressions where miscarriage is the dependent variable, and the independent
+variables are a measures of poor maternal health, whether the pregnancy is 
+single or multiple, and interactions between pregnancy type and poor maternal 
+health.  We would expect that both poor maternal health and a non-singleton
+pregnancy increase the likelihood of miscarriage, however we are interested in
+determing if more unhealthy mothers are \emph{more} likely to miscarry twins
+than healthy mothers carrying twins.  Thus, we are interested in testing if the
+coefficients on the interaction terms are significantly larger than zero.
+
+These regression results are reported in table \ref{TWINtab:Miscarry}.  As 
+expected, columns (1) and (2) suggest that more unhealthy and less educated
+women are more likely to report ever miscarrying.\footnote{These results hold 
+conditional and unconditional on total fertility.}  Maternal health stocks 
+are proxied by height and BMI, where (negative) outcomes for these variables
+such as underweight are based on ICD definitions.  Turning to the interaction
+terms, although standard errors are reasonably large due to the low frequency
+of twinning, women who are unhealthy (as proxied by a very low BMI), and with
+no education are significantly more likely to miscarry with twins.  Using a
+richer set of variables from administrative data in the USA and Spain, similar 
+regressions are run.  The results in appendix tables \ref{TWINtab:USAMiscarry}
+and \ref{TWINtab:SpainMiscarry} suggest that, depending on the context, less
+educated women and women who report consuming alcohol during pregnancy are
+more likely to miscarry twins than mothers with higher education and who do
+not consume alcohol.
+
 
 \subsection{The twin instrument and the Q-Q trade-off} \label{TWINsscn:QQtwins}
 \subsection{Bounding the Q-Q trade-off}            \label{TWINsscn:resultBounds}

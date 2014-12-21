@@ -69,6 +69,7 @@ if `birthregs'==1 {
 	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
 
   use "$DAT/Births/AppendedBirths.dta", clear
+  keep if year>=2003
 	**take 10% sample
 	set seed 2727
 	gen bin=runiform()
@@ -102,8 +103,10 @@ if `birthregs'==1 {
 ********************************************************************************
 if `fdeathregs'==1 {
 	use "$DAT/Births/AppendedBirths.dta", clear
+  tab year
 	gen fetaldeath=0
 	append using "$DAT/FetalDeaths/AppendedFDeaths.dta"
+  tab year
 	replace fetaldeath=1 if fetaldeath==.
 	gen twin100=twin*100
 	gen motherAgeSq=motherAge*motherAge
@@ -125,12 +128,12 @@ if `fdeathregs'==1 {
 	local Tbase twin TwinXtobacco* TwinXmeduc* TwinXafrican TwinXotherR TwinXmot*
 	local T2    `Tbase' TwinXalcohol*
 	local H     `health' TwinXphyper TwinXeclamp
-	local FEs   i.birthOrder
+	local FEs   birthOrder
 	local a     absorb(year)
   local out1  africanAmerican meducPrim meducSecond tobaccoUse
-  local Tout1 TwinXafricanAme TwinXmeducPrim TwinXmeducSeco TwinXtobaccoUs
+  local Tout1 TwinXafricanAme TwinXmeducPrim TwinXmeducSeco TwinXtobaccoUs twin
   local out2  africanAmerican meducPrim meducSecond tobaccoUse alcoholU
-  local Tout2 TwinXaf TwinXmeducP TwinXmeducS TwinXtobaccoUs TwinXalcoholU
+  local Tout2 TwinXaf TwinXmeducP TwinXmeducS TwinXtobaccoUs TwinXalcoholU twin
 
   lab var africanAmerican "African American"
   lab var meducSecondary  "Secondary Education"
@@ -139,6 +142,7 @@ if `fdeathregs'==1 {
   lab var alcoholUse      "Consumed alcohol (pre-birth)"
   lab var phyper          "Pregnancy related hypertension"
   lab var eclamp          "Eclampsia"
+  lab var twin            "Twin"
   lab var TwinXafricanA   "Twin $\times$ African American"
   lab var TwinXmeducSecon "Twin $\times$ Secondary"
   lab var TwinXmeducPrim  "Twin $\times$ Primary Education"
