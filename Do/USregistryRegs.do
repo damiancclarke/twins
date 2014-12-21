@@ -33,8 +33,8 @@ global FLE "~/investigacion/Activa/Twins/Data/FemaleLifeExpUSA"
 cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
 
-local birthregs  1
-local fdeathregs 0
+local birthregs  0
+local fdeathregs 1
 local SumStats   0
 local graph      0
 
@@ -65,7 +65,7 @@ if `birthregs'==1 {
   local base africanAm otherRa meducSeco meducTer married
 	local a absorb(year)
 
-  areg twin100 `base' motherAge* i.birthOrder, `a'
+  areg twin100 `base' motherAge* birthOrder marryUn, `a'
 	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
 
   use "$DAT/Births/AppendedBirths.dta", clear
@@ -116,30 +116,45 @@ if `fdeathregs'==1 {
 	keep if bin>0.9
 	drop bin
 	
-	local base africanAmerican otherRace meducSecond meducTert tobacco*
-	local health diabetes chyper phyper eclamp
+	local base africanAmerican otherRace meducPrim meducSecond tobacco*
+	local health phyper eclamp
 	foreach v of varlist `base' `health' alcoholUse motherAge* {
 		gen TwinX`v'=twin*`v'
 	}
+
 	local Tbase twin TwinXtobacco* TwinXmeduc* TwinXafrican TwinXotherR TwinXmot*
 	local T2    `Tbase' TwinXalcohol*
-	local TH    `Tbase' TwinXdiab TwinXchyper TwinXphyper TwinXeclamp
+	local H     `health' TwinXphyper TwinXeclamp
 	local FEs   i.birthOrder
 	local a     absorb(year)
-	
-	areg fetaldeath `base' `Tbase' motherAge* `FEs', `a'
-	outreg2 `base' `Tbase' using "$OUT/USfdeaths.`fmt'", `sheet' replace
-	*areg fetaldeath `base' `Tbase' i.motherAge `FEs', `a'
-	*outreg2 `base' `Tbase' using "$OUT/USfdeaths.`fmt'", `sheet' append
-	areg fetaldeath `base' `T2' alcohol* motherAge* `FEs', `a'
-	outreg2 `base' `T2' alcohol* using "$OUT/USfdeaths.`fmt'", `sheet' append
-	*areg fetaldeath `base' `T2' alcohol* i.motherAg `FEs', `a'
-	*outreg2 using `base' `T2' alcohol* "$OUT/USfdeaths.`fmt'", `sheet' append
-	areg fetaldeath `base' `TH' `health' motherAge* `FEs', `a'
-	outreg2 `base' `TH' `health' using "$OUT/USfdeaths.`fmt'", `sheet' append
-	areg fetaldeath `base' `TH' TwinXal alcohol* `health' motherAge* `FEs', `a'
-	outreg2 `base' `TH' TwinXa* alcohol* `health' using "$OUT/USfdeaths.`fmt'", /*
-	*/ `sheet' append
+  local out1  africanAmerican meducPrim meducSecond tobaccoUse
+  local Tout1 TwinXafricanAme TwinXmeducPrim TwinXmeducSeco TwinXtobaccoUs
+  local out2  africanAmerican meducPrim meducSecond tobaccoUse alcoholU
+  local Tout2 TwinXaf TwinXmeducP TwinXmeducS TwinXtobaccoUs TwinXalcoholU
+
+  lab var africanAmerican "African American"
+  lab var meducSecondary  "Secondary Education"
+  lab var meducPrim       "Primary Education"
+  lab var tobaccoUse      "Consumed tobacco (pre-birth)"
+  lab var alcoholUse      "Consumed alcohol (pre-birth)"
+  lab var phyper          "Pregnancy related hypertension"
+  lab var eclamp          "Eclampsia"
+  lab var TwinXafricanA   "Twin $\times$ African American"
+  lab var TwinXmeducSecon "Twin $\times$ Secondary"
+  lab var TwinXmeducPrim  "Twin $\times$ Primary Education"
+  lab var TwinXtobaccoUse "Twin $\times$ Tobacco"
+  lab var TwinXalcoholUse "Twin $\times$ Alcohol"
+  lab var TwinXphyper     "Twin $\times$ Hypertension"
+  lab var TwinXeclamp     "Twin $\times$ Eclampsia"
+  
+  gen miscarry100=fetaldeath*100
+
+	areg miscarry100 `base' `Tbase' motherAge* `FEs', `a'
+	outreg2 `out1' `Tout1' using "$OUT/USfdeaths.`fmt'", `sheet' replace
+	areg miscarry100 `base' `T2' alcohol* motherAge* `FEs', `a'
+	outreg2 `out2' `Tout2' using "$OUT/USfdeaths.`fmt'", `sheet' append
+	areg miscarry100 `base' `T2' `H' alcohol* motherAge* `FEs', `a'
+	outreg2 `out2' `Tout2' `H' using "$OUT/USfdeaths.`fmt'", `sheet' append
 }
 
 ********************************************************************************
