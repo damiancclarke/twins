@@ -68,7 +68,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         0
+local samp5         1
 local resave        0
 local samples       27
 local matchrate     27
@@ -2001,52 +2001,104 @@ if `MMR'==1 {
 **** (20) Selection into twinning based on healthy survival
 ********************************************************************************
 if `select'==1 {
-	preserve
-	bys id: gen mothercount=_n
-	keep if mothercount==1
-	merge 1:1 id using "$Data/TwinsMMR", gen(_mergeMM)
+    local lee      = 0
+    local alderman = 1
+    local htgraph  = 0
+    
+    *preserve
+    bys id: gen mothercount=_n
+    keep if mothercount==1
+    merge 1:1 id using "$Data/TwinsMMR", gen(_mergeMM)
 
-	gen anyMMR=numMaternalDeaths!=0
-	gen deathsperSister=numMaternalDeaths/numSisters
-	gen SMA2=SiblingMeanAge^2
-	gen SMA3=SiblingMeanAge^3
-	gen heightLess140=height<140
-	gen cut=.
+    gen anyMMR=numMaternalDeaths!=0
+  	gen deathsperSister=numMaternalDeaths/numSisters
+    gen SMA2=SiblingMeanAge^2
+    gen SMA3=SiblingMeanAge^3
+  	gen heightLess140=height<140
 
-	reg anyMMR $age `base'
-	predict concentratedMMR, residuals
-	local it=1
-	foreach cut of numlist 140 150 160 170 180 190 200 {
-		replace cut=`it' if height<`cut'&cut==.
-		local ++it
-	}
-	label define ht 1 "<140" 2 "150" 3 "160" 4 "170" 5 "180" 6 "190" 7 "200+"
-	label values cut ht
+    qui reg anyMMR $age `base'
+	  predict concentratedMMR, residuals
 
-	sum height, d
-	local mid = r(p50)
-	local psd = r(p50)+r(sd)
-	local msd = r(p50)-r(sd)
-	dis "`mid'"
+    gen unhealthy  = height<150|bmi<16.0
+    gen healthy    = (unhealthy-1)*-1
+    gen unhealthy1 = height<155|bmi<18.5
+    gen healthy1   = (unhealthy1-1)*-1
 
-  local condit if motherage>18&motherage<40&_mergeMM==3
-  gen twinner=twinfamily==1|twinfamily==2
-  gen tall185=height>185
-  gen tall160=height>160
+    ****************************************************************************
+    *** (a) Lee Bounds
+    ****************************************************************************
+    if `lee'==1 {
+        local condit if motherage>18&motherage<40&_mergeMM==3
+        gen twinner=twinfamily==1|twinfamily==2
+        gen tall185=height>185
+        gen tall160=height>160
 
-  leebounds twinner tall185 `condit' `wt', select(anyMMR) tight(motherage) cieffect
-  leebounds twinner tall160 `condit' `wt', select(anyMMR) tight(motherage) cieffect
+        local tight tight(motherage)
+        leebounds twinner healthy  `condit' `wt', select(anyMMR) `tight' cieffect
+        leebounds twinner healthy1 `condit' `wt', select(anyMMR) `tight' cieffect
+    }
+    ****************************************************************************
+    *** (b) Alderman-style bounds
+    ****************************************************************************
+    if `alderman'==1 {
 
-  local n1 "Each point represents the average per age group, "
-  local n2 "concentrating out country and age FEs."
-  local n3 "The vertical line represents that mean height of `mid'cm."
-	collapse concentratedMMR, by(cut)
-	scatter concentratedMMR cut, scheme(s1mono) xlabel(1 2 3 4 5 6 7, valuelabel) ///
-	note("`n1'`n2'" "`n3'") xtitle("Height (woman)")      ///
-	  ytitle("Maternal Mortality (sisters)") xline(2.6, lpattern(solid))       
-	  *xline(`msd' `psd', lpattern(dash))
-	graph export "$Graphs/MMRcuts.eps", as(eps) replace
-	restore
+        sum deathsperSister if healthy1==1
+        local healthexp   =round(`r(mean)'*`r(N)')
+        dis `healthexp'
+        sum deathsperSister if healthy1==0
+        local unhealthexp =round(`r(mean)'*`r(N)')
+        dis `unhealthexp'
+
+        set seed 2203
+        gen rnumb = runiform()
+        sort healthy1 rnumb
+        bys healthy1: gen counter=_n
+        gen     repeat=1 if counter<=`healthexp'&healthy1==1
+        replace repeat=1 if counter<=`unhealthexp'&healthy1==0
+
+
+        gen twinfam100=twinfamily*100
+        reg twinfam100 $twinpredict `wt' `cond'
+
+        expand if repeat==1, gen(created)
+        replace twinfam100 = 100 if created==1&healthy1==0
+        replace twinfamq00 = 0   if created==1&healthy1==1
+        reg twinfam100 $twinpredict `wt' `cond'
+    }
+
+
+
+    ****************************************************************************
+    *** (c) Graph of sister height and MMR
+    ****************************************************************************
+    if `htgraph'==1 {
+  	  	 gen cut=.
+    		 local it=1
+    		 foreach cut of numlist 140 150 160 170 180 190 200 {
+        	   replace cut=`it' if height<`cut'&cut==.
+	    	   	 local ++it
+  		   }
+	    	 label define ht 1 "<140" 2 "150" 3 "160" 4 "170" 5 "180" 6 "190" 7 "200+"
+	    	 label values cut ht
+
+  	  	 sum height, d
+    		 local mid = r(p50)
+    		 local psd = r(p50)+r(sd)
+  	  	 local msd = r(p50)-r(sd)
+  	  	 dis "`mid'"
+
+
+         local n1 "Each point represents the average per age group, "
+         local n2 "concentrating out country and age FEs."
+         local n3 "The vertical line represents that mean height of `mid'cm."
+	       collapse concentratedMMR, by(cut)
+	       scatter concentratedMMR cut, xlabel(1 2 3 4 5 6 7, valuelabel)     ///
+	       note("`n1'`n2'" "`n3'") xtitle("Height (woman)") scheme(s1mono)    ///
+	       ytitle("Maternal Mortality (sisters)") xline(2.6, lpattern(solid))       
+	       *xline(`msd' `psd', lpattern(dash))
+	       graph export "$Graphs/MMRcuts.eps", as(eps) replace
+	       *restore
+    }
 }
 
 
