@@ -1,13 +1,13 @@
 \documentclass[subeqn]{article}
 
-\title{The Twin Instrument\footnote{We are grateful to Paul Devereux, 
-James Fenske, Cheti Nicoletti, Atheen Venkataramani and Marcos Vera-Hernandez, 
-along with seminar audiences and discussants at CMPO Bristol, ESPE, NEUDC, CSAE, 
-The University of Essex, The University of Oxford and the Barcelona GSE summer 
-forum for helpful comments.  We also are indebted to Emilia Del Bono, Climent 
-Quintana-Domeque, Pedro R\'odenas, Libertad Gonz\'alez, Anna Aevarsdottir,
-Martin Foureaux Koppensteiner and Ryan Palmer who have very kindly shared data 
-and source code from their work.}}
+\title{The Twin Instrument\footnote{We are grateful to Paul Devereux, James 
+Fenske, Cheti Nicoletti, Carol Propper, Atheen Venkataramani, Marcos 
+Vera-Hernandez and Frank Windmeijer, along with seminar audiences and discussants 
+at CMPO Bristol, ESPE, NEUDC, CSAE, The University of Essex, The University of 
+Oxford, the Barcelona GSE summer forum and the RES conference for helpful 
+comments.  We thank Emilia Del Bono, Climent Quintana-Domeque, Pedro R\'odenas, 
+Libertad Gonz\'alez, Anna Aevarsdottir, Martin Foureaux Koppensteiner and Ryan 
+Palmer who have very kindly shared data and/or source code from their work.}}
 \author{Sonia Bhalotra\thanks{The University of Essex.
 Contact: srbhal@essex.ac.uk} 
 \and Damian Clarke\thanks{The University of Oxford. 
@@ -82,7 +82,13 @@ births are positively selected is demonstrated using data from richer and poorer
 \newpage
 %*******************************************************************************
 \section{Introduction}                             \label{TWINscn:intro}
-\section{The Twin Literature}                      \label{TWINscn:literature}
+\section{Twins}                                    \label{TWINscn:literature}
+The ocurrence of twins has fascinated people, not least of all social 
+scientists, for as long as recorded history exists. Stories of Romulus and 
+Remus, the mythological founders of Rome, date from at least the fourth century 
+BC. However, the first use of twins as an instrumental variable in the economic 
+literature came much later, in \citet{RosenzweigWolpin1980}.
+
 \section{Data and Estimation Samples}              \label{TWINscn:data}
 \subsection{Data}                                  \label{TWINsscn:data}
 \subsection{Estimation Samples}                    \label{TWINsscn:samples}
@@ -92,12 +98,94 @@ births are positively selected is demonstrated using data from richer and poorer
 \subsection{Bounding the Q-Q Trade-off}            \label{TWINsscn:methodBounds}
 \section{Results}                                  \label{TWINscn:results}
 \subsection{Twinning}                              \label{TWINsscn:twinning}
-Table \ref{TWINtab:TwinDHS}, \ref{TWINtab:TwinNHIS}.
-Appendix tables: \ref{TWINtab:TwinNVSS}
+In table \ref{TWINtab:TwinDHS} we regress a child's twin status (one if a twin, 
+zero otherwise) on their mother's health, education, and a range of other 
+demographic and family characteristics.\footnote{In our principal specification, 
+the full set of controls are country, child year of birth, and age dummies; a 
+cubic function of mother's age at time of birth; mother's age at time of first 
+birth; mother's education and education squared; and mother's height and BMI. 
+We cluster standard errors at the level of the mother.}  These results suggest
+that twin births are not random, even after conditioning on maternal age and 
+child birth order as is typical in the recent twin literature summarised in table
+\ref{TWINtab:Lit}. The inclusion of a full set of country and year-of-birth
+dummies (not displayed in table \ref{TWINtab:TwinDHS}) will capture any 
+systematic trend in the frequency of twin births across time or regions, and 
+country dummies will absorb all time invariant differences in the probability 
+of a twin birth across countries. The estimated coefficients and signs support 
+the idea discussed in section 4 that higher investments (for example in maternal 
+health) required to maintain multiple healthy fetuses in utero may result in 
+non-random twin births. We return to the mechanism by which twin selection may
+occur in the following section.
 
-balance of characteristics tests are available in the online appendix (table 
-\ref{TWINtab:Balance}).
+Initially, results from the pooled DHS data are presented as this provides a 
+particularly large sample with which to test the hypothesis of twin exogeneity. 
+This is presented in table \ref{TWINtab:TwinDHS} column (1) and provides 
+considerable evidence that live twin births are related to family choice 
+variables such as education (tests for the joint significance of socioeconomic 
+variables and health variables are rejected with p-values of $<$0.00).  
+Regressions displayed here are estimated by OLS, however are robust to 
+alternative functional forms and estimation methods.\footnote{Significant and 
+quantitatively similar results are found if a logit model is estimated rather 
+than a linear probability model, and when running separate models for twinning at 
+each birth order. Similarly, if we run the regression at the level of the mother 
+or include any combination of fertility measures, similar patterns are observed.
+Alternatively, rather than running a regression we can run (unconditional) balance 
+of characteristics tests by twin status.  These are available in the online 
+appendix (table \ref{TWINtab:Balance}).  The findings are similar.}
 
+Columns (2)--(5) suggest that these results, especially when considering 
+maternal health, are not the result of only the most low income countries, or
+only the post-IVF time period.  As the probability of multiple births 
+significantly increases in cases where the mother undergoes fertility treatment, 
+column (5) presents regression results for births in a period not potentially 
+affected by IVF.\footnote{In order to be conservative, we estimate for the period 
+preceeding 1990, the date which coincides with the first reported successful 
+use of IVF in South Africa, an early-adopter among DHS countries.}  Pre- and 
+post-1990 results are qualitatively similar although education is no longer 
+significant prior to 1990 (in the smaller sample). Mother's height and BMI:
+measures of health stocks, are positively correlated with twinning regardless
+of the sample.  Similarly, this result is not driven by a particular country
+or region.  Figure \ref{TWINfig:arrows} provides evidence that healthy women (as 
+proxied by height) are significantly more likely to have twins in nearly all of 
+the 68 countries included in DHS surveys.  Along with higher average rates of 
+twinning in countries with taller women, a positive within-country gradient 
+exists, with taller women in a given country more likely to have twins than their 
+shorter counterparts. The size of DHS estimates are considerable; increasing a
+woman's height by 1 standard deviation increases the probability of twinning by 
+xx\% (as compared to a mean rate of twins of 1.86\%).
+
+Much of the existing twin literature focuses on the USA, or other developed
+countries. In table \ref{TWINtab:TwinNHIS}, we provide similar regressions for 
+women in the USA based on the full set of NHIS surveys.  These results show
+that twins are not as good as random, even in the context of a country with 
+a more developed health care systems and social safety nets. Taller mothers,
+heavier mothers, and mothers who don't smoke prior to conception (a positive
+health behaviour) are significantly more likely to have twins.
+
+The dependence of twinning on positive maternal health stocks and behaviours is
+a consistent and quantitatively important phenomenon in all data sets we have
+examined.  We have compiled data and run similar regressions using vital 
+statistics data from the USA, Brazil, Spain, Scotland and Sweden, and 
+additional survey data from Chile and the United Kingdom (see tables 
+\ref{TWINtab:TwinNVSS}--\ref{TWINtab:SwedenTwin} for results).  In each case,
+the probability of twinning increases as mothers become more healthy and are
+less likely to engage in risky health behaviours before and during pregnancy.
+Along with the results described in tables \ref{TWINtab:TwinDHS} and 
+\ref{TWINtab:TwinNHIS}, these additional source of data show that mothers
+who consume alcohol, tobacco or other drugs, who suffer from chronic disease 
+or who have less access to prenatal care are significantly less likely to twin.
+
+Finally, if twinning is related to positive health stocks and behaviours of
+prospective mothers and families, we can examine how rates of twinning respond
+to time-series variations in (female) health outcomes.  While only suggestive,
+as many other environmental variables may explain changes in twinning, 
+time-series evidence over time in the USA leads to similar conclusions.  Figure
+\ref{TWINfig:USTwin} plots the rate of twinning from vital statistics data since
+birth type (single or multiple) was first recorded.  Interestingly, the rate of
+twins has increased steadily over time, even before the advent of IVF and other
+fertilisation treatments.  This is in line with increaseing trends in female
+health over this period, which is proxied by female life expectancy and plotted
+in the same figure.
 
 
 
@@ -217,6 +305,13 @@ higher education and who do not consume alcohol.
 
 
 \section{Conclusion}                               \label{TWINscn:conclusion}
+Twin births are not random.  Indeed, they appear to be far from it, in a wide
+variety of environments, time periods and contexts.  Based on a considerable 
+body of evidence compiled from vital statistics and survey data from low- and 
+high-income countries, we demonstrate that mothers with greater health stocks 
+and those who engage in positive health-related behaviours are much more likely 
+to take twins to term.  
+
 
 \newpage
 \section*{Figures}
