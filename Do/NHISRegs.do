@@ -47,6 +47,9 @@ local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 */ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
 
 local ols 0
+local sum 1
+local ivs 0
+
 ********************************************************************************
 *** (2) Append cleaned files, generate indicators
 ********************************************************************************
@@ -88,19 +91,58 @@ gen bmi2=bmi^2
 ********************************************************************************
 *** (3) Summary
 ********************************************************************************
+if `sum'==1 {
+    gen mEduc=motherEducation
+    replace mEduc=12 if motherEducation==13
+    replace mEduc=12 if motherEducation==14
+    replace mEduc=14 if motherEducation>=15
+    gen BMI=bmi if bmi<99
+    gen BMI185=bmi<18.5
+    replace BMI185=. if bmi>99
+    gen motherExcellentHealth=motherHealthStatus==1
 
+    local motherStat fert motherAge mEduc BMI BMI185 motherExcellentHealth
+    local childStat  excellentHealth childEducation schoolZscore
+
+    preserve
+    collapse `motherStat' twinfamily, by(surveyYear hhx fmx)
+    replace twinfamily=round(twinfamily)
+    estpost tabstat `motherStat', by(twinfamily) statistics(mean sd) listwise /*
+    */ columns(statistics)
+    esttab using "$OUT/Mother.txt", replace main(mean) aux(sd) nostar unstack /*
+    */ noobs nonote nomtitle nonumber
+    restore
+    estpost tabstat `childStat', by(twin) statistics(mean sd) listwise /*
+    */ columns(statistics)
+    esttab using "$OUT/Child.txt", replace main(mean) aux(sd) nostar unstack
+    noobs nonote nomtitle nonumber
+}
 
 ********************************************************************************
 *** (4) Twin Regression
 ********************************************************************************
+if `twin'==1 {
 gen twin100=twin*100
 
-reg twin100 H_mheight S_meduc smoke* i.motherRac i.region motherAge* /*
+reg twin100 H_mheight S_meduc* i.motherRac i.region motherAge* /*
 */ ageFirstBirth i.surveyYear bmi heightMiss
-outreg2 `age' H_* S_* smoke* bmi using "$OUT/NHIStwin.xls", excel replace
-reg twin100 H_mheight S_meduc smoke* i.motherRac i.region motherAge* /*
-*/ ageFirstBirth i.surveyYear bmi heightMiss mGood mPoor mMissing
-outreg2 `age' H_* S_* smoke* bmi m*  using "$OUT/NHIStwin.xls", excel append
+outreg2 `age' H_* S_* bmi using "$OUT/NHIStwin.tex", tex(pr) replace
+reg twin100 H_mheight S_meduc* i.motherRac i.region motherAge* /*
+*/ ageFirstBirth i.surveyYear bmi heightMiss if childYearBirth<=1989
+outreg2 `age' H_* S_* bmi using "$OUT/NHIStwin.tex", tex(pr) append
+reg twin100 H_mheight S_meduc* i.motherRac i.region motherAge* /*
+*/ ageFirstBirth i.surveyYear bmi heightMiss if childYearBirth>1989
+outreg2 `age' H_* S_* bmi using "$OUT/NHIStwin.tex", tex(pr) append
+reg twin100 H_mheight S_meduc* smoke* i.motherRac i.region motherAge* /*
+*/ ageFirstBirth i.surveyYear bmi heightMiss
+outreg2 `age' H_* S_* bmi smoke* using "$OUT/NHIStwin.tex", tex(pr) append
+
+exit
+
+*reg twin100 H_mheight S_meduc smoke* i.motherRac i.region motherAge* /*
+**/ ageFirstBirth i.surveyYear bmi heightMiss mGood mPoor mMissing
+*outreg2 `age' H_* S_* smoke* bmi m*  using "$OUT/NHIStwin.xls", excel append
+}
 
 ********************************************************************************
 *** (5) OLS regressions
@@ -129,6 +171,7 @@ foreach y of varlist `yvars' {
 ********************************************************************************
 *** (6) IV regressions
 ********************************************************************************
+if `ivs'==1 {
 foreach y of varlist `yvars' {
 	foreach f in two three four {
 		local F`f'
@@ -160,6 +203,7 @@ foreach y of varlist `yvars' {
 	dis "F-test three plus (S, H): `Fthree'"
 	dis "F-test four plus (S, H) : `Ffour'"
 	estimates clear
+}
 }
 exit 
 
