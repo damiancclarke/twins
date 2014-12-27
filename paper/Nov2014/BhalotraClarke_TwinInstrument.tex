@@ -144,6 +144,8 @@ shown to be unrelated to observable or measured characteristics, similar tests
 cannot be run for variables which are either unobservable, or not recorded in 
 survey data. We return to this point in the following sections.
 
+
+
 Make point about medical literature.\\
 Make point about IVF\\
 Make point about R,Z type invalidity
@@ -290,9 +292,10 @@ have been included as additional controls.  What's more, if both the likelihood
 that a woman takes twins to term and a family's subsequent investment in child 
 human capital are positively correlated with positive health behaviours and other 
 positive socioeconomic variables such as parental education, we would expect that:
-\[
+\begin{equation}
+\label{TWINeqn:moves}
 \hat\beta_1^{IV}>\hat\beta_1^{IV,H}>\hat\beta_1^{IV,S+H}>\beta_1.
-\]
+\end{equation}
 It should be noted in the above series of inequalities that even conditional upon
 socioeconomic and health variables, IV estimation will \emph{not} result in a
 consistent estimate of $\beta_1$ if twinning is correlated with unobservable
@@ -605,6 +608,92 @@ Table \ref{TWINtab:OLS} reports pooled OLS estimates from all DHS data, and in
 low and middle-income country groups. OLS is estimated separately by the 2+, 3+,
 and 4+ fertility groups, and included in appendix table \ref{TWINtab:OLSplus}.
 
+\subsubsection{The twin instrument: estimates of the Q--Q trade-off}
+In table \ref{TWINtab:IVAll}, we turn to IV estimates using twins.  As we outline 
+in section \ref{TWINsscn:methodQQ}, the assumption of `as good as random' twin 
+births is unlikely to hold, even when conditioning on the augmented set of 
+controls proposed in (\ref{TWINeqn:twinreg}). If this is the case, we will also 
+be unable to consistently estimate $\beta_1$ using twin births.
+
+However, it is likely that the $\beta_1$ which we estimate using twin births 
+will provide us with a strict lower bound of the magnitude of the Q-Q trade-off 
+as outlined in (\ref{TWINeqn:betacloser}). We expect that the bias in this 
+estimate is due to those mothers who invest more in their children in utero, or 
+who have greater initial health endowments, being more likely to give birth to 
+twins resulting in larger family sizes. At the same time, we expect healthier 
+mothers to invest more in their children after birth resulting in higher 
+quality children. By relegating health variables to the error term, these two 
+positive correlations will result in a positive bias on the fertility 
+coefficient estimated via IV. In order to determine the effect that these 
+omitted variables have on estimates of the Q-Q trade-off, we turn to results for 
+equation (\ref{TWINeqn:RF}), both first omitting, and the including, maternal 
+health and socioeconomic variables.
+
+The main specification is displayed in the top row of table \ref{TWINtab:IVAll}, 
+with separate columns for the 2+, 3+ and 4+ sample groups. For each parity 
+group, the base case (controlling for maternal and child age, country, and year 
+of birth) results in insignificant, and at times weakly positive, estimates of 
+the effect of an additional birth on a child's educational attainment. These 
+results suggest that the inclusion of maternal health and socioeconomic controls 
+may be of considerable importance. Despite the lack of results when using
+the `typical' set of twin controls from the twin Q--Q literature, including 
+health (columns 2, 4 and 6) reduces point estimates on fertility from an effect 
+of approximately 0\% of a standard deviation, to -3 or -4\% of a standard 
+deviation in standardised educational attainment. Further, conditioning on 
+maternal education results in slightly more precise estimates, suggesting a 
+statistically significant (or close to statistically significant in the case
+of the 2+ sample) Q--Q trade-off of at least 3 or 4\%.
+
+In low- and middle-income country data, the inclusion of health indicators in 
+the twin instrument does have an important effect on IV estimates, moving as
+hypothesised in (\ref{TWINeqn:moves}).  In table \ref{TWINtab:NHISAll}, we 
+present identical estimates based upon NHIS data from the USA.  As this survey
+focuses on health, as well as standardised educational attainment, we examine
+the effect of additional siblings on the reported health of children.
+
+%*******************************************************************************
+\subsubsection{Heterogeneity}
+Theoretical derivations of the Q--Q model are based on the assumption that all
+children in a family are of the same quality. More recent work (for example the 
+theoretical work of \citet{AizerCunha2012}) has loosened this assumption. Among 
+other things, this allows for reinforcing behaviours by parents in child human 
+capital investment decisions.\footnote{An empirical review of early life human 
+capital and reinforcing versus compensating behaviour, (however not explicitly 
+related to the Q--Q hypothesis), is provided by \citet{AlmondMazumder2013}.} If 
+this is the case, the coefficient $\beta_1$ may vary by children in the family. 
+More generally, $\beta_1$ may be context specific, depending upon the returns to 
+human capital in a given time-period or economy.
+
+Empirically, we find that estimates of the Q-Q trade-off are heterogeneous 
+across birth orders, country income level, and gender of the child affected by 
+the additional birth.  The magnitude and significance of the results is lowest 
+when considering the effect on the first-born child of moving from two to three 
+births (the 2+ group), and higher when considering moving from three to four 
+births or four to five births. However, in lower fertility environments the 
+effect is, as expected, concentrated on lower birth orders. The third row of 
+table \ref{TWINtab:IVAll} suggests that in middle-income countries the effect is 
+largest on first borns, and progressively smaller, but still considerable, at 
+higher birth orders.
+
+Estimates of the magnitude of the Q--Q trade-off by country income level suggest 
+that the trade-off is considerably larger in middle rather than low-income 
+countries. In low-income countries point estimates on fertility suggest 
+(insignificant) trade-offs centred around 2-3\% of a standard deviation, while in 
+middle-income countries results are significant, and considerably larger,
+reaching as much as 9\% of a standard deviation: only slightly lower than OLS 
+estimates for this group.
+
+Similarly, effects of the Q-Q trade-off are considerably different depending upon 
+a child's gender. In appendix table \ref{TWINtab:gend} we present regression 
+results estimated separately by the gender of the index child. These results 
+suggest that females may bear the brunt of additional births, with estimates
+being negative and significant for girls, while insignificant for male children. 
+Interestingly, recent empirical of the Q--Q trade-off from other (middle income)
+contexts finds similar gender-biased results \citep{SouzaPonczek2012}.
+
+%NOTE that in April 2012 draft, there was some different results discussed here
+%that are no longer included.
+
 
 %*******************************************************************************
 \subsection{Bounding the Q-Q trade-off}            \label{TWINsscn:resultBounds}
@@ -613,22 +702,23 @@ $\beta_1$ via 2SLS \emph{if} the full set of controls completely account for
 those characteristics and behaviours which predict giving live birth to twins. 
 However, given that we have shown that twinning is predicted by a wide range of 
 health behaviours, and given that maternal health variables in these datasets 
-do not exhaustively capture all aspects of health stocks and behaviours, it seems 
-unlikely that all relevant variables are included in these specifications. As 
-such, we turn to \citeauthor{Conleyetal2012}'s \citeyear{Conleyetal2012} 
+do not exhaustively capture all aspects of health stocks and behaviours, it 
+seems unlikely that all relevant variables are included in these specifications. 
+As such, we turn to \citeauthor{Conleyetal2012}'s \citeyear{Conleyetal2012} 
 methodology to estimate bounds for the Q-Q trade-off.  
 
 As outlined in section \ref{TWINsscn:methodBounds}, this involves the definition 
-of some prior belief over the sign and magnitude that the coefficient on twinning 
-would take in the structural equation \ref{TWINeqn:Conley}. Results are displayed 
-in figures \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}, and in table 
-\ref{TWINtab:Conley}. At each point on the horizontal axis of figures 
+of some prior belief over the sign and magnitude that the coefficient on 
+twinning would take in the structural equation \ref{TWINeqn:Conley}. Results 
+are displayed in figures \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}, and in 
+table \ref{TWINtab:Conley}. At each point on the horizontal axis of figures 
 \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}, the bounds for $\beta_1$ are 
-displayed, along with the corresponding point estimate under the assumption that 
-$\gamma$ is distributed $\sim U(0,\delta)$. Dashed lines present the 95% 
+displayed, along with the corresponding point estimate under the assumption 
+that $\gamma$ is distributed $\sim U(0,\delta)$. Dashed lines present the 95\% 
 confidence interval, while the solid line represents the point estimate.
 
 
+%*******************************************************************************
 \section{Conclusion}                               \label{TWINscn:conclusion}
 Twin births are not random.  Indeed, they appear to be far from it, in a wide
 variety of environments, time periods and contexts.  Based on a considerable 
