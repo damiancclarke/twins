@@ -83,10 +83,117 @@ Contact: damian.clarke@economics.ox.ac.uk}}
 \newpage
 %*******************************************************************************
 \section{Introduction}                             \label{TWINscn:intro}
+Since the pioneering work of \citet{RosenzweigWolpin1980}, economists have 
+attempted to leverage the occurrence of twin births to estimate the effect of 
+family size on child outcomes. If twin births occur at random, the occurrence of 
+twin births constitutes a fertility shock that is uncorrelated with family 
+characteristics including parental preferences, and other unobservables which may 
+be related to child quality. This provides the exogenous variation (in quantity) 
+required to estimate the quantity-quality model of \citet{Becker1960,
+BeckerLewis1973,BeckerTomes1976}.  The essential idea is that the shadow price of 
+child quality is increasing in child quality and \emph{vice versa} i.e.\ the 
+shadow price of quantity is increasing in quality.  By comparing those families who 
+unexpectedly produced additional children to those who always produced one child
+per birth, we can isolate the effect of an individual's sibling size on her human 
+capital attainment.
 
-Talk about Q-Q
-Talk about twins
-Talk about early life and fetal origins --$>$ links to health, but not twinning.
+However, the consistent estimation of this effect is based upon the untestable 
+assumption that twinning is exogenous. This requires not only that twin conceptions 
+are randomly assigned to families, but also that taking a twin conception to term 
+does not depend upon a woman's behaviours during pregnancy or on her endowments
+prior to pregnancy. This is at odds with the evidence.
+
+We show that endowments and behaviours affect the chances of twins being born. 
+In data from a large sample of developing countries, we show that taller women 
+and women with a higher body-mass index are significantly more likely to give 
+birth to twins.\footnote{Height is an index of the stock of health of a woman 
+and is a function of investments over her growth period and, especially, the 
+early years of her life (see references in \citet{BhalotraRawlings2013}).} 
+Maternal health is likely to be an especially significant determinant of birth 
+outcomes in poorer countries where many women are chronically under-nourished 
+(an indicator of which is their final stature), exhibit anemia and low-BMI and 
+are prone to infections. In these conditions only relatively healthy women will 
+have the resources to support a successful twin pregnancy. However, our critique 
+applies to richer countries too. Using administrative data from the Scotland,
+the USA, Sweden and Spain, and survey data from the UK and Chile, we find that 
+women who are taller and less likely to engage in risky behaviours such as 
+smoking, drug taking or alchol consumption during pregnancy are significantly 
+more likely to have a (live) twin birth.\footnote{Simiarly, it is well known 
+that fertility treatments increase the likelihood of twinning. While we do not 
+discuss this extensively here, we note that this is likely to be less of an 
+identification challenge given that IVF treatment is an entirely observable 
+behaviour.}
+
+Overall, our argument is that women who give birth to twins are positively 
+selected and that the common tendency to ignore this will result in under-%
+estimation of the Q--Q trade-off. We focus upon maternal health because no 
+previous work has highlighted it as a determinant of twinning and because it is 
+inherently impossible to fully control for. Even if we had data that included 
+all of the indicators of health we mention above, we may not observe whether 
+women skip breakfast \citep{MazumderSeeskin2014}, whether they are stressed 
+(\citet{Blacketal2014} and references therein), whether they seek and adhere to 
+antenatal care and so on. Our contention adds a novel twist to a recent 
+literature which suggests that mothers' health and fetal environment matter and 
+may alter the birth weight of children, the sex ratio at birth and a range of 
+future human capital outcomes \citep{Almondetal2011,BhalotraRawlings2013,Barker1995}. 
+Like birth weight and the probability of a boy relative to a girl birth, the 
+probability of a twin birth is increasing in the health of the mother/the fetal 
+environment.
+
+%*******************************************************************************
+The emerging consensus in the literature using twin births to test the Q-Q model 
+is that there is in fact no significant or substantial trade-off between 
+fertility and investments in children. In this paper we suggest that this result 
+may, in principle, follow from the bias created by twin-mothers being positively 
+selected. We re-examine the validity of these results, accounting for the 
+innovation discussed previously.  If twin births are not truly exogenous, but 
+instead depend upon maternal health stocks and behaviours, there is an 
+identification challenge.  Specifically, if healthier mothers are both more 
+likely to give birth to twins, and more likely to invest in child human capital 
+in later life, existing estimates may significantly underestimate the size of the 
+Q-Q tradeoff.  When ignoring these considerations we find that the effect of an 
+additional birth on human capital attainment (education) is minor, or even weakly 
+positive. However, when taking into account this innovation we find that a 
+significant trade-off does exist, and that an additional birth reduces 
+standardised schooling behaviour by at least 4\% of a standard deviation.
+
+the estimated effect of $\sim 4\%$ of an s.d.\ is at most the lower bound for 
+the true size of the Q-Q tradeoff. Given that we suggest that maternal health 
+predicts twinning, and given that maternal health is multidimensional in nature 
+and difficult to observe fully, we will only ever be able to include a partial 
+set of controls to account for the inconsistency in IV estimates. As such, we 
+examine a number of methods to estimate plausible bounds on the Q-Q tradeoff. 
+First, we argue that the true estimate is bounded by the OLS and IV estimtes. 
+We also follow \citet{Conleyetal2012} in conceptualizing twins as a plausibly 
+exogenous event, and derive estimates by assuming that the traditional exclusion 
+restriction is `close to' holding.
+
+%*******************************************************************************
+This work which further probes the Q-Q tradeoff is important, especially in the 
+developing country setting on which we place considerable focus. In order to 
+conduct empirical tests, we construct a large microdata set from 68 developing 
+countries with observations on more than 2.5 million children and nearly 1
+million mothers.  This developing country data is then augmented with estimates
+from the USA, pooling many waves of the National Health Interview Survey (NHIS). 
+The macro level trends in our data suggest that educational attainment has risen 
+considerably while completed and desired fertility has fallen sharply over the 
+past 50 years (see figures \ref{TWINfig:fertrend} and \ref{TWINfig:eductrend}). 
+Similar effects have been described extensively in the empirical literature (ie 
+\citet{Hanushek1992}). It is of considerable relevance to researchers and to 
+policy makers to determine whether such a trend is (at least partially) causal. 
+A significant number of countries have engaged in aggresive fertility control 
+policies over the previous century, with family planning still considered a 
+concern according to policy makers in the developing world.\footnote{A recent 
+survey of national governments suggests that fertility was perceived as too high 
+in 50\% of developing countries, with this figure rising to 86\% among the least 
+developed countries \citet{UN2010}.} 
+
+This paper unfolds as follows.  In the next section we discuss the existing 
+literature which estimates the Q-Q model using twins.  We then discuss the 
+samples, regions and time periods that we will use to examine twin exogeneity 
+and to bound the Q--Q trade-off.  Section \ref{TWINscn:method} discusses our 
+methodology, and section \ref{TWINscn:results} presents results.  We briefly 
+conclude in the final section.
 
 %*******************************************************************************
 \section{Twins}                                    \label{TWINscn:literature}
@@ -124,7 +231,11 @@ estimate the effect of childbearing on female labour force participation
 of unwed childbearing on marriage market outcomes, poverty and welfare receipt 
 \citep{BronarsGrogger1994}.  Typically, estimation is based on two-stage least
 squares, with the set of controls included in the first- and second-stage 
-varying slightly over time.
+varying slightly over time.\footnote{Twins have been widely used in the economic, 
+medical, biology and psychology literature in a number of ways.  In this paper 
+we focus only on the use of twin births as an instrument for total fertility, 
+and not on the so called `twin studies', which base inference on between-twin 
+comparisons using maternal fixed effects.}
 
 Table \ref{TWINtab:Lit} documents the principal studies in the Q--Q trade-off 
 literature where twins are employed.  Along with the data sample and time period 
@@ -144,9 +255,19 @@ shown to be unrelated to observable or measured characteristics, similar tests
 cannot be run for variables which are either unobservable, or not recorded in 
 survey data. We return to this point in the following sections.
 
+The most comprehensive controls considered in the economic literature (often by
+necessity due to data restrictions), include maternal age, parental education
+and measures of income and/or goods.  However, recent evidence from the medical
+literature points to the fact that twinning may depend more deeply upon a 
+mother's health. \citet{Hall2003} for example suggests that follicle-stimulating 
+hormone (FSH) is associated with an increased likelihood of twinning, and is 
+found in higher concentrations in older, heavier and taller mothers. Further, 
+she suggests ``that adequate maternal folic acid consumption could affect the
+number of twins coming to term'' (see p.\ 741, and further discussion in 
+\citet{Lietal2003})
 
 
-Make point about medical literature.\\
+
 Make point about IVF\\
 Make point about R,Z type invalidity
 
@@ -607,7 +728,22 @@ birth cohort.  After considering DHS estimates we turn to NHIS data from USA.
 Table \ref{TWINtab:OLS} reports pooled OLS estimates from all DHS data, and in 
 low and middle-income country groups. OLS is estimated separately by the 2+, 3+,
 and 4+ fertility groups, and included in appendix table \ref{TWINtab:OLSplus}.
+As is typically found in empirical studies of the Q-Q tradeoff, conditional 
+correlations between family size and child outcome variables are negative, and 
+strongly significant.  The results in table \ref{TWINtab:OLS} suggest that an 
+additional sibling is associated with an approximatelty 0.1 sd decrease in 
+standardised schooling outcomes.  The magnitude of these estimates decreases
+as additional controls for maternal health and family socioeconomic variables
+are included in the regressions. This is in line with the hypothesised effect
+of these variables.  To the degree that components from the error term are 
+removed which are positively related to high desired quality and to low desired 
+family size, the bias in OLS estimates should be reduced, and the estimated 
+magnitude of the trade-off should move in the direction of zero. Of course, as 
+long as any such variables remain unobserved and as part of the stochastic error 
+term, OLS estimates \emph{will not} converge to unbiased values.  The following 
+sections examine alternative estimation methods to bound the Q--Q trade-off.
 
+%*******************************************************************************
 \subsubsection{The twin instrument: estimates of the Q--Q trade-off}
 In table \ref{TWINtab:IVAll}, we turn to IV estimates using twins.  As we outline 
 in section \ref{TWINsscn:methodQQ}, the assumption of `as good as random' twin 
@@ -649,7 +785,17 @@ the twin instrument does have an important effect on IV estimates, moving as
 hypothesised in (\ref{TWINeqn:moves}).  In table \ref{TWINtab:NHISAll}, we 
 present identical estimates based upon NHIS data from the USA.  As this survey
 focuses on health, as well as standardised educational attainment, we examine
-the effect of additional siblings on the reported health of children.
+the effect of additional siblings on the reported health of children.  Results
+for both variables show similar to those reported based on DHS data.  Focusing
+on the 3+ group, the inclusion of health and socioeconomic controls results in
+OLS estimates closer to zero, and IV results further away from zero.  In the
+case of self reported health status, the inclusion of additional twin predictors
+is sufficient to result in statistically significant evidence in favour of the
+Q--Q trade-off, despite the reasonably imprecise standard errors of estimated
+coefficients.  While for the 2+ subgroup (firstborns), the effect of a second-%
+born twin does not result in statistically significant results, it is important
+to note that the point estimates become more negative, moving in favour of a
+negative $\beta_1$.
 
 %*******************************************************************************
 \subsubsection{Heterogeneity}
