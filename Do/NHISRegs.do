@@ -114,8 +114,8 @@ if `sum'==1 {
     restore
     estpost tabstat `childStat', by(twin) statistics(mean sd) listwise /*
     */ columns(statistics)
-    esttab using "$OUT/Child.txt", replace main(mean) aux(sd) nostar unstack
-    noobs nonote nomtitle nonumber
+    esttab using "$OUT/Child.txt", replace main(mean) aux(sd) nostar unstack /*
+    */ noobs nonote nomtitle nonumber
 }
 
 ********************************************************************************
