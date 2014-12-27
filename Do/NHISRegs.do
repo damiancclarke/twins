@@ -46,9 +46,10 @@ local se    cluster(motherID)
 local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 */ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
 
-local ols 0
-local sum 1
-local ivs 0
+local sum  1
+local twin 0
+local ols  0
+local ivs  0
 
 ********************************************************************************
 *** (2) Append cleaned files, generate indicators
@@ -116,6 +117,17 @@ if `sum'==1 {
     */ columns(statistics)
     esttab using "$OUT/Child.txt", replace main(mean) aux(sd) nostar unstack /*
     */ noobs nonote nomtitle nonumber
+
+    sum twin
+    sum bord if twin==1
+    count if fpx=="01"
+    count if fpx=="01"&twinfamily==1
+    count if fpx=="01"&twinfamily==0
+    count
+    count if twin==1
+    count if twin==0
+    
+    
 }
 
 ********************************************************************************
