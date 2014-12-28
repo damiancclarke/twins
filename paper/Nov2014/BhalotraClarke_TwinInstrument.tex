@@ -1092,13 +1092,44 @@ labour market outcomes...
 \bibliography{./BiBBase1}
 
 \newpage
+%*******************************************************************************
 \appendix
 \section*{Appendices}
 \section{Data Appendix}
 \label{TWINscn:dataApp}
+Main IV and OLS results for this paper are based on DHS and NHIS data described 
+in section \ref{TWINscn:data}.  These data are downloaded directly off the web 
+and merged to form the estimation samples of interest. For DHS data, we use two 
+surveys: the Individual (woman) Recode (IR), and the Household Recode (HR) 
+providing education for each household member.  For NHIS data, we merge three 
+of the datafiles made available by the CDC: familyxx, household, and person.
+In each case, full generating code for this process is made available on the
+authors' websites.  This code downloads, merges and cleans DHS and NHIS data to
+produce the datasets (one line per child) used in analysis.
 
+In auxiliary regressions examining the characterstics of mothers and the 
+relationship these characteristics and twin births and miscarriage, we consult
+a large number of other datasets.  These are the following:
+\begin{itemize}
+\item United States National Vital Statistics Birth Data
+\item United States National Vital Statistics Fetal Death Data
+\item Spanish Vital Statistics (INE)
+\item The Swedish Medical Birth Register
+\item Scottish Vital Statistics
+\item Longitudinal Early Life Survey, Chile (ELPI) 
+\end{itemize}
 
-Discuss: DHS, NHIS, USA registry data, Spain registry data, Chile survey, 
+In the case of the first 5 datasets (administrative records of births and/or 
+fetal deaths), we use all recorded instances, focusing on twins as our 
+outcome variable of interest.  Depending upon the data source, we use all
+available measures of pre-determined maternal health stocks or family 
+socioeconomic indicators.  The ELPI survey from Chile focuses on child early
+life, and records mother's behaviours before, during and after pregnancy,
+along with child birth outcomes.  We use all children from the first wave of
+this survey to run the twin regression included in the appendix tables.  
+Further notes regarding each dataset and the particular years and number of
+births can be found in the notes to each table.
+
 
 \newpage
 \end{spacing}
