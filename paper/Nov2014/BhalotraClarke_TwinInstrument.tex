@@ -189,11 +189,11 @@ in 50\% of developing countries, with this figure rising to 86\% among the least
 developed countries \citet{UN2010}.} 
 
 This paper unfolds as follows.  In the next section we discuss the existing 
-literature which estimates the Q-Q model using twins.  We then discuss the 
-samples, regions and time periods that we will use to examine twin exogeneity 
-and to bound the Q--Q trade-off.  Section \ref{TWINscn:method} discusses our 
-methodology, and section \ref{TWINscn:results} presents results.  We briefly 
-conclude in the final section.
+literature which estimates the Q-Q model using twins. We then discuss the 
+methodology that we will use to examine twinning, and bound the Q--Q trade-off.
+Section \ref{TWINscn:data} discusses our data sources and estimation samples, 
+and section \ref{TWINscn:results} presents results. We briefly conclude in the 
+final section.
 
 %*******************************************************************************
 \section{Twins}                                    \label{TWINscn:literature}
@@ -294,16 +294,6 @@ demonstrate that if parents behave in such a manner, bounds for the Q--Q
 trade-off can be calculated. This hypothesis is tested in 
 \citet{Angristetal2010}, and applied in \citet{FitzsimonsMalde2014}.  We turn
 to bounds estimation in section \ref{TWINsscn:resultBounds}.
-
-
-%*******************************************************************************
-\section{Data and Estimation Samples}              \label{TWINscn:data}
-
-
-\subsection{Data}                                  \label{TWINsscn:data}
-\subsection{Estimation Samples}                    \label{TWINsscn:samples}
-\subsection{Descriptive Statistics}                \label{TWINsscn:descriptives}
-
 
 %*******************************************************************************
 \section{Methodology}                              \label{TWINscn:method}
@@ -448,8 +438,171 @@ consistent estimate of $\beta_1$ if twinning is correlated with unobservable
 elements in $u^*_{ij}$.  We return to this point, and how to bound $\beta_1$ in
 the following sub-section.
 
-NOTE: Angrist Pischke first stage F-statistics when more than one endogenous
-regressor.
+%NOTE: Angrist Pischke first stage F-statistics when more than one endogenous
+%regressor.
+
+%*******************************************************************************
+\section{Data and Estimation Samples}              \label{TWINscn:data}
+We consult two data sets for our main IV and OLS analysis, and a large number of
+auxiliary datasets when only considering the link between twinning and maternal
+health.  In order to estimate the (health augmented) specification 
+\ref{TWINeqn:RF} we require information on each child's siblings, his or her
+mother's characteristics, as well as the child's eventual `quality' measure. 
+We are able to piece these requirements together from two principal datasets: 
+firstly, the Demographic and Health Surveys, which have been applied over 20 
+years in a range of developing countries, and secondly, the United States 
+National Health Interview Surveys (NHIS).  In what follows, we describe the
+characteristics of these datasets which we will use for our primary analysis.
+A comprehensive description of all data, including that which is used only to
+illustrate twinning and its relation to maternal characteristics, is provided in
+data appendix \ref{TWINscn:dataApp}.
+
+%*******************************************************************************
+\subsection{Data}                                  \label{TWINsscn:data}
+\subsubsection{The DHS}
+The DHS are a set of nationally representative surveys which have been 
+administered in low- and middle-income countries between 1985 and the present. 
+Women aged between 15--49 in surveyed households respond to an in-depth series 
+of questions reporting their full fertility history (listing all surviving and 
+non-surviving children), their actual and desired contraceptive use and number 
+of births, education level, marital status, plus the measurement of a number of 
+health endowments such as height and body mass index. For all other members 
+living in the household a shorter series of responses are recorded, including 
+the individual's educational attainment.
+
+This results in two distinct sets of data to be merged. One database contains 
+one line for each birth reported by every 15--49 year-old woman surveyed with a 
+limited number of child-level covariates such as the child's date of birth, type 
+of birth (single or multiple), and the child's survival status. The other 
+database contains one line for each member currently living in the survey
+household. This database includes each member's educational status. We merge
+these two databases (all children who live in the same household as their mother
+merge without loss) we are thus able to generate data for the educational 
+attainment of each of a woman's children currently residing in the household as 
+well as their mother's health and educational status. This database is selected in 
+two ways: firstly it only contains children who have survived up until the survey 
+date, and secondly it only contains children who have remained living in the same 
+household as their mother. We drop from our sample children aged 18 and over, due
+to concerns that these will \emph{not} be representative of the general 
+population.
+
+We pool all publicly available DHS data resulting in microdata on 3,297,318 
+children ever-born to women who responded fully to any DHS survey. A full list of 
+the DHS countries and years of surveys which make up this sample is provided in
+an online appendix (table \ref{TWINtab:countries}).  Of the 3,297,318 offspring 
+reported in survey data, 2,033,510 remain living in the same household as their 
+mother.  The majority of these 2,033,510 children are aged 18 and under (92.96\%) 
+and hence make up our principal estimation sample (in future we will refer to this 
+as the `household sample'). The remaining 1,263,808 offspring were not recorded as 
+living in the same household as their mother.  Of these children not in the 
+household, and hence for whom education is not recorded, the majority (53.9\%) 
+were aged over 18 or had died prior to the date of survey.\footnote{Children aged 
+under 18 who are alive but not living in the same household as their mother are 
+statistically quite different to those children who do remain in the household. 
+In our data sample, they are on average 2.7 years older, born to less educated 
+and younger mothers, and are slightly more likely to be males.}
+
+\subsubsection{The NHIS}
+The national health interview survey (NHIS) is a yearly survey, conducted from 
+1957 and ongoing as at 2014, with participants drawn from each of the 50 US 
+States as well as the District of Columbia each year.\footnote{The NHIS has a
+survey design to oversample Hispanic and African American people.  We use NHIS-%
+specific probability weights in all analyses.}  We pool all survey data from 
+2000 until 2013, resulting in data on 127,009 mothers and 246,646 children. We 
+focus on this period given that prior to 2000, changes in a number of key 
+variables make it difficult to compare between years, and post-1996 the survey 
+was considerably revised.
+
+Each set of surveys is collected at the level of the household.  For our 
+analysis we use all households which consist of a biological mother and her 
+children, whether or not any father is present.  For all children who remain in
+the household, the survey records total fertility.  We infer twin status by
+assuming that all children who share a birth month, birth year and biological
+mother must be twins.  For each child and mother, we have a number of measures
+of usage of health care along with a self-reported measure for health status, 
+whether or not the mother smokes, and the level of completed education (at the 
+time of the survey) of mothers and children.  Once again, we subset to children
+aged below 18, and for education measures, children who are aged above 6 years
+old, and hence who are able to be enrolled in school.  Descriptive statistics of
+this and DHS data is provided in section \ref{TWINsscn:descriptives}.
+
+\subsection{Estimation Samples}                    \label{TWINsscn:samples}
+The quasi-experimental variation exploited in twin studies is to leverage the 
+effect of an unexpected additional child on siblings who were born before the 
+extra birth.  Thus, all first born children in families of at least two births
+are split into two groups: the treatment group, which consists of first born
+children in a family whose second birth results in two children (twins), and a
+control group consisting of first born children in families where the second
+birth results in just one child.
+
+For our main IV specification, we follow the existing literature in defining
+birth-order specific estimation samples, as laid out in the preceding 
+paragraph. These samples are referred to as the 2+, 3+, and 4+ samples. These 
+samples are defined $\forall\ n \in \{2, 3, 4, 5\}$ such that they include 
+first-born to $n-1$ born children in families with at least $n$ births.\footnote{
+Existing studies such as \citet{Angristetal2010} focus mainly on the 2+ and 3+ 
+samples. Given the higher fertility in the DHS data, we also include higher a
+birth-order group, 4+.} As an example, the 2+ sample (described in the previous
+paragraph) consists of first-borns in families with at least two births, and the 
+3+ sample consists of first- and second-borns in families with at least 3 births.
+Such a sample decision is important when estimating the Q--Q trade--off using 
+twinning as an instrument. Given that family size is endogenously chosen by 
+parents and rates of twin birth are not constant by birth-order, twin-births will 
+occur more frequently in families that have a higher fertility preference (see
+figure \ref{TWINfig:bord}). This point is addressed by (among others) 
+\citet{RosenzweigWolpin1980} and \citet{Blacketal2005} who first suggested 
+combining $n+$ groups with twinning at birth order $n$ as a way to ensure that 
+twin and non-twin families in the sample would have similar fertility 
+preferences.
+
+%*******************************************************************************
+\subsection{Descriptive Statistics}                \label{TWINsscn:descriptives}
+Table \ref{TWINtab:sumstats} provides summary statistics for DHS data, and table
+\ref{TWINtab:NHISstats} describes NHIS data.  Fertility and maternal 
+characteristics are described at the level of the mother, while child education 
+and survival are described at the level of the child. The number of observations 
+at each level is provided at the bottom of the table.
+
+For DHS data, survey countries are classified according to country income level 
+in order to allow for a disaggregation of Q--Q results by income group.\footnote{
+This classification is obtained from the World Bank, with DHS surveyed countries 
+falling into two broad groups based on their GNI per capita at the moment of the 
+DHS survey. These groups consist of countries classed as low-income economies, 
+and countries classed as middle-income economies (either lower-middle or upper-%
+middle). Details regarding this classification can be found in Appendix Table 
+\ref{TWINtab:countries}.} We present summary statistics by birth type (singleton 
+or twin), and by country income status. Twin births make up 1.85\% of all births.
+A simple comparison of means suggests that healthy mothers (as proxied by height, 
+BMI and probability of being underweight) are more likely to give birth to twins, 
+and that twin births are more likely to occur in low-income countries. This 
+apparent contradiction can be explained given that twins are (both mechanically 
+and biologically) a positive function of fertility, and fertility is higher in 
+the low-income sample. Figure \ref{TWINfig:bord} describes this positive 
+relationship: while twins account for less than 1\% of all first-borns, they 
+account for greater than 4\% of all tenth-born children. As expected, twin 
+families are larger than non-twin families. Figure \ref{TWINfig:famsize} 
+describes total fertility in twin and non-twin families. The distribution of 
+family size in families where at least one twin birth has occurred dominates the 
+corresponding distribution for all-singleton families.  This is expected given 
+imperfect fertility control and---even were fertility perfectly controlled by 
+families---given that some twins will occur on a family's final desired birth. 
+Such a result is required for instrumental relevance when using twining to 
+estimate a Q-Q trade-off.
+
+Similar patterns are observed when turning to NHIS data.  Twin mothers have
+(unconditionally) higher education, and greater health stocks as measured by
+BMI, percent underweight (BMI$<$18.5) and self-reported health.  This is 
+despite having higher total fertility, and being somewhat older.
+
+Child `quality' is measured using each child's educational attainment. Our 
+principal outcome variable in each case is a standarised score for schooling 
+(Z-Score). This Z-Score is calculated by comparing each child's total years of 
+completed education to his or her cohort or reference.  In the case of DHS data,
+this cohort is made up of all children in the same country and birth cohort, 
+while in NHIS data, it is made up of children with the same month and year of 
+birth. The use of a standardised score rather than just total years of education
+allows us to express all effect-sizes in terms of a one standard deviation 
+increase in total educational attainment.
 
 %*******************************************************************************
 \subsection{Bounding the Q-Q Trade-off}            \label{TWINsscn:methodBounds}
@@ -914,6 +1067,7 @@ to take twins to term.
 \appendix
 \section*{Appendices}
 \section{Data Appendix}
+\label{TWINscn:dataApp}
 Discuss: DHS, NHIS, USA registry data, Spain registry data, Chile survey, 
 
 \newpage
