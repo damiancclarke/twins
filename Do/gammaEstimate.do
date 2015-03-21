@@ -189,3 +189,14 @@ foreach i of numlist 1(1)100 {
 }
 gen gamma = twinEst/qualEst
 sum gamma
+
+local Gmean = `r(mean)'
+local Gsdev = `r(sd)'
+
+********************************************************************************
+*** (8) Examine distribution: Kolmogorov-Smirnov
+********************************************************************************
+tw hist gamma || function normalden(x,`Gmean',`Gsdev'), lc(black) scheme(lean1)
+graph export "$OUT/gammaResamp.eps", as(eps) replace
+
+ksmirnov gamma = normal((x-`Gmean')/`Gsdev')
