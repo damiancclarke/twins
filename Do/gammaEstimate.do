@@ -32,10 +32,8 @@ global statevar      ln_pci ln_nb_sch_imp ln_ed_exp_imp ln_nb_hos_imp /*
                      */ ln_nb_doc_imp /*i.post*health_exp_pc*/
 global cohort        birth_year>=1930&birth_year<=1943
 global basic         i.birth_state*i.race i.birth_year*i.race
-global regional      i.birth_state*i.race i.birth_year*i.race
 global trends        i.birth_state*i.race i.birth_year*i.race i.birth_state*t
-global trends2       i.birth_state*i.race i.birth_year*i.race i.birth_state*t /*
-                     */ i.birth_state*t_2
+global trends2       $trends i.birth_state*t_2
 
 ********************************************************************************
 *** (2) open data and generate child file
@@ -115,44 +113,47 @@ if `est'==1 {
 
     bys birthyr birthqtr: egen meanEd = mean(educb)
     bys birthyr birthqtr: egen sdEd   = sd(educb)
-    gen school_zscore = (meanEd - educb) / sdEd
+    gen school_zscore = (educb - meanEd) / sdEd
 
 
 
     ****************************************************************************
     *** (6a) Estimates -- school z-score
     ****************************************************************************
-    local y school_zscore
+    global outcomes school_zscore educb
     local se robust cluster(birth_state)
+    local ctrl i.sex i.race i.birthyr
+    local c if birthyr<1974
 
-    xi: reg `y' $post_base_inf $basic i.sex i.race, `se'
-    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+    foreach y of varlist $outcomes {
+        xi: reg `y' $post_base_inf $basic `ctrl' `c', `se'
+        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf) replace
 
-    xi: reg `y' $post_base_inf $basic $statevar i.sex i.race, `se'
-    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+        xi: reg `y' $post_base_inf $basic $statevar `ctrl' `c', `se'
+        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
-    xi: reg `y' $post_base_inf $basic $statevar $mortality i.sex i.race, `se'
-    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+        xi: reg `y' $post_base_inf $basic $statevar $mortality `ctrl' `c', `se'
+        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
-    xi: reg `y' $post_base_inf $mortality $statevar $trends i.sex i.race, `se'
-    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
-
+        xi: reg `y' $post_base_inf $mortality $statevar $trends `ctrl' `c', `se'
+        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+    }
 
     ****************************************************************************
     *** (6b) Estimates -- twin
     ****************************************************************************
     local y twin
 
-    xi: reg `y' $post_base_inf $basic i.sex i.race, `se'
+    xi: reg `y' $post_base_inf $basic `ctrl', `se'
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
-    xi: reg `y' $post_base_inf $basic $statevar i.sex i.race, `se'
+    xi: reg `y' $post_base_inf $basic $statevar `ctrl', `se'
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
-    xi: reg `y' $post_base_inf $basic $statevar $mortality i.sex i.race, `se'
+    xi: reg `y' $post_base_inf $basic $statevar $mortality `ctrl', `se'
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
-    xi: reg `y' $post_base_inf $mortality $statevar $trends i.sex i.race, `se'
+    xi: reg `y' $post_base_inf $mortality $statevar $trends `ctrl', `se'
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
 }
