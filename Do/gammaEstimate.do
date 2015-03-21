@@ -125,9 +125,11 @@ if `est'==1 {
     local ctrl i.sex i.race i.birthyr
     local c if birthyr<1974
 
+    cap rm "$OUT/gammaEstimates.xls"
+    cap rm "$OUT/gammaEstimates.txt"
     foreach y of varlist $outcomes {
         xi: reg `y' $post_base_inf $basic `ctrl' `c', `se'
-        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf) replace
+        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
         xi: reg `y' $post_base_inf $basic $statevar `ctrl' `c', `se'
         outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
