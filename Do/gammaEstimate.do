@@ -24,7 +24,7 @@ global LOG "~/investigacion/Activa/Twins/Log"
 log using "$LOG/gammaEstimate.txt", replace text
 
 local gen = 0
-local est = 1
+local est = 0
 
 global post_base_inf p_b_inf
 global mortality     p_b_mmr /*p_b_tbr p_b_diar p_b_cancer p_b_heartd p_b_mal*/
@@ -159,3 +159,34 @@ if `est'==1 {
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
 }
+
+********************************************************************************
+*** (7) Resampling to estimate a standard error for gamma (ratio of a, b)
+********************************************************************************
+set seed 2711
+sample 10
+
+global outcomes school_zscore educb
+local se robust cluster(birth_state)
+local ctrl i.sex i.race i.birthyr
+local c if birthyr<1974
+local y 
+
+gen twinEst = .
+gen qualEst = .
+foreach i of numlist 1(1)100 {
+    dis "Cycle `i':qual"
+    preserve
+    bsample
+
+    xi: reg school_zscore $post_base_inf $basic `ctrl' `c', `se'
+    replace qualEst = _b[p_b_inf] in `i'
+
+    dis "Cycle `i':twin"
+    xi: reg twin $post_base_inf $basic `ctrl', `se'
+    replace twinEst = _b[p_b_inf] in `i'
+
+    restore
+}
+gen gamma = twinEst/qualEst
+sum gamma
