@@ -22,7 +22,20 @@ global LOG "~/investigacion/Activa/Twins/Log"
 
 log using "$LOG/gammaEstimate.txt", replace text
 
-local gen = 1
+local gen = 0
+local est = 1
+
+global post_base_inf p_b_inf
+global mortality     p_b_mmr p_b_tbr /*p_b_diar p_b_cancer p_b_heartd p_b_mal*/
+global statevar      ln_pci ln_nb_sch_imp ln_ed_exp_imp ln_nb_hos_imp /*
+                     */ ln_nb_doc_imp /*i.post*health_exp_pc*/
+global cohort        birth_year>=1930&birth_year<=1943
+global basic         i.birth_state*i.race i.birth_year*i.race
+global regional      i.birth_state*i.race i.birth_year*i.race
+global trends        i.birth_state*i.race i.birth_year*i.race i.birth_state*t
+global trends2       i.birth_state*i.race i.birth_year*i.race i.birth_state*t /*
+                     */ i.birth_state*t_2
+
 ********************************************************************************
 *** (2) open data and generate child file
 ********************************************************************************
@@ -71,3 +84,36 @@ if `gen'==1 {
     save "$SUL/IPUMS1980_sulfa", replace
 }
 
+********************************************************************************
+*** (5) Estimate Sulfa effect on child quality
+********************************************************************************
+if `est'==1 {
+    use "$SUL/IPUMS1980_sulfa"
+    keep if birth_year>=1930&birth_year<=1943
+
+    gen post = birth_year>=1937
+    gen p_b_inf = post*base_inf
+    gen p_b_mmr = post*base_mmr
+    foreach var of varlist nb_sch_imp ed_exp_imp nb_hos_imp nb_doc_imp {
+        gen ln_`var'=log(`var')
+    }
+    gen t   = year-1929
+    gen t_2 = t*t
+
+    gen educb = .
+    replace educb = 0 if educ==0
+    replace educb = 2 if educ==1
+    replace educb = 6.5 if educ==2
+    replace educb = 9 if educ==3
+    replace educb = 10 if educ==4
+    replace educb = 11 if educ==5
+    replace educb = 12 if educ==6
+    replace educb = 13 if educ==7
+    replace educb = 14 if educ==8
+    replace educb = 15 if educ==9
+
+    bys birthyr birthqtr: egen meanEd = mean(educb)
+    bys birthyr birthqtr: egen sdEd   = sd(educb)
+    gen school_zscore = (meanEd - educb) / sdEd
+
+}
