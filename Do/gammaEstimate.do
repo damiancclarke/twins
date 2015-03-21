@@ -86,37 +86,36 @@ if `gen'==1 {
 ********************************************************************************
 *** (5) Estimate Sulfa effect on child quality
 ********************************************************************************
+use "$SUL/IPUMS1980_sulfa"
+keep if birth_year>=1930&birth_year<=1943
+
+gen post = birth_year>=1937
+gen p_b_inf = post*base_inf*1000
+gen p_b_mmr = post*base_mmr
+foreach var of varlist nb_sch_imp ed_exp_imp nb_hos_imp nb_doc_imp {
+    gen ln_`var'=log(`var')
+}
+gen t   = year-1929
+gen t_2 = t*t
+
+gen educb = .
+replace educb = 0 if educ==0
+replace educb = 2 if educ==1
+replace educb = 6.5 if educ==2
+replace educb = 9 if educ==3
+replace educb = 10 if educ==4
+replace educb = 11 if educ==5
+replace educb = 12 if educ==6
+replace educb = 13 if educ==7
+replace educb = 14 if educ==8
+replace educb = 15 if educ==9
+
+bys birthyr birthqtr: egen meanEd = mean(educb)
+bys birthyr birthqtr: egen sdEd   = sd(educb)
+gen school_zscore = (educb - meanEd) / sdEd
+
+
 if `est'==1 {
-    use "$SUL/IPUMS1980_sulfa"
-    keep if birth_year>=1930&birth_year<=1943
-
-    gen post = birth_year>=1937
-    gen p_b_inf = post*base_inf*1000
-    gen p_b_mmr = post*base_mmr
-    foreach var of varlist nb_sch_imp ed_exp_imp nb_hos_imp nb_doc_imp {
-        gen ln_`var'=log(`var')
-    }
-    gen t   = year-1929
-    gen t_2 = t*t
-
-    gen educb = .
-    replace educb = 0 if educ==0
-    replace educb = 2 if educ==1
-    replace educb = 6.5 if educ==2
-    replace educb = 9 if educ==3
-    replace educb = 10 if educ==4
-    replace educb = 11 if educ==5
-    replace educb = 12 if educ==6
-    replace educb = 13 if educ==7
-    replace educb = 14 if educ==8
-    replace educb = 15 if educ==9
-
-    bys birthyr birthqtr: egen meanEd = mean(educb)
-    bys birthyr birthqtr: egen sdEd   = sd(educb)
-    gen school_zscore = (educb - meanEd) / sdEd
-
-
-
     ****************************************************************************
     *** (6a) Estimates -- school z-score
     ****************************************************************************
@@ -175,7 +174,7 @@ local y
 gen twinEst = .
 gen qualEst = .
 foreach i of numlist 1(1)100 {
-    dis "Cycle `i':qual"
+    dis "Cycle `i': qual"
     preserve
     bsample
 
