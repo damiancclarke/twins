@@ -27,7 +27,7 @@ local gen = 0
 local est = 1
 
 global post_base_inf p_b_inf
-global mortality     p_b_mmr p_b_tbr /*p_b_diar p_b_cancer p_b_heartd p_b_mal*/
+global mortality     p_b_mmr /*p_b_tbr p_b_diar p_b_cancer p_b_heartd p_b_mal*/
 global statevar      ln_pci ln_nb_sch_imp ln_ed_exp_imp ln_nb_hos_imp /*
                      */ ln_nb_doc_imp /*i.post*health_exp_pc*/
 global cohort        birth_year>=1930&birth_year<=1943
@@ -91,7 +91,7 @@ if `est'==1 {
     keep if birth_year>=1930&birth_year<=1943
 
     gen post = birth_year>=1937
-    gen p_b_inf = post*base_inf
+    gen p_b_inf = post*base_inf*1000
     gen p_b_mmr = post*base_mmr
     foreach var of varlist nb_sch_imp ed_exp_imp nb_hos_imp nb_doc_imp {
         gen ln_`var'=log(`var')
