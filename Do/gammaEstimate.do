@@ -11,13 +11,14 @@ vers 11
 clear all
 set more off
 cap log close
-    
+set matsize 1000
+
 ********************************************************************************
 *** (1) globals and locals
 ********************************************************************************
 global DAT "~/investigacion/Activa/Twins/Data/IPUMS"
 global SUL "~/investigacion/Activa/Twins/Data/"
-global OUT "~/investigacion/Activa/Twins/Results"
+global OUT "~/investigacion/Activa/Twins/Results/gamma"
 global LOG "~/investigacion/Activa/Twins/Log"
 
 log using "$LOG/gammaEstimate.txt", replace text
@@ -115,5 +116,43 @@ if `est'==1 {
     bys birthyr birthqtr: egen meanEd = mean(educb)
     bys birthyr birthqtr: egen sdEd   = sd(educb)
     gen school_zscore = (meanEd - educb) / sdEd
+
+
+
+    ****************************************************************************
+    *** (6a) Estimates -- school z-score
+    ****************************************************************************
+    local y school_zscore
+    local se robust cluster(birth_state)
+
+    xi: reg `y' $post_base_inf $basic i.sex i.race, `se'
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+
+    xi: reg `y' $post_base_inf $basic $statevar i.sex i.race, `se'
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+
+    xi: reg `y' $post_base_inf $basic $statevar $mortality i.sex i.race, `se'
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+
+    xi: reg `y' $post_base_inf $mortality $statevar $trends i.sex i.race, `se'
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+
+
+    ****************************************************************************
+    *** (6b) Estimates -- twin
+    ****************************************************************************
+    local y twin
+
+    xi: reg `y' $post_base_inf $basic i.sex i.race, `se'
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+
+    xi: reg `y' $post_base_inf $basic $statevar i.sex i.race, `se'
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+
+    xi: reg `y' $post_base_inf $basic $statevar $mortality i.sex i.race, `se'
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+
+    xi: reg `y' $post_base_inf $mortality $statevar $trends i.sex i.race, `se'
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
 }
