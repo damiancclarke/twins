@@ -21,18 +21,35 @@ global LOG "~/investigacion/Activa/Twins/Log"
 
 log using "$LOG/gammaEstimate.txt", replace text
 
-
+local c=0
+local m=1
 ********************************************************************************
 *** (2) open data and generate child file
 ********************************************************************************
 use "$DAT/IPUMS20012013"
 keep if momrule == 1 & age <=18 & year>=2005
-keep year datanum serial hhwt region pernum perwt momloc sex age age_orig /*
+keep year datanum serial hhwt region pernum perwt momloc sex age ageorig     /*
 */ birthqtr birthyr race bpl bpld language speakeng school educ educd grade* /*
 */ schltype
 
 gen birthtime = birthyr+0.25*(birthqtr-1)
 bys year datanum serial momloc: gen ageDif1=birthtime[_n]-birthtime[_n-1]
-bys year datanum serial momloc: gen ageDif2=birthtime[_n-1]-birthtime[_n]
+bys year datanum serial momloc: gen ageDif2=birthtime[_n]-birthtime[_n+1]
 
-gen twin = ageDif1==1 | ageDif2==1
+gen twin = ageDif1==0 | ageDif2==0
+tempfile child
+save `child'
+
+********************************************************************************
+*** (3) open data and generate mother file, merge to children
+********************************************************************************
+use "$DAT/IPUMS20012013"
+keep if nchild>0 & year>=2005 & sex==2
+keep year datanum serial pernum perwt birthyr race bpl 
+rename pernum momloc
+
+foreach var of varlist perwt birthyr race bpl {
+    rename `var' m`var'
+}
+
+merge 1:m year datanum serial momloc using `child'
