@@ -79,7 +79,7 @@ local sumstats2     0
 local trends        0
 local graphsMB      111
 local graphsSW      27
-local twin          27
+local twin          1
 local OLS           11
 local Oster         110
 local RF            27
@@ -102,7 +102,7 @@ local gender        27
 local overID        12
 local ConGamma      12
 local MMR           1000
-local select        1
+local select        11
 local pool          12
 
 
@@ -249,7 +249,7 @@ if `matchrate'==1 {
 
 	foreach var of varlist age child_yob educf height bmi agemay twin malec {
 		ttest `var', by(matched)
-		}
+	}
 }
 
 if `samples'!=1 keep if _merge==3
@@ -340,7 +340,6 @@ if `sumstats'==1 {
 	local aincc: word count `r(levels)'	
 	local numcountry "`nco' `lincc'`sep'`lincc'`sep'`mincc'`sep'`mincc'`sep'`aincc'"
 
-	
 	count `cond' & nonmiss==0
 	local kidcount = "`: display %9.0fc r(N)'"
 	sum twind
@@ -829,9 +828,27 @@ if `graphsSW'==1 {
 **** (3) Twin predict regressions
 ********************************************************************************
 if `twin'== 1 {
-	local out "$Tables/Twin/`TwinPred'.xls"
-	fvset base 1 _cou
-	fvset base 1 child_yob
+  fvset base 1 _cou
+  fvset base 1 child_yob
+
+  reg twind100 $twinpred i.child_yob i._cou `wt' `cond', `se'
+  outreg2 $twinout using "$Tables/Twin/healthTest.xls", replace
+  reg twind100 $twinpred height bmi i.child_yob i._cou `wt' `cond', `se'
+  outreg2 $twinout using "$Tables/Twin/healthTest.xls", append
+
+	local cond1 child_yob>1989
+	local cond2 child_yob<=1989
+
+	foreach condtn in cond1 cond2 {
+		reg twind100 $twinpred i.child_yob i._cou `wt' `cond'&``condtn'', `se'
+    outreg2 $twinout using "$Tables/Twin/healthTest.xls", append
+		reg twind100 $twinpred height bmi i.child_yob i._cou `wt' `cond'&``condtn'', `se'
+    outreg2 $twinout using "$Tables/Twin/healthTest.xls", append
+  }
+
+  exit
+
+  local out "$Tables/Twin/`TwinPred'.xls"
 	
 	eststo: reg twind100 $twinpredict `wt' `cond', `se'
 
@@ -919,7 +936,7 @@ if `twin'== 1 {
 	  height_sq "height squared") `estopt' replace
 	estimates clear
 }
-
+exit
 ********************************************************************************
 **** (4) Simple OLS of Q-Q (can then apply Altonji)
 ********************************************************************************
@@ -2038,7 +2055,7 @@ if `select'==1 {
         local ti tight(motherage)
         file open lee using "$Tables/MMR/LeeBounds.txt", write replace
         foreach n of numlist 1(1)4 {
-            leebounds twinfam100 healthy`n' `con' `wt', select(anyMMR) `ti' cie
+            leebounds twinfam100 healthy`n' `con' `wt', select(anyMMR) cie
             mat def est=e(b)
             mat def ser=e(V)
             mat2txt, matrix(est) saving("$Tables/MMR/LeeBounds.txt") append
@@ -2094,7 +2111,7 @@ if `select'==1 {
         	   replace cut=`it' if height<`cut'&cut==.
 	    	   	 local ++it
   		   }
-	    	 label def ht 1 "<140" 2 "145" 3 "150" 4 "155" 5 "160" 6 "165" 7 "170" 8 ">175"
+	    	 label def ht 1 "<140" 2 "145" 3 "150" 4 "155" 5 "160" 6 "165" 7 "170" 8 "175+"
 	    	 label values cut ht
 
   	  	 sum height, d
