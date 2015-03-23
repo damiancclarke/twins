@@ -162,8 +162,6 @@ if `est'==1 {
 ********************************************************************************
 *** (7) Resampling to estimate a standard error for gamma (ratio of a, b)
 ********************************************************************************
-set seed 2711
-sample 10
 
 global outcomes school_zscore educb
 local se robust cluster(birth_state)
@@ -173,19 +171,24 @@ local y
 
 gen twinEst = .
 gen qualEst = .
-foreach i of numlist 1(1)100 {
+foreach i of numlist 1(1)15 {
+    set seed `i'
     dis "Cycle `i': qual"
     preserve
     bsample
 
-    xi: reg school_zscore $post_base_inf $basic `ctrl' `c', `se'
-    replace qualEst = _b[p_b_inf] in `i'
+    xi: qui reg school_zscore $post_base_inf $basic `ctrl' `c', `se'
+    local qualEst = _b[p_b_inf]
 
     dis "Cycle `i':twin"
-    xi: reg twin $post_base_inf $basic `ctrl', `se'
-    replace twinEst = _b[p_b_inf] in `i'
+    xi: qui reg twin $post_base_inf $basic `ctrl', `se'
+    local twinEst = _b[p_b_inf]
 
     restore
+
+    replace qualEst = `qualEst' in `i'
+    replace twinEst = `twinEst' in `i'
+    sum qualEst twinEst
 }
 gen gamma = twinEst/qualEst
 sum gamma
@@ -199,4 +202,4 @@ local Gsdev = `r(sd)'
 tw hist gamma || function normalden(x,`Gmean',`Gsdev'), lc(black) scheme(lean1)
 graph export "$OUT/gammaResamp.eps", as(eps) replace
 
-ksmirnov gamma = normal((x-`Gmean')/`Gsdev')
+ksmirnov gamma = normal((gamma-`Gmean')/`Gsdev')
