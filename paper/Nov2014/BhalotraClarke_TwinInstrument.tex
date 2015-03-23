@@ -59,6 +59,8 @@ Contact: damian.clarke@economics.ox.ac.uk}}
 \begin{spacing}{1.4}
 
 \maketitle
+\vspace{-1cm}
+\begin{center}{\Large\textsc{Preliminary Draft}}\end{center}
 \begin{abstract}
  The incidence of twins has been used to identify the impact of changes in 
  fertility on measures of investment in children born prior to the twins, and
@@ -464,9 +466,10 @@ that $\gamma$ may be close to, but not necessarily precisely equal to, zero.
 Specifically, we are concerned that healthier mothers are more likely to give
 birth to twins, and, all else constant, healthier mothers are more likely to be 
 able to invest more in children post-pregnancy.  Thus, $\gamma$, the coefficient 
-on twins, reflects the interaction between the partial correlation of a mother's 
-health and her likelihood of giving birth to twins, and the partial correlation 
-between her health and child quality.
+on twins in (\ref{TWINeqn:Conley}), reflects the interaction between the partial 
+correlation of a mother's health and her likelihood of giving birth to twins, 
+which we denote $\phi_t$, and the partial correlation between her health and child 
+quality, denoted $\phi_q$.
 
 In this paper we estimate $\beta_1$ under a range of assumptions regarding the
 true nature of $\gamma$.  Firstly we estimate $\beta_1$ by simply assuming a
@@ -491,9 +494,19 @@ $\beta_1$.  \citet{Conleyetal2012} provide a full derivation of this result, and
 we follow them in referring to this as a local-to-zero (LTZ) approximation.
 
 Assumptions (\ref{TWINeqn:uci}) and (\ref{TWINeqn:ltz}) depend upon the values
-of $\delta$ which we believe hold in the case of twinning and the Q-Q equation.
-As such, we estimate both specifications over a wide range of values for 
-$\delta$,  
+of $\delta$ that we believe hold in the case of twinning and the Q-Q equation.
+In order to form a prior for $\gamma$, we turn to a specific case which allows
+us to causally estimate each of $\phi_t$ and $\phi_q$, and hence the coefficient
+$\gamma$.  By using a well documented shock to mother's health---the arrival of 
+sulfonamide antibiotics in the USA in 1937 \citep{BhalotraVenkataramani2014,
+Jayachandranetal2010}--- we can observe the causal effect of this positive 
+health shock on the quality of her children and on the likelihood of giving birth 
+to twins during her fertile life.  By taking the ratio of these effects 
+$\phi_t/\phi_q$, we isolate the direct correlation between twinning and child 
+quality.  We provide a more comprehensive discussion and derivation in of this
+method in appendix \ref{TWINscn:gamma}, and return to estimate of $\gamma$ and 
+bounds on our estimand of interest $\beta_1$ in section \ref{TWINsscn:resultBounds}.
+
 
 %*******************************************************************************
 \section{Data and Estimation Samples}              \label{TWINscn:data}
@@ -1027,7 +1040,8 @@ disfavouring girl children.
 %*******************************************************************************
 \subsection{Bounding the Q-Q trade-off}            \label{TWINsscn:resultBounds}
 The results from the previous subsection provide consistent estimates of 
-$\beta_1$ via 2SLS \emph{if} the full set of controls completely account for 
+$\beta_1$ via 2SLS \emph{if} the full set of controls in the first and second 
+stage equations completely account for 
 those characteristics and behaviours which predict giving live birth to twins. 
 However, given that we have shown that twinning is predicted by a wide range of 
 health behaviours, and given that maternal health variables in these datasets 
@@ -1130,6 +1144,43 @@ this survey to run the twin regression included in the appendix tables.
 Further notes regarding each dataset and the particular years and number of
 births can be found in the notes to each table.
 
+\section{Plausibly Exogenous Bounds and Estimating $\gamma$}
+\label{TWINscn:gamma}
+From (\ref{TWINeqn:Conley}), we are interested in $\gamma=\frac{\partial twin}{\partial educ}\big|_{X}$.
+From \citet{BhalotraVenkataramani2014} we have:
+\begin{equation}
+Y_{stc} = \alpha + \phi (Post_t\times basePneumonia_s) +\theta_{rs} +\eta_{rt}
++\varphi\mathbf{X}_{st}+\lambda_{rc}+\theta_s\times\eta_t+\varepsilon_{stc}
+\end{equation}
+Let's consider estimating the effect of this exogenous shock to maternal health
+on two outcomes: a mother's twinning rates and her child quality:
+\begin{eqnarray}
+Pr(Twin)_{stc} &=& \alpha^t + \phi^t (Post_t\times basePneumonia_s) +\theta^t_{rs} +\eta^t_{rt}
++\varphi^t\mathbf{X}_{st}+\lambda^t_{rc}+\theta_s\times\eta_t+\varepsilon^t_{stc} \nonumber \\
+educ_{stc} &=& \alpha^q + \phi^q (Post_t\times basePneumonia_s) +\theta^q_{rs} +\eta^q_{rt}
++\varphi^q\mathbf{X}_{st}+\lambda^q_{rc}+\theta^q_s\times\eta_t+\varepsilon^q_{stc} \nonumber
+\end{eqnarray}
+We can thus causally estimate $\phi^t=\frac{\partial twin}{\partial bP}\big|_{X}$ and
+$\phi^q=\frac{\partial educ}{\partial bP}\big|_{X}$ where $bP$ is the $Post_t\times basePneumonia_s$
+variable.  Thus, we can estimate the effect of positive maternal health shocks on 
+twinning, and the effect of positive maternal health shocks on child quality.
+However, for $\gamma$, the degree of variable invalidity, we want the twin-mediated
+effect of health shocks on child quality.  Thus, to estimate $\gamma$, we can take
+the ratio of estimates in each of the above two equations:
+\[
+\phi^t/\phi^q=\frac{\partial twin/\partial bP}{\partial educ/\partial bP}=\frac{\partial twin}{\partial educ}=\gamma.
+\]
+which is our estimand of interest.  We then turn to the data, estimating $\phi^t$ and 
+$\phi^q$, and form the ratio to form an estimate of $\gamma$, which we denote $\hat\gamma$.  
+In the case of the UCI approach, this is sufficient to estimate the bounds on $\beta_1$: 
+$\gamma\in[0,2\hat\gamma]$, where we scale $\gamma$ by the aribtrary factor of 2 in order
+to be conservative with the upper bound.  In the case of the LTZ approach, the logic is 
+similar, however now we must form a prior over the entire distribution of $\gamma$.
+Calculating the variance of $\gamma$ is not as straight forward as using the 
+variance-covariance matrix corresponding to each of the estimates $\hat\phi^t$ and 
+$\hat\phi^q$.  In this case however we can use bootstrapping to calculate many estimate 
+of $\hat\phi^t/\hat\phi^q$, and from this construct a distribution of $\hat\gamma$ 
+estimates, which allows us to determine our prior for the distribution of $\gamma$.
 
 \newpage
 \end{spacing}
