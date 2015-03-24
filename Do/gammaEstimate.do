@@ -171,7 +171,7 @@ local y
 
 gen twinEst = .
 gen qualEst = .
-foreach i of numlist 1(1)15 {
+foreach i of numlist 36(1)45 {
     set seed `i'
     dis "Cycle `i': qual"
     preserve
@@ -199,7 +199,8 @@ local Gsdev = `r(sd)'
 ********************************************************************************
 *** (8) Examine distribution: Kolmogorov-Smirnov
 ********************************************************************************
-tw hist gamma || function normalden(x,`Gmean',`Gsdev'), lc(black) scheme(lean1)
+tw hist gamma || function normalden(x,`Gmean',`Gsdev'), lc(black) /*
+*/ scheme(lean1) range(`=`Gmean'-3*`Gsdev'' `=`Gmean'+3*`Gsdev'')
 graph export "$OUT/gammaResamp.eps", as(eps) replace
 
 ksmirnov gamma = normal((gamma-`Gmean')/`Gsdev')
