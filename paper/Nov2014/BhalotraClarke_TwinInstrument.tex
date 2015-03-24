@@ -1060,6 +1060,23 @@ displayed, along with the corresponding point estimate under the assumption
 that $\gamma$ is distributed $\sim U(0,\delta)$. Dashed lines present the 95\% 
 confidence interval, while the solid line represents the point estimate.
 
+While this technique allows us to agnostically estimate bounds over a range of
+values for $\gamma$, we can form more precise bounds by estimating $\gamma$
+more precisely.  As we discuss in appendix \ref{TWINscn:gamma}, this requires
+us to estimate the effect of maternal health shocks on twinning, and the effect
+of maternal health shocks on child quality.  By taking the ratio of these, we
+can calculate directly the partial correlation between twinning (on average
+healthy mothers), and child quality.
+
+Add in equations
+
+Add in table
+
+Add in figures with lines (actually just on old figures)
+
+Add in figure (as appendix) of distribution and Kolmogorov-Smirnov.
+
+
 
 %*******************************************************************************
 \section{Conclusion}                               \label{TWINscn:conclusion}
@@ -1146,12 +1163,17 @@ births can be found in the notes to each table.
 
 \section{Plausibly Exogenous Bounds and Estimating $\gamma$}
 \label{TWINscn:gamma}
-From (\ref{TWINeqn:Conley}), we are interested in $\gamma=\frac{\partial twin}{\partial educ}\big|_{X}$.
-From \citet{BhalotraVenkataramani2014} we have:
+From (\ref{TWINeqn:Conley}), we are interested in forming a consistent estimate
+of $\gamma=\frac{\partial twin}{\partial educ}\big|_{X}$. From 
+\citet{BhalotraVenkataramani2014} we have:
 \begin{equation}
 Y_{stc} = \alpha + \phi (Post_t\times basePneumonia_s) +\theta_{rs} +\eta_{rt}
 +\varphi\mathbf{X}_{st}+\lambda_{rc}+\theta_s\times\eta_t+\varepsilon_{stc}
 \end{equation}
+where $\phi$ is the effect of access to sulfanide drugs on outcome variable 
+$Y_{stc}$.\footnote{This is an unbiased effect of sulfanide drugs on health if
+parallel trends are satisfied between high- and low-intensity states. Evidence of
+this is provided by \citet{BhalotraVenkataramani2014}.}
 Let's consider estimating the effect of this exogenous shock to maternal health
 on two outcomes: a mother's twinning rates and her child quality:
 \begin{eqnarray}
@@ -1162,26 +1184,40 @@ educ_{stc} &=& \alpha^q + \phi^q (Post_t\times basePneumonia_s) +\theta^q_{rs} +
 \end{eqnarray}
 where superscript $t$ refers to coefficients in the twin regression while $q$ refers to
 quality.  We can thus causally estimate $\phi^t=\frac{\partial twin}{\partial bP}\big|_{X}$ and
-$\phi^q=\frac{\partial educ}{\partial bP}\big|_{X}$ where $bP$ is the $Post_t\times basePneumonia_s$
-variable.  Thus, we can estimate the effect of positive maternal health shocks on 
-twinning, and the effect of positive maternal health shocks on child quality.
-However, for $\gamma$, the degree of variable invalidity, we want the twin-mediated
-effect of health shocks on child quality.  Thus, to estimate $\gamma$, we can take
-the ratio of estimates in each of the above two equations:
-\[
+$\phi^q=\frac{\partial educ}{\partial bP}\big|_{X}$ by OLS where $bP$ is the 
+$Post_t\times basePneumonia_s$ variable as long as the aforementioned parallel trends
+assumption holds.  Thus, we can (seperately) estimate the effect of positive maternal health shocks 
+on twinning, and the effect of positive maternal health shocks on child quality.
+However, for $\gamma$, the violation of the exclusion restriction, we need to estimate 
+the twin-mediated effect of health shocks on child quality.  Thus, to estimate 
+$\gamma$, we can take the ratio of estimates in each of the above two equations:
+\begin{equation}
+\label{TWINeqn:realgamma}
 \phi^t/\phi^q=\frac{\partial twin/\partial bP}{\partial educ/\partial bP}=\frac{\partial twin}{\partial educ}=\gamma.
-\]
-which is our estimand of interest.  We then turn to the data, estimating $\phi^t$ and 
-$\phi^q$, and form the ratio to form an estimate of $\gamma$, which we denote $\hat\gamma$.  
-In the case of the UCI approach, this is sufficient to estimate the bounds on $\beta_1$: 
-$\gamma\in[0,2\hat\gamma]$, where we scale $\gamma$ by the aribtrary factor of 2 in order
-to be conservative with the upper bound.  In the case of the LTZ approach, the logic is 
-similar, however now we must form a prior over the entire distribution of $\gamma$.
-Calculating the variance of $\gamma$ is not as straight forward as using the 
+\end{equation}
+which is our estimand of interest.  
+
+In order to estimate (\ref{TWINeqn:realgamma}) we turn to US census data described in
+\citet{BhalotraVenkataramani2014}, to estimate $\phi^t$ and $\phi^q$, and calculate the 
+ratio of these estimates to form an estimate of $\gamma$, which we denote $\hat\gamma$.  
+In the case of the UCI approach, this is sufficient to estimate the bounds of $\beta_1$,
+assuming that: $\gamma\in[0,2\hat\gamma]$.\footnote{We scale $\gamma$ by the aribtrary 
+factor of 2 in order to be conservative with the maximum upper bound, \citet{Conleyetal2012}
+provide a similar example to calculate the returns to education using the UCI approach.}  
+In the case of the more precise LTZ approach (our preferred bounds estimates), the logic 
+is similar, however now we must form a prior over the entire distribution of $\gamma$.
+Calculating the variance of $\gamma$ is not as straightforward as using the 
 variance-covariance matrix corresponding to each of the estimates $\hat\phi^t$ and 
-$\hat\phi^q$.  In this case however we can use bootstrapping to calculate many estimate 
-of $\hat\phi^t/\hat\phi^q$, and from this construct a distribution of $\hat\gamma$ 
-estimates, which allows us to determine our prior for the distribution of $\gamma$.
+$\hat\phi^q$.  In this case however we can use bootstrapping to calculate $j$ 
+replications of $\hat\phi^t/\hat\phi^q$, and from these estimates construct an 
+estimated distribution of $\hat\gamma$ estimates, which allows us to determine our 
+prior for the distribution of $\gamma$.  From this empirical distribution, we observe 
+the estimated mean and standard deviation, and finally test whether the distribution is
+normal using Kolmogorov-Smirnov test of equality of distributions.\footnote{In order to 
+do this, we first estimate the empirical distribution as described previously.  We then 
+observe the mean $\hat\mu$ and the standard deviation $\hat\sigma$, and run a one-sample 
+test do determine whether the observed empirical distribution is is significantly different
+to a normal distribution $\sim N(\hat\mu,\hat\sigma^2)$.}
 
 \newpage
 \end{spacing}
