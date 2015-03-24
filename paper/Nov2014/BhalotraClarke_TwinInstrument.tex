@@ -1156,11 +1156,12 @@ Let's consider estimating the effect of this exogenous shock to maternal health
 on two outcomes: a mother's twinning rates and her child quality:
 \begin{eqnarray}
 Pr(Twin)_{stc} &=& \alpha^t + \phi^t (Post_t\times basePneumonia_s) +\theta^t_{rs} +\eta^t_{rt}
-+\varphi^t\mathbf{X}_{st}+\lambda^t_{rc}+\theta_s\times\eta_t+\varepsilon^t_{stc} \nonumber \\
++\varphi^t\mathbf{X}_{st}+\lambda^t_{rc}+\theta_s^t\times\eta^t_t+\varepsilon^t_{stc} \nonumber \\
 educ_{stc} &=& \alpha^q + \phi^q (Post_t\times basePneumonia_s) +\theta^q_{rs} +\eta^q_{rt}
-+\varphi^q\mathbf{X}_{st}+\lambda^q_{rc}+\theta^q_s\times\eta_t+\varepsilon^q_{stc} \nonumber
++\varphi^q\mathbf{X}_{st}+\lambda^q_{rc}+\theta^q_s\times\eta^q_t+\varepsilon^q_{stc} \nonumber
 \end{eqnarray}
-We can thus causally estimate $\phi^t=\frac{\partial twin}{\partial bP}\big|_{X}$ and
+where superscript $t$ refers to coefficients in the twin regression while $q$ refers to
+quality.  We can thus causally estimate $\phi^t=\frac{\partial twin}{\partial bP}\big|_{X}$ and
 $\phi^q=\frac{\partial educ}{\partial bP}\big|_{X}$ where $bP$ is the $Post_t\times basePneumonia_s$
 variable.  Thus, we can estimate the effect of positive maternal health shocks on 
 twinning, and the effect of positive maternal health shocks on child quality.
