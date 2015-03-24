@@ -1061,18 +1061,32 @@ that $\gamma$ is distributed $\sim U(0,\delta)$. Dashed lines present the 95\%
 confidence interval, while the solid line represents the point estimate.
 
 While this technique allows us to agnostically estimate bounds over a range of
-values for $\gamma$, we can form more precise bounds by estimating $\gamma$
-more precisely.  As we discuss in appendix \ref{TWINscn:gamma}, this requires
-us to estimate the effect of maternal health shocks on twinning, and the effect
-of maternal health shocks on child quality.  By taking the ratio of these, we
-can calculate directly the partial correlation between twinning (on average
-healthy mothers), and child quality.
+values for $\gamma$, we have thus far made no restriction over the true magnitude
+of $\delta$.  While in figures \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3} we
+have assumed that this is less than 0.2 standard deviations, we can can form 
+far more precise bounds by estimating $\gamma$ directly.  As discussed more 
+extensively in appendix \ref{TWINscn:gamma}, this requires us to (causally) 
+estimate the effect of maternal health shocks on twinning, and the effect of 
+maternal health shocks on child quality.  By taking the ratio of these, we
+can calculate the partial correlation between twinning (which occurs with higher 
+frequency for healthier mothers), and child quality, and then we can plug 
+our estimate of $\gamma$ in \citeauthor{Conleyetal2012}'s bound estimator.
 
-Add in equations
+We follow the specification outlined in \citet{BhalotraVenkataramani2014}
+(and appendix \ref{TWINscn:gamma} of this paper) to estimate the effect of 
+the positive health shock associated with Sulfanide drugs on Pr$(twin)$ and
+child quality (school Z-score).  These estimates are presented in
+appendix table \ref{TWINtab:phis}.  We take the ratio of these estimates to
+isolate the effect of twinning on child quality.  These are displayed at the
+end of table \ref{TWINtab:phis}.  For what remains of this section, we use 
+the estimate from column 1, where $\hat\gamma=0.00306/0.0535=0.0571$.
 
-Add in table
-
-Add in figures with lines (actually just on old figures)
+In panel B of table \ref{TWINtab:Conley} we provide estimates of Conley
+bounds using our estimated $\gamma$.  These are our preferred bounds estimates
+for $\beta_1$.  As described in appendix \ref{TWINscn:gamma}, for the UCI
+approach this implies an assumption that $\gamma \in [0,2\hat\gamma]$.  For
+the LTZ approach, we assume that $\gamma\sim N(\mu_{\hat\gamma},\sigma_{\hat\gamma})$.
+The assumption of normality is driven by...
 
 Add in figure (as appendix) of distribution and Kolmogorov-Smirnov.
 
@@ -1167,35 +1181,42 @@ From (\ref{TWINeqn:Conley}), we are interested in forming a consistent estimate
 of $\gamma=\frac{\partial twin}{\partial educ}\big|_{X}$. From 
 \citet{BhalotraVenkataramani2014} we have:
 \begin{equation}
+\label{TWINeqn:BV}
 Y_{stc} = \alpha + \phi (Post_t\times basePneumonia_s) +\theta_{rs} +\eta_{rt}
 +\varphi\mathbf{X}_{st}+\lambda_{rc}+\theta_s\times\eta_t+\varepsilon_{stc}
 \end{equation}
-where $\phi$ is the effect of access to sulfanide drugs on outcome variable 
+where $\phi$ is the effect of access to sulfanide drugs on the outcome variable 
 $Y_{stc}$.\footnote{This is an unbiased effect of sulfanide drugs on health if
 parallel trends are satisfied between high- and low-intensity states. Evidence of
 this is provided by \citet{BhalotraVenkataramani2014}.}
 Let's consider estimating the effect of this exogenous shock to maternal health
 on two outcomes: a mother's twinning rates and her child quality:
+\begin{subequations}
 \begin{eqnarray}
-Pr(Twin)_{stc} &=& \alpha^t + \phi^t (Post_t\times basePneumonia_s) +\theta^t_{rs} +\eta^t_{rt}
-+\varphi^t\mathbf{X}_{st}+\lambda^t_{rc}+\theta_s^t\times\eta^t_t+\varepsilon^t_{stc} \nonumber \\
-educ_{stc} &=& \alpha^q + \phi^q (Post_t\times basePneumonia_s) +\theta^q_{rs} +\eta^q_{rt}
-+\varphi^q\mathbf{X}_{st}+\lambda^q_{rc}+\theta^q_s\times\eta^q_t+\varepsilon^q_{stc} \nonumber
+\label{TWINeqn:BV1}
+Pr(Twin)_{stc} &=& \alpha^t + \phi^t (Post_t\times basePneumonia_s) +\cdots +\varepsilon^t_{stc} \\
+\label{TWINeqn:BV2}
+educ_{stc} &=& \alpha^q + \phi^q (Post_t\times basePneumonia_s) +\cdots+\varepsilon^q_{stc} 
 \end{eqnarray}
+\end{subequations}
 where superscript $t$ refers to coefficients in the twin regression while $q$ refers to
-quality.  We can thus causally estimate $\phi^t=\frac{\partial twin}{\partial bP}\big|_{X}$ and
-$\phi^q=\frac{\partial educ}{\partial bP}\big|_{X}$ by OLS where $bP$ is the 
-$Post_t\times basePneumonia_s$ variable as long as the aforementioned parallel trends
-assumption holds.  Thus, we can (seperately) estimate the effect of positive maternal health shocks 
-on twinning, and the effect of positive maternal health shocks on child quality.
-However, for $\gamma$, the violation of the exclusion restriction, we need to estimate 
+quality, and the remainder of (\ref{TWINeqn:BV1}) and (\ref{TWINeqn:BV2}) are identical 
+to (\ref{TWINeqn:BV}).  We can thus causally estimate 
+$\phi^t=\frac{\partial twin}{\partial bP}\big|_{X}$ and
+$\phi^q=\frac{\partial educ}{\partial bP}\big|_{X}$ by OLS (where $bP$ is the 
+$Post_t\times basePneumonia_s$ variable) as long as the aforementioned parallel trends
+assumption holds.  Using (\ref{TWINeqn:BV1}) and (\ref{TWINeqn:BV2}), we can (seperately) 
+estimate the effect of positive maternal health shocks on twinning, and the effect of 
+positive maternal health shocks on child quality.
+However, for $\gamma$---the violation of the exclusion restriction---we need to estimate 
 the twin-mediated effect of health shocks on child quality.  Thus, to estimate 
 $\gamma$, we can take the ratio of estimates in each of the above two equations:
 \begin{equation}
 \label{TWINeqn:realgamma}
 \phi^t/\phi^q=\frac{\partial twin/\partial bP}{\partial educ/\partial bP}=\frac{\partial twin}{\partial educ}=\gamma.
 \end{equation}
-which is our estimand of interest.  
+which is our estimand of interest, and which we can then plug in to our estimates of
+the bounds on $\beta_1$ using \citeauthor{Conleyetal2012}'s method.
 
 In order to estimate (\ref{TWINeqn:realgamma}) we turn to US census data described in
 \citet{BhalotraVenkataramani2014}, to estimate $\phi^t$ and $\phi^q$, and calculate the 
@@ -1208,7 +1229,7 @@ In the case of the more precise LTZ approach (our preferred bounds estimates), t
 is similar, however now we must form a prior over the entire distribution of $\gamma$.
 Calculating the variance of $\gamma$ is not as straightforward as using the 
 variance-covariance matrix corresponding to each of the estimates $\hat\phi^t$ and 
-$\hat\phi^q$.  In this case however we can use bootstrapping to calculate $j$ 
+$\hat\phi^q$.  In this case however we can use bootstrapping to calculate $J$ 
 replications of $\hat\phi^t/\hat\phi^q$, and from these estimates construct an 
 estimated distribution of $\hat\gamma$ estimates, which allows us to determine our 
 prior for the distribution of $\gamma$.  From this empirical distribution, we observe 
