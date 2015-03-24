@@ -162,7 +162,6 @@ if `est'==1 {
 ********************************************************************************
 *** (7) Resampling to estimate a standard error for gamma (ratio of a, b)
 ********************************************************************************
-
 global outcomes school_zscore educb
 local se robust cluster(birth_state)
 local ctrl i.sex i.race i.birthyr
@@ -205,3 +204,8 @@ tw hist gamma, bin(8) || function normalden(x,`Gmean',`Gsdev'), lc(black)     /*
 graph export "$OUT/gammaResamp.eps", as(eps) replace
 
 ksmirnov gamma = normal((gamma-`Gmean')/`Gsdev')
+
+keep in 1/100
+gen j=_n
+keep qualEst twinEst gamma
+save "$OUT/gammas.dta", replace
