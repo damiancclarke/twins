@@ -1326,28 +1326,35 @@ if `twinoccur_iv'==1 {
 ***  information that implies that gamma is near 0 but perhaps not exactly 0".
 ********************************************************************************
 if `conley'==1 {
-
   mat cbounds1 = J(4,4,.)
   local ii = 1
   foreach n in `gplus' {
 		local c `cond'&`n'_plus==1
-    plausexog uci school_zscore `base' $age (fert = twin_`n'_fam) `c', /*
+    preserve
+    keep `c'
+    plausexog uci school_zscore `base' $age (fert = twin_`n'_fam), /*
     */ gmin(0) gmax(0.0963) grid(2) level(.95) vce(robust)
-		mat cbounds1[`ii',1]=e(lb_fert)
-		mat cbounds1[`ii',2]=e(ub_fert)		
+    local c1 = e(lb_fert)
+    local c2 = e(ub_fert)
 
-
+    
 		local items = `e(numvars)'
 		matrix omega_eta = J(`items',`items',0)
 		matrix omega_eta[1,1] = 0.0493175
 		matrix mu_eta = J(`items',1,0)
 		matrix mu_eta[1,1] = 0.0642231
 
-    plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam) `c',  /*
+    plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam),  /*
 		*/ omega(omega_eta) mu(mu_eta) level(0.95)
-		mat cbounds1[`ii',3]=_b[fert]-1.96*_se[fert]
-		mat cbounds1[`ii',4]=_b[fert]+1.96*_se[fert]
+    local c3 = _b[fert]-1.96*_se[fert]
+    local c4 = _b[fert]+1.96*_se[fert]
     local ++ii
+    restore
+
+		mat cbounds1[`ii',1]=`=`c1''
+		mat cbounds1[`ii',2]=`=`c2''
+		mat cbounds1[`ii',3]=`=`c3''
+		mat cbounds1[`ii',4]=`=`c4''
   }
 	mat colnames cbounds1 = LowerBound UpperBound LowerBound UpperBound
 	mat rownames cbounds1 = TwoPlus ThreePlus FourPlus FivePlus
