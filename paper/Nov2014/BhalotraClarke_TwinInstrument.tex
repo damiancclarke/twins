@@ -4,7 +4,7 @@
 Fenske, Cheti Nicoletti, Carol Propper, Atheen Venkataramani, Marcos 
 Vera-Hernandez and Frank Windmeijer, along with seminar audiences and discussants 
 at CMPO Bristol, ESPE, NEUDC, CSAE, The University of Essex, The University of 
-Oxford, the Barcelona GSE summer forum and the RES conference for helpful 
+Oxford, the Barcelona GSE summer forum, PacDev, and the RES conference for helpful 
 comments.  We thank Emilia Del Bono, Climent Quintana-Domeque, Pedro R\'odenas, 
 Libertad Gonz\'alez, Anna Aevarsdottir, Martin Foureaux Koppensteiner and Ryan 
 Palmer who have very kindly shared data and/or source code from their work.}}
@@ -1053,9 +1053,8 @@ methodology to estimate bounds for the Q-Q trade-off.
 As outlined in section \ref{TWINsscn:methodBounds}, this involves the definition 
 of some prior belief over the sign and magnitude that the coefficient on 
 twinning would take in the structural equation \ref{TWINeqn:Conley}. Results 
-are displayed in figures \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}, and in 
-table \ref{TWINtab:Conley}. At each point on the horizontal axis of figures 
-\ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}, the bounds for $\beta_1$ are 
+are displayed in figures \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}. At each 
+point on the horizontal axis of these figures, the bounds for $\beta_1$ are 
 displayed, along with the corresponding point estimate under the assumption 
 that $\gamma$ is distributed $\sim U(0,\delta)$. Dashed lines present the 95\% 
 confidence interval, while the solid line represents the point estimate.
@@ -1070,7 +1069,8 @@ estimate the effect of maternal health shocks on twinning, and the effect of
 maternal health shocks on child quality.  By taking the ratio of these, we
 can calculate the partial correlation between twinning (which occurs with higher 
 frequency for healthier mothers), and child quality, and then we can plug 
-our estimate of $\gamma$ in \citeauthor{Conleyetal2012}'s bound estimator.
+our estimate of $\gamma$ (where a non-zero value for $\gamma$ implies 
+instrumental invalidity) in \citeauthor{Conleyetal2012}'s bound estimator.
 
 We follow the specification outlined in \citet{BhalotraVenkataramani2014}
 (and appendix \ref{TWINscn:gamma} of this paper) to estimate the effect of 
@@ -1081,15 +1081,23 @@ isolate the effect of twinning on child quality.  These are displayed at the
 end of table \ref{TWINtab:phis}.  For what remains of this section, we use 
 the estimate from column 1, where $\hat\gamma=0.00306/0.0535=0.0571$.
 
-In panel B of table \ref{TWINtab:Conley} we provide estimates of Conley
-bounds using our estimated $\gamma$.  These are our preferred bounds estimates
-for $\beta_1$.  As described in appendix \ref{TWINscn:gamma}, for the UCI
-approach this implies an assumption that $\gamma \in [0,2\hat\gamma]$.  For
-the LTZ approach, we assume that $\gamma\sim N(\mu_{\hat\gamma},\sigma_{\hat\gamma})$.
-The assumption of normality is driven by...
+In table \ref{TWINtab:Conley} we provide estimates of Conley bounds using 
+our more precisely estimated $\gamma$.  These are our preferred bounds 
+estimates for $\beta_1$.  As described in appendix \ref{TWINscn:gamma}, for 
+the UCI approach this implies an assumption that $\gamma \in [0,2\hat\gamma]$
+(or $\gamma \in [0,2\times 0.0571]$).  For the LTZ approach, we assume that 
+$\gamma\sim N(\mu_{\hat\gamma},\sigma_{\hat\gamma})$.  The assumption of 
+normality is driven by resampling (bootstrap) estimates of $\hat\gamma$,
+which allows us to construct a distribution for $\gamma$.  This is then
+tested for equality against a normal distribution, and the null hypothesis
+of different distributions is not rejected with a $p$-value of 0.1805.  The 
+empirical and analytical distributions for $\gamma$ that are applied in the 
+LTZ method are displayed in appendix figure \ref{TWINfig:gammaBoots}.
 
-Add in figure (as appendix) of distribution and Kolmogorov-Smirnov.
-
+These bounds estimates \ldots [FINISH THIS PARAGRAPH].  Code is written.  
+I need to run overnight and put the precise values in table 12.  They 
+should be tighter than the current bounds given that $\gamma$ is slightly 
+smaller using the new method.
 
 
 %*******************************************************************************
@@ -1219,8 +1227,8 @@ which is our estimand of interest, and which we can then plug in to our estimate
 the bounds on $\beta_1$ using \citeauthor{Conleyetal2012}'s method.
 
 In order to estimate (\ref{TWINeqn:realgamma}) we turn to US census data described in
-\citet{BhalotraVenkataramani2014}, to estimate $\phi^t$ and $\phi^q$, and calculate the 
-ratio of these estimates to form an estimate of $\gamma$, which we denote $\hat\gamma$.  
+\citet{BhalotraVenkataramani2014}, firstly estimate $\phi^t$ and $\phi^q$, and then calculate
+ratio of these values to form an estimate of $\gamma$, which we denote $\hat\gamma$.
 In the case of the UCI approach, this is sufficient to estimate the bounds of $\beta_1$,
 assuming that: $\gamma\in[0,2\hat\gamma]$.\footnote{We scale $\gamma$ by the aribtrary 
 factor of 2 in order to be conservative with the maximum upper bound, \citet{Conleyetal2012}
@@ -1250,8 +1258,9 @@ to a normal distribution $\sim N(\hat\mu,\hat\sigma^2)$.}
 
 \section{Appendix Figures}
 \input{./appendixFigs.tex}
-
+\clearpage
 \newpage
+
 \appendix
 \section*{Online Appendices}
 \section{Tables}
