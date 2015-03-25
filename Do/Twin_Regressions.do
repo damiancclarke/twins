@@ -79,7 +79,7 @@ local sumstats2     0
 local trends        0
 local graphsMB      111
 local graphsSW      27
-local twin          1
+local twin          100
 local OLS           11
 local Oster         110
 local RF            27
@@ -89,7 +89,7 @@ local desire        88
 local compl_fert    0
 local twinoccur_ols 27
 local twinoccur_iv  27
-local conley        199
+local conley        1
 local thresholdtest 27
 local balance       27
 local balanceG      110
@@ -107,7 +107,7 @@ local pool          12
 
 
 * VARIABLES
-global outcomes /*school_zscore*/ Qvariance
+global outcomes school_zscore
 global sumstatsM fert idealnumkids agemay educf height bmi underweight exceedfam
 global sumstatsC educ school_zscore noeduc
 global sumstatsF infantmortality childmortality
@@ -123,8 +123,8 @@ global bal1 fert idealnumkids agefirstbirth educf educp height underweight
 global balance $bal1 prenate* motherage childmortality infantmortal 
 
 * ECONOMETRIC SPECIFICATIONS
-local se cluster(id)
-local wt [pw=sweight]
+local se   cluster(id)
+local wt   [pw=sweight]
 local cond if age<19
 
 * FILE SPECIFICATIONS
@@ -186,7 +186,7 @@ local fnames
 *******************************************************************************
 *** (1) Setup (+ discretionary choices)
 *******************************************************************************
-log using "$Log/Twin_RegressionsEssex.log", text replace
+log using "$Log/Twin_Regressions.txt", text replace
 
 if `samp5'!=1 {
 	use "$Data/DHS_twins", clear
@@ -1327,6 +1327,33 @@ if `twinoccur_iv'==1 {
 ********************************************************************************
 if `conley'==1 {
 
+  mat cbounds1 = J(4,4,.)
+  local ii = 1
+  foreach n in `gplus' {
+		local c `cond'&`n'_plus==1
+    plausexog uci school_zscore `base' $age (fert = twin_`n'_fam) `c', /*
+    */ gmin(0) gmax(0.0963) grid(2) level(.95) vce(robust)
+		mat cbounds1[`ii',1]=e(lb_fert)
+		mat cbounds1[`ii',2]=e(ub_fert)		
+
+
+		local items = `e(numvars)'
+		matrix omega_eta = J(`items',`items',0)
+		matrix omega_eta[1,1] = 0.0493175
+		matrix mu_eta = J(`items',1,0)
+		matrix mu_eta[1,1] = 0.0642231
+
+    plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam) `c',  /*
+		*/ omega(omega_eta) mu(mu_eta) level(0.95)
+		mat cbounds1[`ii',3]=_b[fert]-1.96*_se[fert]
+		mat cbounds1[`ii',4]=_b[fert]+1.96*_se[fert]
+    local ++ii
+  }
+	mat colnames cbounds1 = LowerBound UpperBound LowerBound UpperBound
+	mat rownames cbounds1 = TwoPlus ThreePlus FourPlus FivePlus
+	mat2txt, matrix(cbounds1) saving("$Tables/Conley/ConleyGamma.txt") /*
+		*/ format(%6.4f) replace
+  exit
 	*****************************************************************************
 	*** (10a) Union of Confidence Intervals (have now removed $S and $H)
 	*****************************************************************************	
