@@ -170,12 +170,12 @@ local y
 
 gen twinEst = .
 gen qualEst = .
-foreach i of numlist 26(1)35 46(1)100 {
+foreach i of numlist 1(1)100 {
     set seed `i'
     dis "Cycle `i': qual"
     preserve
     bsample
-
+    
     xi: qui reg school_zscore $post_base_inf $basic `ctrl' `c', `se'
     local qualEst = _b[p_b_inf]
 
@@ -198,14 +198,20 @@ local Gsdev = `r(sd)'
 ********************************************************************************
 *** (8) Examine distribution: Kolmogorov-Smirnov
 ********************************************************************************
-tw hist gamma, bin(8) || function normalden(x,`Gmean',`Gsdev'), lc(black)     /*
+tw hist gamma, bin(16) || function normalden(x,`Gmean',`Gsdev'), lc(black)    /*
 */ scheme(lean1) range(`=`Gmean'-3*`Gsdev'' `=`Gmean'+3*`Gsdev'')             /*
 */ legend(label(1 "Empirical Distribution") label(2 "Analytical Distribution"))
 graph export "$OUT/gammaResamp.eps", as(eps) replace
 
 ksmirnov gamma = normal((gamma-`Gmean')/`Gsdev')
 
+********************************************************************************
+*** (9) Clean and clear
+********************************************************************************
 keep in 1/100
 gen j=_n
 keep qualEst twinEst gamma
 save "$OUT/gammas.dta", replace
+
+dis "Gamma is distributed N(`Gmean',`Gsdev')"
+log close
