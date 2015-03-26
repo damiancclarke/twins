@@ -1326,14 +1326,14 @@ if `twinoccur_iv'==1 {
 ***  information that implies that gamma is near 0 but perhaps not exactly 0".
 ********************************************************************************
 if `conley'==1 {
-  mat cbounds1 = J(4,4,.)
+  mat cbounds1 = J(3,4,.)
   local ii = 1
-  foreach n in `gplus' {
+  foreach n in two three four {
 		local c `cond'&`n'_plus==1
     preserve
     keep `c'
     plausexog uci school_zscore `base' $age (fert = twin_`n'_fam), /*
-    */ gmin(0) gmax(0.0858) grid(2) level(.95) vce(robust)
+    */ gmin(0) gmax(0.090) grid(2) level(.95) vce(robust)
     local c1 = e(lb_fert)
     local c2 = e(ub_fert)
     dis "lower bound = `c1', upper bound=`c2'"
@@ -1346,20 +1346,20 @@ if `conley'==1 {
 
     plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam),  /*
 		*/ omega(omega_eta) mu(mu_eta) level(0.95)
-    local c3 = _b[fert]-1.96*_se[fert]
-    local c4 = _b[fert]+1.96*_se[fert]
+    local c3 = _b[fert]-1.65*_se[fert]
+    local c4 = _b[fert]+1.65*_se[fert]
     dis "lower bound = `c3', upper bound=`c4'"
-
-    local ++ii
     restore
-
+    
 		mat cbounds1[`ii',1]=`=`c1''
 		mat cbounds1[`ii',2]=`=`c2''
 		mat cbounds1[`ii',3]=`=`c3''
 		mat cbounds1[`ii',4]=`=`c4''
+
+    local ++ii
   }
 	mat colnames cbounds1 = LowerBound UpperBound LowerBound UpperBound
-	mat rownames cbounds1 = TwoPlus ThreePlus FourPlus FivePlus
+	mat rownames cbounds1 = TwoPlus ThreePlus FourPlus
 	mat2txt, matrix(cbounds1) saving("$Tables/Conley/ConleyGamma.txt") /*
 		*/ format(%6.4f) replace
   exit
