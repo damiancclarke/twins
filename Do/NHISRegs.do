@@ -30,7 +30,7 @@ global OUT "~/investigacion/Activa/Twins/Results/Outreg/NHIS"
 global LOG "~/investigacion/Activa/Twins/Log"
 
 cap mkdir $OUT
-*log using "$LOG/NCISRegs.txt", text replace
+log using "$LOG/NHISRegs.txt", text replace
 
 local yvars excellentHealth schoolZscore childEducation /*childHealthPrivate*/ 
 local yvars excellentHealth schoolZscore
@@ -46,10 +46,11 @@ local se    cluster(motherID)
 local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 */ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
 
-local sum  1
-local twin 0
-local ols  0
-local ivs  0
+local sum    0
+local twin   0
+local ols    0
+local ivs    0
+local conley 1
 
 ********************************************************************************
 *** (2) Append cleaned files, generate indicators
@@ -125,9 +126,7 @@ if `sum'==1 {
     count if fpx=="01"&twinfamily==0
     count
     count if twin==1
-    count if twin==0
-    
-    
+    count if twin==0    
 }
 
 ********************************************************************************
@@ -181,7 +180,7 @@ foreach y of varlist `yvars' {
 }	
 
 ********************************************************************************
-*** (6) IV regressions
+*** (6a) IV regressions
 ********************************************************************************
 if `ivs'==1 {
 foreach y of varlist `yvars' {
@@ -217,9 +216,48 @@ foreach y of varlist `yvars' {
 	estimates clear
 }
 }
+
+********************************************************************************
+*** (6b) Plausibly exogenous bounds
+********************************************************************************
+if `conley'==1 {
+    mat ConleyBounds = J(6,4,.)
+    local i = 1
+    foreach y of varlist `yvars' {
+        foreach f in two three four {
+            preserve
+            keep if `f'_plus==1
+    
+            plausexog uci `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
+            */ vce(robust) gmin(0) gmax(0.06) grid(2)
+            mat ConleyBounds[`i',1]=e(lb_fert)
+            mat ConleyBounds[`i',2]=e(ub_fert)
+
+            local items = `e(numvars)'
+            matrix omega_eta = J(`items',`items',0)
+            matrix omega_eta[1,1] = 0.0493175^2
+            matrix mu_eta = J(`items',1,0)
+            matrix mu_eta[1,1] = 0.0642231
+
+            plausexog ltz `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
+            */ omega(omega_eta) mu(mu_eta)
+            mat ConleyBounds[`i',3]=_b[fert]-1.65*_se[fert]
+            mat ConleyBounds[`i',4]=_b[fert]+1.65*_se[fert]
+
+            mat list ConleyBounds
+            restore
+            local ++i
+        }
+    }
+    mat rownames ConleyBounds = TwoH ThreeH FourH TwoE ThreeE FourE
+    mat colnames ConelyBounds = LowerBound UpperBound LowerBound UpperBound
+    mat2txt, matrix(ConleyBounds) saving("$OUT/ConleyGammaNHIS.txt")      /*
+    */ format(%6.4f) replace
+}
+
+
 exit 
 
-count
 ********************************************************************************
 *** (7) IV regressions by gender
 ********************************************************************************
@@ -258,3 +296,4 @@ foreach gend of numlist 1 2 {
 		estimates clear
 	}
 }
+
