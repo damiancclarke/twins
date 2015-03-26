@@ -1333,7 +1333,7 @@ if `conley'==1 {
     preserve
     keep `c'
     plausexog uci school_zscore `base' $age (fert = twin_`n'_fam), /*
-    */ gmin(0) gmax(0.090) grid(2) level(.95) vce(robust)
+    */ gmin(0) gmax(0.090) grid(2) level(.90) vce(robust)
     local c1 = e(lb_fert)
     local c2 = e(ub_fert)
     dis "lower bound = `c1', upper bound=`c2'"
@@ -1345,7 +1345,7 @@ if `conley'==1 {
 		matrix mu_eta[1,1] = 0.0642231
 
     plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam),  /*
-		*/ omega(omega_eta) mu(mu_eta) level(0.95)
+		*/ omega(omega_eta) mu(mu_eta)
     local c3 = _b[fert]-1.65*_se[fert]
     local c4 = _b[fert]+1.65*_se[fert]
     dis "lower bound = `c3', upper bound=`c4'"
@@ -1362,7 +1362,7 @@ if `conley'==1 {
 	mat rownames cbounds1 = TwoPlus ThreePlus FourPlus
 	mat2txt, matrix(cbounds1) saving("$Tables/Conley/ConleyGamma.txt") /*
 		*/ format(%6.4f) replace
-  exit
+
 	*****************************************************************************
 	*** (10a) Union of Confidence Intervals (have now removed $S and $H)
 	*****************************************************************************	
