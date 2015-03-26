@@ -70,40 +70,40 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 *SWITCHES (1 if run, else not run)
 local samp5         0
 local resave        0
-local samples       27
-local matchrate     27
-local sumstats      27
-  local graphs      27
+local samples       0
+local matchrate     0
+local sumstats      0
+  local graphs      0
 local sumstats2     0
   local graphs2     0
 local trends        0
-local graphsMB      111
-local graphsSW      27
-local twin          100
-local OLS           11
-local Oster         110
-local RF            27
-local IV            10001
-local IVtwin        27
-local desire        88
+local graphsMB      0
+local graphsSW      0
+local twin          0
+local OLS           0
+local Oster         0
+local RF            0
+local IV            0
+local IVtwin        0
+local desire        0
 local compl_fert    0
-local twinoccur_ols 27
-local twinoccur_iv  27
+local twinoccur_ols 0
+local twinoccur_iv  0
 local conley        1
-local thresholdtest 27
-local balance       27
-local balanceG      110
-local country       88
-local adj_fert      11
-  local ADJIV       27
-  local ADJtwin     27
-  local ADJdesire   11
-local gender        27
-local overID        12
-local ConGamma      12
-local MMR           1000
-local select        11
-local pool          12
+local thresholdtest 0
+local balance       0
+local balanceG      0
+local country       0
+local adj_fert      0
+  local ADJIV       0
+  local ADJtwin     0
+  local ADJdesire   0
+local gender        0
+local overID        0
+local ConGamma      0
+local MMR           0
+local select        0
+local pool          0
 
 
 * VARIABLES
@@ -828,25 +828,25 @@ if `graphsSW'==1 {
 **** (3) Twin predict regressions
 ********************************************************************************
 if `twin'== 1 {
+
   fvset base 1 _cou
   fvset base 1 child_yob
 
-  reg twind100 $twinpred i.child_yob i._cou `wt' `cond', `se'
-  outreg2 $twinout using "$Tables/Twin/healthTest.xls", replace
   reg twind100 $twinpred height bmi i.child_yob i._cou `wt' `cond', `se'
+  outreg2 $twinout using "$Tables/Twin/healthTest.xls", replace
+  reg twind100 $twinpred i.child_yob i._cou `wt' `cond'&e(sample)==1, `se'
   outreg2 $twinout using "$Tables/Twin/healthTest.xls", append
 
 	local cond1 child_yob>1989
 	local cond2 child_yob<=1989
 
 	foreach condtn in cond1 cond2 {
-		reg twind100 $twinpred i.child_yob i._cou `wt' `cond'&``condtn'', `se'
+    local cc `cond'&``condtn''
+    reg twind100 $twinpred height bmi i.child_yob i._cou `wt' `cc', `se'
     outreg2 $twinout using "$Tables/Twin/healthTest.xls", append
-		reg twind100 $twinpred height bmi i.child_yob i._cou `wt' `cond'&``condtn'', `se'
+		reg twind100 $twinpred i.child_yob i._cou `wt' `cc'&e(sample)==1, `se'
     outreg2 $twinout using "$Tables/Twin/healthTest.xls", append
   }
-
-  exit
 
   local out "$Tables/Twin/`TwinPred'.xls"
 	
@@ -936,7 +936,7 @@ if `twin'== 1 {
 	  height_sq "height squared") `estopt' replace
 	estimates clear
 }
-exit
+
 ********************************************************************************
 **** (4) Simple OLS of Q-Q (can then apply Altonji)
 ********************************************************************************
@@ -1333,14 +1333,14 @@ if `conley'==1 {
     preserve
     keep `c'
     plausexog uci school_zscore `base' $age (fert = twin_`n'_fam), /*
-    */ gmin(0) gmax(0.0963) grid(2) level(.95) vce(robust)
+    */ gmin(0) gmax(0.0858) grid(2) level(.95) vce(robust)
     local c1 = e(lb_fert)
     local c2 = e(ub_fert)
-
+    dis "lower bound = `c1', upper bound=`c2'"
     
 		local items = `e(numvars)'
 		matrix omega_eta = J(`items',`items',0)
-		matrix omega_eta[1,1] = 0.0493175
+		matrix omega_eta[1,1] = 0.0493175^2
 		matrix mu_eta = J(`items',1,0)
 		matrix mu_eta[1,1] = 0.0642231
 
@@ -1348,6 +1348,8 @@ if `conley'==1 {
 		*/ omega(omega_eta) mu(mu_eta) level(0.95)
     local c3 = _b[fert]-1.96*_se[fert]
     local c4 = _b[fert]+1.96*_se[fert]
+    dis "lower bound = `c3', upper bound=`c4'"
+
     local ++ii
     restore
 
