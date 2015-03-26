@@ -227,9 +227,9 @@ if `conley'==1 {
         foreach f in two three four {
             preserve
             keep if `f'_plus==1
-    
-            plausexog uci `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
-            */ vce(robust) gmin(0) gmax(0.06) grid(2)
+
+            plausexog uci `y' `base' (fert=twin_`f'_fam) [`wt'], /*
+            */ vce(robust) gmin(0) gmax(0.06) grid(2) level(0.90)
             mat ConleyBounds[`i',1]=e(lb_fert)
             mat ConleyBounds[`i',2]=e(ub_fert)
 
@@ -239,18 +239,18 @@ if `conley'==1 {
             matrix mu_eta = J(`items',1,0)
             matrix mu_eta[1,1] = 0.0642231
 
-            plausexog ltz `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
+            cap plausexog ltz `y' `base' (fert=twin_`f'_fam), /*
             */ omega(omega_eta) mu(mu_eta)
-            mat ConleyBounds[`i',3]=_b[fert]-1.65*_se[fert]
-            mat ConleyBounds[`i',4]=_b[fert]+1.65*_se[fert]
+            cap mat ConleyBounds[`i',3]=_b[fert]-1.65*_se[fert]
+            cap mat ConleyBounds[`i',4]=_b[fert]+1.65*_se[fert]
 
             mat list ConleyBounds
             restore
             local ++i
         }
     }
-    mat rownames ConleyBounds = TwoH ThreeH FourH TwoE ThreeE FourE
-    mat colnames ConelyBounds = LowerBound UpperBound LowerBound UpperBound
+    mat rownames ConleyBounds = TwoH TwoE ThreeH ThreeE FourH FourE 
+    mat colnames ConleyBounds = LowerBound UpperBound LowerBound UpperBound
     mat2txt, matrix(ConleyBounds) saving("$OUT/ConleyGammaNHIS.txt")      /*
     */ format(%6.4f) replace
 }
