@@ -24,7 +24,7 @@ global LOG "~/investigacion/Activa/Twins/Log"
 log using "$LOG/gammaEstimate.txt", replace text
 
 local gen = 0
-local est = 0
+local est = 1
 
 global post_base_inf p_b_inf
 global mortality     p_b_mmr /*p_b_tbr p_b_diar p_b_cancer p_b_heartd p_b_mal*/
@@ -113,7 +113,7 @@ replace educb = 15 if educ==9
 bys birthyr birthqtr: egen meanEd = mean(educb)
 bys birthyr birthqtr: egen sdEd   = sd(educb)
 gen school_zscore = (educb - meanEd) / sdEd
-
+bys datanum serial momloc: gen fert = _N
 
 if `est'==1 {
     ****************************************************************************
@@ -121,7 +121,7 @@ if `est'==1 {
     ****************************************************************************
     global outcomes school_zscore educb
     local se robust cluster(birth_state)
-    local ctrl i.sex i.race i.birthyr
+    local ctrl i.sex i.race i.birthyr fert
     local c if birthyr<1974
 
     cap rm "$OUT/gammaEstimates.xls"
@@ -158,13 +158,14 @@ if `est'==1 {
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
 }
+exit
 
 ********************************************************************************
 *** (7) Resampling to estimate a standard error for gamma (ratio of a, b)
 ********************************************************************************
 global outcomes school_zscore educb
 local se robust cluster(birth_state)
-local ctrl i.sex i.race i.birthyr
+local ctrl i.sex i.race i.birthyr fert
 local c if birthyr<1974
 local y 
 
