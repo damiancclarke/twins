@@ -158,7 +158,6 @@ if `est'==1 {
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
 }
-exit
 
 ********************************************************************************
 *** (7) Resampling to estimate a standard error for gamma (ratio of a, b)
