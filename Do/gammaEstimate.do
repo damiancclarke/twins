@@ -198,10 +198,11 @@ local Gsdev = `r(sd)'
 ********************************************************************************
 *** (8) Examine distribution: Kolmogorov-Smirnov
 ********************************************************************************
-tw hist gamma, bin(16) || function normalden(x,`Gmean',`Gsdev'), lc(black)    /*
-*/ scheme(lean1) range(`=`Gmean'-3*`Gsdev'' `=`Gmean'+3*`Gsdev'')             /*
+tw hist gamma, bin(16) frac || function normalden(x,`Gmean',`Gsdev'), lc(black)/*
+*/ scheme(lean1) range(`=`Gmean'-3*`Gsdev'' `=`Gmean'+3*`Gsdev'')              /*
 */ legend(label(1 "Empirical Distribution") label(2 "Analytical Distribution"))
 graph export "$OUT/gammaResamp.eps", as(eps) replace
+
 
 sort gamma
 gen lgamma = log(gamma)
