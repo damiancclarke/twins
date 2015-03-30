@@ -1333,16 +1333,16 @@ if `conley'==1 {
     preserve
     keep `c'
     plausexog uci school_zscore `base' $age (fert = twin_`n'_fam), /*
-    */ gmin(0) gmax(0.090) grid(2) level(.90) vce(robust)
+    */ gmin(0) gmax(0.09) grid(2) level(.90) vce(robust)
     local c1 = e(lb_fert)
     local c2 = e(ub_fert)
     dis "lower bound = `c1', upper bound=`c2'"
     
 		local items = `e(numvars)'
 		matrix omega_eta = J(`items',`items',0)
-		matrix omega_eta[1,1] = 0.0493175^2
+		matrix omega_eta[1,1] = 0.0478854^2
 		matrix mu_eta = J(`items',1,0)
-		matrix mu_eta[1,1] = 0.0642231
+		matrix mu_eta[1,1] = 0.0624968
 
     plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam),  /*
 		*/ omega(omega_eta) mu(mu_eta)
