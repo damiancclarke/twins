@@ -203,6 +203,20 @@ tw hist gamma, bin(16) || function normalden(x,`Gmean',`Gsdev'), lc(black)    /*
 */ legend(label(1 "Empirical Distribution") label(2 "Analytical Distribution"))
 graph export "$OUT/gammaResamp.eps", as(eps) replace
 
+sort gamma
+gen lgamma = log(gamma)
+sum lgamma
+local lm = `r(mean)'
+local ls = `r(sd)'
+
+gen x = _n*0.003
+gen lN =  (1 / x * `ls' * sqrt(2 * _pi)) * exp(-(log(x) - `lm')^2 / (2 *`ls'^2))
+
+tw hist gamma, bin(16) yaxis(2) frac || line lN x, yaxis(1)                  ///
+    scheme(lean1) yscale(range(0 43)) ylabel(none) ytitle(" ") xtitle(" ")   ///
+    legend(label(1 "Empirical Distribution") label(2 "Analytical Distribution")) 
+graph export "$OUT/gammaLogN.eps", as(eps) replace
+
 ksmirnov gamma = normal((gamma-`Gmean')/`Gsdev')
 
 ********************************************************************************
