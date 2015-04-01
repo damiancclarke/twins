@@ -50,7 +50,8 @@ if `gen'==1 {
     bys year datanum serial momloc: gen ageDif2=birthtime[_n]-birthtime[_n+1]
     
     gen twin = ageDif1==0 | ageDif2==0
-    tab twin
+    bys year datanum serial momloc: gen twinfam = max(twin)
+    tab twin twinfam
     tempfile child
     save `child'
     
@@ -143,7 +144,11 @@ if `est'==1 {
     ****************************************************************************
     *** (6b) Estimates -- twin
     ****************************************************************************
-    local y twin
+    local y twinfam
+    local ctrl i.sex i.race fert
+
+    collapse twinfam $post_base_inf $statevar $mortality sex race fert /*
+    */ birth_state birth_year t, by(year datanum serial momloc)    
 
     xi: reg `y' $post_base_inf $basic `ctrl', `se'
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
@@ -158,7 +163,7 @@ if `est'==1 {
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
 
 }
-
+exit
 ********************************************************************************
 *** (7) Resampling to estimate a standard error for gamma (ratio of a, b)
 ********************************************************************************
