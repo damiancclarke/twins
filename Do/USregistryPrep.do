@@ -37,9 +37,9 @@ cap mkdir $OUT
 log using "$LOG/USregistryPrep.txt", text replace
 
 
-local cleanBirths  1
-local appendBirths 1
-local cleanFDeath  1
+local cleanBirths  0
+local appendBirths 0
+local cleanFDeath  0
 local appendFDeath 1
 
 ********************************************************************************
@@ -902,12 +902,12 @@ foreach yy of numlist 2009(1)2012 {
 *** (3b) Alternatively append desired files into a large all year file
 ********************************************************************************
 if `appendFDeath'==1 {
-    clear
-    foreach yy of numlist 2002(1)2012 {
-        append using "$DAT/FetalDeaths/dta/clean/f`yy'"
-        count
-    }
-    save "$DAT/FetalDeaths/AppendedFDeaths.dta", replace
+*    clear
+*    foreach yy of numlist 2002(1)2012 {
+*        append using "$DAT/FetalDeaths/dta/clean/f`yy'"
+*        count
+*    }
+*    save "$DAT/FetalDeaths/AppendedFDeaths.dta", replace
 
 
     clear
