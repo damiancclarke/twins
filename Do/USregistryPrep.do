@@ -19,6 +19,7 @@ code: https://github.com/damiancclarke/nchs-fetaldata
 
 NOTES: 1969 has no plurality variable
        1970 has no plurality variable 
+       Need to fix state variable for fetal death 2003
 */
 
 vers 11
@@ -39,7 +40,7 @@ log using "$LOG/USregistryPrep.txt", text replace
 
 local cleanBirths  0
 local appendBirths 0
-local cleanFDeath  0
+local cleanFDeath  1
 local appendFDeath 1
 
 ********************************************************************************
@@ -140,7 +141,7 @@ foreach yy of numlist 1972(1)1977 {
 	rename birmon birthMonth
 	rename dtotord birthOrder
 	replace birthOrder=. if birthOrder==99
-	replace birthOrder=11 if birthOrder<10
+	replace birthOrder=11 if birthOrder>10
 	gen africanAmerican=mrace==2
 	gen white=mrace==1
 	gen otherRace=mrace>2
@@ -171,7 +172,7 @@ foreach yy of numlist 1978(1)1988 {
 	rename birmon birthMonth
 	rename dtotord birthOrder
 	replace birthOrder=. if birthOrder==99
-	replace birthOrder=11 if birthOrder<10
+	replace birthOrder=11 if birthOrder>10
 	gen africanAmerican=mrace==2
 	gen white=mrace==1
 	gen otherRace=mrace>2
@@ -179,12 +180,14 @@ foreach yy of numlist 1978(1)1988 {
 	gen married=dmar==1
 	gen marryUnreported=dmar==9
 	gen educYrs=dmeduc if dmeduc<66
-	gen meducPrimary=dmeduc>0&dmeduc<=8
+  gen meducNone     =dmeduc==0
+	gen meducPrimary  =dmeduc>0&dmeduc<=8
 	gen meducSecondary=dmeduc>8&dmeduc<=12
-	gen meducTertiary=dmeduc>12&dmeduc<=17
+	gen meducTertiary =dmeduc>12&dmeduc<=17
+  gen meducMissing  =dmeduc>=66
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder /*
-	*/ married marryU meducP meducS meducT educYrs state twin
+	*/ married marryU meduc* educYrs state twin
 	save "$DAT/Births/dta/clean/n`yy'", replace	
 }
 
@@ -204,7 +207,7 @@ foreach yy of numlist 1989(1)1994 {
 	rename birmon birthMonth
 	rename dtotord birthOrder
 	replace birthOrder=. if birthOrder==99
-	replace birthOrder=11 if birthOrder<10
+	replace birthOrder=11 if birthOrder>10
 	gen africanAmerican=mrace==2
 	gen white=mrace==1
 	gen otherRace=mrace>2
@@ -212,9 +215,11 @@ foreach yy of numlist 1989(1)1994 {
 	gen married=dmar==1
 	gen marryUnreported=dmar==9
 	gen educYrs=dmeduc if dmeduc<66
-	gen meducPrimary=dmeduc>0&dmeduc<=8
+  gen meducNone     =dmeduc==0
+	gen meducPrimary  =dmeduc>0&dmeduc<=8
 	gen meducSecondary=dmeduc>8&dmeduc<=12
-	gen meducTertiary=dmeduc>12&dmeduc<=17
+	gen meducTertiary =dmeduc>12&dmeduc<=17
+  gen meducMissing  =dmeduc>=66
 	foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
 	*/ pre4000 preterm renal {
 		replace `var'=. if `var'==9
@@ -226,9 +231,9 @@ foreach yy of numlist 1989(1)1994 {
 	gen alcoholUse=alcohol==1
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder /*
-	*/ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
-	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR /*
-	*/ tobaccoUse alcoholNR alcoholUse twin	
+	*/ married marryU meduc* educYrs state anemia cardiac lung twin   /*
+	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR  /*
+	*/ tobaccoUse alcoholNR alcoholUse
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -248,7 +253,7 @@ foreach yy of numlist 1995(1)2002 {
 	rename birmon birthMonth
 	rename dtotord birthOrder
 	replace birthOrder=. if birthOrder==99
-	replace birthOrder=11 if birthOrder<10
+	replace birthOrder=11 if birthOrder>10
 	gen africanAmerican=mrace==2
 	gen white=mrace==1
 	gen otherRace=mrace>2
@@ -256,9 +261,11 @@ foreach yy of numlist 1995(1)2002 {
 	gen married=dmar==1
 	gen marryUnreported=dmar==9
 	gen educYrs=dmeduc if dmeduc<66
-	gen meducPrimary=dmeduc>0&dmeduc<=8
+  gen meducNone     =dmeduc==0
+	gen meducPrimary  =dmeduc>0&dmeduc<=8
 	gen meducSecondary=dmeduc>8&dmeduc<=12
-	gen meducTertiary=dmeduc>12&dmeduc<=17
+	gen meducTertiary =dmeduc>12&dmeduc<=17
+  gen meducMissing  =dmeduc>=66
 	foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
 	*/ pre4000 preterm renal {
 		replace `var'=. if `var'==9
@@ -270,9 +277,9 @@ foreach yy of numlist 1995(1)2002 {
 	gen alcoholUse=alcohol==1
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder /*
-	*/ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
-	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR /*
-	*/ tobaccoUse alcoholNR alcoholUse twin
+	*/ married marryU meduc* educYrs state anemia cardiac lung twin   /*
+	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR  /*
+	*/ tobaccoUse alcoholNR alcoholUse
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -299,9 +306,11 @@ gen year=2003
 gen married=mar==1
 gen marryUnreported=mar==9
 gen educYrs=dmeduc if dmeduc<66
-gen meducPrimary=dmeduc>0&dmeduc<=8
+gen meducNone     =dmeduc==0
+gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
-gen meducTertiary=dmeduc>12&dmeduc<=17
+gen meducTertiary =dmeduc>12&dmeduc<=17
+gen meducMissing  =dmeduc>=66
 foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
 */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
 	replace `var'=. if `var'==9|`var'==8
@@ -322,9 +331,9 @@ gen alcoholNR=alcohol==9
 gen alcoholUse=alcohol==1
 
 keep motherAge africanAm white otherRace birthMon year birthOrder /*
-*/ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
-*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR /*
-*/ tobaccoUse alcoholNR alcoholUse twin
+*/ married marryU meduc* educYrs state anemia cardiac lung twin   /*
+*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR  /*
+*/ tobaccoUse alcoholNR alcoholUse 
 save "$DAT/Births/dta/clean/n2003", replace
 
 use "$DAT/Births/dta/natl2004", clear
@@ -348,9 +357,11 @@ gen year=2004
 gen married=mar==1
 gen marryUnreported=mar==9
 gen educYrs=dmeduc if dmeduc<66
-gen meducPrimary=dmeduc>0&dmeduc<=8
+gen meducNone     =dmeduc==0
+gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
-gen meducTertiary=dmeduc>12&dmeduc<=17
+gen meducTertiary =dmeduc>12&dmeduc<=17
+gen meducMissing  =dmeduc>=66
 foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
 */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
 	replace `var'=. if `var'==9|`var'==8
@@ -370,10 +381,10 @@ gen tobaccoUse=tobuse==1
 gen alcoholNR=alcohol==9
 gen alcoholUse=alcohol==1
 
-keep motherAge africanAm white otherRace birthMon year birthOrder        /*
-*/ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
-*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-*/ tobaccoUse alcoholNR alcoholUse twin
+keep motherAge africanAm white otherRace birthMon year birthOrder  /*
+*/ married marryU meduc* twin  educYrs state anemia cardiac lung   /*
+*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR   /*
+*/ tobaccoUse alcoholNR alcoholUse
 save "$DAT/Births/dta/clean/n2004", replace
 
 
@@ -398,9 +409,11 @@ gen year=2005
 gen married=mar==1
 gen marryUnreported=mar==9
 gen educYrs=dmeduc if dmeduc<66
-gen meducPrimary=dmeduc>0&dmeduc<=8
+gen meducNone     =dmeduc==0
+gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
-gen meducTertiary=dmeduc>12&dmeduc<=17
+gen meducTertiary =dmeduc>12&dmeduc<=17
+gen meducMissing  =dmeduc>=66
 foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
 */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
 	replace `var'=. if `var'==9|`var'==8
@@ -420,10 +433,10 @@ gen tobaccoUse=tobuse==1
 gen alcoholNR=alcohol==9
 gen alcoholUse=alcohol==1
 
-keep motherAge africanAm white otherRace birthMon year birthOrder        /*
-*/ married marryU meducP meducS meducT educYrs anemia cardiac lung       /*
-*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-*/ tobaccoUse alcoholNR alcoholUse twin
+keep motherAge africanAm white otherRace birthMon year birthOrder  /*
+*/ married marryU meduc* twin educYrs anemia cardiac lung          /*
+*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR   /*
+*/ tobaccoUse alcoholNR alcoholUse 
 save "$DAT/Births/dta/clean/n2005", replace
 
 use "$DAT/Births/dta/natl2006", clear
@@ -445,9 +458,11 @@ gen year=2006
 gen married=mar==1
 gen marryUnreported=mar==9
 gen educYrs=dmeduc if dmeduc<66
-gen meducPrimary=dmeduc>0&dmeduc<=8
+gen meducNone     =dmeduc==0
+gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
-gen meducTertiary=dmeduc>12&dmeduc<=17
+gen meducTertiary =dmeduc>12&dmeduc<=17
+gen meducMissing  =dmeduc>=66
 foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
 */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
 	replace `var'=. if `var'==9|`var'==8
@@ -467,10 +482,10 @@ gen tobaccoUse=tobuse==1
 gen alcoholNR=alcohol==9
 gen alcoholUse=alcohol==1
 
-keep motherAge africanAm white otherRace birthMon year birthOrder        /*
-*/ married marryU meducP meducS meducT educYrs anemia cardiac lung       /*
-*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-*/ tobaccoUse alcoholNR alcoholUse twin
+keep motherAge africanAm white otherRace birthMon year birthOrder /*
+*/ married marryU meduc* twin educYrs anemia cardiac lung         /*
+*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR  /*
+*/ tobaccoUse alcoholNR alcoholUse
 save "$DAT/Births/dta/clean/n2006", replace
 
 
@@ -493,9 +508,11 @@ foreach yy of numlist 2007 2008 {
 	gen married=mar==1
 	gen marryUnreported=mar==9
 	gen educYrs=dmeduc if dmeduc<66
-	gen meducPrimary=dmeduc>0&dmeduc<=8
-	gen meducSecondary=dmeduc>8&dmeduc<=12
-	gen meducTertiary=dmeduc>12&dmeduc<=17
+  gen meducNone     =dmeduc==0
+  gen meducPrimary  =dmeduc>0&dmeduc<=8
+  gen meducSecondary=dmeduc>8&dmeduc<=12
+  gen meducTertiary =dmeduc>12&dmeduc<=17
+  gen meducMissing  =dmeduc>=66
 	gen diabetes=rf_diab=="Y"
 	gen chyper=rf_phyp=="Y"
 	gen phyper=rf_ghyp=="Y"
@@ -505,8 +522,8 @@ foreach yy of numlist 2007 2008 {
 	gen tobaccoUse=tobuse==1
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder   /*
-	*/ married marryU meducP meducS meducT educYrs chyper phyper eclamp /*
-	*/ preterm tobaccoNR tobaccoUse twin
+	*/ married marryU meduc* twin educYrs chyper phyper eclamp          /*
+	*/ preterm tobaccoNR tobaccoUse
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -529,10 +546,12 @@ foreach yy of numlist 2009(1)2012 {
 	gen year=`yy'
 	gen married=mar==1
 	gen marryUnreported=mar==9
-	gen meducPrimary=meduc==1|meduc==2
+  gen meducNone     =meduc==0
+	gen meducPrimary  =meduc==1|meduc==2
 	gen meducSecondary=meduc==3|meduc==4
-	gen meducTertiary=meduc>=5&meduc<=8
-
+	gen meducTertiary =meduc>=5&meduc<=8
+  gen meducMissing  =meduc>8
+  
 	gen diabetes=rf_diab=="Y"
 	gen chyper=rf_phyp=="Y"
 	gen phyper=rf_ghyp=="Y"
@@ -546,7 +565,7 @@ foreach yy of numlist 2009(1)2012 {
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder        /*
 	*/ married marryU chyper phyper eclamp preterm twin meducP meducS meducT /*
-	*/ tobaccoNR tobaccoUse infertility*
+	*/ tobaccoNR tobaccoUse infertility* meducMissing meducNone
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -603,11 +622,12 @@ if `cleanFDeath'==1 {
         gen married=dmar==1
         gen marryUnreported=dmar==9
         gen educYrs=dmeduc if dmeduc<66
-        gen meducPrimary=dmeduc>0&dmeduc<=8
+        gen meducNone     =dmeduc==0
+        gen meducPrimary  =dmeduc>0&dmeduc<=8
         gen meducSecondary=dmeduc>8&dmeduc<=12
-        gen meducTertiary=dmeduc>12&dmeduc<=17
-        gen educMissing = dmeduc==99
-        replace educYrs = 0 if educMissing==1
+        gen meducTertiary =dmeduc>12&dmeduc<=17
+        gen meducMissing  = dmeduc==99
+        replace educYrs = 0 if meducMissing==1
         
         foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
         */ pre4000 preterm renal {
@@ -620,9 +640,9 @@ if `cleanFDeath'==1 {
         gen alcoholUse=alcohol==1
 
         keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
-        */ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
+        */ married marryU meducP meducS meduc* educYrs state anemia cardiac lung /*
         */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-        */ tobaccoUse alcoholNR alcoholUse twin educMissing
+        */ tobaccoUse alcoholNR alcoholUse twin 
         save "$DAT/FetalDeaths/dta/clean/f`year'", replace
     }
     
@@ -646,9 +666,11 @@ if `cleanFDeath'==1 {
     gen married=dmar==1
     gen marryUnreported=dmar==9
     gen educYrs=dmeduc if dmeduc<66
-    gen meducPrimary=dmeduc>0&dmeduc<=8
+    gen meducNone     =dmeduc==0
+    gen meducPrimary  =dmeduc>0&dmeduc<=8
     gen meducSecondary=dmeduc>8&dmeduc<=12
-    gen meducTertiary=dmeduc>12&dmeduc<=17
+    gen meducTertiary =dmeduc>12&dmeduc<=17
+    gen meducMissing  = dmeduc==99
     foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
     */ pre4000 preterm renal {
         replace `var'=. if `var'==9
@@ -660,7 +682,7 @@ if `cleanFDeath'==1 {
     gen alcoholUse=alcohol==1
 
     keep motherAge africanAm white otherRace deliveryMonth   year birthOrder /*
-    */ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
+    */ married marryU meducP meducS meduc* educYrs state anemia cardiac lung /*
     */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
     */ tobaccoUse alcoholNR alcoholUse twin
     save "$DAT/FetalDeaths/dta/clean/f2002", replace
@@ -684,9 +706,11 @@ if `cleanFDeath'==1 {
     gen married=mar==1
     gen marryUnreported=mar==9
     gen educYrs=umeduc if umeduc<66
-    gen meducPrimary=umeduc>0&umeduc<=8
-    gen meducSecondary=umeduc>8&umeduc<=12
-    gen meducTertiary=umeduc>12&umeduc<=17
+    gen meducNone     =dmeduc==0
+    gen meducPrimary  =dmeduc>0&dmeduc<=8
+    gen meducSecondary=dmeduc>8&dmeduc<=12
+    gen meducTertiary =dmeduc>12&dmeduc<=17
+    gen meducMissing  = dmeduc==99
     foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
     */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
         replace `var'=. if `var'==9|`var'==8
@@ -708,7 +732,7 @@ if `cleanFDeath'==1 {
     gen alcoholUse=alcohol==1
     
     keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
-    */ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
+    */ married marryU meducP meducS meduc* educYrs state anemia cardiac lung /*
     */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
     */ tobaccoUse alcoholNR alcoholUse twin
     save "$DAT/FetalDeaths/dta/clean/f2003", replace
@@ -730,9 +754,11 @@ if `cleanFDeath'==1 {
     gen married=mar==1
     gen marryUnreported=mar==9
     gen educYrs=umeduc if umeduc<66
-    gen meducPrimary=umeduc>0&umeduc<=8
-    gen meducSecondary=umeduc>8&umeduc<=12
-    gen meducTertiary=umeduc>12&umeduc<=17
+    gen meducNone     =dmeduc==0
+    gen meducPrimary  =dmeduc>0&dmeduc<=8
+    gen meducSecondary=dmeduc>8&dmeduc<=12
+    gen meducTertiary =dmeduc>12&dmeduc<=17
+    gen meducMissing  = dmeduc==99
     foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
     */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
         replace `var'=. if `var'==9|`var'==8
@@ -754,7 +780,7 @@ if `cleanFDeath'==1 {
     gen alcoholUse=alcohol==1
     
     keep motherAge africanAm white otherRace deliveryMonth year birthOrder     /*
-    */ married marryU meducP meducS meducT educYrs state anemia cardiac lung /*
+    */ married marryU meducP meducS meduc* educYrs state anemia cardiac lung /*
     */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
     */ tobaccoUse alcoholNR alcoholUse twin
     save "$DAT/FetalDeaths/dta/clean/f2004", replace
@@ -775,9 +801,11 @@ if `cleanFDeath'==1 {
     gen married=mar==1
     gen marryUnreported=mar==9
     gen educYrs=umeduc if umeduc<66
-    gen meducPrimary=umeduc>0&umeduc<=8
-    gen meducSecondary=umeduc>8&umeduc<=12
-    gen meducTertiary=umeduc>12&umeduc<=17
+    gen meducNone     =dmeduc==0
+    gen meducPrimary  =dmeduc>0&dmeduc<=8
+    gen meducSecondary=dmeduc>8&dmeduc<=12
+    gen meducTertiary =dmeduc>12&dmeduc<=17
+    gen meducMissing  = dmeduc==99
     foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
     */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
         replace `var'=. if `var'==9|`var'==8
@@ -799,7 +827,7 @@ if `cleanFDeath'==1 {
     gen alcoholUse=alcohol==1
     
     keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
-    */ married marryU meducP meducS meducT educYrs anemia cardiac lung       /*
+    */ married marryU meducP meducS meduc* educYrs anemia cardiac lung       /*
     */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
     */ tobaccoUse alcoholNR alcoholUse twin
     save "$DAT/FetalDeaths/dta/clean/f2005", replace
@@ -819,9 +847,11 @@ if `cleanFDeath'==1 {
     gen married=mar==1
     gen marryUnreported=mar==9
     gen educYrs=umeduc if umeduc<66
-    gen meducPrimary=umeduc>0&umeduc<=8
-    gen meducSecondary=umeduc>8&umeduc<=12
-    gen meducTertiary=umeduc>12&umeduc<=17
+    gen meducNone     =dmeduc==0
+    gen meducPrimary  =dmeduc>0&dmeduc<=8
+    gen meducSecondary=dmeduc>8&dmeduc<=12
+    gen meducTertiary =dmeduc>12&dmeduc<=17
+    gen meducMissing  = dmeduc==99
     foreach var of varlist urf_diab urf_chyper urf_phyper urf_eclam {
       	replace `var'=. if `var'==9|`var'==8
     }
@@ -834,7 +864,7 @@ if `cleanFDeath'==1 {
     gen tobaccoUse=tobuse==1
     
     keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
-    */ married marryU meducP meducS meducT educYrs diabetes chyper phyper    /*
+    */ married marryU meducP meducS meduc* educYrs diabetes chyper phyper    /*
     */ eclamp tobaccoNR tobaccoUse twin
     save "$DAT/FetalDeaths/dta/clean/f2006", replace
 
