@@ -222,7 +222,7 @@ foreach yy of numlist 1989(1)1994 {
   gen meducMissing  =dmeduc>=66
 	foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
 	*/ pre4000 preterm renal {
-		replace `var'=. if `var'==9
+      gen `var'Miss = `var'==9
 	}
 	replace pre4000=2 if pre4000==8
 	gen tobaccoNR=tobacco==9
@@ -233,7 +233,7 @@ foreach yy of numlist 1989(1)1994 {
 	keep motherAge africanAm white otherRace birthMon year birthOrder /*
 	*/ married marryU meduc* educYrs state anemia cardiac lung twin   /*
 	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR  /*
-	*/ tobaccoUse alcoholNR alcoholUse
+	*/ tobaccoUse alcoholNR alcoholUse *Miss
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -268,7 +268,7 @@ foreach yy of numlist 1995(1)2002 {
   gen meducMissing  =dmeduc>=66
 	foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
 	*/ pre4000 preterm renal {
-		replace `var'=. if `var'==9
+      gen `var'Miss = `var'==9
 	}
 	replace pre4000=2 if pre4000==8
 	gen tobaccoNR=tobacco==9
@@ -279,7 +279,7 @@ foreach yy of numlist 1995(1)2002 {
 	keep motherAge africanAm white otherRace birthMon year birthOrder /*
 	*/ married marryU meduc* educYrs state anemia cardiac lung twin   /*
 	*/ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR  /*
-	*/ tobaccoUse alcoholNR alcoholUse
+	*/ tobaccoUse alcoholNR alcoholUse *Miss
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -311,20 +311,17 @@ gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary =dmeduc>12&dmeduc<=17
 gen meducMissing  =dmeduc>=66
-foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
-*/ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
-	replace `var'=. if `var'==9|`var'==8
+foreach var of varlist anemia card lung diab chyper /*
+*/ phyper eclam pre4000 preterm renal {
+      gen `var'Miss = urf_`var'==9|urf_`var'==8
+      rename urf_`var' `var'
 }
-rename urf_anemia anemia
-rename urf_card cardiac
-rename urf_lung lung
-rename urf_diab diabetes
-rename urf_chyper chyper
-rename urf_phyper phyper
-rename urf_eclam eclamp
-rename urf_pre4000 pre4000
-rename urf_preterm preterm
-rename urf_renal renal
+rename card cardiac
+rename cardMiss cardiacMiss
+rename diab diabetes
+rename diabMiss diabetesMiss
+rename eclam eclamp
+rename eclamMiss eclampMiss
 gen tobaccoNR=tobuse==9
 gen tobaccoUse=tobuse==1
 gen alcoholNR=alcohol==9
@@ -333,7 +330,7 @@ gen alcoholUse=alcohol==1
 keep motherAge africanAm white otherRace birthMon year birthOrder /*
 */ married marryU meduc* educYrs state anemia cardiac lung twin   /*
 */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR  /*
-*/ tobaccoUse alcoholNR alcoholUse 
+*/ tobaccoUse alcoholNR alcoholUse *Miss
 save "$DAT/Births/dta/clean/n2003", replace
 
 use "$DAT/Births/dta/natl2004", clear
@@ -362,20 +359,18 @@ gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary =dmeduc>12&dmeduc<=17
 gen meducMissing  =dmeduc>=66
-foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
-*/ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
-	replace `var'=. if `var'==9|`var'==8
+foreach var of varlist anemia card lung diab chyper phyper eclam /*
+*/ pre4000 preterm renal {
+      gen `var'Miss = urf_`var'==9|urf_`var'==8
+      rename urf_`var' `var'
 }
-rename urf_anemia anemia
-rename urf_card cardiac
-rename urf_lung lung
-rename urf_diab diabetes
-rename urf_chyper chyper
-rename urf_phyper phyper
-rename urf_eclam eclamp
-rename urf_pre4000 pre4000
-rename urf_preterm preterm
-rename urf_renal renal
+rename card cardiac
+rename cardMiss cardiacMiss
+rename diab diabetes
+rename diabMiss diabetesMiss
+rename eclam eclamp
+rename eclamMiss eclampMiss
+
 gen tobaccoNR=tobuse==9
 gen tobaccoUse=tobuse==1
 gen alcoholNR=alcohol==9
@@ -384,7 +379,7 @@ gen alcoholUse=alcohol==1
 keep motherAge africanAm white otherRace birthMon year birthOrder  /*
 */ married marryU meduc* twin  educYrs state anemia cardiac lung   /*
 */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR   /*
-*/ tobaccoUse alcoholNR alcoholUse
+*/ tobaccoUse alcoholNR alcoholUse *Miss
 save "$DAT/Births/dta/clean/n2004", replace
 
 
@@ -414,29 +409,22 @@ gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary =dmeduc>12&dmeduc<=17
 gen meducMissing  =dmeduc>=66
-foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
-*/ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
-	replace `var'=. if `var'==9|`var'==8
+foreach var of varlist anemia card lung diab chyper phyper eclam /*
+*/ pre4000 preterm renal {
+      gen `var'Miss = urf_`var'==9|urf_`var'==8
+      rename urf_`var' `var'
 }
-rename urf_anemia anemia
-rename urf_card cardiac
-rename urf_lung lung
-rename urf_diab diabetes
-rename urf_chyper chyper
-rename urf_phyper phyper
-rename urf_eclam eclamp
-rename urf_pre4000 pre4000
-rename urf_preterm preterm
-rename urf_renal renal
-gen tobaccoNR=tobuse==9
-gen tobaccoUse=tobuse==1
-gen alcoholNR=alcohol==9
-gen alcoholUse=alcohol==1
+rename card cardiac
+rename cardMiss cardiacMiss
+rename diab diabetes
+rename diabMiss diabetesMiss
+rename eclam eclamp
+rename eclamMiss eclampMiss
 
 keep motherAge africanAm white otherRace birthMon year birthOrder  /*
 */ married marryU meduc* twin educYrs anemia cardiac lung          /*
 */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR   /*
-*/ tobaccoUse alcoholNR alcoholUse 
+*/ tobaccoUse alcoholNR alcoholUse *Miss
 save "$DAT/Births/dta/clean/n2005", replace
 
 use "$DAT/Births/dta/natl2006", clear
@@ -463,20 +451,18 @@ gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary =dmeduc>12&dmeduc<=17
 gen meducMissing  =dmeduc>=66
-foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
-*/ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
-	replace `var'=. if `var'==9|`var'==8
+foreach var of varlist anemia card lung diab chyper phyper eclam /*
+*/ pre4000 preterm renal {
+      gen `var'Miss = urf_`var'==9|urf_`var'==8
+      rename urf_`var' `var'
 }
-rename urf_anemia anemia
-rename urf_card cardiac
-rename urf_lung lung
-rename urf_diab diabetes
-rename urf_chyper chyper
-rename urf_phyper phyper
-rename urf_eclam eclamp
-rename urf_pre4000 pre4000
-rename urf_preterm preterm
-rename urf_renal renal
+rename card cardiac
+rename cardMiss cardiacMiss
+rename diab diabetes
+rename diabMiss diabetesMiss
+rename eclam eclamp
+rename eclamMiss eclampMiss
+
 gen tobaccoNR=tobuse==9
 gen tobaccoUse=tobuse==1
 gen alcoholNR=alcohol==9
@@ -485,7 +471,7 @@ gen alcoholUse=alcohol==1
 keep motherAge africanAm white otherRace birthMon year birthOrder /*
 */ married marryU meduc* twin educYrs anemia cardiac lung         /*
 */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR  /*
-*/ tobaccoUse alcoholNR alcoholUse
+*/ tobaccoUse alcoholNR alcoholUse *Miss
 save "$DAT/Births/dta/clean/n2006", replace
 
 
@@ -518,12 +504,18 @@ foreach yy of numlist 2007 2008 {
 	gen phyper=rf_ghyp=="Y"
 	gen eclamp=rf_eclam=="Y"
 	gen preterm=rf_ppterm=="Y"
+	gen diabetesMiss=0
+	gen chyperMiss  =0
+	gen phyperMiss  =0
+	gen eclampMiss  =0
+	gen pretermMiss =0
+
 	gen tobaccoNR=tobuse==9|tobuse==.
 	gen tobaccoUse=tobuse==1
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder   /*
 	*/ married marryU meduc* twin educYrs chyper phyper eclamp          /*
-	*/ preterm tobaccoNR tobaccoUse
+	*/ preterm tobaccoNR tobaccoUse *Miss
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -533,7 +525,7 @@ foreach yy of numlist 2009(1)2012 {
 	count
 	keep dob_yy dob_mm ubfacil mager mracerec mar meduc fagerpt lbo precare wtgain /*
 	*/ cig_0 cig_1 cig_2 cig_3 cig_rec rf_diab rf_ghyp rf_phyp rf_eclam rf_ppterm  /*
-	*/ apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi
+	*/ apgar5 dplural estgest combgest dbwt rf_inftr rf_fedrg cig_rec bmi 
 
 	gen twin=dplural==2
 	drop if dplural>2
@@ -557,6 +549,12 @@ foreach yy of numlist 2009(1)2012 {
 	gen phyper=rf_ghyp=="Y"
 	gen eclamp=rf_eclam=="Y"
 	gen preterm=rf_ppterm=="Y"
+	gen diabetesMiss=0
+	gen chyperMiss  =0
+	gen phyperMiss  =0
+	gen eclampMiss  =0
+	gen pretermMiss =0
+
 	gen tobaccoNR=cig_r=="U"|cig_r==""
 	gen tobaccoUse=cig_r=="Y"
 
@@ -565,7 +563,7 @@ foreach yy of numlist 2009(1)2012 {
 
 	keep motherAge africanAm white otherRace birthMon year birthOrder        /*
 	*/ married marryU chyper phyper eclamp preterm twin meducP meducS meducT /*
-	*/ tobaccoNR tobaccoUse infertility* meducMissing meducNone
+	*/ tobaccoNR tobaccoUse infertility* meducMissing meducNone *Miss
 	save "$DAT/Births/dta/clean/n`yy'", replace
 
 }
@@ -574,7 +572,6 @@ foreach yy of numlist 2009(1)2012 {
 *** (2b) Optionally append desired files into a huge all year file
 ********************************************************************************
 if `appendBirths'==1 {
-    /*
     clear
     foreach yy of numlist 2003(1)2012 {
         append using "$DAT/Births/dta/clean/n`yy'"
@@ -582,6 +579,7 @@ if `appendBirths'==1 {
     }
     save "$DAT/Births/AppendedBirths.dta", replace
 
+    /*
     clear
     foreach yy of numlist 1980(1)1989 {
         append using "$DAT/Births/dta/clean/n`yy'"
@@ -631,7 +629,7 @@ if `cleanFDeath'==1 {
         
         foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
         */ pre4000 preterm renal {
-            replace `var'=. if `var'==9
+            gen `var'Miss = `var'==9|`var'==8
         }
         replace pre4000=2 if pre4000==8
         gen tobaccoNR=tobacco==9
@@ -642,7 +640,7 @@ if `cleanFDeath'==1 {
         keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
         */ married marryU meducP meducS meduc* educYrs state anemia cardiac lung /*
         */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-        */ tobaccoUse alcoholNR alcoholUse twin 
+        */ tobaccoUse alcoholNR alcoholUse twin  *Miss
         save "$DAT/FetalDeaths/dta/clean/f`year'", replace
     }
     
@@ -673,9 +671,8 @@ if `cleanFDeath'==1 {
     gen meducMissing  = dmeduc==99
     foreach var of varlist anemia cardiac lung diabetes chyper phyper eclamp /*
     */ pre4000 preterm renal {
-        replace `var'=. if `var'==9
+        gen `var'Miss = `var'==9|`var'==8
     }
-    replace pre4000=2 if pre4000==8
     gen tobaccoNR=tobacco==9
     gen tobaccoUse=tobacco==1
     gen alcoholNR=alcohol==9
@@ -684,7 +681,7 @@ if `cleanFDeath'==1 {
     keep motherAge africanAm white otherRace deliveryMonth   year birthOrder /*
     */ married marryU meducP meducS meduc* educYrs state anemia cardiac lung /*
     */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-    */ tobaccoUse alcoholNR alcoholUse twin
+    */ tobaccoUse alcoholNR alcoholUse twin *Miss
     save "$DAT/FetalDeaths/dta/clean/f2002", replace
 
 
@@ -711,20 +708,17 @@ if `cleanFDeath'==1 {
     gen meducSecondary=umeduc>8&umeduc<=12
     gen meducTertiary =umeduc>12&umeduc<=17
     gen meducMissing  =umeduc==99
-    foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
-    */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
-        replace `var'=. if `var'==9|`var'==8
+    foreach var of varlist anemia card lung diab chyper /*
+    */ phyper eclam pre4000 preterm renal {
+        gen `var'Miss = urf_`var'==9|urf_`var'==8
     }
-    rename urf_anemia anemia
-    rename urf_card cardiac
-    rename urf_lung lung
-    rename urf_diab diabetes
-    rename urf_chyper chyper
-    rename urf_phyper phyper
-    rename urf_eclam eclamp
-    rename urf_pre4000 pre4000
-    rename urf_preterm preterm
-    rename urf_renal renal
+    rename card      cardiac
+    rename diab      diabetes
+    rename eclam     eclamp
+    rename cardMiss  cardiacMiss
+    rename diabMiss  diabetesMiss
+    rename eclamMiss eclampMiss
+
     destring tobuse, replace
     gen tobaccoNR=tobuse==9
     gen tobaccoUse=tobuse==1
@@ -734,7 +728,7 @@ if `cleanFDeath'==1 {
     keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
     */ married marryU meducP meducS meduc* educYrs state anemia cardiac lung /*
     */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-    */ tobaccoUse alcoholNR alcoholUse twin
+    */ tobaccoUse alcoholNR alcoholUse twin *Miss
     save "$DAT/FetalDeaths/dta/clean/f2003", replace
 
     use "$DAT/FetalDeaths/dta/fetl2004", clear
@@ -759,20 +753,17 @@ if `cleanFDeath'==1 {
     gen meducSecondary=umeduc>8&umeduc<=12
     gen meducTertiary =umeduc>12&umeduc<=17
     gen meducMissing  =umeduc==99
-    foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
-    */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
-        replace `var'=. if `var'==9|`var'==8
+    foreach var of varlist anemia card lung diab chyper /*
+    */ phyper eclam pre4000 preterm renal {
+        gen `var'Miss = urf_`var'==9|urf_`var'==8
     }
-    rename urf_anemia anemia
-    rename urf_card cardiac
-    rename urf_lung lung
-    rename urf_diab diabetes
-    rename urf_chyper chyper
-    rename urf_phyper phyper
-    rename urf_eclam eclamp
-    rename urf_pre4000 pre4000
-    rename urf_preterm preterm
-    rename urf_renal renal
+    rename card      cardiac
+    rename diab      diabetes
+    rename eclam     eclamp
+    rename cardMiss  cardiacMiss
+    rename diabMiss  diabetesMiss
+    rename eclamMiss eclampMiss
+
     destring tobuse, replace
     gen tobaccoNR=tobuse==9
     gen tobaccoUse=tobuse==1
@@ -782,7 +773,7 @@ if `cleanFDeath'==1 {
     keep motherAge africanAm white otherRace deliveryMonth year birthOrder     /*
     */ married marryU meducP meducS meduc* educYrs state anemia cardiac lung /*
     */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-    */ tobaccoUse alcoholNR alcoholUse twin
+    */ tobaccoUse alcoholNR alcoholUse twin *Miss
     save "$DAT/FetalDeaths/dta/clean/f2004", replace
 
     use "$DAT/FetalDeaths/dta/fetl2005", clear
@@ -806,20 +797,16 @@ if `cleanFDeath'==1 {
     gen meducSecondary=umeduc>8&umeduc<=12
     gen meducTertiary =umeduc>12&umeduc<=17
     gen meducMissing  =umeduc==99
-    foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
-    */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
-        replace `var'=. if `var'==9|`var'==8
+    foreach var of varlist anemia card lung diab chyper /*
+    */ phyper eclam pre4000 preterm renal {
+        gen `var'Miss = urf_`var'==9|urf_`var'==8
     }
-    rename urf_anemia anemia
-    rename urf_card cardiac
-    rename urf_lung lung
-    rename urf_diab diabetes
-    rename urf_chyper chyper
-    rename urf_phyper phyper
-    rename urf_eclam eclamp
-    rename urf_pre4000 pre4000
-    rename urf_preterm preterm
-    rename urf_renal renal
+    rename card      cardiac
+    rename diab      diabetes
+    rename eclam     eclamp
+    rename cardMiss  cardiacMiss
+    rename diabMiss  diabetesMiss
+    rename eclamMiss eclampMiss
     destring tobuse, replace
     gen tobaccoNR=tobuse==9
     gen tobaccoUse=tobuse==1
@@ -829,7 +816,7 @@ if `cleanFDeath'==1 {
     keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
     */ married marryU meducP meducS meduc* educYrs anemia cardiac lung       /*
     */ diabetes chyper phyper eclamp pre4000 preterm renal tobaccoNR         /*
-    */ tobaccoUse alcoholNR alcoholUse twin
+    */ tobaccoUse alcoholNR alcoholUse twin *Miss
     save "$DAT/FetalDeaths/dta/clean/f2005", replace
 
     use "$DAT/FetalDeaths/dta/fetl2006", clear
@@ -852,20 +839,20 @@ if `cleanFDeath'==1 {
     gen meducSecondary=umeduc>8&umeduc<=12
     gen meducTertiary =umeduc>12&umeduc<=17
     gen meducMissing  =umeduc==99
-    foreach var of varlist urf_diab urf_chyper urf_phyper urf_eclam {
-      	replace `var'=. if `var'==9|`var'==8
+    foreach var of varlist diab chyper phyper eclam {
+        gen `var'Miss = urf_`var'==9|urf_`var'==8
     }
-    rename urf_diab diabetes
-    rename urf_chyper chyper
-    rename urf_phyper phyper
-    rename urf_eclam eclamp
+    rename diab      diabetes
+    rename eclam     eclamp
+    rename diabMiss  diabetesMiss
+    rename eclamMiss eclampMiss
     destring tobuse, replace
     gen tobaccoNR=tobuse==9
     gen tobaccoUse=tobuse==1
     
     keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
     */ married marryU meducP meducS meduc* educYrs diabetes chyper phyper    /*
-    */ eclamp tobaccoNR tobaccoUse twin
+    */ eclamp tobaccoNR tobaccoUse twin *Miss
     save "$DAT/FetalDeaths/dta/clean/f2006", replace
 
 
@@ -884,16 +871,22 @@ foreach yy of numlist 2007 2008 {
 	gen year=`yy'
 	gen married=mar==1
 	gen marryUnreported=mar==9
-	foreach var of varlist urf_diab urf_chyper urf_phyper urf_eclam {
-		replace `var'=. if `var'==9|`var'==8
-	}
-	rename urf_diab diabetes
-	rename urf_chyper chyper
-	rename urf_phyper phyper
-	rename urf_eclam eclamp
+  foreach var of varlist diab chyper phyper eclam {
+      gen `var'Miss = urf_`var'==9|urf_`var'==8
+  }
+  rename diab      diabetes
+  rename eclam     eclamp
+  rename diabMiss  diabetesMiss
+  rename eclamMiss eclampMiss
+
+  gen meducNone     =0
+  gen meducPrimary  =0
+  gen meducSecondary=0
+  gen meducTertiary =0
+  gen meducMissing  =1
 
 	keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
-	*/ married marryU diabetes chyper phyper eclamp twin
+	*/ married marryU diabetes chyper phyper eclamp twin meduc* *Miss
 	save "$DAT/FetalDeaths/dta/clean/f`yy'", replace
 }
 
@@ -913,16 +906,22 @@ foreach yy of numlist 2009(1)2012 {
 	gen married=mar==1
 	gen marryUnreported=mar==9
 
-	foreach var of varlist urf_diab urf_chyper urf_phyper urf_eclam {
-		replace `var'=. if `var'==9|`var'==8
-	}
-	rename urf_diab diabetes
-	rename urf_chyper chyper
-	rename urf_phyper phyper
-	rename urf_eclam eclamp
+  gen meducNone     =0
+  gen meducPrimary  =0
+  gen meducSecondary=0
+  gen meducTertiary =0
+  gen meducMissing  =1
+
+  foreach var of varlist diab chyper phyper eclam {
+      gen `var'Miss = urf_`var'==9|urf_`var'==8
+  }
+  rename diab      diabetes
+  rename eclam     eclamp
+  rename diabMiss  diabetesMiss
+  rename eclamMiss eclampMiss
 		
 	keep motherAge africanAm white otherRace deliveryMonth year birthOrder   /*
-	*/ married marryU chyper phyper eclamp twin
+	*/ married marryU chyper phyper eclamp twin meduc* *Miss
 	save "$DAT/FetalDeaths/dta/clean/f`yy'", replace
 
 }
@@ -932,12 +931,13 @@ foreach yy of numlist 2009(1)2012 {
 *** (3b) Alternatively append desired files into a large all year file
 ********************************************************************************
 if `appendFDeath'==1 {
-*    clear
-*    foreach yy of numlist 2002(1)2012 {
-*        append using "$DAT/FetalDeaths/dta/clean/f`yy'"
-*        count
-*    }
-*    save "$DAT/FetalDeaths/AppendedFDeaths.dta", replace
+    clear
+    foreach yy of numlist 2002(1)2012 {
+        append using "$DAT/FetalDeaths/dta/clean/f`yy'"
+        cap drop state
+        count
+    }
+    save "$DAT/FetalDeaths/AppendedFDeaths.dta", replace
 
 
     clear
