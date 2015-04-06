@@ -38,8 +38,8 @@ cap mkdir $OUT
 log using "$LOG/USregistryPrep.txt", text replace
 
 
-local cleanBirths  0
-local appendBirths 0
+local cleanBirths  1
+local appendBirths 1
 local cleanFDeath  1
 local appendFDeath 1
 
@@ -311,8 +311,7 @@ gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary =dmeduc>12&dmeduc<=17
 gen meducMissing  =dmeduc>=66
-foreach var of varlist anemia card lung diab chyper /*
-*/ phyper eclam pre4000 preterm renal {
+foreach var in anemia card lung diab chyper phyper eclam pre4000 preterm renal {
       gen `var'Miss = urf_`var'==9|urf_`var'==8
       rename urf_`var' `var'
 }
@@ -359,8 +358,7 @@ gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary =dmeduc>12&dmeduc<=17
 gen meducMissing  =dmeduc>=66
-foreach var of varlist anemia card lung diab chyper phyper eclam /*
-*/ pre4000 preterm renal {
+foreach var in anemia card lung diab chyper phyper eclam pre4000 preterm renal {
       gen `var'Miss = urf_`var'==9|urf_`var'==8
       rename urf_`var' `var'
 }
@@ -409,8 +407,7 @@ gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary =dmeduc>12&dmeduc<=17
 gen meducMissing  =dmeduc>=66
-foreach var of varlist anemia card lung diab chyper phyper eclam /*
-*/ pre4000 preterm renal {
+foreach var in anemia card lung diab chyper phyper eclam pre4000 preterm renal {
       gen `var'Miss = urf_`var'==9|urf_`var'==8
       rename urf_`var' `var'
 }
@@ -420,6 +417,12 @@ rename diab diabetes
 rename diabMiss diabetesMiss
 rename eclam eclamp
 rename eclamMiss eclampMiss
+
+destring tobuse, replace
+gen tobaccoNR=tobuse==9
+gen tobaccoUse=tobuse==1
+gen alcoholNR=alcohol==9
+gen alcoholUse=alcohol==1
 
 keep motherAge africanAm white otherRace birthMon year birthOrder  /*
 */ married marryU meduc* twin educYrs anemia cardiac lung          /*
@@ -451,8 +454,7 @@ gen meducPrimary  =dmeduc>0&dmeduc<=8
 gen meducSecondary=dmeduc>8&dmeduc<=12
 gen meducTertiary =dmeduc>12&dmeduc<=17
 gen meducMissing  =dmeduc>=66
-foreach var of varlist anemia card lung diab chyper phyper eclam /*
-*/ pre4000 preterm renal {
+foreach var in anemia card lung diab chyper phyper eclam pre4000 preterm renal {
       gen `var'Miss = urf_`var'==9|urf_`var'==8
       rename urf_`var' `var'
 }
@@ -708,9 +710,9 @@ if `cleanFDeath'==1 {
     gen meducSecondary=umeduc>8&umeduc<=12
     gen meducTertiary =umeduc>12&umeduc<=17
     gen meducMissing  =umeduc==99
-    foreach var of varlist anemia card lung diab chyper /*
-    */ phyper eclam pre4000 preterm renal {
+    foreach var in anemia card lung diab chyper phyper eclam pre4000 preterm renal {
         gen `var'Miss = urf_`var'==9|urf_`var'==8
+        rename urf_`var' `var'
     }
     rename card      cardiac
     rename diab      diabetes
@@ -753,9 +755,9 @@ if `cleanFDeath'==1 {
     gen meducSecondary=umeduc>8&umeduc<=12
     gen meducTertiary =umeduc>12&umeduc<=17
     gen meducMissing  =umeduc==99
-    foreach var of varlist anemia card lung diab chyper /*
-    */ phyper eclam pre4000 preterm renal {
+    foreach var in anemia card lung diab chyper phyper eclam pre4000 preterm renal {
         gen `var'Miss = urf_`var'==9|urf_`var'==8
+        rename urf_`var' `var'
     }
     rename card      cardiac
     rename diab      diabetes
@@ -797,9 +799,9 @@ if `cleanFDeath'==1 {
     gen meducSecondary=umeduc>8&umeduc<=12
     gen meducTertiary =umeduc>12&umeduc<=17
     gen meducMissing  =umeduc==99
-    foreach var of varlist anemia card lung diab chyper /*
-    */ phyper eclam pre4000 preterm renal {
+    foreach var in anemia card lung diab chyper phyper eclam pre4000 preterm renal {
         gen `var'Miss = urf_`var'==9|urf_`var'==8
+        rename urf_`var' `var'
     }
     rename card      cardiac
     rename diab      diabetes
@@ -839,8 +841,9 @@ if `cleanFDeath'==1 {
     gen meducSecondary=umeduc>8&umeduc<=12
     gen meducTertiary =umeduc>12&umeduc<=17
     gen meducMissing  =umeduc==99
-    foreach var of varlist diab chyper phyper eclam {
+    foreach var in diab chyper phyper eclam {
         gen `var'Miss = urf_`var'==9|urf_`var'==8
+        rename urf_`var' `var'
     }
     rename diab      diabetes
     rename eclam     eclamp
@@ -871,8 +874,9 @@ foreach yy of numlist 2007 2008 {
 	gen year=`yy'
 	gen married=mar==1
 	gen marryUnreported=mar==9
-  foreach var of varlist diab chyper phyper eclam {
+  foreach var in diab chyper phyper eclam {
       gen `var'Miss = urf_`var'==9|urf_`var'==8
+      rename urf_`var' `var'
   }
   rename diab      diabetes
   rename eclam     eclamp
@@ -912,8 +916,9 @@ foreach yy of numlist 2009(1)2012 {
   gen meducTertiary =0
   gen meducMissing  =1
 
-  foreach var of varlist diab chyper phyper eclam {
+  foreach var in diab chyper phyper eclam {
       gen `var'Miss = urf_`var'==9|urf_`var'==8
+      rename urf_`var' `var'
   }
   rename diab      diabetes
   rename eclam     eclamp
