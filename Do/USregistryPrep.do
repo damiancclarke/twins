@@ -706,11 +706,11 @@ if `cleanFDeath'==1 {
     gen married=mar==1
     gen marryUnreported=mar==9
     gen educYrs=umeduc if umeduc<66
-    gen meducNone     =dmeduc==0
-    gen meducPrimary  =dmeduc>0&dmeduc<=8
-    gen meducSecondary=dmeduc>8&dmeduc<=12
-    gen meducTertiary =dmeduc>12&dmeduc<=17
-    gen meducMissing  = dmeduc==99
+    gen meducNone     =umeduc==0
+    gen meducPrimary  =umeduc>0&umeduc<=8
+    gen meducSecondary=umeduc>8&umeduc<=12
+    gen meducTertiary =umeduc>12&umeduc<=17
+    gen meducMissing  =umeduc==99
     foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
     */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
         replace `var'=. if `var'==9|`var'==8
@@ -754,11 +754,11 @@ if `cleanFDeath'==1 {
     gen married=mar==1
     gen marryUnreported=mar==9
     gen educYrs=umeduc if umeduc<66
-    gen meducNone     =dmeduc==0
-    gen meducPrimary  =dmeduc>0&dmeduc<=8
-    gen meducSecondary=dmeduc>8&dmeduc<=12
-    gen meducTertiary =dmeduc>12&dmeduc<=17
-    gen meducMissing  = dmeduc==99
+    gen meducNone     =umeduc==0
+    gen meducPrimary  =umeduc>0&umeduc<=8
+    gen meducSecondary=umeduc>8&umeduc<=12
+    gen meducTertiary =umeduc>12&umeduc<=17
+    gen meducMissing  =umeduc==99
     foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
     */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
         replace `var'=. if `var'==9|`var'==8
@@ -801,11 +801,11 @@ if `cleanFDeath'==1 {
     gen married=mar==1
     gen marryUnreported=mar==9
     gen educYrs=umeduc if umeduc<66
-    gen meducNone     =dmeduc==0
-    gen meducPrimary  =dmeduc>0&dmeduc<=8
-    gen meducSecondary=dmeduc>8&dmeduc<=12
-    gen meducTertiary =dmeduc>12&dmeduc<=17
-    gen meducMissing  = dmeduc==99
+    gen meducNone     =umeduc==0
+    gen meducPrimary  =umeduc>0&umeduc<=8
+    gen meducSecondary=umeduc>8&umeduc<=12
+    gen meducTertiary =umeduc>12&umeduc<=17
+    gen meducMissing  =umeduc==99
     foreach var of varlist urf_anemia urf_card urf_lung urf_diab urf_chyper /*
     */ urf_phyper urf_eclam urf_pre4000 urf_preterm urf_renal {
         replace `var'=. if `var'==9|`var'==8
@@ -847,11 +847,11 @@ if `cleanFDeath'==1 {
     gen married=mar==1
     gen marryUnreported=mar==9
     gen educYrs=umeduc if umeduc<66
-    gen meducNone     =dmeduc==0
-    gen meducPrimary  =dmeduc>0&dmeduc<=8
-    gen meducSecondary=dmeduc>8&dmeduc<=12
-    gen meducTertiary =dmeduc>12&dmeduc<=17
-    gen meducMissing  = dmeduc==99
+    gen meducNone     =umeduc==0
+    gen meducPrimary  =umeduc>0&umeduc<=8
+    gen meducSecondary=umeduc>8&umeduc<=12
+    gen meducTertiary =umeduc>12&umeduc<=17
+    gen meducMissing  =umeduc==99
     foreach var of varlist urf_diab urf_chyper urf_phyper urf_eclam {
       	replace `var'=. if `var'==9|`var'==8
     }
