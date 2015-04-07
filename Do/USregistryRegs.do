@@ -13,7 +13,7 @@ ory: http://www.nber.org/data/vital-statistics-natality-data.html
 For optimal viewing of this file, set tab width=2.
 
 NOTES: 1969 has no plurality variable
-1970 has no plurality variable
+       1970 has no plurality variable
 */
 
 vers 11
@@ -39,63 +39,63 @@ local SumStats   0
 local graph      0
 
 local fmt tex
-
 if `"`fmt'"'=="tex" local sheet tex(pretty frag) label
 if `"`fmt'"'=="xls" local sheet excel label
+
 ********************************************************************************
 *** (2) Birth Regressions
 ********************************************************************************
 if `birthregs'==1 {
-	use "$DAT/Births/AppendedBirthsEarly.dta", clear
-	**take 10% sample
-	set seed 2727
-	gen bin=runiform()
-	keep if bin>0.9
-	drop bin
+    use "$DAT/Births/AppendedBirthsEarly.dta", clear
+    **take 10% sample
+    set seed 2727
+    gen bin=runiform()
+    keep if bin>0.9
+    drop bin
 
-  gen twin100=twin*100
-  gen motherAgeSq=motherAge^2
+    gen twin100=twin*100
+    gen motherAgeSq=motherAge^2
 
-  lab var africanAmerican "African American"
-  lab var otherRace       "Other Race"
-  lab var married         "Married"
-  lab var meducSecondary  "Secondary Education"
-  lab var meducTertiary   "Tertiary Education"
+    lab var africanAmerican "African American"
+    lab var otherRace       "Other Race"
+    lab var married         "Married"
+    lab var meducSecondary  "Secondary Education"
+    lab var meducTertiary   "Tertiary Education"
 
-  local base africanAm otherRa meducSeco meducTer married
-	local a absorb(year)
+    local base africanAm otherRa meducSeco meducTer married
+    local a absorb(year)
 
-  areg twin100 `base' motherAge* birthOrder marryUn, `a'
-	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
+    areg twin100 `base' motherAge* birthOrder marryUn, `a'
+    outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' replace
 
-  use "$DAT/Births/AppendedBirths.dta", clear
-  keep if year>=2003
-	**take 10% sample
-	set seed 2727
-	gen bin=runiform()
-	keep if bin>0.9
-	drop bin
+    use "$DAT/Births/AppendedBirths.dta", clear
+    keep if year>=2003
+    **take 10% sample
+    set seed 2727
+    gen bin=runiform()
+    keep if bin>0.9
+    drop bin
 
-	gen twin100=twin*100
-	gen motherAgeSq=motherAge*motherAge
+    gen twin100=twin*100
+    gen motherAgeSq=motherAge*motherAge
 
-  lab var africanAmerican "African American"
-  lab var otherRace       "Other Race"
-  lab var married         "Married"
-  lab var meducSecondary  "Secondary Education"
-  lab var meducTertiary   "Tertiary Education"
-  lab var tobaccoUse      "Consumed tobacco (pre-birth)"
-  lab var alcoholUse      "Consumed alcohol (pre-birth)"
+    lab var africanAmerican "African American"
+    lab var otherRace       "Other Race"
+    lab var married         "Married"
+    lab var meducSecondary  "Secondary Education"
+    lab var meducTertiary   "Tertiary Education"
+    lab var tobaccoUse      "Consumed tobacco (pre-birth)"
+    lab var alcoholUse      "Consumed alcohol (pre-birth)"
   
-	local base africanAmerican otherRace meducSecond meducTert tobacco*
-	local health anemia cardiac lung diabetes chyper phyper eclamp
+    local base africanAmerican otherRace meducSecond meducTert tobacco*
+    local health anemia cardiac lung diabetes chyper phyper eclamp
 	
-	areg twin100 `base' motherAge* i.birthOrder, `a'
-	outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' append
-	areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
-	outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
-	areg twin100 `base' alcohol* `health' motherAge* i.birthOrder, `a'
-	outreg2 `base' alcohol* `health' using "$OUT/USBirths.`fmt'", `sheet' append
+    areg twin100 `base' motherAge* i.birthOrder, `a'
+    outreg2 `base' using "$OUT/USBirths.`fmt'", `sheet' append
+    areg twin100 `base' alcohol* motherAge* i.birthOrder, `a'
+    outreg2 `base' alcohol* using "$OUT/USBirths.`fmt'", `sheet' append
+    areg twin100 `base' alcohol* `health' motherAge* i.birthOrder, `a'
+    outreg2 `base' alcohol* `health' using "$OUT/USBirths.`fmt'", `sheet' append
 }
 
 ********************************************************************************
@@ -105,39 +105,45 @@ if `fdeathregs'==1 {
 	use "$DAT/Births/AppendedBirths.dta", clear
   tab year
 	gen fetaldeath=0
-	append using "$DAT/FetalDeaths/AppendedFDeaths.dta"
+
+  keep if motherAge>15&motherAge<40
+	**take 5% sample
+	set seed 27
+	gen bin=runiform()
+	keep if bin>0.90
+	drop bin
+
+  append using "$DAT/FetalDeaths/AppendedFDeaths.dta"
   tab year
+  drop if year==2002
+  keep if motherAge>15&motherAge<40
 	replace fetaldeath=1 if fetaldeath==.
 	gen twin100=twin*100
 	gen motherAgeSq=motherAge*motherAge
 	gen Twin100fetaldeath=twin100*fetaldeath
-	drop if year<2003
 
-	**take 10% sample
-	set seed 2727
-	gen bin=runiform()
-	keep if bin>0.9
-	drop bin
-	
-	local base africanAmerican otherRace meducPrim meducSecond tobacco*
-	local health phyper eclamp
+  
+	local base africanAmerican otherRace meducNo meducPri meducSec meducMiss tobac*
+	local health phyper eclamp 
 	foreach v of varlist `base' `health' alcoholUse motherAge* {
 		gen TwinX`v'=twin*`v'
 	}
 
-	local Tbase twin TwinXtobacco* TwinXmeduc* TwinXafrican TwinXotherR TwinXmot*
+	local Tbase twin TwinXtobacco* TwinXmeduc* TwinXafrican TwinXotherR
 	local T2    `Tbase' TwinXalcohol*
-	local H     `health' TwinXphyper TwinXeclamp
-	local FEs   birthOrder
+	local H     `health' TwinXphyper TwinXeclamp 
+	local FEs   i.birthOrder i.motherAge i.motherAge#c.twin
 	local a     absorb(year)
-  local out1  africanAmerican meducPrim meducSecond tobaccoUse
-  local Tout1 TwinXafricanAme TwinXmeducPrim TwinXmeducSeco TwinXtobaccoUs twin
-  local out2  africanAmerican meducPrim meducSecond tobaccoUse alcoholU
-  local Tout2 TwinXaf TwinXmeducP TwinXmeducS TwinXtobaccoUs TwinXalcoholU twin
+  local out1  africanAmerican meducPrim meducSecond meducNone tobaccoUse
+  local Tout1 TwinXafr TwinXmeducP TwinXmeducS TwinXmeducN TwinXtobaccoU twin
+  local out2  africanAmerican meducPrim meducSecond tobaccoUse alcoholU 
+  local Tout2 `Tout1' TwinXalcoholU
 
   lab var africanAmerican "African American"
   lab var meducSecondary  "Secondary Education"
   lab var meducPrim       "Primary Education"
+  lab var meducTer        "Tertiary Education"
+  lab var meducNone       "No Education"
   lab var tobaccoUse      "Consumed tobacco (pre-birth)"
   lab var alcoholUse      "Consumed alcohol (pre-birth)"
   lab var phyper          "Pregnancy related hypertension"
@@ -146,6 +152,7 @@ if `fdeathregs'==1 {
   lab var TwinXafricanA   "Twin $\times$ African American"
   lab var TwinXmeducSecon "Twin $\times$ Secondary"
   lab var TwinXmeducPrim  "Twin $\times$ Primary Education"
+  lab var TwinXmeducNone  "Twin $\times$ No Education"
   lab var TwinXtobaccoUse "Twin $\times$ Tobacco"
   lab var TwinXalcoholUse "Twin $\times$ Alcohol"
   lab var TwinXphyper     "Twin $\times$ Hypertension"
@@ -153,11 +160,11 @@ if `fdeathregs'==1 {
   
   gen miscarry100=fetaldeath*100
 
-	areg miscarry100 `base' `Tbase' motherAge* `FEs', `a'
+	areg miscarry100 `base' `Tbase' `FEs', `a'
 	outreg2 `out1' `Tout1' using "$OUT/USfdeaths.`fmt'", `sheet' replace
-	areg miscarry100 `base' `T2' alcohol* motherAge* `FEs', `a'
+	areg miscarry100 `base' `T2' alcohol* `FEs', `a'
 	outreg2 `out2' `Tout2' using "$OUT/USfdeaths.`fmt'", `sheet' append
-	areg miscarry100 `base' `T2' `H' alcohol* motherAge* `FEs', `a'
+	areg miscarry100 `base' `T2' `H' alcohol* `FEs', `a'
 	outreg2 `out2' `Tout2' `H' using "$OUT/USfdeaths.`fmt'", `sheet' append
 }
 
