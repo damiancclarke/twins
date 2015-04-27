@@ -806,6 +806,8 @@ if `graphsSW'==1 {
    regopts(`se') scheme(s1color) generate(hArrow) groupname(Country) 
 	 ytitle("Frequency Twin") xtitle("Mother's Height (cm)");
 	graph export "$Graphs/SW/height_country.eps", as(eps) replace;
+  tab hArrow;
+  #delimit cr
 
   preserve
 	use "$Data/DHS_twins_mortality", clear
@@ -889,14 +891,19 @@ if `twin'== 1 {
 		eststo: reg twind100 $twinpredict bmi_sq height_sq `wt' `cond'& /*
 		*/ inc_status`inc', `se'
 	}
-	estout est1 est2 est3 using `out', ///
+	local cond1 child_yob>1989
+	local cond2 child_yob<=1989
+	foreach cn in cond1 cond2 {
+		eststo: reg twind100 $twinpredict bmi_sq height_sq `wt' `cond'&``cn'', `se'
+  }
+
+  estout est1 est2 est3 est4 est5 using `out', ///
 	  keep($twinout bmi_sq height_sq) ///
 	  title("Probability of Giving Birth to Twins (DHS)") ///
 	  varlabels(motherage "Age" motheragesq "Age Squared"  agefirstbirth ///
 	  "Age First Birth" educf "Education (years)" educfyrs_sq  ///
 	  "Education squared" height "Height" bmi "BMI" bmi_sq "BMI squared" ///
-	  height_sq "height squared") `estopt' replace
-
+	  height_sq "Height squared") `estopt' replace
 	estimates clear
 	
 	*****************************************************************************
