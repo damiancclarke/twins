@@ -89,7 +89,7 @@ local desire        0
 local compl_fert    0
 local twinoccur_ols 0
 local twinoccur_iv  0
-local conley        1
+local conley        0
 local thresholdtest 0
 local balance       0
 local balanceG      0
@@ -799,29 +799,26 @@ if `graphsMB'==1 {
 
 if `graphsSW'==1 {
 	cap mkdir "$Graphs/SW"
-	arrowplot twind height `cond' `wt', groupvar(country) linesize(0.0025) /*
-	*/ controls(motherage motheragesq agefirstbirth educf /*
-	*/ educfyrs_sq _yb*) regopts(`se') scheme(s1color) /*
-	*/ groupname(Country) ytitle("Frequency Twin") /*
-	*/ xtitle("Mother's Height (cm)") subtitle("Height and Twinning") /*
-	*/ title("Cross and Within Country Variation") /*
-	*/ note("Country specific trends condition on full controls from twin regression.")
-	graph export "$Graphs/SW/height_country.eps", as(eps) replace
+  
+  #delimit ;
+  arrowplot twind height, groupvar(country) linesize(0.0025)
+	 controls(motherage motheragesq agefirstbirth educf educfyrs_sq _yb*)
+   regopts(`se') scheme(s1color) generate(hArrow) groupname(Country) 
+	 ytitle("Frequency Twin") xtitle("Mother's Height (cm)");
+	graph export "$Graphs/SW/height_country.eps", as(eps) replace;
 
-
-	preserve
+  preserve
 	use "$Data/DHS_twins_mortality", clear
 	gen IMRnotwin=infantmortality if twind!=1
-	arrowplot twindfamily IMRnotwin `cond' `wt', groupvar(country) /*
-	*/ linesize(0.005) controls(motherage motheragesq agefirstbirth educf /*
-	*/ educfyrs_sq _yb*) regopts(`se') scheme(s1color) /*
-	*/ groupname(Country) ytitle("Frequency Twin") /*
-	*/ xtitle("Any Infant Mortality") subtitle("Infant Mortality and Twinning") /*
-	*/ title("Cross and Within Country Variation") /*
-	*/ note("Country specific trends condition on full controls from twin regression.")
-	graph export "$Graphs/SW/IMR_country.eps", as(eps) replace
-	restore
-	*/
+
+  #delimit ;
+  arrowplot twindfamily IMRnotwin `cond' `wt', groupvar(country)
+	 linesize(0.005) controls(motherage motheragesq agefirstbirth educf
+	 educfyrs_sq _yb*) regopts(`se') scheme(s1color) groupname(Country) 
+   ytitle("Frequency Twin") xtitle("Any Infant Mortality");
+	graph export "$Graphs/SW/IMR_country.eps", as(eps) replace;
+  #delimit cr
+  restore
 }
 
 ********************************************************************************
@@ -2118,7 +2115,7 @@ if `select'==1 {
             sum deathsperSister if healthy`num'==0
             local unhealthexp =round(`r(mean)'*`r(N)')
             dis `unhealthexp'
-
+            
             set seed 2203
             gen rnumb = runiform()
             sort healthy`num' rnumb
