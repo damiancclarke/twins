@@ -68,7 +68,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         0
+local samp5         1
 local resave        0
 local samples       0
 local matchrate     0
@@ -84,6 +84,7 @@ local OLS           0
 local Oster         0
 local RF            0
 local IV            0
+local IVnl          1
 local IVtwin        0
 local desire        0
 local compl_fert    0
@@ -128,7 +129,7 @@ local wt   [pw=sweight]
 local cond if age<19
 
 * FILE SPECIFICATIONS
-local gplus two three four five
+local gplus two three four
 local MAGE 0
 
 
@@ -1055,7 +1056,7 @@ if `RF'==1 {
 }
 
 ********************************************************************************
-**** (6) IV (using twin at order n), subsequent inclusion of twin predictors
+**** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
 ********************************************************************************
 if `IV'==1 {
 	tokenize `fnames'
@@ -1105,6 +1106,36 @@ if `IV'==1 {
 		estimates clear
 		macro shift
 	}
+}
+
+********************************************************************************
+**** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
+********************************************************************************
+if `IVnl'==1 {
+  local estimates
+  local ii = 1
+
+  tokenize `fnames'
+	foreach condition of local conditions {
+		foreach n in `gplus' {
+			preserve
+			keep `cond'&`condition'&`n'_plus==1
+
+			foreach y in $outcomes {
+        #delimit ;
+        eststo: ivreg2 `y' `base' $age $S $H height_sq bmi_sq (fert=twin_`n'_fam)
+        `wt', `se' savefirst savefp(f`n') partial(`base');
+
+        local estimates `estimates' est`ii';
+        local ++ii;
+        #delimit cr
+      }
+      restore
+    }  
+  }
+  estout `estimates' using "$Tables/IV/NonLinIV.xls", replace `estopt' `varlab' /*
+	*/ keep(fert $age $S $H height_sq bmi_sq)
+  estimates clear
 }
 
 ********************************************************************************
