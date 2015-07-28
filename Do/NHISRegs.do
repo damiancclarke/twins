@@ -32,8 +32,7 @@ global LOG "~/investigacion/Activa/Twins/Log"
 cap mkdir $OUT
 log using "$LOG/NHISRegs.txt", text replace
 
-local yvars excellentHealth schoolZscore childEducation /*childHealthPrivate*/ 
-local yvars excellentHealth schoolZscore
+local yvars EducationZscore excellentHealth  
 local age   ageFirstBirth motherAge motherAge2
 local base  B_* childSex
 local H     H_* `age' smoke* heightMiss
@@ -55,15 +54,19 @@ local conley 1
 ********************************************************************************
 *** (2) Append cleaned files, generate indicators
 ********************************************************************************
-append using "$DAT/NCIS2010" "$DAT/NCIS2011" "$DAT/NCIS2012" "$DAT/NCIS2013"
-append using "$DAT/NCIS2006" "$DAT/NCIS2007" "$DAT/NCIS2008" "$DAT/NCIS2009"
-append using "$DAT/NCIS2002" "$DAT/NCIS2003" "$DAT/NCIS2004" "$DAT/NCIS2005"  
+append using "$DAT/NHIS2011" "$DAT/NHIS2012" "$DAT/NHIS2013" "$DAT/NHIS2014"
+append using "$DAT/NHIS2007" "$DAT/NHIS2008" "$DAT/NHIS2009" "$DAT/NHIS2010" 
+append using                 "$DAT/NHIS2004" "$DAT/NHIS2005" "$DAT/NHIS2006" 
 
 gen childHealth=childHealthStatus if childHealthStatus<=5
 gen excellentHealth=childHealthStatus==1
-bys ageInterview: egen mE=mean(childEducation)
-bys ageInterview: egen sd=sd(childEducation)
-gen schoolZscore=(childEducation-mE)/sd
+
+foreach zVar in Education Health {
+    bys ageInterview: egen mE=mean(child`zVar')
+    bys ageInterview: egen sd=sd(child`zVar')
+    gen `zVar'Zscore=(child`zVar'-mE)/sd
+    drop mE sd
+}
 *replace childHealthPrivate=0 if childHealthPrivate==2
 
 tab surveyYear,   gen(B_Syear)
@@ -104,7 +107,7 @@ if `sum'==1 {
     gen motherExcellentHealth=motherHealthStatus==1
 
     local motherStat fert motherAge mEduc BMI BMI185 motherExcellentHealth
-    local childStat  excellentHealth childEducation schoolZscore
+    local childStat  excellentHealth childEducation EducationZscore
 
     preserve
     collapse `motherStat' twinfamily, by(surveyYear hhx fmx)
@@ -159,24 +162,26 @@ exit
 *** (5) OLS regressions
 ********************************************************************************
 if `ols'==1 {
-foreach y of varlist `yvars' {
+    foreach y of varlist `yvars' {
 
-	eststo: reg `y' `base' `age' fert [`wt'], `se'
-	eststo: reg `y' `base' `H'   fert [`wt'], `se'
-	eststo: reg `y' `base' `SH'  fert [`wt'], `se'
-
-	estout est1 est2 est3 using "$OUT/OLSAll`y'.xls", replace `estopt' keep(fert `SH')
-	estimates clear
-
-	foreach f in two three four {
-		eststo: reg `y' `base' `SH' fert [`wt'] if `f'_plus==1, `se'
-		eststo: reg `y' `base' `H'  fert [`wt'] if `f'_plus==1, `se'
-		eststo: reg `y' `base'      fert [`wt'] if `f'_plus==1, `se'
-	}
-	local estimates est1 est2 est3 est4 est5 est6 est7 est8 est9
-	estout `estimates' using "$OUT/OLSFert`y'.xls", replace `estopt' keep(fert `SH')
-	estimates clear
-}
+        eststo: reg `y' `base' `age' fert [`wt'], `se'
+        eststo: reg `y' `base' `H'   fert [`wt'], `se'
+        eststo: reg `y' `base' `SH'  fert [`wt'], `se'
+        
+        estout est1 est2 est3 using "$OUT/OLSAll`y'.xls", replace `estopt' /*
+        */ keep(fert `SH')
+        estimates clear
+        
+        foreach f in two three four {
+            eststo: reg `y' fert `base' `SH' [`wt'] if `f'_plus==1, `se'
+            eststo: reg `y' fert `base' `H'  [`wt'] if `f'_plus==1&e(sample), `se'
+            eststo: reg `y' fert `base'      [`wt'] if `f'_plus==1&e(sample), `se'
+        }
+        local estimates est1 est2 est3 est4 est5 est6 est7 est8 est9
+        estout `estimates' using "$OUT/OLSFert`y'.xls", replace `estopt' /*
+        */ keep(fert `SH')
+        estimates clear
+    }
 }	
 
 ********************************************************************************
@@ -184,36 +189,36 @@ foreach y of varlist `yvars' {
 ********************************************************************************
 if `ivs'==1 {
 foreach y of varlist `yvars' {
-	foreach f in two three four {
-		local F`f'
-		preserve
-		keep if `f'_plus==1
-		eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam)             [`wt'], /*
-		*/ `se' first ffirst savefirst savefp(`f's) partial(`base')
-		unab svars : S_*
-		test `svars'
-		local F`f' `F`f'' `=`r(chi2)''
+    foreach f in two three four {
+        local F`f'
+        preserve
+        keep if `f'_plus==1
+        eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
+        */ `se' first ffirst savefirst savefp(`f's) partial(`base')
+        unab svars : S_*
+        test `svars'
+        local F`f' `F`f'' `=`r(chi2)''
 		
-		eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
-		*/ `se' first ffirst savefirst savefp(`f'h) partial(`base')
-		unab hvars : H_* smoke*
-		test `hvars'
-		local F`f' `F`f'' `=`r(chi2)''
+        eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
+        */ `se' first ffirst savefirst savefp(`f'h) partial(`base')
+        unab hvars : H_* smoke*
+        test `hvars'
+        local F`f' `F`f'' `=`r(chi2)''
 
-		eststo: ivreg29 `y' `base'     (fert=twin_`f'_fam) if e(sample) [`wt'], /*
-		*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
-		restore
-		dis `F`f''
-	}
-	local estimates est3 est2 est1 est6 est5 est4 est9 est8 est7
-	local fstage twobfert twohfert twosfert threebfert threehfert threesfert /*
-	*/ fourbfert fourhfert foursfert
-	estout `estimates' using "$OUT/IVFert`y'.xls", replace `estopt' keep(fert `SH')
-	estout `fstage'  using "$OUT/IVFert`y'1.xls", replace `estopt' keep(twin* `SH')
-	dis "F-test two plus (S, H)  : `Ftwo'"
-	dis "F-test three plus (S, H): `Fthree'"
-	dis "F-test four plus (S, H) : `Ffour'"
-	estimates clear
+        eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
+        */ `se' first ffirst savefirst savefp(`f'b) partial(`base')
+        restore
+        dis `F`f''
+    }
+    local estimates est3 est2 est1 est6 est5 est4 est9 est8 est7
+    local fstage twobfert twohfert twosfert threebfert threehfert threesfert /*
+    */ fourbfert fourhfert foursfert
+    estout `estimates' using "$OUT/IVFert`y'.xls", replace `estopt' keep(fert `SH')
+    estout `fstage'  using "$OUT/IVFert`y'1.xls", replace `estopt' keep(twin* `SH')
+    dis "F-test two plus (S, H)  : `Ftwo'"
+    dis "F-test three plus (S, H): `Fthree'"
+    dis "F-test four plus (S, H) : `Ffour'"
+    estimates clear
 }
 }
 
@@ -223,27 +228,52 @@ foreach y of varlist `yvars' {
 if `conley'==1 {
     mat ConleyBounds = J(6,4,.)
     local i = 1
-    foreach y of varlist `yvars' {
+        foreach y of varlist `yvars' {
         foreach f in two three four {
             preserve
             keep if `f'_plus==1
 
-            plausexog uci `y' `base' (fert=twin_`f'_fam) [`wt'], /*
+            qui reg `y' `base'
+            predict Ey, resid
+            qui reg fert `base'
+            predict Ex, resid
+            qui reg twin_`f'_fam `base'
+            predict Ez, resid
+            local ESH
+            foreach var of varlist `SH' {
+                qui reg `var' `base'
+                predict E`var', resid
+                local ESH `ESH' E`var'
+            }
+            
+            plausexog uci `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
             */ vce(robust) gmin(0) gmax(0.06) grid(2) level(0.90)
             mat ConleyBounds[`i',1]=e(lb_fert)
             mat ConleyBounds[`i',2]=e(ub_fert)
 
-            local items = `e(numvars)'
+            local items 17
             matrix omega_eta = J(`items',`items',0)
             matrix omega_eta[1,1] = 0.0493175^2
             matrix mu_eta = J(`items',1,0)
             matrix mu_eta[1,1] = 0.0642231
 
-            cap plausexog ltz `y' `base' (fert=twin_`f'_fam), /*
-            */ omega(omega_eta) mu(mu_eta)
-            cap mat ConleyBounds[`i',3]=_b[fert]-1.65*_se[fert]
-            cap mat ConleyBounds[`i',4]=_b[fert]+1.65*_se[fert]
+            
+            plausexog ltz Ey `ESH' (Ex=Ez), omega(omega_eta) mu(mu_eta)
+            cap mat ConleyBounds[`i',3]=_b[Ex]-1.65*_se[Ex]
+            cap mat ConleyBounds[`i',4]=_b[Ex]+1.65*_se[Ex]
 
+            foreach num of numlist 1(1)5 {
+                matrix om`num' = J(`items',`items',0)
+                matrix om`num'[1,1] = ((`num'/5)*0.1/sqrt(12))^2
+                matrix mu`num' = J(`items',1,0)
+                matrix mu`num'[1,1] = (`num'/5)*0.1/2
+                local d`num' = (`num'/5)*0.1
+            }
+            plausexog ltz Ey `ESH' (Ex=Ez), mu(mu_eta) omega(omega_eta)        /*
+            */ graphomega(om1 om2 om3 om4 om5) graphmu(mu1 mu2 mu3 mu4 mu5)    /*
+            */ graphdelta(`d1' `d2' `d3' `d4' `d5') graph(Ex)
+            graph export "$OUT/ConleyUSA_`y'_`f'.eps", as(eps) replace
+            
             mat list ConleyBounds
             restore
             local ++i
@@ -255,9 +285,7 @@ if `conley'==1 {
     */ format(%6.4f) replace
 }
 
-
-exit 
-
+exit
 ********************************************************************************
 *** (7) IV regressions by gender
 ********************************************************************************
@@ -267,19 +295,19 @@ foreach gend of numlist 1 2 {
 		foreach f in two three four {
 			preserve
 			keep if childSex==`gend'&`f'_plus==1
-			eststo: ivreg29 `y' `SH' (fert=twin_`f'_fam) [`wt'],               /*
+			eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam) [`wt'],             /*
 			*/ `se' first ffirst savefirst savefp(`f's) partial(`base')
 			dis "`f' base"
 			dis _b[fert]
 			dis _b[fert]/_se[fert]
 
-			eststo: ivreg29 `y'  `H' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
+			eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
 			*/ `se' first ffirst savefirst savefp(`f'h) partial(`base')
 			dis "`f' H"
 			dis _b[fert]
 			dis _b[fert]/_se[fert]
 
-			eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) if e(sample) [`wt'], /*
+			eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) if e(sample) [`wt'],     /*
 			*/ `se' first ffirst savefirst savefp(`f'b) partial(`base')
 			dis "`f' SH"
 			dis _b[fert]
@@ -296,4 +324,3 @@ foreach gend of numlist 1 2 {
 		estimates clear
 	}
 }
-
