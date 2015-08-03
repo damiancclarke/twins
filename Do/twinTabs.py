@@ -6,7 +6,7 @@ from sys import argv
 import re
 import os
 import locale
-locale.setlocale(locale.LC_ALL, 'en_US')
+locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
 script, ftype = argv
 print('\n\nHey DCC. The script %s is making %s files \n' %(script, ftype))
@@ -50,6 +50,7 @@ coun = "Count.txt"
 dhss = "Countries.txt"
 
 conl = "ConleyResults.txt"
+conU = "ConleyGammaNHIS.txt"
 imrt = "PreTwinTest.xls"
 
 os.chdir(Results+'IV/')
@@ -73,10 +74,11 @@ if ftype=='tex':
     mcsc = '}{l}{\\textsc{'
     mcbf = '}{l}{\\textbf{'    
     mc2  = '}}'
-    twid = ['5','8','4','5','9','9','4','6','10','7','12','6']
+    twid = ['5','8','4','5','9','9','4','6','10','7','12','6','12']
     tcm  = ['}{p{10.0cm}}','}{p{17.8cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
             '}{p{13.8cm}}','}{p{14.2cm}}','}{p{12.1cm}}','}{p{13.8cm}}',
-            '}{p{18.0cm}}','}{p{12.8cm}}','}{p{19.2cm}}','}{p{10.0cm}}']
+            '}{p{18.0cm}}','}{p{12.8cm}}','}{p{18cm  }}','}{p{10.0cm}}',
+            '}{p{18.8cm}}']
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
     lname = "Fertility$\\times$desire"
     tname = "Twin$\\times$desire"
@@ -189,7 +191,8 @@ def plustable(ffile,n1,n2,searchterm,alt,n3):
 #==============================================================================
 #== (3) Call functions, print table for plus groups
 #==============================================================================
-for i in ['Two', 'Three', 'Four', 'Five']:
+#can add Five in without problems
+for i in ['Two', 'Three', 'Four']:
     if i=="Two":
         num1=1
         num2=4
@@ -327,7 +330,7 @@ AdjB = []
 AdjS = []
 AdjN = []
 
-for num in [1,4,7]:
+for num in [1,5,9]:
     BB, BS, BN    = plustable(base, num, num+3,'fert','normal',1000)
     LB, LS, LN    = plustable(lowi, num, num+3,'fert','normal',1000)
     MB, MS, MN    = plustable(midi, num, num+3,'fert','normal',1000)
@@ -364,17 +367,17 @@ mc1+twid[10]+mcbf+"Low-Income"+mc2+ls+" \n"
 mc1+twid[10]+mcbf+"Middle-Income"+mc2+ls+" \n"
 "Fertility"+MidB[0]+dd+MidB[1]+dd+MidB[2]+ls+'\n'
 +MidS[0]+dd+MidS[1]+dd+MidS[2]+ls+'\n'+lA+
-"Observations"+MidN[0]+dd+MidN[1]+dd+MidN[2]+ls+'\n'+
+"Observations"+MidN[0]+dd+MidN[1]+dd+MidN[2]+ls+'\n')
 
-mc1+twid[10]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
-"Fertility"+AdjB[0]+dd+AdjB[1]+dd+AdjB[2]+ls+'\n'
-+AdjS[0]+dd+AdjS[1]+dd+AdjS[2]+ls+'\n'+lA+
-"Observations"+AdjN[0]+dd+AdjN[1]+dd+AdjN[2]+ls+'\n'+
+#mc1+twid[10]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
+#"Fertility"+AdjB[0]+dd+AdjB[1]+dd+AdjB[2]+ls+'\n'
+#+AdjS[0]+dd+AdjS[1]+dd+AdjS[2]+ls+'\n'+lA+
+#"Observations"+AdjN[0]+dd+AdjN[1]+dd+AdjN[2]+ls+'\n'+
 
-mc1+twid[10]+mcbf+"Twins and Pre-Twins"+mc2+ls+" \n"
-"Fertility"+TwiB[0]+dd+TwiB[1]+dd+TwiB[2]+ls+'\n'
-+TwiS[0]+dd+TwiS[1]+dd+TwiS[2]+ls+'\n'+lA+
-"Observations"+TwiN[0]+dd+TwiN[1]+dd+TwiN[2]+ls+'\n')
+#mc1+twid[10]+mcbf+"Twins and Pre-Twins"+mc2+ls+" \n"
+#"Fertility"+TwiB[0]+dd+TwiB[1]+dd+TwiB[2]+ls+'\n'
+#+TwiS[0]+dd+TwiS[1]+dd+TwiS[2]+ls+'\n'+lA+
+#"Observations"+TwiN[0]+dd+TwiN[1]+dd+TwiN[2]+ls+'\n')
 
 IV2.write('\n'+mr+mc1+twid[10]+tcm[10]+mc3+
 "The two plus subsample refers to all first born children in families with "
@@ -645,7 +648,6 @@ for i,line in enumerate(counti):
         addL.append(line.replace("( ","("))
     elif i==8:
         nk = line
-print nk
 
 summi = open(Results+"Summary/"+summ, 'r')
 summc = open(Results+"Summary/"+sumc, 'r')
@@ -749,6 +751,7 @@ summo.close()
 #== (9) Create Conley et al. table
 #==============================================================================
 conli = open(Results+"Conley/"+conl, 'r').readlines()
+conlu = open(Results+"NHIS/"+conU, 'r').readlines()
 conlo = open(Tables+"Conley."+end, 'w')
 
 
@@ -763,17 +766,35 @@ elif ftype=='csv':
     conlo.write("UCI:;gamma in [0,delta];LTZ:;gamma ~ U(0,delta) \n")
 
 for i,line in enumerate(conli):
-    if i<5:
+    if i<4:
         line = re.sub('\s+', dd, line) 
         line = re.sub('&$', ls+ls, line)
         line = line.replace('Plus', ' Plus')
         line = line.replace('Bound', ' Bound')
+        line = line.replace('Bound\\\\', 'Bound\\\\ \\midrule')
+        line = line.replace('\\midrule', 
+                            '\\midrule \n \\multicolumn{5}{l}{Panel A: DHS}\\\\')
         conlo.write(line + "\n")
     if i==5:
         delta = line.replace('deltas', '')
         delta = re.sub('\s+', ', ', delta) 
         delta = re.sub(', $', '.', delta)
         delta = re.sub('^,', ' ', delta)
+conlo.write('&&&& \\\\ \\multicolumn{5}{l}{Panel B: USA (Education)}\\\\')
+for i,line in enumerate(conlu):
+    if i==2 or i==4 or i==6:
+        line = re.sub('\s+', dd, line) 
+        line = re.sub('&$', ls+ls, line)
+        line = line.replace('E',' Plus')
+        conlo.write(line + "\n")
+conlo.write('&&&& \\\\ \\multicolumn{5}{l}{Panel B: USA (Health)}\\\\')
+for i,line in enumerate(conlu):
+    if i==1 or i==3 or i==5:
+        line = re.sub('\s+', dd, line) 
+        line = re.sub('&$', ls+ls, line)
+        line = line.replace('H',' Plus')
+        conlo.write(line + "\n")
+    
 
 conlo.write(mr+mc1+twid[3]+tcm[3]+mc3+
 "This table presents upper and lower bounds of a 95\\% confidence interval "
@@ -802,7 +823,7 @@ dhssi = open(Results+"Summary/"+dhss, 'r').readlines()
 dhsso = open(Tables+"Countries."+end, 'w')
 
 if ftype=='tex':
-    dhsso.write("\\end{spacing}\\begin{spacing}{1} \n"
+    dhsso.write("%\\end{spacing}\\begin{spacing}{1} \n"
     "\\begin{longtable}{llccccccc}\\caption{Full Survey Countries and Years} \\\\ \n"
     "\\toprule\\toprule\\label{TWINtab:countries} \n"
     "& & \\multicolumn{7}{c}{Survey Year} \\\\ \\cmidrule(r){3-9} \n"
@@ -840,7 +861,7 @@ dhsso.write(ls+"\n"+mr+mc1+twid[4]+tcm[4]+mc3+
 "countries, while low refers just to those considered to be low-income economies.")
 if ftype=='tex':
     dhsso.write("\\end{footnotesize}}  \n"
-    "\\\\ \\bottomrule \\end{longtable}\\end{spacing}\\begin{spacing}{1.5}")
+    "\\\\ \\bottomrule \\end{longtable}%\\end{spacing}\\begin{spacing}{1.5}")
 
 
 dhsso.close()
@@ -999,29 +1020,36 @@ for num in ['two','three','four']:
     searcher='twin\_'+num+'\_fam'
     Asearcher='ADJtwin\_'+num+'\_fam'
     searchup=searcher+'|twin'+num
+    if num=='two':
+        N = 0
+    elif num=='three':
+        N = 4
+    else:
+        N = 8
 
-    FSB, FSS, FSN    = plustable(firs, 1, 4,searcher,'normal',1000)
-    FLB, FLS, FLN    = plustable(flow, 1, 4,searcher,'normal',1000)
-    FMB, FMS, FMN    = plustable(fmid, 1, 4,searcher,'normal',1000)
-    FTB, FTS, FTN    = plustable(ftwi, 1, 4,searcher,'normal',1000)
-    FAB, FAS, FAN    = plustable(fadj, 1, 4,searcher,'normal',1000)
+    FSB, FSS, FSN    = plustable(firs, 1, 13,searcher,'normal',1000)
+    FLB, FLS, FLN    = plustable(flow, 1, 13,searcher,'normal',1000)
+    FMB, FMS, FMN    = plustable(fmid, 1, 13,searcher,'normal',1000)
+    FMB, FMS, FMN    = plustable(fmid, 1, 13,searcher,'normal',1000)
+    FTB, FTS, FTN    = plustable(ftwi, 1, 13,searcher,'normal',1000)
+    FAB, FAS, FAN    = plustable(fadj, 1, 13,searcher,'normal',1000)
 
 
     AllB.append(dd + FSB[0][0] + dd + FSB[0][1] + dd + FSB[0][2])
     AllS.append(dd + FSS[0][0] + dd + FSS[0][1] + dd + FSS[0][2])
-    AllN.append(dd + FSN[0][0] + dd + FSN[0][1] + dd + FSN[0][2])
+    AllN.append(dd + FSN[0][N] + dd + FSN[0][N+1] + dd + FSN[0][N+2])
     LowB.append(dd + FLB[0][0] + dd + FLB[0][1] + dd + FLB[0][2])
     LowS.append(dd + FLS[0][0] + dd + FLS[0][1] + dd + FLS[0][2])
-    LowN.append(dd + FLN[0][0] + dd + FLN[0][1] + dd + FLN[0][2])
+    LowN.append(dd + FLN[0][N] + dd + FLN[0][N+1] + dd + FLN[0][N+2])
     MidB.append(dd + FMB[0][0] + dd + FMB[0][1] + dd + FMB[0][2])
     MidS.append(dd + FMS[0][0] + dd + FMS[0][1] + dd + FMS[0][2])
-    MidN.append(dd + FMN[0][0] + dd + FMN[0][1] + dd + FMN[0][2])
+    MidN.append(dd + FMN[0][N] + dd + FMN[0][N+1] + dd + FMN[0][N+2])
     AdjB.append(dd + FAB[0][0] + dd + FAB[0][1] + dd + FAB[0][2])
     AdjS.append(dd + FAS[0][0] + dd + FAS[0][1] + dd + FAS[0][2])
-    AdjN.append(dd + FAN[0][0] + dd + FAN[0][1] + dd + FAN[0][2])
+    AdjN.append(dd + FAN[0][N] + dd + FAN[0][N+1] + dd + FAN[0][N+2])
     TwiB.append(dd + FTB[0][0] + dd + FTB[0][1] + dd + FTB[0][2])
     TwiS.append(dd + FTS[0][0] + dd + FTS[0][1] + dd + FTS[0][2])
-    TwiN.append(dd + FTN[0][0] + dd + FTN[0][1] + dd + FTN[0][2])
+    TwiN.append(dd + FTN[0][N] + dd + FTN[0][N+1] + dd + FTN[0][N+2])
 
 
 
@@ -1038,19 +1066,20 @@ mc1+twid[10]+mcbf+"Low-Income"+mc2+ls+" \n"
 mc1+twid[10]+mcbf+"Middle-Income"+mc2+ls+" \n"
 "Twin"+MidB[0]+dd+MidB[1]+dd+MidB[2]+ls+'\n'
 +MidS[0]+dd+MidS[1]+dd+MidS[2]+ls+'\n'+lA2+
-"Observations"+MidN[0]+dd+MidN[1]+dd+MidN[2]+ls+'\n'+lA2+
+"Observations"+MidN[0]+dd+MidN[1]+dd+MidN[2]+ls+'\n')
+#+lA2+
 
-mc1+twid[10]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
-"Twin"+AdjB[0]+dd+AdjB[1]+dd+AdjB[2]+ls+'\n'
-+AdjS[0]+dd+AdjS[1]+dd+AdjS[2]+ls+'\n'+lA2+
-"Observations"+AdjN[0]+dd+AdjN[1]+dd+AdjN[2]+ls+'\n'+lA2+
+#mc1+twid[10]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
+#"Twin"+AdjB[0]+dd+AdjB[1]+dd+AdjB[2]+ls+'\n'
+#+AdjS[0]+dd+AdjS[1]+dd+AdjS[2]+ls+'\n'+lA2+
+#"Observations"+AdjN[0]+dd+AdjN[1]+dd+AdjN[2]+ls+'\n'+lA2+
 
-mc1+twid[10]+mcbf+"Twins and Pre-Twins"+mc2+ls+" \n"
-"Twin"+TwiB[0]+dd+TwiB[1]+dd+TwiB[2]+ls+'\n'
-+TwiS[0]+dd+TwiS[1]+dd+TwiS[2]+ls+'\n'+lA2+
-"Observations"+TwiN[0]+dd+TwiN[1]+dd+TwiN[2]+ls+'\n')
+#mc1+twid[10]+mcbf+"Twins and Pre-Twins"+mc2+ls+" \n"
+#"Twin"+TwiB[0]+dd+TwiB[1]+dd+TwiB[2]+ls+'\n'
+#+TwiS[0]+dd+TwiS[1]+dd+TwiS[2]+ls+'\n'+lA2+
+#"Observations"+TwiN[0]+dd+TwiN[1]+dd+TwiN[2]+ls+'\n')
 
-fstao.write('\n'+mr+mc1+twid[10]+tcm[10]+mc3+
+fstao.write('\n'+mr+mc1+twid[12]+tcm[12]+mc3+
 "Each cell represents the coefficient from the first-stage of a two-stage "
 "regression.  The first-stage represents the effect of twinning at parity "
 "$N$ on total fertility where $N$ is 2, 3 or 4 for 2+, 3+ and 4+ groups "
