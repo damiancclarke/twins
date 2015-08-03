@@ -2,18 +2,20 @@
 
 \title{The Twin Instrument\footnote{We are grateful to Paul Devereux, James 
 Fenske, Cheti Nicoletti, Carol Propper, Atheen Venkataramani, Marcos 
-Vera-Hernandez and Frank Windmeijer, along with seminar audiences and discussants 
-at CMPO Bristol, ESPE, NEUDC, CSAE, The University of Essex, The University of 
-Oxford, the Barcelona GSE summer forum, PacDev, and the RES conference for helpful 
-comments.  We thank Emilia Del Bono, Climent Quintana-Domeque, Pedro R\'odenas, 
-Libertad Gonz\'alez, Anna Aevarsdottir, Martin Foureaux Koppensteiner and Ryan 
-Palmer who have very kindly shared data and/or source code from their work.}}
+Vera-Hernandez and Frank Windmeijer, along with various seminar audiences and 
+discussants for helpful comments.  We thank Emilia Del Bono, Climent 
+Quintana-Domeque, Pedro R\'odenas, Libertad Gonz\'alez, Hanna M\"uhlrad, Anna 
+Aevarsdottir, Martin Foureaux Koppensteiner and Ryan Palmer who have very 
+kindly shared data and/or source code from their work.}}
 \author{Sonia Bhalotra\thanks{The University of Essex.
-Contact: srbhal@essex.ac.uk} 
+Contact: \href{mailto:srbhal@essex.ac.uk}{srbhal@essex.ac.uk}} 
 \and Damian Clarke\thanks{The University of Oxford. 
-Contact: damian.clarke@economics.ox.ac.uk}}
-\date{\today}
+Contact: \href{mailto:damian.clarke@economics.ox.ac.uk}
+{damian.clarke@economics.ox.ac.uk}}}
+\date{August 2015}
 
+%at CMPO Bristol, ESPE, NEUDC, CSAE, The University of Essex, The University of 
+%Oxford, the Barcelona GSE summer forum, PacDev, and the RES conference
 
 %*******************************************************************************
 \usepackage{amsmath}
@@ -24,11 +26,12 @@ Contact: damian.clarke@economics.ox.ac.uk}}
 \usepackage{booktabs}
 \usepackage{breqn}
 \usepackage{caption}
-\usepackage{color} \pagecolor{white}
+\usepackage[usenames, dvipsnames]{color} \pagecolor{white}
 \usepackage{dcolumn}
 \usepackage{epsfig}
 \usepackage{epstopdf}
 \usepackage[capposition=top]{floatrow}
+\usepackage{hyperref}
 \usepackage{lastpage}
 \usepackage{longtable}
 \usepackage{lscape}
@@ -38,6 +41,7 @@ Contact: damian.clarke@economics.ox.ac.uk}}
 \usepackage{rotating}
 \usepackage{setspace}
 \usepackage{subcaption}
+\usepackage{subfloat}
 \usepackage{url}
 \usepackage{wrapfig}
 
@@ -51,6 +55,15 @@ Contact: damian.clarke@economics.ox.ac.uk}}
 \setlength\parindent{0.25in}
 \setlength\parskip{0.25in}
 
+\hypersetup{                                                                                                    
+    colorlinks=true,   
+    linkcolor=BlueViolet,
+    citecolor=BlueViolet,
+    filecolor=BlueViolet,
+    urlcolor=BlueViolet
+}
+
+
 \newcommand{\twinfolder}{"/home/damiancclarke/investigacion/Activa/Twins"}
 \DeclareMathOperator{\plim}{plim}
 
@@ -60,26 +73,25 @@ Contact: damian.clarke@economics.ox.ac.uk}}
 
 \maketitle
 \vspace{-1cm}
-\begin{center}{\Large\textsc{Preliminary Draft}}\end{center}
+%\begin{center}{\Large\textsc{Preliminary Draft}}\end{center}
 \begin{abstract}
  The incidence of twins has been used to identify the impact of changes in 
  fertility on measures of investment in children born prior to the twins, and
  the emerging consensus in this literature is that there is no evidence of a
- quantity-quality trade-off. We argue that the standard approach is flawed.
- Even if twin conception is random, bringing twins to term is a function of
- maternal health which is difficult to fully observe and which tends to be
+ quantity-quality (Q--Q) trade-off. We argue that the standard approach is 
+ flawed. Even if twin conception is random, bringing twins to term is a function 
+ of maternal health which is difficult to fully observe and which tends to be
  correlated with child quality, rendering the instrument invalid. The neglect
  of this fact in the existing literature will tend to lead to under-estimation 
- of the quantity-quality (Q--Q) trade-off and so could contribute to explaining 
- the negative results in the literature. Our contention that women who produce 
- twin births are positively selected is demonstrated using data from richer and 
- poorer countries. Using large samples of microdata from developing countries 
- and from the USA which include indicators of maternal characteristics including
- health, we show that a significant trade-off emerges upon correcting for these
- biases. We show that this result is likely to be only a \emph{lower} bound of
- the true Q--Q trade-off and discuss how to estimate the size of these bounds.
- These results have important implications for twin studies in all contexts
- examined here.
+ of the Q--Q trade-off and so could contribute to explaining the negative results
+ in the literature. Our contention that women who produce twin births are
+ positively selected is demonstrated using data from richer and poorer countries.
+ Using large samples of microdata from developing countries and from the USA 
+ which include indicators of maternal characteristics including health, we show
+ that a significant trade-off emerges upon correcting for these biases. We show
+ that this result is likely to be only a \emph{lower} bound of the true Q--Q
+ trade-off and discuss how to estimate the size of these bounds. These results
+ have important implications for twin studies in all contexts examined here.
 \\
 \end{abstract}
 \hspace{4mm}\textbf{\small JEL codes}: J12,J13,C13,D13,I12. \\
@@ -94,17 +106,17 @@ constitutes a fertility shock that is uncorrelated with family characteristics,
 including parental preferences, and other unobservables which may be related to 
 child quality. This provides the exogenous variation (in quantity) required to 
 estimate the quantity-quality model of \citet{Becker1960,BeckerLewis1973,
-BeckerTomes1976}.  The essential idea is that the shadow price of child quality 
-is increasing in child quality and \emph{vice versa}.  By comparing those 
-families who unexpectedly produced additional children to those who always 
-produced one child per birth, it is argued that we can isolate the direct effect 
-of an individual's sibling size on her human capital attainment.
+BeckerTomes1976}.  The essential idea of these studies is that the shadow price 
+of child quality is increasing in child quality and \emph{vice versa}.  By 
+comparing those families who unexpectedly produced additional children with 
+those who always produced one child per birth, it is argued that the effect of 
+an additional sibling on a child's human capital attainment can be identified.
 
 However, the consistent estimation of this effect is based upon the untestable 
-assumption that twinning is exogenous. This requires not only that twin conceptions 
-are randomly assigned to families, but also that taking a twin conception to term 
-does not depend upon a woman's behaviours during pregnancy or on her endowments
-prior to pregnancy. This is at odds with the evidence.
+assumption that twinning is exogenous. This requires not only that twin 
+conceptions are randomly assigned to families, but also that taking a twin
+conception to term does not depend upon a woman's behaviours during pregnancy 
+or on her endowments prior to pregnancy. This is at odds with the evidence.
 
 We show that endowments and behaviours affect the chances of twins being born. 
 In data from a large sample of developing countries, we show that taller women 
@@ -114,13 +126,13 @@ and is a function of investments over her growth period and, especially, the
 early years of her life (see references in \citet{BhalotraRawlings2013}).} 
 Maternal health is likely to be an especially significant determinant of birth 
 outcomes in poorer countries where many women are chronically under-nourished 
-(an indicator of which is their final stature), exhibit anemia and low-BMI and 
+(an indicator of which is their final stature), exhibit anemia and low-BMI, and 
 are prone to infections. In these conditions only relatively healthy women will 
 have the resources to support a successful twin pregnancy. However, our critique 
 applies to richer countries too. Using administrative data from the Scotland,
 the USA, Sweden and Spain, and survey data from the UK and Chile, we find that 
 women who are taller and less likely to engage in risky behaviours such as 
-smoking, drug taking or alchol consumption during pregnancy are significantly 
+smoking, drug taking or alcohol consumption during pregnancy are significantly 
 more likely to have a (live) twin birth.\footnote{Simiarly, it is well known 
 that fertility treatments increase the likelihood of twinning. While we do not 
 discuss this extensively here, we note that this is likely to be less of an 
@@ -130,7 +142,7 @@ behaviour.}
 Overall, our argument is that women who give birth to twins are positively 
 selected and that the common tendency to ignore this will result in under-%
 estimation of the Q--Q trade-off. We focus upon maternal health because no 
-previous work has highlighted it as a determinant of twinning and because it is 
+previous work has highlighted it as a determinant of twinning, and because it is 
 inherently impossible to fully control for. Even if we had data that included 
 all of the indicators of health we mention above, we may not observe whether 
 women skip breakfast \citep{MazumderSeeskin2014}, whether they are stressed 
@@ -138,10 +150,10 @@ women skip breakfast \citep{MazumderSeeskin2014}, whether they are stressed
 antenatal care and so on. Our contention adds a novel twist to a recent 
 literature which suggests that mothers' health and fetal environment matter and 
 may alter the birth weight of children, the sex ratio at birth and a range of 
-future human capital outcomes \citep{Almondetal2011,BhalotraRawlings2013,Barker1995}. 
-Like birth weight and the probability of a boy relative to a girl birth, the 
-probability of a twin birth is increasing in the health of the mother/the fetal 
-environment.
+future human capital outcomes \citep{Almondetal2011,BhalotraRawlings2013,
+Barker1995}. Like birth weight and the probability of a boy relative to a girl 
+birth, the probability of a twin birth is increasing in the health of the 
+mother/the fetal environment.
 
 The emerging consensus in the literature using twin births to test the Q--Q 
 model is that there is in fact no significant or substantial trade-off between 
@@ -187,14 +199,16 @@ national governments suggests that fertility was perceived as too high in 50\%
 of developing countries, with this figure rising to 86\% among the least 
 developed countries \citet{UN2010}.}  and in some cases these concerns have 
 resulted in aggressive, and at times group-specific, fertility control 
-policies.
+policies.  %We then examine the Q--Q trade-off using a decade's worth of 
+%representative survey data from the United States.  In this context both 
+%desired and completed fertility are lower, 
 
 This paper unfolds as follows. In the next section we discuss the existing 
-literature which estimates the Q-Q model using twins. We then discuss the 
-methodology that we will use to examine twinning, and bound the Q--Q trade-off.
-Section \ref{TWINscn:data} discusses our data sources and estimation samples, 
-and section \ref{TWINscn:results} presents results. We briefly conclude in the 
-final section.
+literature which estimates the Q--Q model using twins. We then discuss the 
+methodology that we will use to examine twinning, and to bound the Q--Q 
+trade-off.  Section \ref{TWINscn:data} discusses our data sources and estimation 
+samples, and section \ref{TWINscn:results} presents results. We briefly conclude 
+in the final section.
 
 %*******************************************************************************
 \section{Twins}                                    \label{TWINscn:literature}
@@ -266,7 +280,7 @@ that follicle-stimulating hormone (FSH) is associated with an increased
 likelihood of twinning, and is found in higher concentrations in older, heavier 
 and taller mothers. Further, she suggests ``that adequate maternal folic acid 
 consumption could affect the number of twins coming to term'' (see p.\ 741, and 
-further discussion in \citet{Lietal2003})
+further discussion in \citet{Lietal2003}).
 
 Unrelated to health measures \emph{per se}, recent studies seek to control for 
 the fact that multiple births are correlated with fertility treatments. 
@@ -401,7 +415,15 @@ each of the $n+$ groups described above.  If, as we contend, healthier mothers
 are more likely to give birth to twins, this should be captured in lower infant 
 mortality rates (IMR) in early births.
 
-Assuming additive separability of the elements in the omitted error term, we can 
+Assuming additive separability of the elements in the omitted error term\footnote{%
+This assumption can be loosened with little implication on the analysis which
+follows.  If we do not assume additive seperability, covariance terms between each
+error component must be included.  However, given that the covariance between 
+elements of $\bm{S}$ and $\bm{H}$ is likely to be positive, and given that the 
+covariance between each of these and $u^*_{ij}$ is likely to be of the same sign
+as the covariance between $twin$ and $u^*_{ij}$, the omission of the covariance
+terms does not effect the inequalities in equation \ref{TWINeqn:moves}.  This is
+something which we test empirically later in this paper.}, we can 
 re-write $u_{ij}$ from (\ref{TWINeqn:firststage}) and (\ref{TWINeqn:IVbias}) as:
 \[ u_{ij}=u^S_{ij}+u^H_{ij}+u^*_{ij}. \]
 Here $u^S_{ij}$ and $u^H_{ij}$ correspond to the (observable) elements included 
@@ -499,7 +521,7 @@ In order to form a prior for $\gamma$, we turn to a specific case which allows
 us to causally estimate each of $\phi_t$ and $\phi_q$, and hence the coefficient
 $\gamma$.  By using a well documented shock to mother's health---the arrival of 
 sulfonamide antibiotics in the USA in 1937 \citep{BhalotraVenkataramani2014,
-Jayachandranetal2010}--- we can observe the causal effect of this positive 
+Jayachandranetal2010}---we can observe the causal effect of this positive 
 health shock on the quality of her children and on the likelihood of giving birth 
 to twins during her fertile life.  By taking the ratio of these effects 
 $\phi_t/\phi_q$, we isolate the direct correlation between twinning and child 
@@ -872,7 +894,7 @@ miscarry twins than healthy mothers carrying twins.  Thus, we are interested in
 testing if the coefficients on the interaction terms are significantly larger 
 than zero.
 
-These regression results are reported in table \ref{TWINtab:Miscarry}.  As 
+These regression results are reported in table \ref{TWINtab:USAMiscarry}.  As 
 expected, columns (1) and (2) suggest that more unhealthy and less educated
 women are more likely to report ever miscarrying.\footnote{These results hold 
 conditional and unconditional on total fertility.}  Maternal health stocks are 
@@ -1092,12 +1114,23 @@ which allows us to construct a distribution for $\gamma$.  This is then
 tested for equality against a normal distribution, and the null hypothesis
 of different distributions is not rejected with a $p$-value of 0.1805.  The 
 empirical and analytical distributions for $\gamma$ that are applied in the 
-LTZ method are displayed in appendix figure \ref{TWINfig:gammaBoots}.
+LTZ method are displayed in appendix figure \ref{TWINfig:gammaBootsL}-%
+\ref{TWINfig:gammaBootsN}.
 
-These bounds estimates \ldots [FINISH THIS PARAGRAPH].  Code is written.  
-I need to run overnight and put the precise values in table 12.  They 
-should be tighter than the current bounds given that $\gamma$ is slightly 
-smaller using the new method.
+These bounds estimates are informative for the three-plus and four-plus
+groups.  In each case, both techniques (UCI and LTZ), have their bounds (at a
+90\% significance level), entirely below zero.  This is the case, despite the
+fact that confidence intervals are quite wide.  Although the bounds themselves
+are wide, the point estimates at the centre of the bounds in all cases
+fall between the downward-biased OLS estimates and the upwards-biased IV
+estimates which we have discussed earlier in this paper.  For each of the three 
+parity groups examined, the LTZ approach suggests that the Q-Q trade-off is 
+approximately $-0.08$ of a standard deviation when considering children's 
+educational attainment.  While for the 2+ sample this is not significantly 
+different to zero, for all other samples these estimates are significant, with 
+a $p$-value$<0.1$.
+
+ 
 
 
 %*******************************************************************************
@@ -1119,25 +1152,26 @@ mixed.  A range of studies which estimate the effect of quantity on quality
 find that the effect is small, or frequently not statistically different from
 zero.  By assembling large datasets linking a child's human capital outcomes
 with her mother's health---in both the developing world and the USA---we show
-that correcting for twin endogeneity is sufficient to push estimates of the
-trade-off up by about 3\%-4\% of a standard deviation, potentially explaining 
-the lack of significant results in the existing literature.
+that partially correcting for twin endogeneity is sufficient to push estimates of the trade-off up by about 3\%-4\% of a standard deviation, potentially explaining the lack of significant results in the existing literature.  Using partial identification to bound the effect of child quantity on child quality suggests that the \emph{true} effect size, once accounting for the entire health differential in favour of twin families, may even be as high as 8\% of a standard deviation.
 
-It remains to be asked whether 3\%-4\% of a standard deviation is an 
-important outcome when considering children's educational attainment. Evidence 
-from the literature on human capital suggests that it is, and suggests that 
-human capital disparities which emerge early in life remain for the entire
-life of a person.  NOTE: TO CLOSE, Find an experiment or policy reform 
-resulting in a similar $\Delta$ human capital, with results for eventual
-labour market outcomes...
+We are able to conclude that additional unexpected births do have quantitatively important effects on their siblings' educational outcomes.  An 8\% of a standard deviation increase is equivalent to an additional 0.3 years in the classroom.  While the true effect of these 0.3 years of course depend on the quality of education imparted, time in school is at the very least a necessary condition for more general increases in learning outcomes.  The implications of these findings are wide-reaching, both in terms of the vindication of Beckerian theory, and particularly, in an applied sense, when considering human well-being in developing countries which are yet to fully pass through the demographic transition.
+
+
+%It remains to be asked whether 4\%-8\% of a standard deviation is an 
+%important outcome when considering children's educational attainment. Evidence 
+%from the literature on human capital suggests that it is, and suggests that 
+%human capital disparities which emerge early in life remain for the entire
+%life of a person.  NOTE: TO CLOSE, Find an experiment or policy reform 
+%resulting in a similar $\Delta$ human capital, with results for eventual
+%labour market outcomes...
 
 
 \newpage
 \section*{Figures}
 \input{./figures.tex}
 
-\clearpage
 \section*{Tables}
+Begin overleaf.
 \input{./tables.tex}
 \clearpage
 
@@ -1186,7 +1220,7 @@ births can be found in the notes to each table.
 \section{Plausibly Exogenous Bounds and Estimating $\gamma$}
 \label{TWINscn:gamma}
 From (\ref{TWINeqn:Conley}), we are interested in forming a consistent estimate
-of $\gamma=\frac{\partial twin}{\partial educ}\big|_{X}$. From 
+of $\gamma=\frac{\partial educ}{\partial twin}\big|_{X}$. From 
 \citet{BhalotraVenkataramani2014} we have:
 \begin{equation}
 \label{TWINeqn:BV}
@@ -1221,7 +1255,7 @@ the twin-mediated effect of health shocks on child quality.  Thus, to estimate
 $\gamma$, we can take the ratio of estimates in each of the above two equations:
 \begin{equation}
 \label{TWINeqn:realgamma}
-\phi^t/\phi^q=\frac{\partial twin/\partial bP}{\partial educ/\partial bP}=\frac{\partial twin}{\partial educ}=\gamma.
+\phi^t/\phi^q=\frac{\partial educ/\partial bP}{\partial twin/\partial bP}\bigg|_{X}=\frac{\partial educ}{\partial twin}\bigg|_{X}=\gamma.
 \end{equation}
 which is our estimand of interest, and which we can then plug in to our estimates of
 the bounds on $\beta_1$ using \citeauthor{Conleyetal2012}'s method.
@@ -1258,8 +1292,6 @@ to a normal distribution $\sim N(\hat\mu,\hat\sigma^2)$.}
 
 \section{Appendix Figures}
 \input{./appendixFigs.tex}
-\clearpage
-\newpage
 
 \appendix
 \section*{Online Appendices}
