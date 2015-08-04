@@ -75,11 +75,11 @@ if ftype=='tex':
     mcsc = '}{l}{\\textsc{'
     mcbf = '}{l}{\\textbf{'    
     mc2  = '}}'
-    twid = ['5','8','4','5','9','9','4','6','10','7','12','6','12','5']
+    twid = ['5','8','4','5','9','9','4','6','10','7','12','6','12','5','10']
     tcm  = ['}{p{10.0cm}}','}{p{17.8cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
             '}{p{13.8cm}}','}{p{14.2cm}}','}{p{12.1cm}}','}{p{13.8cm}}',
             '}{p{18.0cm}}','}{p{12.8cm}}','}{p{18cm  }}','}{p{10.0cm}}',
-            '}{p{18.8cm}}','}{p{10.6cm}}']
+            '}{p{18.8cm}}','}{p{10.6cm}}','}{p{20.2cm}}']
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
     lname = "Fertility$\\times$desire"
     tname = "Twin$\\times$desire"
@@ -580,7 +580,7 @@ twino = open(Tables+"TwinReg."+end, 'w')
 
 if ftype=='tex':
     twino.write("\\begin{landscape}\\begin{table}[htpb!] \n"
-    "\\caption{Probability of Giving Birth to Twins} \\label{TWINtab:twinreg1} \n"
+    "\\caption{Probability of Giving Birth to Twins}\\label{TWINtab:TwinDHS}\n"
     "\\begin{center}\\begin{tabular}{lcccccc} \\toprule \\toprule \n"
     +dd+"(1)"+dd+"(2)"+dd+"(3)"+dd+"(4)"+dd+"(5)"+dd+"(6)"+ls+"\n"
     "Twin*100"+dd+"All"+dd+"\\multicolumn{2}{c}{Income}"+dd+
@@ -781,16 +781,16 @@ for i,line in enumerate(conli):
         delta = re.sub('\s+', ', ', delta) 
         delta = re.sub(', $', '.', delta)
         delta = re.sub('^,', ' ', delta)
-conlo.write('&&&& \\\\ \\multicolumn{5}{l}{Panel B: USA (Education)}\\\\')
+conlo.write('&&&& \\\\ \\midrule \\multicolumn{5}{l}{Panel B: USA (Education)}\\\\')
 for i,line in enumerate(conlu):
-    if i==2 or i==4 or i==6:
+    if i==1 or i==2 or i==3:
         line = re.sub('\s+', dd, line) 
         line = re.sub('&$', ls+ls, line)
         line = line.replace('E',' Plus')
         conlo.write(line + "\n")
 conlo.write('&&&& \\\\ \\multicolumn{5}{l}{Panel B: USA (Health)}\\\\')
 for i,line in enumerate(conlu):
-    if i==1 or i==3 or i==5:
+    if i==4 or i==5 or i==6:
         line = re.sub('\s+', dd, line) 
         line = re.sub('&$', ls+ls, line)
         line = line.replace('H',' Plus')
@@ -1306,5 +1306,114 @@ if ftype=='tex':
 
 gammo.close()
 
+#==============================================================================
+#== (17) NHIS Results
+#==============================================================================
+NHISo = open(Tables+'AllNHIS.'+end, 'w')
+
+
+if ftype=='tex':
+    NHISo.write('\\begin{landscape}\\begin{table}[htpb!] \n'
+                '\\caption{NHIS Estimates: Education and Health}'
+                '\\label{TWINtab:NHISAll}\n'
+                '\\begin{center}\\begin{tabular}{lccccccccc}\n'
+                '\\toprule \\toprule\n' 
+                '&\\multicolumn{3}{c}{2+}&\\multicolumn{3}{c}{3+}&'
+                '\\multicolumn{3}{c}{4+}\\\\ \\cmidrule(r){2-4}'
+                '\\cmidrule(r){5-7} \\cmidrule(r){8-10}\n' 
+                '&Base&+H&+S\\&H&Base&+H&+S\\&H&Base&+H&+S\\&H\\\\ \\midrule\n' 
+                +'\\begin{footnotesize}\\end{footnotesize}&'*9+
+                '\\begin{footnotesize}\\end{footnotesize}\\\\' 
+                '\\multicolumn{10}{l}{\\textbf{OLS}}\\\\')
+
+wT = open(Results+"NHIS/OLSFertEducationZscore.xls", 'r')
+for i, line in enumerate(wT):
+    if i==2 or i==3:   
+        line = line.replace('fert','School Z-Score')
+        line = line.replace('\t', '&')
+        NHISo.write(line+'\\\\ \n')
+wT = open(Results+"NHIS/OLSFertexcellentHealth.xls", 'r')
+for i, line in enumerate(wT):
+    if i==2 or i==3:   
+        line = line.replace('fert','Excellent Health')
+        line = line.replace('\t', '&')
+        NHISo.write(line+'\\\\ \n')
+
+if ftype=='tex':
+    NHISo.write('\\begin{footnotesize}\\end{footnotesize}&'*9+
+                '\\begin{footnotesize}\\end{footnotesize}\\\\ \n' 
+                '\\multicolumn{10}{l}{\\textbf{IV}}\\\\ \n') 
+wT = open(Results+"NHIS/IVFertEducationZscore.xls", 'r')
+for i, line in enumerate(wT):
+    if i==2 or i==3:   
+        line = line.replace('fert','School Z-Score')
+        line = line.replace('\t', '&')
+        NHISo.write(line+'\\\\ \n')
+wT = open(Results+"NHIS/IVFertexcellentHealth.xls", 'r')
+for i, line in enumerate(wT):
+    if i==2 or i==3:   
+        line = line.replace('fert','Excellent Heatlth')
+        line = line.replace('\t', '&')
+        NHISo.write(line+'\\\\ \n')
+    if i==35:
+        line    = line.replace('N','Observations')
+        ObsNHIS = line.replace('\t','&')
+
+if ftype=='tex':
+    NHISo.write('\\begin{footnotesize}\\end{footnotesize}&'*9+
+                '\\begin{footnotesize}\\end{footnotesize}\\\\ \n' 
+                '\\multicolumn{10}{l}{\\textbf{First Stage}}\\\\ \n') 
+
+for var in ['EducationZscore','excellentHealth']:
+    wT = open(Results+"NHIS/IVFert"+var+"1.xls", 'r')
+    if var=='EducationZscore': vname = 'School Z-Score'
+    if var=='excellentHealth': vname = 'Excellent Health'
+
+    for i, line in enumerate(wT):
+        if i==2:   
+            line = line.replace('twin_two_fam',vname)
+            line1 = line.replace('\t', '&')
+            line1 = line1[:-7]
+        if i==34:
+            line = line.replace('twin_three_fam',' ')
+            line2 = line.replace('\t', '&')
+            line2 = line2[4:-4]
+        if i==36:
+            line = line.replace('twin_four_fam',' ')
+            line3 = line.replace('\t', '&')
+            line3 = line3[7:]
+            NHISo.write(line1+line2+line3+'\\\\ \n')
+        if i==3:   
+            line4 = line.replace('\t', '&')
+            line4 = line4[:-7]
+        if i==35:
+            line5 = line.replace('\t', '&')
+            line5 = line5[4:-4]
+        if i==37:
+            line6 = line.replace('\t', '&')
+            line6 = line6[7:]
+            NHISo.write(line4+'&'+line5+'&'+line6+'\\\\ \n')
+
+NHISo.write('&&&&&&&&&\\\\\n&&&&&&&&&\\\\\n'+ObsNHIS+'\\\\ \n'
+            'Joint F-test Educ (IV)'
+            '&&164.5&64.7&&101.3&39.6&&38.0&7.7\\\\\n'
+            'Joint F-test Health (IV)'
+            '&&34469.6&163.9&&15335.6&28.4&&5276.4&17.1\\\\')
+
+NHISo.write('\n'+mr+mc1+twid[14]+tcm[14]+mc3+
+"Each cell presents the coefficient of interest from a regression "
+"using NHIS survey data (2004-2014).  Base controls include child "
+"age FE (in months), mother's age, and mother's age at first birth" 
+" plus race dummies for child and mother.  In each case the sample"
+" is made up of all children aged between 6-18 years from families"
+" in the NHIS who fulfill 2+ to 4+ requirements.  Descriptive stat"
+"istics for each variable can be found in table                   "
+"\\ref{TWINtab:NHISstats}. Standard errors are clustered by mother.")
+
+if ftype=='tex':
+    NHISo.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
+                "\\end{tabular}\\end{center}\\end{table}\\end{landscape}")
+
+NHISo.close()
 
 print "Terminated Correctly."
