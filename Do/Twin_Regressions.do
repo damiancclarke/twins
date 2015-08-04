@@ -26,6 +26,7 @@ For optimal viewing set tab width equal to 2 in text editor.
 Questions should be directed to damian.clarke@economics.ox.ac.uk.
 
 
+
 Last edit:
 * Jul 22nd, 2014: Adding MMR test
 * Jul 15th, 2014: Overidentification test
@@ -68,7 +69,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         1
+local samp5         0
 local resave        0
 local samples       0
 local matchrate     0
@@ -84,13 +85,13 @@ local OLS           0
 local Oster         0
 local RF            0
 local IV            0
-local IVnl          1
+local IVnl          0
 local IVtwin        0
 local desire        0
 local compl_fert    0
 local twinoccur_ols 0
 local twinoccur_iv  0
-local conley        0
+local conley        1
 local thresholdtest 0
 local balance       0
 local balanceG      0
@@ -118,8 +119,8 @@ global twinout motherage motheragesq agefirstbirth educf educfyrs_sq height bmi
 global base malec i._cou i.year_birth i.age i.contracep_intent 
 global age motherage motheragesq motheragecub agefirstbirth 
 global S educf educfyrs_sq
-global H height /*bmi*/ 
-global HP height prenateCluster
+global H height bmi 
+global HP height bmi prenateCluster
 global bal1 fert idealnumkids agefirstbirth educf educp height underweight
 global balance $bal1 prenate* motherage childmortality infantmortal 
 
@@ -339,7 +340,7 @@ if `sumstats'==1 {
 	local mincc: word count `r(levels)'
 	levelsof _cou
 	local aincc: word count `r(levels)'	
-	local numcountry "`nco' `lincc'`sep'`lincc'`sep'`mincc'`sep'`mincc'`sep'`aincc'"
+	local numcountry "`ncou' `lincc'`sep'`lincc'`sep'`mincc'`sep'`mincc'`sep'`aincc'"
 
 	count `cond' & nonmiss==0
 	local kidcount = "`: display %9.0fc r(N)'"
@@ -804,11 +805,12 @@ if `graphsSW'==1 {
   #delimit ;
   arrowplot twind height, groupvar(country) linesize(0.0025)
 	 controls(motherage motheragesq agefirstbirth educf educfyrs_sq _yb*)
-   regopts(`se') scheme(s1color) generate(hArrow) groupname(Country) 
-	 ytitle("Frequency Twin") xtitle("Mother's Height (cm)");
+   regopts(`se') scheme(s1color) generate(hArrow) generateSE(hSE)
+   groupname(Country) ytitle("Frequency Twin") xtitle("Mother's Height (cm)");
 	graph export "$Graphs/SW/height_country.eps", as(eps) replace;
-  tab hArrow;
   #delimit cr
+  gen lowBoundCountry = hArrow - 1.96*hSE
+  tab lowBoundCountry
 
   preserve
 	use "$Data/DHS_twins_mortality", clear
@@ -1367,23 +1369,57 @@ if `conley'==1 {
 		local c `cond'&`n'_plus==1
     preserve
     keep `c'
-    plausexog uci school_zscore `base' $age (fert = twin_`n'_fam), /*
-    */ gmin(0) gmax(0.09) grid(2) level(.90) vce(robust)
+
+    qui reg school_zscore `base' $age
+    predict Ey, resid
+    qui reg fert          `base' $age
+    predict Ex, resid
+    qui reg twin_`n'_fam  `base' $age
+    predict Ez, resid
+    local ESH
+    foreach var of varlist $S $H {
+        qui reg `var' `base' $age
+        predict E`var', resid
+        local ESH `ESH' E`var'
+    }
+
+    *------    UCI     ---------------------------------------------------------
+    plausexog uci school_zscore `base' $age $S $H (fert = twin_`n'_fam), /*
+    */ gmin(0) gmax(0.0182) grid(2) level(.90) vce(robust)
     local c1 = e(lb_fert)
     local c2 = e(ub_fert)
     dis "lower bound = `c1', upper bound=`c2'"
     
-		local items = `e(numvars)'
+    *------    LTZ     ---------------------------------------------------------
+		local items = 6
 		matrix omega_eta = J(`items',`items',0)
-		matrix omega_eta[1,1] = 0.0478854^2
+		matrix omega_eta[1,1] = 0.0002
 		matrix mu_eta = J(`items',1,0)
-		matrix mu_eta[1,1] = 0.0624968
+		matrix mu_eta[1,1] = 0.0091448
 
-    plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam),  /*
-		*/ omega(omega_eta) mu(mu_eta)
+    plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta)
     local c3 = _b[fert]-1.65*_se[fert]
     local c4 = _b[fert]+1.65*_se[fert]
     dis "lower bound = `c3', upper bound=`c4'"
+
+
+    *------  GRAPHING   ---------------------------------------------------------
+		foreach num of numlist 0(1)10 {
+			matrix om`num'=J(`items', `items', 0)
+			matrix om`num'[1,1] = ((`num'/10)*0.1/sqrt(12))^2
+			matrix mu`num'=J(`items', 1, 0)
+			matrix mu`num'[1,1]= (`num'/10)*0.1/2
+      local d`num' = (`num'/10)*0.1
+		}
+
+    #delimit ;
+		plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta) level(0.95)
+    graph(Ex) graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10)
+    graphmu(mu0 mu1 mu2 mu3 mu4 mu5 mu6 mu7 mu8 mu9 mu10)
+    graphdelta(`d0' `d1' `d2' `d3' `d4' `d5' `d6' `d7' `d8' `d9' `d10');
+		graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace;
+    #delimit cr
+
     restore
     
 		mat cbounds1[`ii',1]=`=`c1''
@@ -1396,106 +1432,6 @@ if `conley'==1 {
 	mat colnames cbounds1 = LowerBound UpperBound LowerBound UpperBound
 	mat rownames cbounds1 = TwoPlus ThreePlus FourPlus
 	mat2txt, matrix(cbounds1) saving("$Tables/Conley/ConleyGamma.txt") /*
-		*/ format(%6.4f) replace
-
-	*****************************************************************************
-	*** (10a) Union of Confidence Intervals (have now removed $S and $H)
-	*****************************************************************************	
-	matrix conbounds = J(7,4,1)
-	local ii=1
-	foreach n in `gplus' {
-		*local c `cond'&`n'_plus==1&income=="`inc'"
-		local c `cond'&`n'_plus==1
-
-		reg school_zscore fert `base' $age `c'
-		outreg2 fert using "$Tables/Conley/ConleyReg.xls", excel append		
-		reg school_zscore fert twin_`n'_fam `base' $age `c'
-		outreg2 twin_`n'_fam fert using "$Tables/Conley/ConleyReg.xls", excel append
-		local estimate `=_b[twin_`n'_fam]'
-		local seest    `=_se[twin_`n'_fam]'
-		
-		foreach num of numlist 1 /*2*/ {
-			dis "estimating for `num' times the estimated coefficient on twins"
-			local est2=`estimate'*`num'
-			plausexog uci school_zscore `base' $age (fert = twin_`n'_fam) `c', /*
-			*/ gmin(0) gmax(`est2') grid(2) level(.95) vce(robust)
-		}
-		mat conbounds[`ii',1]=e(lb_fert)
-		mat conbounds[`ii',2]=e(ub_fert)		
-		**************************************************************************
-		*** (10b) Local to Zero Approach
-		**************************************************************************
-		local items = `e(numvars)'
-		matrix omega_eta = J(`items',`items',0)
-		matrix omega_eta[1,1] = (`estimate'/sqrt(12))^2
-		matrix mu_eta = J(`items',1,0)
-		matrix mu_eta[1,1] = `estimate'/2
-
-		foreach num of numlist 0(1)20 {
-			matrix om`num'=omega_eta
-			matrix om`num'[1,1] = ((`num'/20)*2*`estimate'/sqrt(12))^2
-			matrix mu`num'=mu_eta
-			matrix mu`num'[1,1]= (`num'/20)*`estimate'
-		}
-
-		foreach num of numlist 0(1)20 {
-			local nd`num'=(`num'/20)*`estimate'*2
-		}
-		
-		plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam) `c',       /*
-		*/ omega(omega_eta) mu(mu_eta) level(0.95) graph(fert)                   /*
-		*/ graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10 om11 om12     /*
-		*/ om13 om14 om15 om16 om17 om18 om19 om20) graphmu(mu0 mu1 mu2 mu3 mu4  /*
-		*/ mu5 mu6 mu7 mu8 mu9 mu10 mu11 mu12 mu13 mu14 mu15 mu16 mu17 mu18 mu19 /*
-		*/ mu20) graphdelta(`nd0' `nd1' `nd2' `nd3' `nd4' `nd5' `nd6' `nd7'      /*
-		*/ `nd8' `nd9' `nd10' `nd11' `nd12' `nd13' `nd14' `nd15' `nd16' `nd17'   /*
-		*/ `nd18' `nd19' `nd20')
-		graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace
-
-		mat conbounds[`ii',3]=_b[fert]-1.96*_se[fert]
-		mat conbounds[`ii',4]=_b[fert]+1.96*_se[fert]
-
-		*NORMAL
-		matrix omega_eta = J(`items',`items',0)
-		matrix omega_eta[1,1] = `estimate'
-		matrix mu_eta = J(`items',1,0)
-		matrix mu_eta[1,1] = `seest'
-
-		foreach num of numlist 0(1)20 {
-			matrix om`num'=omega_eta
-			matrix om`num'[1,1] = ((`num'/20)*`estimate')
-			matrix mu`num'=mu_eta
-			matrix mu`num'[1,1]= (`num'/20)*`seest'
-		}
-
-		foreach num of numlist 0(1)20 {
-			local nd`num'=(`num'/20)*`estimate'*2
-		}
-		
-		plausexog ltz school_zscore `base' $age (fert = twin_`n'_fam) `c',       /*
-		*/ omega(omega_eta) mu(mu_eta) level(0.95) graph(fert)                   /*
-		*/ graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10 om11 om12     /*
-		*/ om13 om14 om15 om16 om17 om18 om19 om20) graphmu(mu0 mu1 mu2 mu3 mu4  /*
-		*/ mu5 mu6 mu7 mu8 mu9 mu10 mu11 mu12 mu13 mu14 mu15 mu16 mu17 mu18 mu19 /*
-		*/ mu20) graphdelta(`nd0' `nd1' `nd2' `nd3' `nd4' `nd5' `nd6' `nd7'      /*
-		*/ `nd8' `nd9' `nd10' `nd11' `nd12' `nd13' `nd14' `nd15' `nd16' `nd17'   /*
-		*/ `nd18' `nd19' `nd20')
-		graph export "$Graphs/Conley/LTZ_`n'Normal.eps", as(eps) replace
-
-		mat conbounds[`ii',5]=_b[fert]-1.96*_se[fert]
-		mat conbounds[`ii',6]=_b[fert]+1.96*_se[fert]
-
-		
-		mat conbounds[7,`ii']=`estimate'
-		local ++ii
-		
-	}
-	*****************************************************************************
-	*** (10c) Write Conley et al results to file
-	*****************************************************************************
-	mat colnames conbounds = LowerBound UpperBound LowerBound UpperBound
-	mat rownames conbounds = TwoPlus ThreePlus FourPlus FivePlus deltas
-	mat2txt, matrix(conbounds) saving("$Tables/Conley/ConleyResults.txt") /*
 		*/ format(%6.4f) replace
 }
 
