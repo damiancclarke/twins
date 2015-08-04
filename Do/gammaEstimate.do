@@ -11,7 +11,7 @@ vers 11
 clear all
 set more off
 cap log close
-set matsize 1000
+set matsize 5000
 
 ********************************************************************************
 *** (1) globals and locals
@@ -50,8 +50,7 @@ if `gen'==1 {
     bys year datanum serial momloc: gen ageDif2=birthtime[_n]-birthtime[_n+1]
     
     gen twin = ageDif1==0 | ageDif2==0
-    bys year datanum serial momloc: gen twinfam = max(twin)
-    tab twin twinfam
+    tab twin
     tempfile child
     save `child'
     
@@ -88,7 +87,6 @@ if `gen'==1 {
 *** (5) Estimate Sulfa effect on child quality
 ********************************************************************************
 use "$SUL/IPUMS1980_sulfa"
-keep if birth_year>=1930&birth_year<=1943
 
 gen post = birth_year>=1937
 gen p_b_inf = post*base_inf*1000
@@ -115,63 +113,42 @@ bys birthyr birthqtr: egen meanEd = mean(educb)
 bys birthyr birthqtr: egen sdEd   = sd(educb)
 gen school_zscore = (educb - meanEd) / sdEd
 bys datanum serial momloc: gen fert = _N
+bys datanum serial momloc: gen Mrep = _n
+bys year datanum serial momloc: egen twinfam = max(twin)
+tab twin twinfam
 
 if `est'==1 {
     ****************************************************************************
     *** (6a) Estimates -- school z-score
     ****************************************************************************
-    global outcomes school_zscore educb
+    global outcomes school_zscore
     local se robust cluster(birth_state)
     local ctrl i.sex i.race i.birthyr fert
-    local c if birthyr<1974
+    local c if birthyr<1974&birth_year>=1930&birth_year<=1943
 
-    cap rm "$OUT/gammaEstimates.xls"
-    cap rm "$OUT/gammaEstimates.txt"
     foreach y of varlist $outcomes {
         xi: reg `y' $post_base_inf $basic `ctrl' `c', `se'
-        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
-
-        xi: reg `y' $post_base_inf $basic $statevar `ctrl' `c', `se'
-        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
-
-        xi: reg `y' $post_base_inf $basic $statevar $mortality `ctrl' `c', `se'
-        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
-
-        xi: reg `y' $post_base_inf $mortality $statevar $trends `ctrl' `c', `se'
-        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
+        outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf) replace
     }
 
     ****************************************************************************
-    *** (6b) Estimates -- twin
+    *** (6b) Compare Influenza rates in twin and non-twin families
     ****************************************************************************
-    local y twinfam
-    local ctrl i.sex i.race fert
+    sum p_b_inf if twin==1
+    sum p_b_inf if twin==0
 
-    collapse twinfam $post_base_inf $statevar $mortality sex race fert /*
-    */ birth_state birth_year t, by(year datanum serial momloc)    
-
-    xi: reg `y' $post_base_inf $basic `ctrl', `se'
-    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
-
-    xi: reg `y' $post_base_inf $basic $statevar `ctrl', `se'
-    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
-
-    xi: reg `y' $post_base_inf $basic $statevar $mortality `ctrl', `se'
-    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
-
-    xi: reg `y' $post_base_inf $mortality $statevar $trends `ctrl', `se'
-    outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf)
-
+    *CONDITIONAL MEANS:
+    reg p_b_inf twin i.fert i.sex i.race if birthyr < 1974 & Mrep==1
+    outreg2 using "$OUT/gammaEstimates.xls", excel keep(twin)
 }
-exit
+
 ********************************************************************************
 *** (7) Resampling to estimate a standard error for gamma (ratio of a, b)
 ********************************************************************************
 global outcomes school_zscore educb
 local se robust cluster(birth_state)
 local ctrl i.sex i.race i.birthyr fert
-local c if birthyr<1974
-local y 
+local c if birthyr<1974&birth_year>=1930&birth_year<=1943
 
 gen twinEst = .
 gen qualEst = .
@@ -185,8 +162,8 @@ foreach i of numlist 1(1)100 {
     local qualEst = _b[p_b_inf]
 
     dis "Cycle `i':twin"
-    xi: qui reg twin $post_base_inf $basic `ctrl', `se'
-    local twinEst = _b[p_b_inf]
+    qui reg p_b_inf twin i.fert i.sex i.race if birthyr < 1974 & Mrep==1
+    local twinEst = _b[twin]
 
     restore
 
@@ -194,7 +171,7 @@ foreach i of numlist 1(1)100 {
     replace twinEst = `twinEst' in `i'
     sum qualEst twinEst
 }
-gen gamma = twinEst/qualEst
+gen gamma = twinEst*qualEst
 sum gamma
 
 local Gmean = `r(mean)'
