@@ -53,6 +53,7 @@ conl = "ConleyResults.txt"
 conU = "ConleyGammaNHIS.txt"
 imrt = "PreTwinTest.xls"
 
+gamT = "gammaEstimates.txt"
 os.chdir(Results+'IV/')
 
 #==============================================================================
@@ -74,11 +75,11 @@ if ftype=='tex':
     mcsc = '}{l}{\\textsc{'
     mcbf = '}{l}{\\textbf{'    
     mc2  = '}}'
-    twid = ['5','8','4','5','9','9','4','6','10','7','12','6','12']
+    twid = ['5','8','4','5','9','9','4','6','10','7','12','6','12','5']
     tcm  = ['}{p{10.0cm}}','}{p{17.8cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
             '}{p{13.8cm}}','}{p{14.2cm}}','}{p{12.1cm}}','}{p{13.8cm}}',
             '}{p{18.0cm}}','}{p{12.8cm}}','}{p{18cm  }}','}{p{10.0cm}}',
-            '}{p{18.8cm}}']
+            '}{p{18.8cm}}','}{p{10.6cm}}']
     mc3  = '{\\begin{footnotesize}\\textsc{Notes:} '
     lname = "Fertility$\\times$desire"
     tname = "Twin$\\times$desire"
@@ -1257,6 +1258,53 @@ if ftype=='tex':
     "\\bottomrule \\normalsize\\end{tabular}\\end{table} \n")
 
 sampo.close()
+
+#==============================================================================
+#== (16) Gamma table
+#==============================================================================
+gammi = open(Results+"../gamma/"+gamT, 'r')
+gammo = open(Tables+'gamma.'+end, 'w')
+
+if ftype=='tex':
+    gammo.write("\\begin{table}[!htbp] \\begin{center} \n"
+    "\\caption{Consistent Estimates of $\\gamma$ Using a Maternal Health Shock} \n "
+    "\\label{TWINtab:gamma} \n"
+    "\\begin{tabular}{lcccc} \\toprule \\toprule \n"
+    "&$\\frac{\\partial Educ}{\\partial Health}$ "
+    "&$\\frac{\\partial Health}{\\partial Twin}$ "
+    "&$\\gamma=-\\frac{\\partial Educ}{\\partial Twin}$" 
+    "&$\\gamma$ (bootstrap) \\\\ \\midrule \n")
+
+
+for i,line in enumerate(gammi):
+    if i==3: EstA = line.split()[1]
+    if i==4: SeA  = line.split()[0]
+    if i==5: EstB = line.split()[1]
+    if i==6: SeB  = line.split()[0]
+    if i==10: obs = line.replace('\t','&')
+    if i==11: rsq = line.replace('\t','&')
+
+gammaEst = str(float(EstA[0:6])*abs(float(EstB[0:6])))[0:6]
+
+gammo.write('Estimate &'+EstA+'&'+EstB+'&'+gammaEst+'&xx.xx\\\\ \n'
+            '&'+SeA+'&'+SeA+'&&(xx.xx)\\\\  \n'
+            '&&&&\\\\ \n'+obs+'&&\\\\ \n'+rsq+'&&\\\\ \\midrule \n')
+
+gammo.write('\n'+mr+mc1+twid[13]+tcm[13]+mc3+
+"Regression results for (\\ref{TWINeqn:BV1}) and (\\ref{TWINeqn:BV2}) "
+"use the 5\% sample of 1980 census data.  Specifications and samples "
+" are identical to those described in \\citet{BhalotraVenkataramani2014}. "  
+"The estimate of $\gamma$ is formed by taking the product of panel A and "
+"panel B estimates.  A full description of this process, along with the "
+"non-pivotal bootstrap process to estimate the standard error of $\\gamma$ "
+"is provided in appendix \\ref{TWINscn:gamma}, and figure "
+"\\ref{TWINfig:gammaBootsN}")
+
+if ftype=='tex':
+    gammo.write("\\end{footnotesize}}\\\\  \n"
+    "\\bottomrule\\end{tabular}\\end{center}\\end{table} \n")
+
+gammo.close()
 
 
 print "Terminated Correctly."
