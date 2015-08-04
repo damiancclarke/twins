@@ -247,31 +247,32 @@ if `conley'==1 {
             }
             
             plausexog uci `y' `base' `SH' (fert=twin_`f'_fam) [`wt'], /*
-            */ vce(robust) gmin(0) gmax(0.06) grid(2) level(0.90)
+            */ vce(robust) gmin(0) gmax(0.0182) grid(2) level(0.90)
             mat ConleyBounds[`i',1]=e(lb_fert)
             mat ConleyBounds[`i',2]=e(ub_fert)
 
             local items 17
             matrix omega_eta = J(`items',`items',0)
-            matrix omega_eta[1,1] = 0.0493175^2
+            matrix omega_eta[1,1] = 0.0002
             matrix mu_eta = J(`items',1,0)
-            matrix mu_eta[1,1] = 0.0642231
+            matrix mu_eta[1,1] = 0.0091448
 
             
             plausexog ltz Ey `ESH' (Ex=Ez), omega(omega_eta) mu(mu_eta)
             cap mat ConleyBounds[`i',3]=_b[Ex]-1.65*_se[Ex]
             cap mat ConleyBounds[`i',4]=_b[Ex]+1.65*_se[Ex]
 
-            foreach num of numlist 1(1)5 {
+            foreach num of numlist 0(1)5 {
                 matrix om`num' = J(`items',`items',0)
                 matrix om`num'[1,1] = ((`num'/5)*0.1/sqrt(12))^2
                 matrix mu`num' = J(`items',1,0)
                 matrix mu`num'[1,1] = (`num'/5)*0.1/2
                 local d`num' = (`num'/5)*0.1
             }
-            plausexog ltz Ey `ESH' (Ex=Ez), mu(mu_eta) omega(omega_eta)        /*
-            */ graphomega(om1 om2 om3 om4 om5) graphmu(mu1 mu2 mu3 mu4 mu5)    /*
-            */ graphdelta(`d1' `d2' `d3' `d4' `d5') graph(Ex)
+            plausexog ltz Ey `ESH' (Ex=Ez), mu(mu_eta) omega(omega_eta)   /*
+            */ graphomega(om0 om1 om2 om3 om4 om5)                        /*
+            */ graphmu(mu0 mu1 mu2 mu3 mu4 mu5) graph(Ex)                 /*
+            */ graphdelta(`d0' `d1' `d2' `d3' `d4' `d5')
             graph export "$OUT/ConleyUSA_`y'_`f'.eps", as(eps) replace
             
             mat list ConleyBounds
@@ -279,7 +280,7 @@ if `conley'==1 {
             local ++i
         }
     }
-    mat rownames ConleyBounds = TwoH TwoE ThreeH ThreeE FourH FourE 
+    mat rownames ConleyBounds = TwoE ThreeE FourE TwoH ThreeH FourH 
     mat colnames ConleyBounds = LowerBound UpperBound LowerBound UpperBound
     mat2txt, matrix(ConleyBounds) saving("$OUT/ConleyGammaNHIS.txt")      /*
     */ format(%6.4f) replace
