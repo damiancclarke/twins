@@ -177,7 +177,7 @@ if `ols'==1 {
             eststo: reg `y' fert `base' `H'  [`wt'] if `f'_plus==1&e(sample), `se'
             eststo: reg `y' fert `base'      [`wt'] if `f'_plus==1&e(sample), `se'
         }
-        local estimates est1 est2 est3 est4 est5 est6 est7 est8 est9
+        local estimates est3 est2 est1 est6 est5 est4 est9 est8 est7
         estout `estimates' using "$OUT/OLSFert`y'.xls", replace `estopt' /*
         */ keep(fert `SH')
         estimates clear
