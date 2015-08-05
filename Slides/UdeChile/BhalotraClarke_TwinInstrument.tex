@@ -371,9 +371,10 @@ Brazil, Sweden.
 \end{enumerate}
 }
 
-\frame{
+\begin{frame}[label=sumStats]
 \input{./tables/Summarymin.tex}
-}
+\hyperlink{sumStatsN}{\beamergotobutton{NHIS Summary Statistics}}
+\end{frame}
 
 \frame{\frametitle{Data and Context}
 \begin{itemize}
@@ -614,7 +615,7 @@ educ = \beta fert + X\delta + e
 %== Slide 24: OLS vs IV
 %================================================================================
 \begin{frame}[label=USAIV]
-\input{./tables/AllNHIS.tex}
+\input{./tables/AllNHIS2.tex}
 \end{frame}
 
 
@@ -781,6 +782,12 @@ health on child outcomes ($\partial educ/\partial health$)
 \input{./tables/firstStage.tex}
 \hyperlink{IV}{\beamergotobutton{Back}}
 \end{frame}
+
+\begin{frame}[label=sumStatsN]
+\input{./tables/NHISstats.tex}
+\hyperlink{sumStats}{\beamergotobutton{Back}}
+\end{frame}
+
 
  \begin{frame}[label=Spain1]
 \input{./tables/SpainTwin.tex}
