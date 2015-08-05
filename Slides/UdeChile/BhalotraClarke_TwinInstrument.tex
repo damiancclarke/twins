@@ -1,0 +1,909 @@
+%================================================================================
+%== SETUP - CAN IGNORE
+%================================================================================
+\documentclass[10pt,letterpaper,subeqn]{beamer}
+\setbeamertemplate{navigation symbols}{}
+\usefonttheme{serif}
+\usecolortheme{seahorse}
+%\usecolortheme{orchid}
+
+
+
+\usepackage[english]{babel}
+\selectlanguage{english}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[update,prepend]{epstopdf}
+\usepackage{framed}
+\usepackage{fleqn}
+\usepackage{graphics}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage{textcomp}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\setbeamertemplate{caption}[numbered]
+
+\definecolor{bluegray}{rgb}{0.4, 0.6, 0.8}
+\definecolor{babyblueeyes}{rgb}{0.63, 0.79, 0.95}
+\definecolor{indigo}{rgb}{0.0, 0.25, 0.42}
+\definecolor{navyblue}{rgb}{0.0, 0.0, 0.5}
+
+%================================================================================
+%== TITLE, NAMES, DATE
+%================================================================================
+\title{The Twin Instrument}
+\subtitle{Mother's Health and the Quantity--Quality Trade-off}
+\author{Sonia Bhalotra\inst{\dag} \and Damian Clarke\inst{\ddag}}
+\institute{\inst{\dag} University of Essex \and \inst{\ddag} University of Oxford}
+\date{August 2015}
+
+
+
+\begin{document}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+
+%================================================================================
+%== Slide 2: Twins: A Natural Experiment
+%================================================================================
+
+\section{Introduction}
+\frame{\frametitle{This Talk}
+
+\begin{enumerate}
+\item \textbf{Twin births \emph{are not} exogenous}: even if twin conceptions are 
+exogenous, taking twins to term depends on health stocks and behaviours of 
+mothers during pregnancy \vspace{2mm}
+\item We present the first evidence that this is a widespread phenomenon in rich 
+and poor countries \vspace{2mm}
+\item This results in \textbf{inconsistent estimates in studies using twins} as 
+an instrument for fertility to estimate the Q--Q trade-off \vspace{2mm}
+\item The IV bias is positive (OLS bias is negative). We show that bias-correction 
+approaches produce stronger evidence of a trade-off \vspace{2mm}
+\item  Previous ignorance of this bias contributes to explaining the tendency for 
+recent studies to reject the presence of a Q--Q tradeoff (Angrist et al.\ 2010, 
+Black et al.\ 2005)
+\end{enumerate}
+}
+
+\frame{
+\begin{center}
+\Large \textbf{Introduction}
+\end{center}
+}
+
+\frame{\frametitle{Twins -- A Natural Experiment (1)}
+\begin{itemize}
+\item A vast literature in economics, behavioural genetics and psychology relies 
+upon the premise that twin births occur as an act of nature -- and are allocated 
+randomly across families.\\ \vspace{5mm}
+\item A twin birth generates a natural experiment. 
+\begin{itemize}
+\item It allows us to compare families that unexpectedly have an additional child 
+because they have a twin birth with families who have the same number of birth 
+events but only singleton births. \\ \vspace{5mm}
+\end {itemize} 
+\item This is useful when one is interested in identifying causal effects of 
+fertility (number of children) on investments in child quality (e.g. education), 
+or on mothers' workforce participation.
+\end{itemize}
+}
+
+\frame{\frametitle{Twins -- A Natural Experiment (2)}
+\begin{itemize}
+\item The `identification' challenge is to isolate causal effects of fertility 
+from the mother's preferences and characteristics: 
+\begin{itemize}
+\item Women who prefer to have more children may be women who chose to invest 
+less in their own education and who may prefer to invest less in their children, 
+or prefer not to work. \\ \vspace{5mm}
+\end{itemize} 
+\item If a twin birth is a random event it does the trick because it is by 
+definition detached from the mother's characteristics. It simply \emph{drops} 
+an additional child on some families and not on others. \\ \vspace{5mm}
+\item Twins are not as rare as we may think: 1 in 80 live births, so 1 in 40 
+babies is a twin.
+\end{itemize}
+}
+
+\begin{frame}[label=FS1]
+\frametitle{Twins Shift Distribution of Family Size}
+\begin{figure}[htpb!]
+\centering
+  %\caption{Total births by Family Type}
+  %\label{TWINfig:famsize}
+  \includegraphics[scale=0.75]{./figures/famsize.eps}
+\end{figure}
+\hyperlink{Fstage}{\beamergotobutton{Regression}}
+\end{frame}
+
+%================================================================================
+%== Slide 2: Twin Births Are Not Random
+%================================================================================
+
+\frame{\frametitle{Twin Births Are Not Random}
+\begin{itemize}
+\item We argue that even if twin conceptions are `random', twin births are not 
+because taking twins to term depends on health stocks and behaviours of mothers 
+during pregnancy.
+\item The natural experiment breaks down and studies relying upon it produces 
+biased estimates.\\ \vspace{5mm}
+\item We present the first evidence that this is a widespread phenomenon in rich 
+and poor countries
+\item In poor countries, many women are severely under-nourished and may not be 
+fit enough to carry twin conceptions to birth. 
+\item In richer countries, many women engage in risky behaviours and/or experience 
+medical problems in pregnancy.
+\end{itemize}
+}
+
+\begin{frame}[label=mech]
+\frametitle{Mechanisms}
+\begin{itemize}
+
+\item There is some medical evidence to support our contention: FSH is associated with the risk of dizygotic twins and is more prevalent among heavier and taller women: Hall (2003). \\ \vspace{3mm}
+\item The mechanism is selective fetal death. 
+\begin{itemize}
+\item Twin conceptions are more demanding of maternal resources and hence more likely to suffer miscarriage or stillbirth.
+\item It is estimated that 1 in 8 twin conceptions results in a live birth. The spontaneous abortion rate is three times that for singletons (Boklage 1990). \\ \vspace{3mm}
+\end{itemize}
+\item Hard to find data on twin conceptions and on miscarriage. We found relevant data from \hyperlink{TwinDeathNepal}{\textcolor{blue}{USA}} and \hyperlink{TwinDeathSpain}{\textcolor{blue}{Spain}} which establish that:
+\begin{enumerate}
+\item[(i)] Miscarriage is more frequent among less healthy women (health indicated by under-weight, short, hypertension, etc.)
+\item[(ii)] Miscarriage is more frequent among twins
+\item[(iii)] and is more frequent among less healthy women carrying twins
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+
+
+
+%================================================================================
+%== Slide 3: The Quantity-Quality Tradeoff
+%================================================================================
+\frame{\frametitle{The Quantity--Quality Trade-off}
+\begin{itemize}
+
+\item To illustrate the substantive implications of the problem and its empirical significance, we re-consider the body of work in which economists leverage the occurrence of twin births to estimate causal effects of fertility on child education and other measurable `quality' variables like child health. \vspace{3mm}
+\item Evidence from cross-sectional data within and across regions suggests that children from larger families have weaker educational outcomes, e.g. Hanushek (1992), Blake (1989). 
+\end{itemize}
+}
+
+\begin{frame}[label=Macro]
+\frametitle{Trends in Education, Fertility, Fertility Control}
+\begin{figure}[htpb!]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.39]{./figures/ferttrend_35_all.eps}
+  \caption{Trends in Fertility}
+  \label{TWINfig:fertrend}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.39]{./figures/eductrend_all.eps}
+  \caption{Trend in Education}
+  \label{TWINfig:eductrend}
+\end{subfigure}
+\caption{Education and Fertility}
+\label{TWINfig:trends}
+\end{figure}
+\footnotesize{Note to figures: Cohorts are made up of all individuals 
+from the DHS who are over 35 years (for fertility), and over 15 years (for education).  
+The sample is restricted to those who have approximately completed fertility 
+and education respectively.}
+\end{frame}
+
+
+
+\frame{\frametitle{The Quantity--Quality Trade-off (continued)}
+\begin{itemize}
+\item In the time series, fertility has tended to decline while investments in education increase, e.g. Galor 2012. \vspace{3mm}
+\begin{itemize}
+\item This empirical regularity has been attributed to a quantity--quality (Q--Q) trade-off in parental investments: Becker and Lewis 1973, Becker and Tomes 1976. A `pillar' in theories of the economics of the family. 
+\item It has shaped economic thinking and, also, aggressive fertility-control policies.
+\end{itemize}
+\item However recent studies reject the presence of a Q--Q tradeoff (Angrist et al.\ 2010, Black et al.\ 2005) \vspace{3mm}
+\item We show that a trade-off emerges upon (partial) correction for the twin-bias: substantive relevance of our critique 
+\end{itemize}
+}
+
+
+
+\frame{
+\begin{center}
+\Large \textbf{Empirical Framework}
+\end{center}
+}
+
+
+
+\frame{\frametitle{IV Procedure}
+OLS fails to recover consistent estimates of the Q--Q trade-off (endogeneity, multiplicative entry of Q--Q).  Often, use IV:
+\vspace{6mm}
+\begin{equation}
+\label{TWINeqn:secondstage}
+educ_{ij}=\beta_0+\beta_1 fert_{j} + \bm{X}\bm{\beta}_2+u_{ij}.
+\end{equation}
+\begin{equation}
+\label{TWINeqn:firststage}
+fert_{j}=\alpha_0+\alpha_1 twins_{j}+\bm{X}\bm{\alpha}_2+\nu_{j},
+\end{equation}
+\vspace{2mm}
+And so assuming:
+\[
+\mathbb{E}[fert_j\cdot u_{ij}] \neq 0, \ \mathbb{E}[twins_j\cdot u_{ij}] = 0
+\]
+\vspace{6mm}
+\begin{itemize}
+\item Previous studies assume twin incidence is a valid instrument.
+\item A key concern is whether IV estimates are precise enough to be informative (and distinguishable from OLS estimates): Angrist et al.\ (2010).
+\end{itemize}
+}
+
+\frame{\frametitle{Investigating Exogeneity of Twins (I)}
+\begin{equation}
+\label{TWINeqn:twinreg}
+P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
+                  + \bm{H}\bm{\gamma}_3 + \varepsilon_{j}.
+\end{equation}
+\begin{itemize}
+\item $\bm{X}, \bm{S}$ and $\bm{H}$ are mother characteristics potentially correlated with child quality: age, wealth, education, height, BMI during pregnancy, antenatal care availability, smoking/drinking/drugs during pregnancy.
+\item If twin birth is a random event $\bm{\gamma_1}=\bm{\gamma_2}=\bm{\gamma_3}=0$
+\item Can typically condition on only a subset of predictors $X$
+\item Equivalent: test of balance of characteristics between mothers who have twins (quasi-treatment) and mothers who do not (quasi-control)
+\end{itemize}
+}
+
+\frame{\frametitle{Investigating Exogeneity of Twins (II)}
+Examine whether women who have twins are healthier before twins occurr:
+\vspace{2mm}
+\[Quality_{t-k}=\alpha twins_{t}+\bm{X}\delta + \varepsilon \]
+\vspace{5mm}
+\begin{itemize}
+\item Compare child quality in families with and without twins at parity $p$ for children born at earlier parities. 
+\item But use a measure of quality (investment) that is necessarily determined before twins occur: infant mortality.
+\item If twins occur randomly, $\alpha=0$.  If positively selected, $\alpha<0$.
+\end{itemize}
+}
+
+
+
+\frame{\frametitle{How We Investigate Inconsistency in Estimators That Assume Twins Are Random}
+\begin{itemize}
+\item The bias could be corrected if all relevant aspects of maternal health were fully measurable and observable. 
+\item But maternal health and pregnancy behaviours are multidimensional and partially unobserved.  
+\item In order to put limits on the inconsistency in existing studies, we use a number of partial
+identification and bounding techniques:
+\end{itemize}
+\vspace{5mm}
+\begin{enumerate}
+\item[1:] Introduce available (partial) controls for maternal health, estimating bounds on the parameter of interest
+\begin{itemize}
+\item Bound between (upward biased) OLS and (downward biased) IV
+\end{itemize} \vspace{5mm}
+\item[2:] Ask how `non-random' twins need to be for the true effect to be statistically different from zero. 
+\begin{itemize}
+\item Estimate bounds this way: Conley et al.\ (2012).
+\end{itemize}
+\end{enumerate}
+}
+
+\frame{\frametitle{Twin Endogeneity and IV Inconsistency}
+Assuming additive separability of $u_{ij}$: $u_{ij}=u_{ij}^S+u_{ij}^H+u_{ij}^*$.  The typical IV estimate is 
+then the population value, plus (unobserved) error components:
+\[
+\hat\beta_1^{IV} = \beta_1 + P\lim \frac{1}{N}\sum_{j=1}^{N}twin_j(u^S_{ij} + u^H_{ij} + u^*_{ij})
+\]
+
+\vspace{6mm}
+We can remove certain observed variables from the error term.  By including elements $S$ and $H$ as additional controls in $\bm{X}$, the IV estimate becomes:
+\[
+\hat\beta_1^{IV,S+H} = \beta_1 + P\lim \frac{1}{N}\sum_{j=1}^Ntwin_ju^*_{ij},
+\]
+\vspace{3mm}
+where it is likely that $\hat\beta_1^{IV}>\hat\beta_1^{IV,H}>\hat\beta_1^{IV,S+H}>\beta_1.$
+}
+
+\frame{\frametitle{Twin Endogeneity and IV Inconsistency}
+\begin{center}
+\[
+\hspace{2cm} \hat\beta_1^{IV}>\hat\beta_1^{IV,H}>\hat\beta_1^{IV,S+H}>\beta_1.
+\]
+\end{center}
+\vspace{6mm}
+\begin{spacing}{1.2}
+Maternal health and pregnancy behaviours are multidimensional and partially unobserved.  In order
+to put limits on the inconsistency $\hat\beta_1^{IV,S+H}>\beta_1$, we use a number of partial
+identification and bounds techniques
+\end{spacing}
+\vspace{2mm}
+\begin{itemize}
+\item Bound between (upward biased) OLS and (downward biased) IV
+\item Combine OLS with Altonji-Taber, and Oster bounds
+\item Combine IV with Conley et al bounds (similar to Rosen and Nevo)
+\end{itemize}
+}
+
+
+
+%================================================================================
+%== Slide 12: Data
+%================================================================================
+
+\frame{
+\begin{center}
+\Large \textbf{Data}
+\end{center}
+}
+
+\section{Data}
+\frame{\frametitle{Data}
+\begin{enumerate}
+\item Developing Countries
+\begin{itemize}
+\item Comparable cross-country micro-data for developing countries
+\item Surveys conducted 1991-2013: sample of $\sim$3 million children born in 
+68 countries. Birth cohorts 1971-2012
+\item Large sample useful given twins are rare (sample mean 1.85\%) \\ \vspace{4mm}
+\end{itemize}
+\item USA
+\begin{itemize}
+\item American National Health Interview Surveys conducted 2004-2014 \\ \vspace{4mm}
+\end{itemize}
+\item Microdata from many other countries\ldots
+\begin{itemize}
+\item Administrative birth registries and surveys in the UK, Scotland, Spain, Chile, 
+Brazil, Sweden.
+\end{itemize}
+\end{enumerate}
+}
+
+\frame{
+\input{./tables/Summarymin.tex}
+}
+
+\frame{\frametitle{Data and Context}
+\begin{itemize}
+\item Effects of twins at parity $k$ on outcomes for births $k-1$ and before 
+(as in Black et al. 2005). 
+\begin{itemize}
+\item Predictions are for infra-marginal children.
+\end{itemize}
+\item Nomenclature: ``2+ sample'': Firstborn subjects in families with at least two births (allowing that a birth may be twin). 
+\begin{itemize}
+\item Instrument with twins at second birth
+\end{itemize}
+\item ``3+ sample'': First and second born subjects in families with at least three births 
+\begin{itemize}
+\item Instrument with twins at third birth
+\end{itemize}
+\item And simiarly for 4+.  Twin subjects are generally dropped.
+\end{itemize}
+}
+
+\frame{\frametitle{Data and Context}
+\begin{itemize}
+\item By restricting to families with at least $k$ births on average we ensure that preferences over family size are the same in the families with twins at the $k^{th}$ birth and those with singleton births
+\item By restricting the sample to children born before birth $k$, we avoid selection problems that arise because families who choose to have another child after a twin birth may differ from families who choose to have another child after a singleton birth.
+\end{itemize}
+}
+
+
+\section{Results}
+\frame{
+\begin{center}
+\Large \textbf{Results}
+\end{center}
+}
+
+\frame{\frametitle{Results}
+\begin{itemize}
+\item \textbf{Twin `Endogeneity'}
+\item The Q--Q Trade-off
+\item Bounding Q--Q Estimates
+\end{itemize}
+}
+
+\subsection{Twin Births Are Correlated With Mother Characteristics}
+\frame{\frametitle{Mother's Health}
+\begin{itemize}
+\item No previous evidence (or discussion) of maternal health being a predictor of twin births.
+\item But, recognised that maternal health and behaviours affects a large number of other birth and longer term outcomes (Mazumder and Seeskin, 2014; Black et al.\ 2014;  Bhalotra and Rawlings 2013; Almond et al.\ 2011; Barker 1995).
+\item And evidence from medical literature (Li et al.\ 2003, Hall 2003) that Pr(twinning) increases with age, weight and height (mediated by follicle stimulating hormone) 
+\item We compile many datasets and measures of mother health stocks and behaviours preceding births
+\end{itemize}
+}
+
+
+\frame{
+\begin{figure}[htpb!]
+\centering
+  \caption{Height as a Proxy for Health and Twinning}
+  \label{TWINfig:height}
+  \includegraphics[scale=0.75]{./figures/height_country.eps}
+\end{figure}
+}
+
+
+\frame{
+\vspace{5mm}
+\input{./tables/TwinReg.tex}
+}
+
+
+%================================================================================
+%== Slide 17: Effect Sizes
+%================================================================================
+\begin{frame}[label=robust]
+\frametitle{Effect Sizes}
+Substantial marginal effects of observed indicators of mother’s health on the probability of twin birth (mean$\approx$2\%)
+\vspace{6mm}
+\begin{itemize}
+\item $\Delta^+$ 1 s.d.\ height of mother $\rightarrow$ $\Delta^+$ twin 0.44\% (22\% of mean)
+\item $\Delta^+$ 1 s.d.\ BMI of mother \ \ $\rightarrow$ $\Delta^+$ twin 0.20\% (10\% of mean)
+\item Potential bias on account of selection on maternal survival. 
+\item We (over-)correct for this and establish that selection does not drive our findings. \hyperlink{MMRselec}{\beamergotobutton{Procedure}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label=c]
+\frametitle{Is This an Artifact of DHS Data?}
+\begin{itemize}
+\item We have compiled evidence using a number of surveys and administrative data sets:
+  \begin{itemize}
+  \item \hyperlink{Chile}{\textcolor{blue}{Chile}}
+  \item \hyperlink{UK}{\textcolor{blue}{UK}}
+  \item \hyperlink{USA1}{\textcolor{blue}{USA}} (National Vital Statistics System)
+  \item \hyperlink{USA2}{\textcolor{blue}{USA}} (National Health Surveys)
+  \item \hyperlink{Scotland}{\textcolor{blue}{Scotland}}$^*$
+  \item \hyperlink{Spain1}{\textcolor{blue}{Spain}}$^*$ (Birth Registry)
+  \item \hyperlink{Spain2}{\textcolor{blue}{Spain}}$^*$ (terror shock from Quintana-Domeque and R\'odenas)
+  \item \hyperlink{Brazil}{\textcolor{blue}{Brazil}}$^*$
+  \item \hyperlink{Sweden}{\textcolor{blue}{Sweden}}$^*$
+ \end{itemize}
+\item Depending upon data availability we include health stocks, behaviour
+\item This is not restricted to poor countries.
+\item Mechanism?  \hyperlink{TwinDeath}{\textcolor{blue}{Evidence}} that twins are more likely to die in utero when health stocks are low.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label=USA1]
+\input{./tables/USBirths.tex}
+\end{frame}
+
+\begin{frame}[label=Chile]
+\input{./tables/ChileTwin.tex}
+\end{frame}
+
+\begin{frame}[label=Spain2]
+%\begin{figure}
+%\caption{Twin Births and Stress (Quintana-Domeque and R\'odenas)}
+\input{./tables/Stress.tex}
+\end{frame}
+
+\begin{frame}[label=Sweden]
+\input{./tables/SwedenTwin2.tex}
+\end{frame}
+
+\begin{frame}[label=USA2]
+\input{./tables/NHIStwin.tex}
+\end{frame}
+
+\begin{frame}[label=Scotland]
+\input{./tables/ScotlandTwin.tex}
+\end{frame}
+
+
+\frame{\frametitle{Second Test of Exogeneity of Twins: Are mothers who produce twins healthier ex ante?}
+\begin{itemize}
+\item Comparison of child outcome determined before twins arise across families who do and do not subsequently have a twin birth
+\item Results indicate that twin births occur in families with a tendency towards lower infant morality, possibly healthier (or better-off) families.
+\end{itemize}
+\input{./tables/IMRtest.tex}
+}
+
+\frame{\frametitle{Test 3 (Suggestive): Healthier Cohorts $\rightarrow$ More Twins}
+\begin{figure}[htpb!]
+\centering
+  \caption{Proportion of Twins of All Births (USA)}
+  \label{TWINfig:UStwin}
+  \includegraphics[scale=0.72]{./figures/USTwinFLE.eps}
+\end{figure}
+}
+
+\begin{frame}[label=mechan]
+\frametitle{Mechanism}
+\begin{itemize}
+\item Healthier women appear to be more likely to take twins to term 
+\emph{conditional} on conceiving twins
+\item In \hyperlink{USA3}{\textcolor{blue}{USA}} and \hyperlink{Spain3}{\textcolor{blue}{Spain}}:
+\begin{itemize}
+\item Unhealthy women are more likely to miscarry
+\item Twins are more likely to miscarry
+\item Unhealthy women with twins are more likely to miscarry than healthy women with twins
+\end{itemize}
+\item We show that this is not driven (entirely) by \hyperlink{surv}{\textcolor{blue}{selective maternal death}}
+\end{itemize}
+\end{frame}
+%================================================================================
+%== Slide 21: OLS and IV Estimates
+%================================================================================
+\frame{\frametitle{Results}
+\begin{itemize}
+\item Twin `Endogeneity'
+\item \textbf{The Q--Q Trade-off}
+\item Bounding Q--Q Estimates
+\end{itemize}
+}
+
+
+\subsection{OLS and IV Estimates}
+\frame{\frametitle{OLS and IV Estimates}
+\begin{itemize}
+\item OLS \emph{over}-estimates the trade-off because fertility is negatively correlated with child education.
+\item To address this, fertility is instrumented with twin-birth widespread 
+\item IV will \emph{under}-estimate the trade-off if twin-birth is non-random (because mothers who invest in their health are mothers who invest in children). 
+\item Demonstrate both OLS and IV bias by conditioning on observable indicators of health. 
+\end{itemize}
+}
+
+\frame{\frametitle{OLS Estimates}
+Adding controls for predictors of twin birth diminishes the estimated trade-off
+\input{./tables/OLS.tex}
+}
+
+\frame{\frametitle{Altonji, Elder, Taber 2005, extension in Bellows and Miguel 2009}
+\[
+educ = \beta fert + X\delta + e
+\]
+\begin{itemize}
+\item Fertility is endogenous and instrumented by twins and $X$ is a vector of relevant controls, conditional upon which twins are a valid instrument.
+\item Suppose we observe only a random sub-set of $X$.
+\item Assume that the observed and unobserved components of X are correlated and selection on unobservables is similar to selection on observables.
+\item Compute the ratio of $\hat\beta_c/(\hat\beta_n-\hat\beta_c)$. A large ratio (given by controls not changing $\hat\beta$ much) suggests it is implausible that unobservables can explain away the estimated impact.
+\end{itemize}
+}
+
+\frame{\frametitle{Our Estimates}
+\begin{itemize}
+\item The Altonji et al.\ statistic (recent extension by Oster) computed from OLS estimates with and without controls for twin predictors is $\sim$2.
+\item So for unobservables to explain the OLS coef (-0.12), the variation explained by unobservables would need to be about twice as large as the variation that is explained by the covariates included in our specification.
+\end{itemize}
+}
+
+\subsection{IV Estimates}
+\frame{\frametitle{IV Estimates}
+\begin{itemize}
+\item Fertility is instrumented with twin-birth
+\item Under-estimate trade-off if:
+\begin{itemize}
+\item twin-birth is endogenous, and
+\item Healthier mothers or mothers who invest more pre-birth are more likely to have twins, and
+\item These mothers are \emph{also} those who invest more \emph{after} birth
+\end{itemize}
+\item Demonstrate with observables and Conley bounds
+\end{itemize}
+}
+
+
+
+\begin{frame}[label=IV]
+\input{./tables/IVTogether.tex}
+\hyperlink{Fstage2}{\beamergotobutton{First stage}}
+\end{frame}
+
+
+\frame{\frametitle{IV Results by Gender}
+\input{./tables/Gender.tex}
+}
+
+%================================================================================
+%== Slide 24: OLS vs IV
+%================================================================================
+\begin{frame}[label=USAIV]
+\input{./tables/AllNHIS.tex}
+\end{frame}
+
+
+\frame{\frametitle{Results}
+\begin{itemize}
+\item Twin `Endogeneity'
+\item The Q--Q Trade-off
+\item \textbf{Bounding Q--Q Estimates}
+\end{itemize}
+}
+
+\subsection{Bounds}
+\frame{\frametitle{Bounds}
+\begin{itemize}
+\item IV estimates impose the strong, untestable assumption that twinning is excludable from the 
+structural equation
+\item We show that this is highly unlikely, even when conditioning on various observable health variables
+\item Estimate a $\beta$ interval for a plausible range of $\gamma\neq 0$
+\item Can bound in two ways: 
+\begin{itemize}
+\item OLS versus IV
+\item Loosen the strong assumption of instrumental validity
+\end{itemize}
+\end{itemize}
+}
+
+\frame{\frametitle{OLS and IV bound the trade-off}
+\begin{itemize}
+\item High fertility women are negatively selected
+\begin{itemize}
+\item So controlling for fertility predictors weakens OLS estimates of the Q--Q trade-off.
+\end{itemize}
+\item Women predisposed toward having twins are positively selected
+\begin{itemize}
+\item So controlling for predictors of twin birth strengthens IV estimates of the Q--Q trade-off.
+\end{itemize}
+\item This allows us to treat OLS and IV estimates as bounds on the true parameter
+\begin{itemize}
+\item The caveat to this is that we will tend to under-estimate the lower bound (IV) because it is impossible to fully control for mother characteristics that determine fetal health and predict twinning.
+\end{itemize}
+\item Can thus tighten bounds (on both sides) by controlling for additional health and socioeconomic variables
+\end{itemize}
+}
+
+
+\frame{\frametitle{Bounds derived on the premise of plausible exogeneity}
+An alternative approach to inference for IV models with instruments whose validity is debatable.
+\[
+schooling = \beta fertility + \textcolor{red}{\gamma twins} + X\delta+ e
+\]
+\begin{itemize}
+\item Relax the exclusion restriction that $\gamma=0$.
+\item Plausible exogeneity corresponds to having prior information that $\gamma$ is near 0 but not exactly 0 (Conley et al.\ 2012)
+\item The 2SLS estimator is less sensitive to violations of the exclusion restriction when the instrument is strong (related, Bound, Jaeger, Baker 1995). Conley et al.\ are motivated by cases such as ours where the instrument is strong but may not be strictly exogenous.
+\item Nevo and Rosen (2012) discuss a similar estimation strategy
+\end{itemize}
+}
+
+\frame{\frametitle{The Procedure}
+Conley et al. 2012 present four complementary inference strategies that use prior information about $\gamma$ to different extents. We implement two of these: union of confidence interval (UCI) and the local to zero approach (LTZ)
+\vspace{4mm}
+\begin{itemize}
+\item We specify a set of plausible values for $\gamma$ and obtain interval estimates for $\beta$ conditional upon each.  Grid over 0 to 2$\hat\gamma$.
+\item Taking the union of these interval estimates across values of $\gamma$ provides a conservative interval estimate for $\beta$.
+\begin{itemize}
+\item The plus is that we don’t need to specify a prior distribution for $\gamma$, just a range of plausible values.
+\item The minus is that the estimated interval around $\beta$ may be wide
+\end{itemize}
+\item The LTZ approach views prior probabilities for $\gamma$ as analogous to objective probabilities in a 2-step DGP.  Here we must specificy a prior distribution.
+\end{itemize}
+}
+
+\begin{frame}[label=gammaDiscuss]
+\frametitle{The Procedure}
+What's more, we \emph{are} able to causally estimate $\gamma=\frac{\partial educ}{\partial twin}$ from the structural equation.
+\vspace{4mm}
+\begin{itemize}
+\item The exclusion restriction fails because twin mothers are healthier than non-twin mothers
+\item We use a well known historical reform (sulfa drugs) to causally estimate the effect of mother's
+health on child outcomes ($\partial educ/\partial health$)
+\item This is scaled by the degree to which twin mothers are healthier than non-twin mothers 
+($health_{twin=1}-health_{twin=0}=\partial health/\partial twin$)
+\item The product of these gives $\hat\gamma$
+\item We then use resampling methods to \hyperlink{gammaResamp}{\textcolor{blue}{calculate}} the full distribution for $\gamma$
+\end{itemize}
+\end{frame}
+
+\frame{\frametitle{Estimates of bounds: UCI and LTZ Approaches}
+\input{./tables/Conley.tex}
+}
+
+\begin{frame}[label=Conley3]
+\frametitle{Estimates (3+) Assuming that $\gamma \sim U(0,\delta)$}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/LTZ_three.eps}
+\end{figure}
+\hyperlink{two}{\beamergotobutton{2+}}\ \hyperlink{four}{\beamergotobutton{4+}}
+\end{frame}
+
+\frame{\frametitle{Bounds: OLS vs.\ IV, Conley et al. }
+\begin{itemize}
+\item The OLS estimate is $-0.08^{*}$ (parity pooled). 
+\begin{itemize}
+\item OLS estimates are smaller in absolute terms conditional upon mother characteristics. 
+\item Consistent with high fertility women tending to have lower tastes for education.\\ \vspace{5mm}
+\end{itemize}
+\item First stage indicates twin birth is a powerful instrument. 
+\item IV estimates are $-0.04^{*}$ (3+, all) to $-0.06^{*}$ (3+, middle income).
+\begin{itemize}
+\item IV estimates grow larger in absolute terms conditional upon mother characteristics, consistent with our hypothesis. \\ \vspace{5mm}
+\end{itemize}
+\item Recognizing that twins are at best plausibly exogenous results in a Q--Q parameter interval with an upper bound of $\sim -0.15$ s.d. \\ \vspace{5mm}
+\item Using US data we similarly find a Q--Q tradeoff emerge once we condition upon indicators of maternal health.
+\end{itemize}
+}
+
+%================================================================================
+%== Slide 32: Conclusions
+%================================================================================
+\section{Conclusions}
+\frame{\frametitle{Conclusions}
+\begin{itemize}
+\item Indicators of mother's health and pregnancy behaviours are significant predictors of twin birth.\\ \vspace{5mm}
+\item Conditioning upon available twin predictors produces evidence of a trade-off in IV ($\sim -0.04$ s.d.) and RF estimates.\\ \vspace{5mm}
+\item Significantly larger trade-off for middle income countries and for female children\\ \vspace{5mm}
+\item Ignoring the twin bias will similarly tend to lead to under-estimation of the trade-off between fertility and women's labour force participation.
+\end{itemize}
+}
+
+\frame{
+\begin{center}
+\textcolor{white}{VBP}
+\vspace{3cm} \\
+{\Large Thank you} 
+\vspace{4cm} \\
+\footnotesize Source code and data available for inspection: github.com/damiancclarke/twins
+\end{center}
+
+}
+
+
+\section{Appendices}
+\frame{
+\begin{center}
+\Large \textbf{Appendices}
+\end{center}
+}
+
+\frame{
+\begin{center}
+\Large \textbf{Appendix Tables}
+\end{center}
+}
+
+\begin{frame}[label=Fstage]
+\frametitle{First Stage: Twins Increase Family Size by $\sim$0.8}
+\input{./tables/firstStage.tex}
+\hyperlink{FS1}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=Fstage2]
+\frametitle{First Stage: Twins Increase Family Size by $\sim$0.8}
+\input{./tables/firstStage.tex}
+\hyperlink{IV}{\beamergotobutton{Back}}
+\end{frame}
+
+ \begin{frame}[label=Spain1]
+\input{./tables/SpainTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+ \begin{frame}[label=Brazil]
+\input{./tables/BrazilTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=UK]
+ \input{./tables/UKTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=Spain3]
+\input{./tables/SpainLFD.tex}
+\hyperlink{mechan}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=USA3]
+\input{./tables/USfdeaths1.tex}
+\end{frame}
+
+\begin{frame}
+\input{./tables/USfdeaths2.tex}
+\end{frame}
+
+\begin{frame}
+\input{./tables/USfdeaths3.tex}
+\hyperlink{mechan}{\beamergotobutton{Back}}
+\end{frame}
+
+
+\begin{frame}[label=MMRselec]
+\frametitle{Height and Selective Maternal Survival (1)} 
+\begin{itemize}
+\item We use unique data on maternal mortality rates of sisters of female respondents in the DHS.
+\item We count the number of `unhealthy' women whose sisters died ($N_u$) and the number of `healthy' women whose sisters died ($N_h$).
+\item We assume $N_u > N_h$ given that our \hyperlink{MMRcuts}{\textcolor{blue}{data show}} that maternal mortality (of sisters) depends upon height (assumes height correlated across sisters).
+\item First, we expand our sample to include $N_u + N_h$ women, choosing them randomly from within our file, based upon their `health'.
+\item We use different measures of `health' to check sensitivity of results to this. We use different thresholds and combine being short and being underweight.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Height and Selective Maternal Survival (2)}
+\begin{itemize}
+\item Second, we assume that the unhealthy women who died in childbirth were all carrying twins and that the healthy women who died in childbirth were all carrying singletons. 
+\item This is an extreme assumption intended to produce a severe test of selection.
+\item We then re-estimate the regression of prob(twin) on indicators of mother's health using the simulated sample.
+\item We continue to find significant impacts of maternal health on twinning probabilities. So selection is not driving our results.
+\end{itemize}
+\end{frame}
+	
+
+\begin{frame}[label=surv]
+\input{./tables/Alderman.tex}
+\hyperlink{robust}{\beamergotobutton{Back}}
+\end{frame}
+
+\frame{
+\begin{center}
+\Large \textbf{Appendix Figures}
+\end{center}
+}
+
+\frame{\frametitle{Twins Are More Likely to Occur at Higher Birth Orders}
+\begin{figure}[htpb!]
+\centering
+  %\caption{Total births by Family Type}
+  %\label{TWINfig:famsize}
+  \includegraphics[scale=0.75]{./figures/twinbybord.eps}
+\end{figure}
+}
+
+\begin{frame}[label=MMRcuts]
+\frametitle{Height and Selective Survival}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/MMRcuts.eps}
+\end{figure}
+\hyperlink{MMRselec}{\beamergotobutton{Back}}
+\end{frame}
+
+
+\begin{frame}[label=two]
+\frametitle{Estimates (2+) Assuming that $\gamma \sim U(0,\delta)$}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/LTZ_two.eps}
+\end{figure}
+\hyperlink{Conley3}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=four]
+\frametitle{Estimates (4+) Assuming that $\gamma \sim U(0,\delta)$}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/LTZ_four.eps}
+\end{figure}
+\hyperlink{Conley3}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=gammaResamp]
+\frametitle{Bootstrap Estimates of $\hat\gamma$}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.7]{./figures/gammaResamp.eps}
+\end{figure}
+\hyperlink{gammaDiscuss}{\beamergotobutton{Back}}
+\end{frame}
+
+\end{document}
+
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
