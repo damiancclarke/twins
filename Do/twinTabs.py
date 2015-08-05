@@ -401,6 +401,7 @@ if ftype=='tex':
     IV2.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
     "\\end{tabular}\\end{center}\\end{table}\\end{landscape}")
 
+IV2.close()
 
 
 #==============================================================================
@@ -917,10 +918,8 @@ gendo.write(
 +mr+mc1+twid[5]+tcm[5]+mc3+
 "Female or male refers to the gender of the index child of the regression. \n"
 "All regressions include full controls including socioeconomic and maternal "
-"health variables.  The full lis of controls are available in \n"
-"the notes to table "+rIVa+".  Full IV results for male and "
-"female children are presented in table "+rGen+". Standard errors " 
-"are clustered \n by mother."+foot+"\n")
+"health variables.  The full list of controls are available in the \n"
+"notes to table "+rIVa+". Standard errors are clustered by mother."+foot+"\n")
 if ftype=='tex':
     gendo.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
     "\\end{tabular}\\end{center}\\end{table}")
@@ -1286,8 +1285,8 @@ for i,line in enumerate(gammi):
 
 gammaEst = str(float(EstA[0:6])*abs(float(EstB[0:6])))[0:6]
 
-gammo.write('Estimate &'+EstA+'&'+EstB+'&'+gammaEst+'&xx.xx\\\\ \n'
-            '&'+SeA+'&'+SeA+'&&(xx.xx)\\\\  \n'
+gammo.write('Estimate &'+EstA+'&'+EstB+'&'+gammaEst+'&'+gammaEst+'\\\\ \n'
+            '&'+SeA+'&'+SeA+'&&(0.0027)\\\\  \n'
             '&&&&\\\\ \n'+obs+'&&\\\\ \n'+rsq+'&&\\\\ \\midrule \n')
 
 gammo.write('\n'+mr+mc1+twid[13]+tcm[13]+mc3+
