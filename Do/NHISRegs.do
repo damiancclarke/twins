@@ -253,7 +253,7 @@ if `conley'==1 {
 
             local items 17
             matrix omega_eta = J(`items',`items',0)
-            matrix omega_eta[1,1] = 0.0002
+            matrix omega_eta[1,1] = 0.00265^2
             matrix mu_eta = J(`items',1,0)
             matrix mu_eta[1,1] = 0.0091448
 

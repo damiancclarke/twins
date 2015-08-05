@@ -79,7 +79,7 @@ local sumstats2     0
   local graphs2     0
 local trends        0
 local graphsMB      0
-local graphsSW      0
+local graphsSW      1
 local twin          0
 local OLS           0
 local Oster         0
@@ -805,7 +805,7 @@ if `graphsSW'==1 {
   #delimit ;
   arrowplot twind height, groupvar(country) linesize(0.0025)
 	 controls(motherage motheragesq agefirstbirth educf educfyrs_sq _yb*)
-   regopts(`se') scheme(s1color) generate(hArrow) generateSE(hSE)
+   regopts(`se') scheme(s1mono) generate(hArrow) generateSE(hSE)
    groupname(Country) ytitle("Frequency Twin") xtitle("Mother's Height (cm)");
 	graph export "$Graphs/SW/height_country.eps", as(eps) replace;
   #delimit cr
@@ -819,7 +819,7 @@ if `graphsSW'==1 {
   #delimit ;
   arrowplot twindfamily IMRnotwin `cond' `wt', groupvar(country)
 	 linesize(0.005) controls(motherage motheragesq agefirstbirth educf
-	 educfyrs_sq _yb*) regopts(`se') scheme(s1color) groupname(Country) 
+	 educfyrs_sq _yb*) regopts(`se') scheme(s1mono) groupname(Country) 
    ytitle("Frequency Twin") xtitle("Any Infant Mortality");
 	graph export "$Graphs/SW/IMR_country.eps", as(eps) replace;
   #delimit cr
@@ -1382,7 +1382,7 @@ if `conley'==1 {
         predict E`var', resid
         local ESH `ESH' E`var'
     }
-
+ 
     *------    UCI     ---------------------------------------------------------
     plausexog uci school_zscore `base' $age $S $H (fert = twin_`n'_fam), /*
     */ gmin(0) gmax(0.0182) grid(2) level(.90) vce(robust)
@@ -1393,13 +1393,13 @@ if `conley'==1 {
     *------    LTZ     ---------------------------------------------------------
 		local items = 6
 		matrix omega_eta = J(`items',`items',0)
-		matrix omega_eta[1,1] = 0.0002
+		matrix omega_eta[1,1] = 0.00265^2
 		matrix mu_eta = J(`items',1,0)
 		matrix mu_eta[1,1] = 0.0091448
 
     plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta)
-    local c3 = _b[fert]-1.65*_se[fert]
-    local c4 = _b[fert]+1.65*_se[fert]
+    local c3 = _b[Ex]-1.65*_se[Ex]
+    local c4 = _b[Ex]+1.65*_se[Ex]
     dis "lower bound = `c3', upper bound=`c4'"
 
 
