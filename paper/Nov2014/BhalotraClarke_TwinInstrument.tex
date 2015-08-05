@@ -327,10 +327,11 @@ BeckerTomes1976}, and given that unobservable parental behaviours and attributes
 influence both fertility decisions, and investments in children's education 
 \citep{Qian2009}.
 
+%*******************************************************************************
 \subsection{Quantity-Quality with Twins}           \label{TWINsscn:methodQQ}
 One proposed solution has been to employ 2SLS estimation, where fertility is 
 is instrumented using twin births.\footnote{Other instruments and methodologies 
-are also used including gender mix of children \citep{Angristetal2010}, policy 
+are also used including gender mix of children \citep{ConleyGlauber2006}, policy 
 experiments \citep{Qian2009}, and historical time series variation in schooling 
 \citep{BleakleyLange2009}}  The corresponding first stage is:
 \begin{equation}
@@ -338,20 +339,20 @@ experiments \citep{Qian2009}, and historical time series variation in schooling
 fert_{j}=\pi_0+\pi_1 twins_{j}+\bm{X}\bm{\pi}+\nu_{j},
 \end{equation}
 where $twins_j$ is an indicator for whether the $n^{th}$ birth in a family is a 
-twin birth. As described in section \ref{TWINsscn:samples}, the sample in each 
-case is the so-called $n+$ group, consisting of children born before birth $n$ 
-in families with at least $n$ births.  As such the twins themselves are excluded 
-from the estimation sample.\footnote{Typically, the argument is made that twins 
-are different to single births, and hence should not be compared in analysis.}
-The logic, in quasi-experimental terms, is that existing children (the subjects) 
-are randomly assigned either one (control group) or two (treatment group) 
-siblings.
+twin birth. As described further in section \ref{TWINsscn:samples}, the sample 
+in each case is the so-called $n+$ group, consisting of children born before 
+birth $n$ in families with at least $n$ births. As such the twins themselves are 
+excluded from the estimation sample.\footnote{Typically, the argument is made 
+that twins are different to single births, and hence should not be compared in 
+analysis.} The logic, in quasi-experimental terms, is that existing children 
+(the subjects) are randomly assigned either one (control group) or two 
+(treatment group) siblings at the $n^{th}$ birth.
 
 Consistent estimation of $\beta_1$ can thus proceed provided (among other
 things) that instrumental validity holds:
 \begin{equation}
 \label{TWINeqn:IVvalid}
-\plim_{N\to \infty} \frac{1}{N}\sum_{i=1}^N twin_ju_{ij}=0
+\plim_{N\to \infty} \frac{1}{N}\sum_{j=1}^N twin_ju_{ij}=0
 \end{equation}
 The typical challenge in IV estimates arises when considering 
 (\ref{TWINeqn:IVvalid}); as the error term $u_{ij}$ consists, by nature, of 
@@ -369,9 +370,10 @@ u=f(\text{maternal health stocks, fertility behaviour, positive pregnancy invest
 \end{split}
 \end{equation}
 While many of the relevant elements are either completely or partially 
-unobservable, some of these variables, such as maternal education and partial 
-measures of health stocks and behaviours, can be observed.  Thus a partial test 
-of the twin methodology consists of estimating the following regression.
+unobservable, some of these variables, such as maternal education and 
+incomplete measures of health stocks and behaviours, can be observed.  Thus a 
+partial test of the twin methodology consists of estimating the following 
+regression:
 \begin{equation}
 \label{TWINeqn:twinreg}
 twin_{j}=\alpha_0 + \bm{X}\bm{\alpha}_1 + \bm{S}\bm{\alpha}_2
@@ -400,10 +402,10 @@ characteristic or choice variables, while many similar variables are not observe
 
 Given the biological demands placed on a mother pregnant with twins, we may 
 expect that healthier mothers, or mothers with more resources to invest in their
-pregnancy are more likely to take twin conceptions to term.  Similarly, we may
+pregnancy, are more likely to take twin conceptions to term.  Similarly, we may
 suspect that mothers more able to invest in their children during pregnancy will 
 also be more able to invest in their child's human capital after birth.  If this 
-is the case, we would see that (at the very least) $\bm{\alpha_2}>0$.  
+is the case, we would see that (at the very least) $\bm{\alpha}_2>0$.  
 
 An alternative test of whether twins appear to be as good as random consists of 
 comparing women who give birth to twins with those who give birth to singletons 
@@ -413,8 +415,11 @@ occur. In order to compare health stocks before twins, we run tests comparing th
 rate of infant mortality---a completely predetermined variable---of children in 
 each of the $n+$ groups described above.  If, as we contend, healthier mothers 
 are more likely to give birth to twins, this should be captured in lower infant 
-mortality rates (IMR) in early births.
+mortality rates (IMR) among twin mothers in early births.
 
+If, following the tests described above, twins are found to be positively selected
+among healthy mothers, traditional IV estimates of $\beta_1$ will be inconsistent.
+We turn to discuss this bias now.
 Assuming additive separability of the elements in the omitted error term\footnote{%
 This assumption can be loosened with little implication on the analysis which
 follows.  If we do not assume additive seperability, covariance terms between each
@@ -433,7 +438,7 @@ $\beta_1$ as:
 \begin{equation}
 \label{TWINeqn:betabias}
 \hat\beta_1^{IV} = \beta_1 + 
-\plim_{N\to \infty} \frac{1}{N}\sum_{i=1}^N twin_j(u^S_{ij}+u^H_{ij}+u^*_{ij})
+\plim_{N\to \infty} \frac{1}{N}\sum_{j=1}^N twin_j(u^S_{ij}+u^H_{ij}+u^*_{ij})
 \end{equation}
 Typically, this is the coefficient estimated in the existing twin literature 
 which assumes that twinning is a conditionally exogenous event.  If, however, the 
@@ -443,14 +448,18 @@ second stages, giving
 \begin{equation}
 \label{TWINeqn:betacloser}
 \hat\beta_1^{IV,S+H} = \beta_1 +
-\plim_{N\to \infty} \frac{1}{N}\sum_{i=1}^N twin_ju^*_{ij},
+\plim_{N\to \infty} \frac{1}{N}\sum_{j=1}^N twin_ju^*_{ij},
 \end{equation}
 where the superscript $S+H$ signifies that socioeconomic and health variables 
 have been included as additional controls and, correspondingly, have been 
 removed from the stochastic error term.  What's more, if both the likelihood
-that a woman takes twins to term and a family's subsequent investment in child 
-human capital are positively correlated with positive health behaviours and other 
-positive socioeconomic variables such as parental education, we would expect that:
+that a woman takes twins to term, and a family's subsequent investment in child 
+human capital, are positively correlated with positive health behaviours and other 
+positive socioeconomic variables such as parental education, we would expect%
+\footnote{This follows from the remainder terms in (\ref{TWINeqn:betabias}) and 
+(\ref{TWINeqn:betacloser}).  If twinning is positively correlated with the
+omitted error term in the second stage equation, any $\beta_1$ estimates will be
+over-stated.} that:
 \begin{equation}
 \label{TWINeqn:moves}
 \hat\beta_1^{IV}>\hat\beta_1^{IV,H}>\hat\beta_1^{IV,S+H}>\beta_1.
@@ -475,28 +484,33 @@ zero:
 educ_{ij}=\beta_1 fert_j + \gamma twin_j + \bm{X}\bm{\beta} + u_{ij}.
 \end{equation}
 As we discuss above, this will not be the case if maternal health controls 
-omitted from (\ref{TWINeqn:RF}) are correlated with both the likelihood of taking
-twin conceptions to term, and with eventual measures of child quality.
+omitted from (\ref{TWINeqn:RF}) are correlated with both the likelihood of 
+taking twin conceptions to term, and with eventual measures of child quality.
 
 However, even in cases such as this where we are not confident that $\gamma=0$,
 we can still estimate bounds on the Q-Q tradeoff if we are confident in making
 some statement of prior belief about the distribution from which $\gamma$ is 
 drawn.  \citet{Conleyetal2012} describe such a process, which they refer to as 
-\emph{plausible exogeneity}.  We invoke this terminology here, and refer to 
-twins as a plausibly exogenous event, implying that we have reason to believe 
-that $\gamma$ may be close to, but not necessarily precisely equal to, zero.
-Specifically, we are concerned that healthier mothers are more likely to give
-birth to twins, and, all else constant, healthier mothers are more likely to be 
-able to invest more in children post-pregnancy.  Thus, $\gamma$, the coefficient 
-on twins in (\ref{TWINeqn:Conley}), reflects the interaction between the partial 
-correlation of a mother's health and her likelihood of giving birth to twins, 
-which we denote $\phi_t$, and the partial correlation between her health and child 
+\emph{plausible exogeneity}.\footnote{\citet{NevoRosen2012} propose a bounds
+estimate for IV of a similar nature.  Inference in this case depends on 
+assumptions about the direction of correlation between the instrument and the 
+error term. They denote this as $\rho_{z_{j}u}$, which is analogous to the sign 
+of $\gamma$ in \citeauthor{Conleyetal2012}'s framework which we apply here.} We 
+invoke this terminology here, and refer to twins as a plausibly exogenous event, 
+implying that we have reason to believe that $\gamma$ may be close to, but not 
+necessarily precisely equal to, zero. Specifically, we are concerned that 
+healthier mothers are more likely to give birth to twins, and, all else 
+constant, healthier mothers are more likely to be able to invest more in their 
+children post-pregnancy.  Thus, $\gamma$, the coefficient on twins in 
+(\ref{TWINeqn:Conley}), reflects the interaction between the partial correlation 
+of a mother's health and her likelihood of giving birth to twins, which we 
+denote $\phi_t$, and the partial correlation between her health and child 
 quality, denoted $\phi_q$.
 
 In this paper we estimate $\beta_1$ under a range of assumptions regarding the
 true nature of $\gamma$.  Firstly we estimate $\beta_1$ by simply assuming a
-support assumption for $\gamma$: namely that $\gamma$ falls between zero (implying 
-instrumental validity) and some (positive) number $\delta$:
+support assumption for $\gamma$: namely that $\gamma$ falls between zero 
+(implying instrumental validity) and some (positive) number $\delta$:
 \begin{equation}
 \label{TWINeqn:uci}
 \gamma \in [0,\delta].
@@ -509,25 +523,26 @@ strictly hold. We also estimate by imposing a stronger prior: specifically we
 fully specify the distribution of $\gamma$ as:
 \begin{equation}
 \label{TWINeqn:ltz}
-\gamma \sim U(0,\delta).
+\gamma \sim \mathcal{N}(\mu_\delta,\sigma^2_\delta).
 \end{equation}
 This stronger assumption allows for a tighter estimate of the bounds on 
 $\beta_1$.  \citet{Conleyetal2012} provide a full derivation of this result, and 
 we follow them in referring to this as a local-to-zero (LTZ) approximation.
 
 Assumptions (\ref{TWINeqn:uci}) and (\ref{TWINeqn:ltz}) depend upon the values
-of $\delta$ that we believe hold in the case of twinning and the Q-Q equation.
-In order to form a prior for $\gamma$, we turn to a specific case which allows
-us to causally estimate each of $\phi_t$ and $\phi_q$, and hence the coefficient
-$\gamma$.  By using a well documented shock to mother's health---the arrival of 
-sulfonamide antibiotics in the USA in 1937 \citep{BhalotraVenkataramani2014,
-Jayachandranetal2010}---we can observe the causal effect of this positive 
-health shock on the quality of her children and on the likelihood of giving birth 
-to twins during her fertile life.  By taking the ratio of these effects 
-$\phi_t/\phi_q$, we isolate the direct correlation between twinning and child 
-quality.  We provide a more comprehensive discussion and derivation in of this
-method in appendix \ref{TWINscn:gamma}, and return to estimate of $\gamma$ and 
-bounds on our estimand of interest $\beta_1$ in section \ref{TWINsscn:resultBounds}.
+of $\delta$ (and $\mu_\delta,\sigma^2_\delta$) that we believe hold in the case 
+of twinning and the Q-Q equation.  In order to form a prior for $\gamma$ and its
+distribution, we turn to a specific case which allows us to causally estimate 
+each of $\phi_t$ and $\phi_q$, and hence the coefficient $\gamma$.  By using a 
+well documented shock to mother's health---the arrival of sulfonamide antibiotics 
+in the USA in 1937 \citep{BhalotraVenkataramani2014,Jayachandranetal2010}---we 
+can observe the causal effect of this positive health shock on the quality of 
+her children and on the likelihood of giving birth to twins during her fertile 
+life. By taking the product of these effects $\phi_t\times\phi_q$, we isolate the 
+direct correlation between twinning and child quality. We provide a comprehensive 
+discussion and derivation in of this method in appendix \ref{TWINscn:gamma}, and 
+return to estimate of $\gamma$ and bounds on our estimand of interest $\beta_1$ 
+in section \ref{TWINsscn:resultBounds}.
 
 
 %*******************************************************************************
@@ -802,7 +817,7 @@ in the same figure.
 
 
 %*******************************************************************************
-\subsection{Selection into twinning: mechanisms}   \label{TWINsscn:selection}
+\subsection{Selection Into Twinning: Mechanisms}   \label{TWINsscn:selection}
 In a wide variety of contexts, healthier women are more likely to give birth to
 twins.  There are a number of competing hypotheses which may explain why this is
 the case.  Firstly, it may simply be the case that healthier mothers are more 
@@ -914,7 +929,7 @@ shown that unhealthy women are more likely to miscarry these fetuses before
 birth.
 
 %*******************************************************************************
-\subsection{The twin instrument and the Q-Q trade-off} \label{TWINsscn:QQtwins}
+\subsection{The Twin Instrument and the Q-Q Trade-off} \label{TWINsscn:QQtwins}
 Results from section \ref{TWINsscn:twinning} show that twinning is not as good
 as random, even when conditioning on race, maternal age, and even parental 
 education. Healthier mothers are more likely to have twins. If these mothers 
@@ -960,7 +975,7 @@ term, OLS estimates \emph{will not} converge to unbiased values.  The following
 sections examine alternative estimation methods to bound the Q--Q trade-off.
 
 %*******************************************************************************
-\subsubsection{The twin instrument: estimates of the Q--Q trade-off}
+\subsubsection{The Twin Instrument: Estimates of the Q--Q Trade-off}
 In table \ref{TWINtab:IVAll}, we turn to IV estimates using twins.  As we 
 outline in section \ref{TWINsscn:methodQQ}, the assumption of `as good as 
 random' twin births is unlikely to hold, even when conditioning on the augmented
@@ -1060,7 +1075,7 @@ disfavouring girl children.
 
 
 %*******************************************************************************
-\subsection{Bounding the Q-Q trade-off}            \label{TWINsscn:resultBounds}
+\subsection{Bounding the Q-Q Trade-off}            \label{TWINsscn:resultBounds}
 The results from the previous subsection provide consistent estimates of 
 $\beta_1$ via 2SLS \emph{if} the full set of controls in the first and second 
 stage equations completely account for 
@@ -1098,9 +1113,9 @@ We follow the specification outlined in \citet{BhalotraVenkataramani2014}
 (and appendix \ref{TWINscn:gamma} of this paper) to estimate the effect of 
 the positive health shock associated with Sulfanide drugs on Pr$(twin)$ and
 child quality (school Z-score).  These estimates are presented in
-appendix table \ref{TWINtab:phis}.  We take the ratio of these estimates to
+appendix table \ref{TWINtab:gamma}.  We take the ratio of these estimates to
 isolate the effect of twinning on child quality.  These are displayed at the
-end of table \ref{TWINtab:phis}.  For what remains of this section, we use 
+end of table \ref{TWINtab:gamma}.  For what remains of this section, we use 
 the estimate from column 1, where $\hat\gamma=0.00306/0.0535=0.0571$.
 
 In table \ref{TWINtab:Conley} we provide estimates of Conley bounds using 
@@ -1152,10 +1167,24 @@ mixed.  A range of studies which estimate the effect of quantity on quality
 find that the effect is small, or frequently not statistically different from
 zero.  By assembling large datasets linking a child's human capital outcomes
 with her mother's health---in both the developing world and the USA---we show
-that partially correcting for twin endogeneity is sufficient to push estimates of the trade-off up by about 3\%-4\% of a standard deviation, potentially explaining the lack of significant results in the existing literature.  Using partial identification to bound the effect of child quantity on child quality suggests that the \emph{true} effect size, once accounting for the entire health differential in favour of twin families, may even be as high as 8\% of a standard deviation.
+that partially correcting for twin endogeneity is sufficient to push estimates
+ of the trade-off up by about 3\%-4\% of a standard deviation, potentially
+ explaining the lack of significant results in the existing literature.  Using
+ partial identification to bound the effect of child quantity on child quality
+ suggests that the \emph{true} effect size, once accounting for the entire
+ health differential in favour of twin families, may even be as high as 8\% of
+ a standard deviation.
 
-We are able to conclude that additional unexpected births do have quantitatively important effects on their siblings' educational outcomes.  An 8\% of a standard deviation increase is equivalent to an additional 0.3 years in the classroom.  While the true effect of these 0.3 years of course depend on the quality of education imparted, time in school is at the very least a necessary condition for more general increases in learning outcomes.  The implications of these findings are wide-reaching, both in terms of the vindication of Beckerian theory, and particularly, in an applied sense, when considering human well-being in developing countries which are yet to fully pass through the demographic transition.
-
+We are able to conclude that additional unexpected births do have
+quantitatively important effects on their siblings' educational outcomes.  
+An 8\% of a standard deviation increase is equivalent to an additional 0.3
+years in the classroom.  While the true effect of these 0.3 years of course
+depend on the quality of education imparted, time in school is at the very 
+least a necessary condition for more general increases in learning outcomes.  
+The implications of these findings are wide-reaching, both in terms of the 
+vindication of Beckerian theory, and particularly, in an applied sense, when 
+considering human well-being in developing countries which are yet to fully 
+pass through the demographic transition.
 
 %It remains to be asked whether 4\%-8\% of a standard deviation is an 
 %important outcome when considering children's educational attainment. Evidence 
@@ -1232,55 +1261,83 @@ $Y_{stc}$.\footnote{This is an unbiased effect of sulfanide drugs on health if
 parallel trends are satisfied between high- and low-intensity states. Evidence of
 this is provided by \citet{BhalotraVenkataramani2014}.}
 Let's consider estimating the effect of this exogenous shock to maternal health
-on two outcomes: a mother's twinning rates and her child quality:
-\begin{subequations}
-\begin{eqnarray}
+on child quality:
+\begin{equation}
 \label{TWINeqn:BV1}
-Pr(Twin)_{stc} &=& \alpha^t + \phi^t (Post_t\times basePneumonia_s) +\cdots +\varepsilon^t_{stc} \\
+%\begin{subequations}
+%\begin{eqnarray}
+%\label{TWINeqn:BV1}
+%Pr(Twin)_{stc} &=& \alpha^t + \phi^t (Post_t\times basePneumonia_s) +\cdots +\varepsilon^t_{stc} \\
+%\label{TWINeqn:BV2}
+educ_{stc} = \alpha^q + \phi^q (Post_t\times basePneumonia_s) +\cdots+\varepsilon^q_{stc} 
+%\end{eqnarray}
+%\end{subequations}
+\end{equation}
+%*******************************************************************************
+where superscript $q$ refers to coefficients in the quality regression, and the 
+remainder of (\ref{TWINeqn:BV1}) follows specification (\ref{TWINeqn:BV}).  
+Under typical difference-in-difference assumptions, we can thus causally 
+estimate $\phi^q=\frac{\partial educ}{\partial bP}\big|_{X}$ by OLS (where $bP$ 
+is the $Post_t\times basePneumonia_s$ variable).  
+
+From (\ref{TWINeqn:BV1}) we isolate the effect of a positive maternal health 
+shock (the reduction in rates of pneumonia) on child quality.  However, for 
+$\gamma$---the violation of the exclusion restriction---we need to estimate the 
+twin-mediated effect of health shocks on child quality.  Thus, to estimate 
+$\gamma$, we must know both the effect of a particular health shock on quality
+($\phi^q$), as well as the relative levels of health of twin and non-twin 
+mothers.\footnote{As a simple example, if the effect of a maternal health 
+variable is to increase child quality by 0.1 standard deviations, and twin 
+mothers have 20\% higher stocks of that maternal health variable than non-twin 
+mothers, this suggests an estimate of $\gamma$ (the twin-mediated effect of
+maternal health on child quality) of 0.1*0.2=0.02 s.d.}  We refer to this as
+quantity as $\phi^t$, and this captures the difference in average rates of 
+(state) pneumonia mortality between twin and non-twin families:
+\begin{equation}
 \label{TWINeqn:BV2}
-educ_{stc} &=& \alpha^q + \phi^q (Post_t\times basePneumonia_s) +\cdots+\varepsilon^q_{stc} 
-\end{eqnarray}
-\end{subequations}
-where superscript $t$ refers to coefficients in the twin regression while $q$ refers to
-quality, and the remainder of (\ref{TWINeqn:BV1}) and (\ref{TWINeqn:BV2}) are identical 
-to (\ref{TWINeqn:BV}).  We can thus causally estimate 
-$\phi^t=\frac{\partial twin}{\partial bP}\big|_{X}$ and
-$\phi^q=\frac{\partial educ}{\partial bP}\big|_{X}$ by OLS (where $bP$ is the 
-$Post_t\times basePneumonia_s$ variable) as long as the aforementioned parallel trends
-assumption holds.  Using (\ref{TWINeqn:BV1}) and (\ref{TWINeqn:BV2}), we can (seperately) 
-estimate the effect of positive maternal health shocks on twinning, and the effect of 
-positive maternal health shocks on child quality.
-However, for $\gamma$---the violation of the exclusion restriction---we need to estimate 
-the twin-mediated effect of health shocks on child quality.  Thus, to estimate 
-$\gamma$, we can take the ratio of estimates in each of the above two equations:
+\phi^t=\overline{bP}_{twin=1}-\overline{bP}_{twin=0}=
+\frac{\partial bP}{\partial twin}\bigg|_{X},
+%$\phi^t=\frac{\partial twin}{\partial bP}\big|_{X}$ and
+\end{equation}
+where we condition on the controls from (\ref{TWINeqn:BV1}).  Finally, with 
+these two quantities in hand, we can estimate $\gamma$ by taking their product:
 \begin{equation}
 \label{TWINeqn:realgamma}
-\phi^t/\phi^q=\frac{\partial educ/\partial bP}{\partial twin/\partial bP}\bigg|_{X}=\frac{\partial educ}{\partial twin}\bigg|_{X}=\gamma.
+\phi^q\times\phi^t=\frac{\partial educ}{\partial bP}\times
+\frac{\partial bP}{\partial twin}\bigg|_{X}=
+\frac{\partial educ}{\partial twin}\bigg|_{X}=\gamma.
 \end{equation}
-which is our estimand of interest, and which we can then plug in to our estimates of
+This is our estimand of interest, and we can plug it into our estimates of
 the bounds on $\beta_1$ using \citeauthor{Conleyetal2012}'s method.
 
-In order to estimate (\ref{TWINeqn:realgamma}) we turn to US census data described in
-\citet{BhalotraVenkataramani2014}, firstly estimate $\phi^t$ and $\phi^q$, and then calculate
-ratio of these values to form an estimate of $\gamma$, which we denote $\hat\gamma$.
-In the case of the UCI approach, this is sufficient to estimate the bounds of $\beta_1$,
-assuming that: $\gamma\in[0,2\hat\gamma]$.\footnote{We scale $\gamma$ by the aribtrary 
-factor of 2 in order to be conservative with the maximum upper bound, \citet{Conleyetal2012}
-provide a similar example to calculate the returns to education using the UCI approach.}  
-In the case of the more precise LTZ approach (our preferred bounds estimates), the logic 
-is similar, however now we must form a prior over the entire distribution of $\gamma$.
-Calculating the variance of $\gamma$ is not as straightforward as using the 
-variance-covariance matrix corresponding to each of the estimates $\hat\phi^t$ and 
-$\hat\phi^q$.  In this case however we can use bootstrapping to calculate $J$ 
-replications of $\hat\phi^t/\hat\phi^q$, and from these estimates construct an 
-estimated distribution of $\hat\gamma$ estimates, which allows us to determine our 
-prior for the distribution of $\gamma$.  From this empirical distribution, we observe 
-the estimated mean and standard deviation, and finally test whether the distribution is
-normal using Kolmogorov-Smirnov test of equality of distributions.\footnote{In order to 
-do this, we first estimate the empirical distribution as described previously.  We then 
-observe the mean $\hat\mu$ and the standard deviation $\hat\sigma$, and run a one-sample 
-test do determine whether the observed empirical distribution is is significantly different
-to a normal distribution $\sim N(\hat\mu,\hat\sigma^2)$.}
+%*******************************************************************************
+In order to estimate (\ref{TWINeqn:realgamma}) we turn to US census data 
+described in \citet{BhalotraVenkataramani2014}, firstly estimate $\phi^t$ and 
+$\phi^q$, and then calculate ratio of these values to form an estimate of 
+$\gamma$, which we denote $\hat\gamma$.  In the case of the UCI approach, this 
+is sufficient to estimate the bounds of $\beta_1$, assuming that: 
+$\gamma\in[0,2\hat\gamma]$.\footnote{We scale $\hat\gamma$ by the factor of 2 in 
+order for this value to fall precisely in the middle of the range. 
+\citet{Conleyetal2012} provide a similar example to calculate the returns to 
+education using the UCI approach.} In the case of the more precise LTZ approach 
+(our preferred bounds estimates), the logic is similar, however now we must form 
+a prior over the entire distribution of $\gamma$.  Calculating the variance of 
+$\gamma$ is not as straightforward as using the variance-covariance matrix 
+corresponding to each of the estimates $\hat\phi^t$ and $\hat\phi^q$.  In this 
+case however we can use bootstrapping to calculate $J$ replications of 
+$\hat\phi^t\times\hat\phi^q$, and from these estimates construct an estimated 
+distribution of $\hat\gamma$, which allows us to determine our prior for the 
+distribution of $\gamma$.  From this empirical distribution, we observe the 
+estimated mean and standard deviation, and finally test whether the distribution 
+is normal using a Shapiro Wilk test for normality.\footnote{We also use 
+Kolmogorov-Smirnov tests for equality of distributions to test whether the 
+distribution is more likely to be log normal, uniform, and a number of other
+analytical distributions. In order to do this, we first estimate the empirical 
+distribution as described previously.  We then observe the mean $\hat\mu$ and 
+the standard deviation $\hat\sigma$, and run a one-sample test do determine 
+whether the observed empirical distribution is is significantly different to 
+each analytical distribution $\mathcal{N}(\hat\mu,\hat\sigma^2)$, 
+$U(\hat\mu,\hat\sigma^2)$ or $\ln\mathcal{N}(\hat\mu,\hat\sigma^2)$.}
 
 \newpage
 \end{spacing}
