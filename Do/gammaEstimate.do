@@ -171,7 +171,7 @@ foreach i of numlist 1(1)100 {
     replace twinEst = `twinEst' in `i'
     sum qualEst twinEst
 }
-gen gamma = twinEst*qualEst
+gen gamma = - twinEst*qualEst
 sum gamma
 
 local Gmean = `r(mean)'
@@ -180,7 +180,7 @@ local Gsdev = `r(sd)'
 ********************************************************************************
 *** (8) Examine distribution: Kolmogorov-Smirnov
 ********************************************************************************
-tw hist gamma, bin(16) yaxis(2) frac || function normalden(x,`Gmean',`Gsdev'), /*
+tw hist gamma, bin(12) yaxis(2) frac || function normalden(x,`Gmean',`Gsdev'), /*
 */ lc(black) scheme(lean1) range(`=`Gmean'-3*`Gsdev'' `=`Gmean'+3*`Gsdev'')    /*
 */ yaxis(1) yscale(range(0 11)) ylabel(none) ytitle(" ") xtitle(" ")           /*
 */ legend(label(1 "Empirical Distribution") label(2 "Analytical Distribution"))
@@ -193,10 +193,10 @@ sum lgamma
 local lm = `r(mean)'
 local ls = `r(sd)'
 
-gen x = _n*0.003
+gen x = _n*0.0002
 gen lN =  (1 / x * `ls' * sqrt(2 * _pi)) * exp(-(log(x) - `lm')^2 / (2 *`ls'^2))
 
-tw hist gamma, bin(16) yaxis(2) frac || line lN x, yaxis(1)                  ///
+tw hist gamma, bin(12) yaxis(2) frac || line lN x, yaxis(1)                  ///
     scheme(lean1) yscale(range(0 43)) ylabel(none) ytitle(" ") xtitle(" ")   ///
     legend(label(1 "Empirical Distribution") label(2 "Analytical Distribution")) 
 graph export "$OUT/gammaLogN.eps", as(eps) replace
