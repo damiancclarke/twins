@@ -202,6 +202,7 @@ tw hist gamma, bin(12) yaxis(2) frac || line lN x, yaxis(1)                  ///
 graph export "$OUT/gammaLogN.eps", as(eps) replace
 
 ksmirnov gamma = normal((gamma-`Gmean')/`Gsdev')
+swilk gamma lgamma
 
 ********************************************************************************
 *** (9) Clean and clear
