@@ -167,11 +167,11 @@ innovation discussed previously.  If twin births are not truly exogenous, but
 instead depend upon maternal health stocks and behaviours, there is an 
 identification challenge.  Specifically, if healthier mothers are both more 
 likely to give birth to twins, and more likely to invest in child human capital 
-in later life, existing estimates may significantly underestimate the size of the 
-Q--Q trade-off.  When ignoring these considerations we find that the effect of an 
-additional birth on human capital attainment (education) is minor, or even weakly 
-positive. However, when taking into account this innovation we find that a 
-significant trade-off does exist, and that an additional birth reduces 
+in later life, existing estimates may significantly underestimate the size of 
+the Q--Q trade-off.  When ignoring these considerations we find that the effect 
+of an additional birth on human capital attainment (education) is minor, or even 
+weakly positive. However, when taking into account this innovation we find that 
+a significant trade-off does exist, and that an additional birth reduces 
 standardised schooling behaviour by at least 4\% of a standard deviation.
 
 The estimated effect of $\sim 4\%$ of an s.d.\ is at most the lower bound for 
@@ -983,7 +983,7 @@ expect that these estimates should approach the true parameter from above.
 We examine this intuition by estimating $\beta_1$ from (\ref{TWINeqn:RF}) by OLS 
 and IV. Our principal data is the large DHS sample, where quality is measured by
 school Z-score, a child's educational attainment compared to his or her 
-country$\times$year birth cohort.  After considering DHS estimates we turn to 
+country and year birth cohort.  After considering DHS estimates we turn to 
 NHIS data from USA.
 
 Table \ref{TWINtab:OLS} reports pooled OLS estimates from all DHS data, and in 
@@ -992,7 +992,7 @@ and 4+ fertility groups, and included in appendix table \ref{TWINtab:OLSplus}.
 As is typically found in empirical studies of the Q--Q tradeoff, conditional 
 correlations between family size and child outcome variables are negative, and 
 strongly significant.  The results in table \ref{TWINtab:OLS} suggest that an 
-additional sibling is associated with an approximatelty 0.1 s.d.\ decrease in 
+additional sibling is associated with approximatelty a 0.1 s.d.\ decrease in 
 standardised schooling outcomes.  The magnitude of these estimates decreases
 as additional controls for maternal health and family socioeconomic variables
 are included in the regressions. This is in line with the hypothesised effect
@@ -1012,7 +1012,7 @@ random' twin births is unlikely to hold, even when conditioning on the augmented
 set of controls proposed in (\ref{TWINeqn:twinreg}). If this is the case, we 
 will also be unable to consistently estimate $\beta_1$ using twin births.
 
-However, it is likely that the $\beta_1$ which we estimate using twin births 
+However, it is likely that the $\hat\beta_1$ which we estimate using twin births 
 will provide us with a strict lower bound of the magnitude of the Q--Q trade-off 
 as outlined in (\ref{TWINeqn:betacloser}). We expect that the bias in this 
 estimate is due to those mothers who invest more in their children in utero, or 
@@ -1047,17 +1047,34 @@ estimates, moving as hypothesised in (\ref{TWINeqn:moves}).  In table
 \ref{TWINtab:NHISAll}, we present identical estimates based upon NHIS data from
 the USA. As this survey focuses on health, as well as standardised educational 
 attainment, we examine the effect of additional siblings on the reported health
-of children. Results for both variables show similar to those reported based on 
-DHS data.  Focusing on the 3+ group, the inclusion of health and socioeconomic 
-controls results in OLS estimates moving closer to zero, and IV results further 
-away from zero. In the case of self reported health status, the inclusion of 
+of children. Results for both variables show similar patterns to those reported 
+based on DHS data.  Focusing on the 3+ group, the inclusion of health and 
+socioeconomic controls results in OLS estimates moving closer to zero, and IV 
+results further away from zero. In nearly all cases examined, at all parity 
+levels in both DHS and NHIS, the movements of point estimates is precisely as
+ hypothesised in the series of inequalities described in (\ref{TWINeqn:moves}), 
+suggesting considerable improvements in IV estimates from accounting for twin
+endogeneity.  In the case of self reported health status, the inclusion of 
 additional twin predictors is sufficient to result in statistically significant 
-evidence in favour of the Q--Q trade-off, despite the reasonably imprecise 
-standard errors of estimated coefficients. While for the 2+ subgroup 
-(firstborns), the effect of a second-born twin does not result in statistically 
-significant results, it is important to note that the point estimates become 
-more negative, moving in favour of a negative $\beta_1$, consistent with all 
-other NHIS and DHS results.
+evidence in favour of the Q--Q trade-off for twins at birth three, while for
+education results, a significant Q--Q trade-off emerges for the 2+ group despite 
+the reasonably imprecise standard errors of estimated coefficients. While for 
+the other NHIS subgroups, the effect of a a twin does not always results in
+statistically significant results, it is important to note that the point 
+estimates become more negative, moving in favour of a negative $\beta_1$, 
+consistent with all other NHIS and DHS results.
+
+More generally, we should not be surprised that confidence intervals on these
+point estimates are wide.  It is well recognised that IV estimates are much
+less precise than their OLS counterparts, and this is more true with the case
+of the twin instrument, where a small ($\sim$2\%) of the population are twins.
+The precision of twin estimates is discussed further in \citet{Angristetal2010}.
+While in the DHS data we are able to produce tighter confidence intervals given
+the large population of births, in USA NHIS data, despite the fact that point 
+estimates fully support the hypothesis that a Q--Q trade-off does emerge upon 
+correcting for non-random twin births, the relatively small sample size makes 
+these estimates less precise than their DHS counterparts.
+
 
 %*******************************************************************************
 \subsubsection{Heterogeneity}
@@ -1081,7 +1098,13 @@ births or four to five births. However, in lower fertility environments the
 effect is, as expected, concentrated on lower birth orders. The third row of 
 table \ref{TWINtab:IVAll} suggests that in middle-income countries the effect is 
 largest on first borns, and progressively smaller, but still considerable, at 
-higher birth orders.
+higher birth orders.\footnote{In this paper we focus nearly exclusively on
+the internal validity of twins estimates (IV consistency).  In recent work,
+\citet{Deheijaetal2015} examine the external validity of an alternative 
+fertility natural experiment, when examining various contexts using many
+countries' censuses.  Like them, our results in this section suggest that
+homogeneity between countries and contexts (and even birth orders) is not
+seen when using twins to estimate the Q--Q trade-off.}
 
 Estimates of the magnitude of the Q--Q trade-off by country income level suggest 
 that the trade-off is considerably larger in middle- rather than low-income 
@@ -1097,62 +1120,69 @@ results estimated separately by the gender of the index child. These results
 suggest that females may bear the brunt of additional births, with estimates
 being negative and significant for girls, while insignificant for male children. 
 Interestingly, recent empirical of the Q--Q trade-off from other (middle income)
-contexts finds similar gender-biased results \citep{SouzaPonczek2012} 
-disfavouring girl children.
+contexts finds similar gender-biased results \citep{SouzaPonczek2012}, also
+suggesting that girl children pay a steeper price.
 
 %NOTE that in April 2012 draft, there was some different results discussed here
 %that are no longer included.
 
 
 %*******************************************************************************
-\subsection{Bounding the Q--Q Trade-off}            \label{TWINsscn:resultBounds}
+\subsection{Bounding the Q--Q Trade-off}           \label{TWINsscn:resultBounds}
 The results from the previous subsection provide consistent estimates of 
 $\beta_1$ via 2SLS \emph{if} the full set of controls in the first and second 
-stage equations completely account for 
-those characteristics and behaviours which predict giving live birth to twins. 
-However, given that we have shown that twinning is predicted by a wide range of 
-health behaviours, and given that maternal health variables in these datasets 
-do not exhaustively capture all aspects of health stocks and behaviours, it 
-seems unlikely that all relevant variables are included in these specifications. 
-As such, we turn to \citeauthor{Conleyetal2012}'s \citeyear{Conleyetal2012} 
-methodology to estimate bounds for the Q--Q trade-off.  
+stage equations completely account for those characteristics and behaviours 
+which predict giving live birth to twins. However, given that we have shown that 
+twinning is predicted by a wide range of health behaviours, and given that 
+maternal health variables in these datasets do not exhaustively capture all 
+aspects of health stocks and behaviours, it seems unlikely that all relevant 
+variables are included in these specifications. As such, we turn to 
+\citeauthor{Conleyetal2012}'s \citeyear{Conleyetal2012} methodology to estimate 
+bounds for the Q--Q trade-off.  
 
-As outlined in section \ref{TWINsscn:methodBounds}, this involves the definition 
-of some prior belief over the sign and magnitude that the coefficient on 
-twinning would take in the structural equation \ref{TWINeqn:Conley}. Results 
-are displayed in figures \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}. At each 
-point on the horizontal axis of these figures, the bounds for $\beta_1$ are 
-displayed, along with the corresponding point estimate under the assumption 
-that $\gamma$ is distributed $\sim U(0,\delta)$. Dashed lines present the 95\% 
-confidence interval, while the solid line represents the point estimate.
+As outlined in section \ref{TWINsscn:methodBounds} (and further in appendix
+\ref{TWINscn:gamma}), this involves the definition of some prior belief over 
+the sign and magnitude that the coefficient on twinning would take in the 
+structural equation \ref{TWINeqn:Conley}. Results for DHS are displayed in 
+figures \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3}, for 2+ and 3+ groups 
+respectively. The corresponding figure for the 4+ group is provided as appendix
+figure \ref{TWINfig:ltz4}. Similarly, figures \ref{TWINfig:PEx-USA} and
+\ref{TWINfig:HPEx-USA} provide estimates using NHIS (USA) data. At each point 
+on the horizontal axis of these figures, the bounds for $\beta_1$ are displayed, 
+along with the corresponding point estimate under the assumption that $\gamma$ 
+is distributed $\sim U(0,\delta)$. Dashed lines present the 95\% confidence 
+interval, while the solid line represents the point estimate.
 
-While this technique allows us to agnostically estimate bounds over a range of
-values for $\gamma$, we have thus far made no restriction over the true magnitude
-of $\delta$.  While in figures \ref{TWINfig:ltz2} and \ref{TWINfig:ltz3} we
-have assumed that this is less than 0.2 standard deviations, we can can form 
-far more precise bounds by estimating $\gamma$ directly.  As discussed more 
-extensively in appendix \ref{TWINscn:gamma}, this requires us to (causally) 
-estimate the effect of maternal health shocks on twinning, and the effect of 
-maternal health shocks on child quality.  By taking the ratio of these, we
-can calculate the partial correlation between twinning (which occurs with higher 
-frequency for healthier mothers), and child quality, and then we can plug 
-our estimate of $\gamma$ (where a non-zero value for $\gamma$ implies 
-instrumental invalidity) in \citeauthor{Conleyetal2012}'s bound estimator.
+While this technique allows us to agnostically estimate bounds over a range 
+of values for $\gamma$, we have thus far made no restriction over the true 
+magnitude of $\delta$.  While in figures \ref{TWINfig:ltz2} and 
+\ref{TWINfig:ltz3} we have assumed that this is less than 0.1 standard 
+deviations, we can can form far more precise bounds by estimating $\gamma$ 
+directly.  As discussed more extensively in appendix \ref{TWINscn:gamma}, this 
+requires us to (causally) estimate the effect of maternal health shocks on 
+twinning, and the degree to which twin mothers are healthier than non-twin
+mothers.  By taking the product of these, we can calculate the partial 
+correlation between twinning (which occurs with higher frequency for healthier 
+mothers), and child quality, and then we can plug our estimate of $\gamma$ 
+(where a non-zero value for $\gamma$ implies instrumental invalidity) in 
+\citeauthor{Conleyetal2012}'s bound estimator.
 
 We follow the specification outlined in \citet{BhalotraVenkataramani2014}
 (and appendix \ref{TWINscn:gamma} of this paper) to estimate the effect of 
-the positive health shock associated with Sulfanide drugs on Pr$(twin)$ and
-child quality (school Z-score).  These estimates are presented in
-appendix table \ref{TWINtab:gamma}.  We take the ratio of these estimates to
-isolate the effect of twinning on child quality.  These are displayed at the
-end of table \ref{TWINtab:gamma}.  For what remains of this section, we use 
-the estimate from column 1, where $\hat\gamma=0.00306/0.0535=0.0571$.
+the positive health shock associated with the mother's receipt of Sulfanide 
+drugs on child quality (school Z-score), as well as the health differential
+between twin and non-twin mothers.  These estimates are presented in appendix 
+table \ref{TWINtab:gamma}.  Based on these estimates, we find that $\gamma$
+(the direct effect of coming from a twin family on child quality) is around
+1\% of a standard deviation (0.0091 s.d.).  For what remains of this section, 
+we use this estimate of the violation of the exclusion restriction to 
+calculate the true bounds on the Q--Q trade-off.
 
 In table \ref{TWINtab:Conley} we provide estimates of Conley bounds using 
 our more precisely estimated $\gamma$.  These are our preferred bounds 
 estimates for $\beta_1$.  As described in appendix \ref{TWINscn:gamma}, for 
 the UCI approach this implies an assumption that $\gamma \in [0,2\hat\gamma]$
-(or $\gamma \in [0,2\times 0.0571]$).  For the LTZ approach, we assume that 
+(or $\gamma \in [0,2\times 0.0091]$).  For the LTZ approach, we assume that 
 $\gamma\sim N(\mu_{\hat\gamma},\sigma_{\hat\gamma})$.  The assumption of 
 normality is driven by resampling (bootstrap) estimates of $\hat\gamma$,
 which allows us to construct a distribution for $\gamma$.  This is then
@@ -1162,19 +1192,21 @@ empirical and analytical distributions for $\gamma$ that are applied in the
 LTZ method are displayed in appendix figure \ref{TWINfig:gammaBootsL}-%
 \ref{TWINfig:gammaBootsN}.
 
-These bounds estimates are informative for the three-plus and four-plus
-groups.  In each case, both techniques (UCI and LTZ), have their bounds (at a
-90\% significance level), entirely below zero.  This is the case, despite the
-fact that confidence intervals are quite wide.  Although the bounds themselves
-are wide, the point estimates at the centre of the bounds in all cases
-fall between the downward-biased OLS estimates and the upwards-biased IV
-estimates which we have discussed earlier in this paper.  For each of the three 
-parity groups examined, the LTZ approach suggests that the Q--Q trade-off is 
-approximately $-0.08$ of a standard deviation when considering children's 
-educational attainment.  While for the 2+ sample this is not significantly 
-different to zero, for all other samples these estimates are significant, with 
-a $p$-value$<0.1$.
-
+In all cases, our preferred bounds estimates are those in the right-hand
+columns of table \ref{TWINtab:Conley}, as these allow us to produce more
+efficient bounds based on the estimated bootstrap distribution.  For DHS
+results, these bounds estimates are informative for the three-plus and 
+four-plus groups, and very close to being informative for the 2+ group also.  
+For these groups, both the upper and lower bound fall entirely below zero. In
+all cases for DHS, the average trade-off for the pooled group (the middle of
+these bounds) falls between 3\% and 5\% of a standard deviation.  An additional
+sibling thus \emph{does} appear to affect a child's educational attainment,
+and this is of the order of magnitude of 3-5\% of a standard deviation compared
+to his or her peers.  Similarly, in the USA, despite having much wider bounds,
+these are informative for 2+ (education) and 3+ and 4+ (health).  Once again,
+we generally find a mid-point average effect of approximately 5\% of a 
+standard deviation from an additional birth, although these values are slightly
+higher (and less precise) when considering education rather than health.
  
 
 
@@ -1193,22 +1225,23 @@ conceiving two fetuses.
 These results have important implications for empirical work which aims to 
 identify the causal effect of child quantity (more siblings) on child quality
 (higher human capial).  The existing evidence from the Q--Q literature is 
-mixed.  A range of studies which estimate the effect of quantity on quality
-find that the effect is small, or frequently not statistically different from
-zero.  By assembling large datasets linking a child's human capital outcomes
-with her mother's health---in both the developing world and the USA---we show
-that partially correcting for twin endogeneity is sufficient to push estimates
- of the trade-off up by about 3\%-4\% of a standard deviation, potentially
- explaining the lack of significant results in the existing literature.  Using
- partial identification to bound the effect of child quantity on child quality
- suggests that the \emph{true} effect size, once accounting for the entire
- health differential in favour of twin families, may even be as high as 8\% of
- a standard deviation.
+mixed.  A range of studies which estimate the effect of child quantity on child 
+quality within a family find that the effect is small, or frequently not 
+statistically different from zero.  By assembling large datasets linking a 
+child's human capital outcomes with her mother's health---in both the developing 
+world and the USA---we show that partially correcting for twin endogeneity is 
+sufficient to push estimates of the trade-off up by about 3\%-4\% of a standard 
+deviation, potentially explaining the lack of significant results in the 
+existing literature.  Using partial identification to bound the effect of child 
+quantity on child quality suggests that the \emph{true} effect size, once 
+accounting for the entire health differential in favour of twin families, may 
+even be as high as 8\% of a standard deviation, though is typically centered
+around 5\% of a standard deviation.
 
 We are able to conclude that additional unexpected births do have
 quantitatively important effects on their siblings' educational outcomes.  
-An 8\% of a standard deviation increase is equivalent to an additional 0.3
-years in the classroom.  While the true effect of these 0.3 years of course
+A 5\% of a standard deviation increase is equivalent to an additional 0.2
+years in the classroom.  While the true effect of these 0.2 years of course
 depend on the quality of education imparted, time in school is at the very 
 least a necessary condition for more general increases in learning outcomes.  
 The implications of these findings are wide-reaching, both in terms of the 
