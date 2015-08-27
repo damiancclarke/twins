@@ -79,8 +79,8 @@ local sumstats2     0
   local graphs2     0
 local trends        0
 local graphsMB      0
-local graphsSW      1
-local twin          0
+local graphsSW      0
+local twin          1
 local OLS           0
 local Oster         0
 local RF            0
@@ -91,7 +91,7 @@ local desire        0
 local compl_fert    0
 local twinoccur_ols 0
 local twinoccur_iv  0
-local conley        1
+local conley        0
 local thresholdtest 0
 local balance       0
 local balanceG      0
@@ -805,7 +805,7 @@ if `graphsSW'==1 {
   #delimit ;
   arrowplot twind height, groupvar(country) linesize(0.0025)
 	 controls(motherage motheragesq agefirstbirth educf educfyrs_sq _yb*)
-   regopts(`se') scheme(s1mono) generate(hArrow) generateSE(hSE)
+   regopts(`se') scheme(s1color) generate(hArrow) generateSE(hSE)
    groupname(Country) ytitle("Frequency Twin") xtitle("Mother's Height (cm)");
 	graph export "$Graphs/SW/height_country.eps", as(eps) replace;
   #delimit cr
@@ -819,7 +819,7 @@ if `graphsSW'==1 {
   #delimit ;
   arrowplot twindfamily IMRnotwin `cond' `wt', groupvar(country)
 	 linesize(0.005) controls(motherage motheragesq agefirstbirth educf
-	 educfyrs_sq _yb*) regopts(`se') scheme(s1mono) groupname(Country) 
+	 educfyrs_sq _yb*) regopts(`se') scheme(s1color) groupname(Country) 
    ytitle("Frequency Twin") xtitle("Any Infant Mortality");
 	graph export "$Graphs/SW/IMR_country.eps", as(eps) replace;
   #delimit cr
@@ -830,7 +830,7 @@ if `graphsSW'==1 {
 **** (3) Twin predict regressions
 ********************************************************************************
 if `twin'== 1 {
-
+  /*
   fvset base 1 _cou
   fvset base 1 child_yob
 
@@ -879,12 +879,62 @@ if `twin'== 1 {
 	  " Prenatal care variables are only recoreded for recent births.  As"   ///
 	  " such, column (6) is estimated only for that subset of births where " ///
 	  "these observations are made.")
-
 	estimates clear
-	
+
+  */
 	*****************************************************************************
-   **** (3a) Non-linear health
-   *****************************************************************************
+  **** (3a) Probit
+  *****************************************************************************
+  local out "$Tables/Twin/`TwinPred'Probit.xls"
+  foreach var of varlist twind100 $twinout pre* {
+      replace `var'=`var'/100
+  }
+  probit twind100 $twinpredict `wt' `cond', `se'
+  estpost margins, dydx($twinout)
+  estimates store est1
+
+  local jj = 2
+	foreach inc in =="L" !="L"  {
+		probit twind100 $twinpredict `wt' `cond'&inc_status`inc', `se'
+    estpost margins, dydx($twinout)
+    estimates store est`jj'
+    local ++`jj'
+	}
+	
+	local cond1 child_yob>1989
+	local cond2 child_yob<=1989
+
+	foreach condtn in cond1 cond2 {
+		probit twind100 $twinpredict `wt' `cond'&``condtn'', `se'
+    estpost margins, dydx($twinout)
+    estimates store est`jj'
+    local ++`jj'
+	}
+
+	probit twind100 $twinpredict prenate* `wt', `se'
+  estpost margins, dydx($twinout prenate*)
+  estimates store est6
+
+	estout est1 est2 est3 est4 est5 est6 using `out', keep($twinout pre*)  ///
+	  title("Probability of Giving Birth to Twins (DHS, Probit)")          ///
+	  varlabels(motherage "Age" motheragesq "Age Squared"  agefirstbirth   ///
+	  "Age First Birth" educf "Education (years)" educfyrs_sq              ///
+	  "Education squared" height "Height" bmi "BMI") `estopt' replace      ///
+	  note("Notes: All specifications include a full set of year of birth" ///
+	  " and country dummies, and are estimated as linear probability "     ///
+	  "models. Margins are multiplied by 100 for presentation.  Height is" ///
+	  " measured in cm and BMI is weight in kg divided by height in "      ///
+	  "metres squared. Prenatal care variables are only recoreded for "    ///
+	  "recent births.  As such, column (6) is estimated only for that "    ///
+	  "subset of births where these observations are made.")
+	estimates clear
+  foreach var of varlist twind100 $twinout pre* {
+      replace `var'=`var'*100
+  }
+  /*
+	*****************************************************************************
+  **** (3a) Non-linear health
+  *****************************************************************************
 	local out "$Tables/Twin/`TwinPred'_alt.xls"
 	fvset base 1 _cou
 	fvset base 1 child_yob
@@ -910,8 +960,8 @@ if `twin'== 1 {
 	estimates clear
 	
 	*****************************************************************************
-   **** (3b) Z-scores
-   *****************************************************************************
+  **** (3b) Z-scores
+  *****************************************************************************
 	local out "$Tables/Twin/`TwinPred'_Z.xls"
 	fvset base 1 _cou
 	fvset base 1 child_yob
@@ -942,6 +992,7 @@ if `twin'== 1 {
 	  "Education squared" height "Height" bmi "BMI" bmi_sq "BMI squared" ///
 	  height_sq "height squared") `estopt' replace
 	estimates clear
+  */
 }
 
 ********************************************************************************
