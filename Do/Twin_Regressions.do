@@ -73,11 +73,11 @@ local samp5         0
 local resave        0
 local samples       0
 local matchrate     0
-local sumstats      0
-  local graphs      0
+local sumstats      1
+  local graphs      1
 local sumstats2     0
   local graphs2     0
-local trends        0
+local trends        1
 local graphsMB      0
 local graphsSW      0
 local twin          1
@@ -451,21 +451,22 @@ if `sumstats'==1 {
 	***************************************************************************
 	if `graphs'==1 {
 
-	twoway kdensity fert if twinfamily>0&twinfamily!=., lpattern(dash) bw(2) || ///
-	  kdensity fert if twinfamily==0, bw(2) scheme(s1color) ytitle("Density") ///
-	  legend(label(1 "Twin Family") label(2 "Singleton Family")) ///
-	  title("Total births by Family Type") xtitle("total children ever born") 
-	graph save "$Graphs/`famsize'", replace
-	graph export "$Graphs/`famsize'.`format'", as(`format') replace
+  #delimit ;
+	twoway kdensity fert if twinfamily>0&twinfamily!=., lpattern(dash) bw(2) ||
+	  kdensity fert if twinfamily==0, bw(2) scheme(s1color) ytitle("Density")   
+	  legend(label(1 "Twin Family") label(2 "Singleton Family"))               
+	  xtitle("total children ever born"); 
+	graph save "$Graphs/`famsize'", replace;
+	graph export "$Graphs/`famsize'.`format'", as(`format') replace;
 
-
-	twoway kdensity fert if twinfamily>0&twinfamily!=. & fert > idealnumkids, ///
-	  bw(2) lpattern(dash) || kdensity fert if twinfamily==0 & ///
-	  fert > idealnumkids & twin_bord >= idealnumkids, bw(2) scheme(s1color) ///
-	  legend(label(1 "Twin Family") label(2 "Singleton Family")) ///
-	  ytitle("Density") title("Total births by Family Type") ///
-	  xtitle("total children ever born") ///
-	  subtitle("For families who exceed desired family size")
+	twoway kdensity fert if twinfamily>0&twinfamily!=. & fert > idealnumkids, 
+	  bw(2) lpattern(dash) || kdensity fert if twinfamily==0 & 
+	  fert > idealnumkids & twin_bord >= idealnumkids, bw(2) scheme(s1color) 
+	  legend(label(1 "Twin Family") label(2 "Singleton Family")) 
+	  ytitle("Density") title("Total births by Family Type") 
+	  xtitle("total children ever born") 
+	  subtitle("For families who exceed desired family size");
+    #delimit cr
 	graph save "$Graphs/`famsize_e'", replace
 	graph export "$Graphs/`famsize_e'.`format'", as(`format') replace
 
@@ -478,16 +479,15 @@ if `sumstats'==1 {
 	preserve
 	collapse twind [pw=sweight], by(bord)
 	gen twinave=`twinave'	
-	line twind bord if bord<11, lpattern(dash) title("Twinning by birth order") ///
+	line twind bord if bord<11, lpattern(dash)                     ///
 	  ytitle("Fraction twins") xtitle("Birth Order") yline(0.0189) ///
-	  note(`gnote') scheme(s1color)
+	  scheme(s1color)
 	graph save "$Graphs/`twinbord'", replace
 	graph export "$Graphs/`twinbord'.`format'", as(`format') replace
 
-	twoway bar twind bord if bord<11 || ///
-	line twinave bord if bord<11, title("Twinning by birth order") ///
-	  ytitle("Fraction twins") xtitle("Birth Order")  ///
-	  note(`gnote') scheme(s1color)
+	twoway bar twind bord if bord<11 ||                     ///
+	line twinave bord if bord<11, ytitle("Fraction twins")  ///
+	  scheme(s1color) xtitle("Birth Order")
 	graph save "$Graphs/`twinbord'_hist", replace
 	graph export "$Graphs/`twinbord'_hist.`format'", as(`format') replace
 	restore
@@ -667,8 +667,7 @@ if `trends'==1 {
 		keep `cond'&age>15`cex'
 		collapse educ `w', by(child_yob)
 		sort child_yob
-		twoway line educ child_yob, /* 
-		*/ title("Average years of Education by Birth Cohort") scheme(s1color) /*
+		twoway line educ child_yob, scheme(s1color)                /*
 		*/ xtitle("DHS Birth Cohort") ytitle("Years of Education")
 		graph export "$Graphs/eductrend_kids_`inc'.eps", as(eps) replace
 		restore
@@ -680,8 +679,7 @@ if `trends'==1 {
 		collapse educf `w', by(year_birth)
 		sort year_birth
 		twoway line educf year_birth if year_birth>=1940&year_birth<1997, /* 
-		*/ title("Average years of Education by Birth Cohort") scheme(s1color) /*
-		*/ xtitle("DHS Birth Cohort") ytitle("Years of Education")
+		*/ scheme(s1color) xtitle("DHS Birth Cohort") ytitle("Years of Education")
 		graph export "$Graphs/eductrend_`inc'.eps", as(eps) replace
 		restore
 
@@ -697,7 +695,7 @@ if `trends'==1 {
 			sort year_birth
 			twoway line fert year_bi, lpattern(dash) || line idealnumkids year_birth, /*
 			*/ scheme(s1color) legend(label(1 "Fertility per Woman") /*
-			*/ label(2 "Desired Fertility")) title(`title') ytitle("Births per Woman")
+			*/ label(2 "Desired Fertility")) ytitle("Births per Woman")
 			graph export "$Graphs/ferttrend_`aa'_`inc'.eps", as(eps) replace
 			restore
 		}
