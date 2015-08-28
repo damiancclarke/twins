@@ -42,6 +42,7 @@ fdes = 'Desire_IV_firststage_reg_all.xls'
 ols  = "QQ_ols.txt"
 bala = "Balance_mother.tex"
 twin = "Twin_Predict.xls"
+twiP = "Twin_PredictProbit.xls"
 samp = "Samples.txt"
 summ = "Summary.txt"
 sumc = "SummaryChild.txt"
@@ -49,7 +50,7 @@ sumf = "SummaryMortality.txt"
 coun = "Count.txt"
 dhss = "Countries.txt"
 
-conl = "ConleyResults.txt"
+conl = "ConleyGamma.txt"
 conU = "ConleyGammaNHIS.txt"
 imrt = "PreTwinTest.xls"
 
@@ -574,62 +575,73 @@ if ftype=='tex':
 balo.close()
 
 #==============================================================================
-#== (7) Read in twin predict table, LaTeX format
+#== (7a) Read in twin predict table, LaTeX format
 #==============================================================================
-twini = open(Results+"Twin/"+twin, 'r')
-twino = open(Tables+"TwinReg."+end, 'w')
+ii = 1
+for twintab in [twin, twiP]:
+    if ii==1:
+        Tname = ''
+        Ttype = ''
+        Tlab  = 'TWINtab:TwinDHS'
+    if ii==2:
+        Tname = 'Probit'
+        Ttype = '(Probit)'
+        Tlab  = 'TWINtab:TwinDHSProbit'
 
-if ftype=='tex':
-    twino.write("\\begin{landscape}\\begin{table}[htpb!] \n"
-    "\\caption{Probability of Giving Birth to Twins}\\label{TWINtab:TwinDHS}\n"
-    "\\begin{center}\\begin{tabular}{lcccccc} \\toprule \\toprule \n"
-    +dd+"(1)"+dd+"(2)"+dd+"(3)"+dd+"(4)"+dd+"(5)"+dd+"(6)"+ls+"\n"
-    "Twin*100"+dd+"All"+dd+"\\multicolumn{2}{c}{Income}"+dd+
-    "\\multicolumn{2}{c}{Time}"+dd+"Prenatal"+ls+"\n "
-    "\\cmidrule(r){3-4} \\cmidrule(r){5-6} \n"
-    +dd+dd+"Low inc"+dd+"Middle inc"+dd+"1990-2013"+dd+"1972-1989"+dd+ls+mr+ "\n"
-   "\\begin{footnotesize}\\end{footnotesize}"+dd+
-   "\\begin{footnotesize}\\end{footnotesize}"+dd+
-   "\\begin{footnotesize}\\end{footnotesize}"+dd+
-   "\\begin{footnotesize}\\end{footnotesize}"+dd+
-   "\\begin{footnotesize}\\end{footnotesize}"+dd+
-   "\\begin{footnotesize}\\end{footnotesize}"+dd+
-   "\\begin{footnotesize}\\end{footnotesize}"+ls+"\n")
-elif ftype=='csv':
-    twino.write(dd+"(1)"+dd+"(2)"+dd+"(3)"+dd+"(4)"+dd+"(5)"+dd+"(6)"+ls+"\n"
-    "Twin*100"+dd+"All"+dd+"Income"+''+dd+dd+"Time"+''+dd+dd+"Prenatal"+ls+"\n"
-    +dd+dd+"Low inc"+dd+"Middle inc"+dd+"1990-2013"+dd+"1972-1989"+dd+ls+mr+"\n\n")
+    twini = open(Results+"Twin/"+twintab, 'r')
+    twino = open(Tables+"TwinReg"+Tname+"."+end, 'w')
 
-for i,line in enumerate(twini):
-    if i>2:
-        line = line.replace("\t",dd)
-        line = line.replace("\n", ls)
-        line = line.replace("\"", "")
-        line = line.replace("made.\\\\", "made.")
-        line = line.replace("made.&&&&&&\\\\", "made.")
-        line = line.replace("antenatal", "Antenatal Visits")
-        line = line.replace("prenate_doc", "Prenatal (Doctor)")
-        line = line.replace("prenate_nurse", "Prenatal (Nurse)")
-        line = line.replace("prenate_none", "Prenatal (None)")
-        line = line.replace("Notes:", 
-        "\\hline\\hline\\multicolumn{7}{p{14.3cm}}{\\begin{footnotesize}\\textsc{Notes:}")
-        line = line.replace("r2", dd*6+ls+"R-squared")
-        line = line.replace("N&", "Observations &")
-        line = re.sub(r"(?<=\d),(?=\d)",".", line)
-        if ftype=='csv':
-            line=line.replace(';;;;;;R-squared','R-squared')
-            line=line.replace('\\hline\\hline\\multicolumn{7}{p{14.3cm}}','')
-            line=line.replace('{\\begin{footnotesize}\\textsc{Notes:}','NOTES:')
-        twino.write(line+'\n')
+    if ftype=='tex':
+        twino.write("\\begin{landscape}\\begin{table}[htpb!] \n"
+        "\\caption{Probability of Giving Birth to Twins "+ Ttype + "}"
+        "\\label{" + Tlab + "}\n"
+        "\\begin{center}\\begin{tabular}{lcccccc} \\toprule \\toprule \n"
+        +dd+"(1)"+dd+"(2)"+dd+"(3)"+dd+"(4)"+dd+"(5)"+dd+"(6)"+ls+"\n"
+        "Twin*100"+dd+"All"+dd+"\\multicolumn{2}{c}{Income}"+dd+
+        "\\multicolumn{2}{c}{Time}"+dd+"Prenatal"+ls+"\n "
+        "\\cmidrule(r){3-4} \\cmidrule(r){5-6} \n"
+        +dd+dd+"Low inc"+dd+"Middle inc"+dd+"1990-2013"+dd+"1972-1989"+dd+ls+mr
+        +"\n\\begin{footnotesize}\\end{footnotesize}"+dd+
+        "\\begin{footnotesize}\\end{footnotesize}"+dd+
+        "\\begin{footnotesize}\\end{footnotesize}"+dd+
+        "\\begin{footnotesize}\\end{footnotesize}"+dd+
+        "\\begin{footnotesize}\\end{footnotesize}"+dd+
+        "\\begin{footnotesize}\\end{footnotesize}"+dd+
+        "\\begin{footnotesize}\\end{footnotesize}"+ls+"\n")
+    elif ftype=='csv':
+        twino.write(dd+"(1);(2);(3);(4);(5);(6)"+ls+"\n"
+        "Twin*100"+dd+"All;Income;;Time;;Prenatal"+ls+"\n"
+        +dd+dd+"Low inc;Middle inc;1990-2013;1972-1989"+dd+ls+mr+"\n\n")
 
-if ftype=='csv':
-    twino.write(foot)
-elif ftype=='tex':
-    twino.write(foot+"\n \\end{footnotesize}}\\\\ \\hline \\normalsize "
-    "\\end{tabular}\\end{center}\\end{table}\\end{landscape} \n")
+    for i,line in enumerate(twini):
+        if i>2:
+            line = line.replace("\t",dd)
+            line = line.replace("\n", ls)
+            line = line.replace("\"", "")
+            line = line.replace("made.\\\\", "made.")
+            line = line.replace("made.&&&&&&\\\\", "made.")
+            line = line.replace("antenatal", "Antenatal Visits")
+            line = line.replace("prenate_doc", "Prenatal (Doctor)")
+            line = line.replace("prenate_nurse", "Prenatal (Nurse)")
+            line = line.replace("prenate_none", "Prenatal (None)")
+            line = line.replace("Notes:",hr+hr+ 
+            "\\multicolumn{7}{p{14.3cm}}{\\begin{footnotesize}\\textsc{Notes:}")
+            line = line.replace("r2", dd*6+ls+"R-squared")
+            line = line.replace("N&", "Observations &")
+            line = re.sub(r"(?<=\d),(?=\d)",".", line)
+            if ftype=='csv':
+                line=line.replace(';;;;;;R-squared','R-squared')
+                line=line.replace('\\hline\\hline\\multicolumn{7}{p{14.3cm}}','')
+                line=line.replace('{\\begin{footnotesize}\\textsc{Notes:}','NOTES:')
+            twino.write(line+'\n')
 
-twino.close()
-
+    if ftype=='csv':
+        twino.write(foot)
+    elif ftype=='tex':
+        twino.write(foot+"\n \\end{footnotesize}}\\\\ \\hline \\normalsize "
+        "\\end{tabular}\\end{center}\\end{table}\\end{landscape} \n")
+    twino.close()
+    ii = ii+1
 
 #==============================================================================
 #== (8) Read in summary stats, LaTeX format
@@ -761,11 +773,12 @@ if ftype=='tex':
     conlo.write("\\begin{table}[htpb!]\\caption{`Plausibly Exogenous' Bounds} \n"
     "\\label{TWINtab:Conley}\\begin{center}\\begin{tabular}{lcccc}\n"
     "\\toprule \\toprule \n"
-    "&\\multicolumn{2}{c}{UCI: $\\gamma\\in [0,\\delta]$}"
-    "&\\multicolumn{2}{c}{LTZ: $\\gamma \\sim U(0,\\delta)$}\\\\ \n" 
+    "&\\multicolumn{2}{c}{UCI: $\\gamma\\in [0,2\\hat\\gamma]$}"
+    "&\\multicolumn{2}{c}{LTZ: $\\gamma \\sim \mathcal{N}(\\mu_{\\hat\\gamma},"
+    "\\sigma_{\\hat\\gamma})$}\\\\ \n" 
     "\\cmidrule(r){2-3} \\cmidrule(r){4-5}\n")
 elif ftype=='csv':
-    conlo.write("UCI:;gamma in [0,delta];LTZ:;gamma ~ U(0,delta) \n")
+    conlo.write("UCI:;gamma in [0,delta];LTZ:;gamma ~ N(mu,sigma) \n")
 
 for i,line in enumerate(conli):
     if i<4:
@@ -805,11 +818,11 @@ conlo.write(mr+mc1+twid[3]+tcm[3]+mc3+
 "\\citet{Conleyetal2012}  under various priors about the direct effect "
 "that being from a twin family has on educational outcomes ("+mi+ "gamma"+
 mo+"). In the UCI (union of confidence interval) approach, it is assumed "
-"the true "+mi+"gamma\\in[0,\\delta]"+mo+", while in the LTZ (local to zero) "
-"approach it is assumed that "+mi+"gamma\sim U(0,\\delta)"+mo+".  In each "
-"case $\\delta$ is estimated by including twinning in the first stage  "
-"equation and observing the effect size $\\hat\\gamma$.  Estimated "
-"$\\hat\\gamma$'s are (respectively for two plus to five plus): "+delta)
+"the true "+mi+"gamma\\in[0,2\\hat\\gamma]"+mo+", while in the LTZ (local "
+"to zero) approach it is assumed that "+mi+"gamma\sim "
+"\mathcal{N}(\\mu_{\\hat\\gamma},\\sigma_{\\hat\\gamma})"+mo+". The "
+"consistent estimation of $\\hat\\gamma$ and its entire distribution is "
+"discussed in appendix \\ref{TWINscn:gamma}.")
 
 if ftype=='tex':
     conlo.write("\\end{footnotesize}}  \n"
