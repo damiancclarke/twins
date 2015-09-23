@@ -23,14 +23,6 @@ and education respectively.}
 
 \begin{figure}[htpb!]
 \begin{center}
-\caption{Proportion of Twins by Birth Order}
-\label{TWINfig:bord}
-\includegraphics[scale=0.92]{\twinfolder/Figures/twinbybord.eps} 
-\end{center}
-\end{figure}
-
-\begin{figure}[htpb!]
-\begin{center}
 \caption{Twin Births and Total Fertility}
 \label{TWINfig:births}
 \includegraphics[scale=0.92]{\twinfolder/Figures/famsize.eps} 
@@ -53,29 +45,76 @@ and education respectively.}
 \end{center}
 \end{figure}
 
-\begin{figure}[htpb!]
-\begin{center}
-\caption{Relaxing Strict Exogeneity (two plus)}
-\label{TWINfig:ltz2}
-\includegraphics[scale=0.88]{\twinfolder/Figures/LTZ_two.eps}
-\vspace{-8mm}
-\floatfoot{Note to figure \ref{TWINfig:ltz2}: See note to Figure \ref{TWINfig:ltz3}}
-\end{center}
-\end{figure}
 
 \begin{figure}[htpb!]
 \begin{center}
-\caption{Relaxing Strict Exogeneity (three plus)}
-\label{TWINfig:ltz3}
-\includegraphics[scale=0.88]{\twinfolder/Figures/LTZ_three.eps} 
-\floatfoot{Note to figure \ref{TWINfig:ltz3}: Confidence intervals and point estimates 
+\caption{Plausibly Exogenous Bounds: School Z-Score (Developing Countries)}
+\label{TWINfig:PEx-DHS}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.5]{\twinfolder/Figures/LTZ_two.eps}
+  \caption{Two Plus}
+  \label{TWINfig:ltz2}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.5]{\twinfolder/Figures/LTZ_three.eps}
+  \caption{Three Plus}
+  \label{TWINfig:ltz3}
+\end{subfigure}
+\end{center}
+\floatfoot{Note to figure \ref{TWINfig:PEx-DHS}: Confidence intervals and point estimates 
 are calculated according to \citet{Conleyetal2012}.  Estimates reflect a range of priors 
 regarding the validity of the exclusion restriction required to consistently estimate 
 $\hat\beta_{fert}$ using twinning in a 2SLS framework.  The local to zero (LTZ) 
 approach applied here assumes that $\gamma$, the sign on the instrument when included
-in the first stage, is distributed $\gamma\sim U(0,\delta)$.  Further discussion 
-is provided in the body of the text and table \ref{TWINtab:Conley}.}
-\end{center}
+in the first stage, is distributed $\gamma\sim U(0,\delta)$.  The vertical dashed line
+indicates 2$\times\hat\gamma$, the point at which the estimate for $\gamma$ lies 
+precisely halfway between [0,$\delta$]. Further discussion is provided in appendix
+\ref{TWINscn:gamma} and table \ref{TWINtab:Conley}.}
 \end{figure}
 
+
+
+\begin{figure}[htpb!]
+\begin{center}
+\caption{Plausibly Exogenous Bounds: School Z-Score (USA)}
+\label{TWINfig:PEx-USA}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.5]{\twinfolder/Figures/ConleyUSA_EducationZscore_two.eps}
+  \caption{Two Plus}
+  \label{TWINfig:PEx-USA2}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.5]{\twinfolder/Figures/ConleyUSA_EducationZscore_three.eps}
+  \caption{Three Plus}
+  \label{TWINfig:PEx-USA2}
+\end{subfigure}
+\end{center}
+\floatfoot{\textsc{Notes to figure \ref{TWINfig:PEx-USA}}: See notes to figure
+\ref{TWINfig:ltz3}.}
+\end{figure}
+
+\begin{figure}[htpb!]
+\begin{center}
+\caption{Plausibly Exogenous Bounds: Excellent Health (USA)}
+\label{TWINfig:HPEx-USA}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.5]{\twinfolder/Figures/ConleyUSA_excellentHealth_two.eps}
+  \caption{Two Plus}
+  \label{TWINfig:HPEx-USA2}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[scale=0.5]{\twinfolder/Figures/ConleyUSA_excellentHealth_three.eps}
+  \caption{Three Plus}
+  \label{TWINfig:HPEx-USA2}
+\end{subfigure}
+\end{center}
+\floatfoot{\textsc{Notes to figure \ref{TWINfig:HPEx-USA}}: See notes to
+figure \ref{TWINfig:ltz3}.}
+\end{figure}
 
