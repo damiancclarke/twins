@@ -34,9 +34,9 @@ cap mkdir $OUT
 log using "$LOG/USregistryRegs.txt", text replace
 
 local birthregs  0
-local fdeathregs 1
+local fdeathregs 0
 local SumStats   0
-local graph      0
+local graph      1
 
 local fmt tex
 if `"`fmt'"'=="tex" local sheet tex(pretty frag) label
@@ -209,6 +209,7 @@ if `graph'==1 {
   local files
   foreach y of numlist 1971(1)2012 {
       use $DAT/Births/dta/clean/n`y'
+      keep if motherAge<35
       collapse twin, by(year)
       list
       tempfile f`y'
@@ -230,9 +231,9 @@ if `graph'==1 {
   twoway (line twin year) (line LifeExpectancy year, yaxis(2) `lp'),      ///
     ytitle("Proportion Twin") ytitle("Female Life Expectancy", axis(2))   ///
     xtitle("Year") scheme(s1mono) xline(1981.9, lpattern(dash))           ///
-    legend(label(1 "Proportion Twins") label(2 "Female Life Expectancy")) ///
-    note("Twin data from NVSS Birth Certificate Data.  `WB'"              ///
-         "Dotted line represents first ever IVF birth in USA.")
+    legend(label(1 "Proportion Twins") label(2 "Female Life Expectancy")) 
+    *note("Twin data from NVSS Birth Certificate Data.  `WB'"             ///
+    *     "Dotted line represents first ever IVF birth in USA.")
    graph export "$OUT/USTwinFLE.eps", as(eps) replace
 
 }
