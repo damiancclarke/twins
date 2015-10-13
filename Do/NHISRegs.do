@@ -45,11 +45,12 @@ local se    cluster(motherID)
 local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 */ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
 
-local sum    0
-local twin   0
-local ols    0
-local ivs    0
-local conley 1
+local sum     0
+local balance 1
+local twin    0
+local ols     0
+local ivs     0
+local conley  0
 
 ********************************************************************************
 *** (2) Append cleaned files, generate indicators
@@ -93,18 +94,19 @@ gen S_meduc2=motherEducation^2
 
 gen bmi2=bmi^2
 
+gen mEduc=motherEducation
+replace mEduc=12 if motherEducation==13
+replace mEduc=12 if motherEducation==14
+replace mEduc=14 if motherEducation>=15
+gen BMI=bmi if bmi<99
+gen BMI185=bmi<18.5
+replace BMI185=. if bmi>99
+gen motherExcellentHealth=motherHealthStatus==1
+
 ********************************************************************************
 *** (3) Summary
 ********************************************************************************
 if `sum'==1 {
-    gen mEduc=motherEducation
-    replace mEduc=12 if motherEducation==13
-    replace mEduc=12 if motherEducation==14
-    replace mEduc=14 if motherEducation>=15
-    gen BMI=bmi if bmi<99
-    gen BMI185=bmi<18.5
-    replace BMI185=. if bmi>99
-    gen motherExcellentHealth=motherHealthStatus==1
 
     local motherStat fert motherAge mEduc BMI BMI185 motherExcellentHealth
     local childStat  excellentHealth childEducation EducationZscore
@@ -133,7 +135,65 @@ if `sum'==1 {
 }
 
 ********************************************************************************
-*** (4) Twin Regression
+*** (4a) Balance table
+********************************************************************************
+if `balance'==1 {
+    local bal fert motherAge mEduc BMI BMI185 smokePrePreg motherHeight
+
+    foreach num in two three four {        
+        preserve
+        replace motherAge = motherAge - childAge
+        keep if `num'_plus
+
+        gen Treated = twin_`num'_fam>0
+
+        gen varname    = ""
+        gen twinAve    = .
+        gen notwinAve  = .
+        gen difference = .
+        gen diffSe     = .
+        gen star       = ""
+
+        #delimit ;
+        local names `" "Total Fertility" "Mother's Age" "Mother's Education"
+                       "Mother's BMI" "Mother is underweight"
+                       "Mother Smokes (pre-pregnancy)" "Mother's Height" "';    
+        #delimit cr
+        tokenize `bal'
+
+        local iter = 1
+        foreach var of local names {
+            reg ``iter'' Treated
+            replace varname      = "`var'" in `iter'
+            replace twinAve      = _b[Treated]+_b[_cons] in `iter'
+            replace notwinAve    = _b[_cons] in `iter'
+            replace difference   = _b[Treated] in `iter'
+            replace diffSe       = _se[Treated] in `iter'
+            replace star = "*"   in `iter' if abs(_b[Treated]/_se[Treated])>1.646 
+            replace star = "**"  in `iter' if abs(_b[Treated]/_se[Treated])>1.962 
+            replace star = "***" in `iter' if abs(_b[Treated]/_se[Treated])>2.581 
+            local ++iter
+        }
+       
+        keep in 1/7
+        foreach var of varlist twinAve notwinAve difference diffSe {
+            gen str5 tvar = string(`var', "%05.3f")
+            drop `var'
+            gen `var' = tvar
+            drop tvar
+        }
+
+        keep varname twinAve notwinAve difference diffSe star
+        order varname twinAve notwinAve difference star diffSe
+
+        outsheet using "$OUT/Balance`num'.txt", delimiter("&") replace noquote        
+        restore
+}
+
+exit    
+
+********************************************************************************
+*** (4b) Twin Regression
 ********************************************************************************
 if `twin'==1 {
 gen twin100=twin*100
