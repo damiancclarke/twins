@@ -1428,4 +1428,58 @@ if ftype=='tex':
 
 NHISo.close()
 
+
+#==============================================================================
+#== (18) Balance table
+#==============================================================================
+BALo = open(Tables+'BalanceUSA.'+end, 'w')
+
+
+BALo.write('\\begin{table}[htpb!] \n' 
+           '\\caption{Test of Balance of Observables: USA}'
+           '\\label{TWINtab:NHISBalance}\n'
+           '\\begin{center}\\begin{tabular}{lcccc}\n'
+           '\\toprule\\toprule\n'
+           '&Twin  &Non-Twin&Difference&Difference \\\\ \n'
+           '&Family&Family  &          & SE        \\\\ \\midrule \n'
+           '\\textbf{Panel A: Two-Plus}&&&&\\\\  \n')
+
+wT = open(Results+"NHIS/Balancetwo.txt", 'r')
+for i,line in enumerate(wT):
+    if i>0:
+        line = line.replace('&*','*')
+        line = line.replace('&&','&')
+        BALo.write(line + '\\\\ \n')
+
+BALo.write('\\midrule \\textbf{Panel B: Three-Plus}&&&&\\\\')
+wT = open(Results+"NHIS/Balancethree.txt", 'r')
+for i,line in enumerate(wT):
+    if i>0:
+        line = line.replace('&*','*')
+        line = line.replace('&&','&')
+        BALo.write(line + '\\\\ \n')
+
+BALo.write('\\midrule \\textbf{Panel B: Four-Plus}&&&&\\\\')
+wT = open(Results+"NHIS/Balancefour.txt", 'r')
+for i,line in enumerate(wT):
+    if i>0:
+        line = line.replace('&*','*')
+        line = line.replace('&&','&')
+        BALo.write(line + '\\\\ \n')
+
+
+BALo.write('\\bottomrule \\multicolumn{5}{p{12cm}}{\\begin{footnotesize}  '
+'\\textsc{Notes:}Refer to table \\ref{TWINtab:DHSBalance} for definitions '
+'of samples in each panel.  All variables are measured by the NHIS, and   '
+'the sample is identical to that in table \\ref{TWINtab:NHISAll}. The SE  '
+'(standard error) of the difference in means is calculated by a two-tailed'
+' t-test.  *p$<$0.1; **p$<$0.05; ***p$<$0.01.'
+'\\end{footnotesize}}'
+'\\end{tabular}\\end{center}\\end{table}')
+
+
+BALo.close()
+
+
+
 print "Terminated Correctly."
