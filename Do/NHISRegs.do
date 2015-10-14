@@ -193,58 +193,28 @@ if `balance'==1 {
 
     preserve
     replace motherAge = motherAge - childAge
-    keep if two_plus==1|three_plus==1|four_plus==1
 
     gen Treated = twin_two_fam>0|twin_three_fam>0|twin_four_fam>0
+    replace Treated = abs(Treated - 1)
 
-    lab var fert 
-    lab var motherAge
-    lab var mEduc
-    lab var BMI
-    lab var BMI185
-    lab var smokePrePreg
-    lab var motherHeight
-    gen varname    = ""
-    gen twinAve    = .
-    gen notwinAve  = .
-    gen difference = .
-    gen diffSe     = .
-    gen star       = ""
- 
+    lab var fert          "Total Fertility" 
+    lab var motherAge     "Mother's Age" 
+    lab var mEduc         "Mother's Education" 
+    lab var BMI           "Mother's BMI" 
+    lab var BMI185        "Mother is underweight"
+    lab var smokePrePreg  "Mother Smokes (pre-pregnancy)" 
+    lab var motherHeight  "Mother's Height"
+
+    myttests `bal', by(Treated) all
+    ereturn list
+    local labl "\label{TWINtab:comp}"
+
     #delimit ;
-    local names `" "Total Fertility" "Mother's Age" "Mother's Education"
-                   "Mother's BMI" "Mother is underweight"
-                   "Mother Smokes (pre-pregnancy)" "Mother's Height" "';    
+    esttab using "$OUT/BalanceUSA.tex", nomtitle nonumbers noobs booktabs
+    title(Test of Balance of Observables: Twins versus Non-twins `labl') label
+    cells("mu_1(fmt(a3)) mu_2 d(star pvalue(d_p))" " . . d_se(par)") replace;
     #delimit cr
-    tokenize `bal'
- 
-    local iter = 1
-    foreach var of local names {
-        reg ``iter'' Treated
-        replace varname      = "`var'" in `iter'
-        replace twinAve      = _b[Treated]+_b[_cons] in `iter'
-        replace notwinAve    = _b[_cons] in `iter'
-        replace difference   = _b[Treated] in `iter'
-        replace diffSe       = _se[Treated] in `iter'
-        replace star = "*"   in `iter' if abs(_b[Treated]/_se[Treated])>1.646 
-        replace star = "**"  in `iter' if abs(_b[Treated]/_se[Treated])>1.962 
-        replace star = "***" in `iter' if abs(_b[Treated]/_se[Treated])>2.581 
-        local ++iter
-    }
-   
-    keep in 1/7
-    foreach var of varlist twinAve notwinAve difference diffSe {
-        gen str5 tvar = string(`var', "%05.3f")
-        drop `var'
-        gen `var' = tvar
-        drop tvar
-    }
- 
-    keep varname twinAve notwinAve difference diffSe star
-    order varname twinAve notwinAve difference star diffSe
- 
-    outsheet using "$OUT/BalanceUSA.txt", delimiter("&") replace noquote        
-    restore
+
 }
 exit    
 
