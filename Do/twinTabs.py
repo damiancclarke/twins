@@ -149,7 +149,7 @@ elif ftype=='csv':
     rGen = '14'
 
 #==============================================================================
-#== (2) Function to return fertilility beta and SE for IV tables
+#== (2) Function to return fertility beta and SE for IV tables
 #==============================================================================
 def plustable(ffile,n1,n2,searchterm,alt,n3):
     beta = []
@@ -571,6 +571,42 @@ balo.write(mc1+twid[2]+tcm[2]+mc3+
 if ftype=='tex':
     balo.write("\\end{footnotesize}}\n"+ls+br+
     "\\normalsize\\end{tabular}\\end{table} \n")
+
+balo.close()
+
+
+balo = open(Tables+"BalanceBoth."+end, 'w')
+balo.write('\\begin{table}[htpb!]\\centering \n'
+           '\\caption{Test of Balance of Observables: Twin versus Non-Twin}\n'
+           '\\label{TWINtab:balanceAll} \n'
+           '\\begin{tabular}{lccc} \n \\toprule\\toprule'
+           '&Twin&Non-Twin&Diff.\\\\ \n'
+           '&Family&Family&(Diff. SE)\\\\ \\midrule \n'
+           '\\textbf{Panel A: Developing Countries}&&&\\\\ \n')
+
+bali = open(Results+'Balance.tex', 'r').readlines()
+for i,line in enumerate(bali):
+    l1 = '&'.join(line.split('&')[0:5])+'\\\\'
+    l1 = l1.replace('&*','*')
+    l2 = '&&&('+line.split('&')[5]+')\\\\'
+    l2 = l2.replace('\n','')+'\n'
+    if i>0:
+        balo.write(l1 +'\n' + l2)
+
+balo.write('\\midrule\n'
+           '\\textbf{Panel B: USA}&&&\\\\ \n')
+
+
+balo.write('\\bottomrule\n \\multicolumn{4}{p{11.2cm}}{\\begin{footnotesize}'
+           '\\textsc{Notes:} Panel A is estimated from DHS data, and panel B '
+           'uses NHIS data.  The first two columns display means, while the  '
+           'third column displays the difference and its standard error, esti'
+           'mated using a two-tailed t-test. Each t-test is conditional on mo'
+           'ther\'s age at birth, and total completed fertility. Education is'
+           'measured in years, underweight refers to a BMI$<$18.5, and Infant'
+           'mortality is expressed per 1,000 live births.'
+           '\\end{footnotesize}} \n'
+           '\\end{tabular}\\end{table}')
 
 balo.close()
 
