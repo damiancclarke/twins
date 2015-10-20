@@ -593,8 +593,16 @@ for i,line in enumerate(bali):
     if i>0:
         balo.write(l1 +'\n' + l2)
 
-balo.write('\\midrule\n'
-           '\\textbf{Panel B: USA}&&&\\\\ \n')
+balo.write('\\midrule\n \\textbf{Panel B: USA}&&&\\\\ \n')
+bali = open(Results+'NHIS/BalanceAll.txt', 'r').readlines()
+for i,line in enumerate(bali):
+    l1 = '&'.join(line.split('&')[0:5])+'\\\\'
+    l1 = l1.replace('&*','*')
+    l1 = l1.replace('&\\\\','\\\\')
+    l2 = '&&&('+line.split('&')[5]+')\\\\'
+    l2 = l2.replace('\n','')+'\n'
+    if i>0:
+        balo.write(l1 +'\n' + l2)
 
 
 balo.write('\\bottomrule\n \\multicolumn{4}{p{11.2cm}}{\\begin{footnotesize}'

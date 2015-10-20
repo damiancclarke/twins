@@ -98,6 +98,12 @@ gen mEduc=motherEducation
 replace mEduc=12 if motherEducation==13
 replace mEduc=12 if motherEducation==14
 replace mEduc=14 if motherEducation>=15
+gen fEduc = 6 if fatherEduc == 1
+replace fEduc = 11 if fatherEduc == 2
+replace fEduc = 12 if fatherEduc == 3
+replace fEduc = 13 if fatherEduc == 4
+replace fEduc = 14 if fatherEduc >= 6
+
 gen BMI=bmi if bmi<99
 gen BMI185=bmi<18.5
 replace BMI185=. if bmi>99
@@ -138,8 +144,61 @@ if `sum'==1 {
 *** (4a) Balance table
 ********************************************************************************
 if `balance'==1 {
-    local bal fert motherAge mEduc BMI BMI185 smokePrePreg motherHeight
+    preserve
+    local bal mEduc fEduc BMI BMI185 smokePrePreg motherHeight
+    #delimit ;
+    local names `" "Mother Education" "Father Education" "Mother BMI"
+                   "Mother is underweight" "Mother Smokes (pre-pregnancy)"
+                   "Mother Height" "';    
+    #delimit cr
+    tokenize `bal'
+    replace motherAge = motherAge - childAge
+    collapse `bal' twinfamily motherAge fert B_mrace* [`wt'], by(surveyYear hhx fmx)
+    replace twinfamily   =round(twinfamily)
+    replace motherAge    =round(motherAge)
+    replace fert         =round(fert)
+    gen     white        = B_mrace1>0
+    gen     black        = B_mrace2>0
+    gen     hispanic     = B_mrace4>0
+    gen     other        = hispanic==0&black==0&white==0
+    
+    gen T=twinfamily
+    keep if motherAge>17&motherAge<50
 
+    gen varname    = ""
+    gen twinAve    = .
+    gen notwinAve  = .
+    gen difference = .
+    gen diffSe     = .
+    gen star       = ""
+    local iter = 1
+    foreach var of local names {
+        reg ``iter'' T i.fert i.motherAge white hispanic other
+        replace varname      = "`var'" in `iter'
+        replace twinAve      = _b[T]+_b[_cons] in `iter'
+        replace notwinAve    = _b[_cons] in `iter'
+        replace difference   = _b[T] in `iter'
+        replace diffSe       = _se[T] in `iter'
+        replace star = "*"   in `iter' if abs(_b[T]/_se[T])>1.646 
+        replace star = "**"  in `iter' if abs(_b[T]/_se[T])>1.962 
+        replace star = "***" in `iter' if abs(_b[T]/_se[T])>2.581 
+        local ++iter
+    }
+       
+    keep in 1/6
+    foreach var of varlist twinAve notwinAve difference diffSe {
+        gen str5 tvar = string(`var', "%05.3f")
+        drop `var'
+        gen `var' = tvar
+        drop tvar
+    }
+
+    keep varname twinAve notwinAve difference diffSe star
+    order varname twinAve notwinAve difference star diffSe
+
+    outsheet using "$OUT/BalanceAll.txt", delimiter("&") replace noquote        
+    restore    
+    
     foreach num in two three four {        
         preserve
         replace motherAge = motherAge - childAge
@@ -154,16 +213,10 @@ if `balance'==1 {
         gen diffSe     = .
         gen star       = ""
 
-        #delimit ;
-        local names `" "Total Fertility" "Mother's Age" "Mother's Education"
-                       "Mother's BMI" "Mother is underweight"
-                       "Mother Smokes (pre-pregnancy)" "Mother's Height" "';    
-        #delimit cr
-        tokenize `bal'
 
         local iter = 1
         foreach var of local names {
-            reg ``iter'' Treated
+            reg ``iter'' Treated i.fert i.motherAge
             replace varname      = "`var'" in `iter'
             replace twinAve      = _b[Treated]+_b[_cons] in `iter'
             replace notwinAve    = _b[_cons] in `iter'
@@ -175,7 +228,7 @@ if `balance'==1 {
             local ++iter
         }
        
-        keep in 1/7
+        keep in 1/6
         foreach var of varlist twinAve notwinAve difference diffSe {
             gen str5 tvar = string(`var', "%05.3f")
             drop `var'
@@ -189,32 +242,6 @@ if `balance'==1 {
         outsheet using "$OUT/Balance`num'.txt", delimiter("&") replace noquote        
         restore
     }
-
-
-    preserve
-    replace motherAge = motherAge - childAge
-
-    gen Treated = twin_two_fam>0|twin_three_fam>0|twin_four_fam>0
-    replace Treated = abs(Treated - 1)
-
-    lab var fert          "Total Fertility" 
-    lab var motherAge     "Mother's Age" 
-    lab var mEduc         "Mother's Education" 
-    lab var BMI           "Mother's BMI" 
-    lab var BMI185        "Mother is underweight"
-    lab var smokePrePreg  "Mother Smokes (pre-pregnancy)" 
-    lab var motherHeight  "Mother's Height"
-
-    myttests `bal', by(Treated) all
-    ereturn list
-    local labl "\label{TWINtab:comp}"
-
-    #delimit ;
-    esttab using "$OUT/BalanceUSA.tex", nomtitle nonumbers noobs booktabs
-    title(Test of Balance of Observables: Twins versus Non-twins `labl') label
-    cells("mu_1(fmt(a3)) mu_2 d(star pvalue(d_p))" " . . d_se(par)") replace;
-    #delimit cr
-
 }
 exit    
 
