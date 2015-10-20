@@ -94,7 +94,6 @@ local twinoccur_iv  0
 local conley        0
 local thresholdtest 0
 local balance       1
-local balanceG      0
 local country       0
 local adj_fert      0
   local ADJIV       0
@@ -1612,7 +1611,8 @@ if `balance'==1 {
     collapse infantmortality motherage fert twindfamily, by(id)
     replace motherage = round(motherage)
     gen T = twindfamily
-    reg infantmortality T i.motherage i.fert if twind==0
+    replace infantmortality = infantmortality*1000
+    reg infantmortality T i.motherage i.fert
     gen varname    = "Infant mortality (pre-twin)"
     gen twinAve    = _b[T]+_b[_cons] in 1
     gen notwinAve  = _b[_cons] in 1
@@ -1672,52 +1672,11 @@ if `balance'==1 {
         order varname twinAve notwinAve difference star diffSe
         outsheet varname twinAve notwinAve difference star diffSe in 1/8 /*
         */ using "$Tables/Balance`num'.tex", replace delimiter("&") noquote
-        drop varname twinAve notwinAge difference star diffSe
+        drop varname twinAve notwinvge difference star diffSe
     }
     restore
 }
 
-
-
-
-
-
-exit
-if `balanceG'==1 {
-	do "$Source/myttests.ado"
-	cap drop Treated
-	global balanceG educf height prenateCluster motherage agefirstbirth fert /*
-		*/ infantmortality educ school_zscore malec
-	
-	foreach n in `gplus' {
-		preserve
-		keep `cond'&`n'_plus==1			
-		gen Treated=twin_`n'_fam==1
-
-		collapse $balanceG Treated, by(id)
-
-		lab var fert "Total Fertilty"
-		lab var agefirstbirth "Age First Birth"
-		lab var educf "Mother's Education"
-		lab var height "Mother's Height (cm)"
-		lab var prenateCluster "Prenatal care available"
-		lab var infantmortality "Infant Mortality (pre-twin)"
-		lab var motherage "Mother's Age in Years"
-		lab var educ "Child education (pre-twin children)"
-		lab var school_zscore "School Z-score (pre-twin)"
-		lab var malec "Percent male child (pre-twin)"
-
-		myttests $balanceG, by(Treated)
-		ereturn list
-
-		esttab using "$Tables/Balance/Balance_`n'.tex", nomtitle nonumbers noobs ///
-		  booktabs title(Test of Balance of Observables: Twins versus Non-twins ///
-		  \label{TWINtab:comp}) label ///
-		  cells("mu_1(fmt(a3)) mu_2 d(star pvalue(d_p))" " . . d_se(par)") replace
-		
-		restore
-	}
-}
 ********************************************************************************
 **** (14) Run for each country
 ********************************************************************************
