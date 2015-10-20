@@ -48,7 +48,7 @@ cap log close
 set matsize 2000
 
 foreach ado in ivreg2 outreg2 estout ranktest mat2txt plausexog arrowplot /*
-*/ psacalc leebounds {
+*/ psacalc leebounds ttab {
 	cap which `ado'
  	if _rc!=0 ssc install `ado'
 }
@@ -69,18 +69,18 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         0
+local samp5         1
 local resave        0
 local samples       0
 local matchrate     0
-local sumstats      1
-  local graphs      1
+local sumstats      0
+  local graphs      0
 local sumstats2     0
   local graphs2     0
-local trends        1
+local trends        0
 local graphsMB      0
 local graphsSW      0
-local twin          1
+local twin          0
 local OLS           0
 local Oster         0
 local RF            0
@@ -93,7 +93,7 @@ local twinoccur_ols 0
 local twinoccur_iv  0
 local conley        0
 local thresholdtest 0
-local balance       0
+local balance       1
 local balanceG      0
 local country       0
 local adj_fert      0
@@ -226,7 +226,6 @@ if `samp5'==1 {
 	use "$Data/DHS_twins10samp"
 }
 
-
 *******************************************************************************
 *** (1b) Check match rates
 *******************************************************************************
@@ -255,7 +254,6 @@ if `matchrate'==1 {
 }
 
 if `samples'!=1 keep if _merge==3
-
 *******************************************************************************
 *** (1c) Sample sizes
 *******************************************************************************
@@ -828,7 +826,7 @@ if `graphsSW'==1 {
 **** (3) Twin predict regressions
 ********************************************************************************
 if `twin'== 1 {
-  /*
+
   fvset base 1 _cou
   fvset base 1 child_yob
 
@@ -870,47 +868,48 @@ if `twin'== 1 {
 	  varlabels(motherage "Age" motheragesq "Age Squared"  agefirstbirth  ///
 	  "Age First Birth" educf "Education (years)" educfyrs_sq             ///
 	  "Education squared" height "Height" bmi "BMI") `estopt' replace     ///
-	  note("Notes: All specifications include a full set of year of birth and" ///
-	  " country dummies, and are estimated as linear probability models. "     ///
-	  "Twin is multiplied by 100 for presentation.  Height is measured in cm"  ///
-	  " and BMI is weight in kg divided by height in metres squared. l"      ///
-	  " Prenatal care variables are only recoreded for recent births.  As"   ///
-	  " such, column (6) is estimated only for that subset of births where " ///
-	  "these observations are made.")
+	  note("Notes: All specifications include a full set of year of birth"///
+	  " and country dummies, and are estimated as linear probability  "   ///
+	  " models. Twin is multiplied by 100 for presentation.  Height is "  ///
+	  " measured in cm and BMI is weight in kg divided by height in "     ///
+	  "metres squared. Prenatal care variables are only recoreded for "   ///
+	  "recent births.  As such, column (6) is estimated only for that "   ///
+	  "subset of births where these observations are made.")
 	estimates clear
 
-  */
+
 	*****************************************************************************
   **** (3a) Probit
   *****************************************************************************
   local out "$Tables/Twin/`TwinPred'Probit.xls"
-  foreach var of varlist twind100 $twinout pre* {
+ 
+  foreach var of varlist $twinout pre* {
       replace `var'=`var'/100
   }
-  probit twind100 $twinpredict `wt' `cond', `se'
+  probit twind $twinpredict `wt' `cond', `se'
   estpost margins, dydx($twinout)
   estimates store est1
 
   local jj = 2
 	foreach inc in =="L" !="L"  {
-		probit twind100 $twinpredict `wt' `cond'&inc_status`inc', `se'
+		probit twind $twinpredict `wt' `cond'&inc_status`inc', `se'
     estpost margins, dydx($twinout)
     estimates store est`jj'
-    local ++`jj'
+    local ++jj
 	}
 	
 	local cond1 child_yob>1989
 	local cond2 child_yob<=1989
 
 	foreach condtn in cond1 cond2 {
-		probit twind100 $twinpredict `wt' `cond'&``condtn'', `se'
+		probit twind $twinpredict `wt' `cond'&``condtn'', `se'
     estpost margins, dydx($twinout)
     estimates store est`jj'
-    local ++`jj'
+    local ++jj
 	}
-
-	probit twind100 $twinpredict prenate* `wt', `se'
-  estpost margins, dydx($twinout prenate*)
+ 
+	probit twind $twinpredict prenate* `wt', `se'
+  estpost margins, dydx($twinout prenate_doc prenate_nurse prenate_none)
   estimates store est6
 
 	estout est1 est2 est3 est4 est5 est6 using `out', keep($twinout pre*)  ///
@@ -919,17 +918,18 @@ if `twin'== 1 {
 	  "Age First Birth" educf "Education (years)" educfyrs_sq              ///
 	  "Education squared" height "Height" bmi "BMI") `estopt' replace      ///
 	  note("Notes: All specifications include a full set of year of birth" ///
-	  " and country dummies, and are estimated as linear probability "     ///
-	  "models. Margins are multiplied by 100 for presentation.  Height is" ///
+	  " and country dummies, and are estimated as probit models. Marginal" ///
+	  " effects at the mean are reported.  Margins are multiplied by 100 " ///
+    "for presentation.  Height is"                                       ///
 	  " measured in cm and BMI is weight in kg divided by height in "      ///
 	  "metres squared. Prenatal care variables are only recoreded for "    ///
 	  "recent births.  As such, column (6) is estimated only for that "    ///
 	  "subset of births where these observations are made.")
 	estimates clear
-  foreach var of varlist twind100 $twinout pre* {
+  foreach var of varlist $twinout pre* {
       replace `var'=`var'*100
   }
-  /*
+  
 	*****************************************************************************
   **** (3a) Non-linear health
   *****************************************************************************
@@ -1321,7 +1321,7 @@ if `compl_fert'==1 {
 }
 
 if `twinoccur_ols'==1 {
-	preserve
+  preserve
 	use "$Data/DHS_twins_mortality", clear
 	
 	gen tta=age if twind==1
@@ -1563,54 +1563,126 @@ if `thresholdtest'==1 {
 **** (12) Twin treated versus untreated balance
 ********************************************************************************
 if `balance'==1 {
-	estimates clear
-	do "$Source/myttests.ado"
+    estimates clear
+    preserve
+    #delimit ;
+    local bvar educf educp bmi underweight height agefirstbirth;
+    local vnam `" "Mother Education"  "Father Education" "Mother BMI"
+          "Mother is underweight" "Mother Height (cm)" "Age at First Birth" "';
+    #delimit cr
 
+    collapse `bvar' motherage twindfamily fert, by(id)
+    replace motherage = round(motherage)
+    keep if motherage>17
 
-	foreach opt in /*child*/ mother {
-		gen Treated=1 if twinfamily>0&twinfamily!=.
-		replace Treated=0 if twinfamily==0
-		tab wealth, gen(_wealth)
+    gen T          = twindfamily
+    gen varname    = ""
+    gen twinAve    = .
+    gen notwinAve  = .
+    gen difference = .
+    gen diffSe     = .
+    gen star       = ""
+    local iter     = 1
+    tokenize `bvar'
+    foreach n of local vnam {
+        dis "Iteration is: `iter', var is `n'"
+        qui reg ``iter'' T i.motherage i.fert
+        qui replace varname    = "`n'" in `iter'
+        qui replace twinAve    = _b[T]+_b[_cons] in `iter'
+        qui replace notwinAve  = _b[_cons] in `iter'
+        qui replace difference = _b[T] in `iter'
+        qui replace diffSe     = _se[T] in `iter'
+        qui replace star       = "*"   in `iter' if abs(_b[T]/_se[T])>1.646
+        qui replace star       = "**"  in `iter' if abs(_b[T]/_se[T])>1.962
+        qui replace star       = "***" in `iter' if abs(_b[T]/_se[T])>2.581
 
+        local ++iter
+    }
+    keep varname twinAve notwinAve difference star diffSe
+    keep in 1/6
+    list
+    tempfile f1 f2
+    save `f1'
+    restore
 
-		if `"`opt'"'=="mother" {
-			collapse $balance _wealth* Treated, by(id)
-		}
+    preserve
+    use "$Data/DHS_twins_mortality", clear
+    keep if motherage>17
+    keep if two_plus==1|three_plus==1|four_plus==1
+    collapse infantmortality motherage fert twindfamily, by(id)
+    replace motherage = round(motherage)
+    gen T = twindfamily
+    reg infantmortality T i.motherage i.fert if twind==0
+    gen varname    = "Infant mortality (pre-twin)"
+    gen twinAve    = _b[T]+_b[_cons] in 1
+    gen notwinAve  = _b[_cons] in 1
+    gen difference = _b[T] in 1
+    gen diffSe     = _se[T] in 1
+    gen star       = "*"   in 1 if abs(_b[T]/_se[T])>1.646
+    replace star   = "**"  in 1 if abs(_b[T]/_se[T])>1.962
+    replace star   = "***" in 1 if abs(_b[T]/_se[T])>2.581
+    keep varname twinAve notwinAve difference star diffSe
+    keep in 1
+    save `f2'
+    use `f1', clear
+    append using `f2'
 
-		lab var fert "Total Fertilty"
-		lab var idealnumkids "Desired Fertility"
-		lab var agefirstbirth "Age First Birth"
-		lab var educf "Mother's Education"
-		lab var educp "Father's Education"
-		lab var height "Mother's Height"
-		lab var underweight "Pr(BMI $<$ 18.5)"
-		*lab var antenatal "Number of Antenatal Checks"
-		lab var prenate_doc "Prenatal care (doctor)"
-		lab var prenate_nurse "Prenatal care (nurse)"		
-		lab var prenate_none "Prenatal care (none)"
-		lab var motherage "Mother's Age"
-		lab var _wealth1 "Wealth Quintile 1"
-		lab var _wealth2 "Wealth Quintile 2"
-		lab var _wealth3 "Wealth Quintile 3"
-		lab var _wealth4 "Wealth Quintile 4"
-		lab var _wealth5 "Wealth Quintile 5"
-		lab var childmortality "Child Mortality"
-		lab var infantmortality "Infant Mortality"		
+    foreach var of varlist twinAve notwinAve difference diffSe {
+        gen str5 tvar = string(`var', "%05.3f")
+        drop `var'
+        gen `var' = tvar 
+        drop tvar
+    }
+    
+    order varname twinAve notwinAve difference star diffSe
+    outsheet varname twinAve notwinAve difference star diffSe in 1/7 /*
+    */ using "$Tables/Balance.tex", replace delimiter("&") noquote
+    restore
 
-		
-		myttests $balance _wealth*, by(Treated)
-		ereturn list
-		*esttab using $Tables/Balance.xls, nomtitle nonumbers noobs ///
-		*  cells("mu_1(fmt(a3)) mu_2 d(star pvalue(d_p))" " . . d_se(par)") replace
+    foreach num in two three four {
+        gen Treated`num' = twin_`num'_fam==1
+        replace Treated`num' = abs(Treated`num'-1)
 
-		esttab using "$Tables/Balance_`opt'.tex", nomtitle nonumbers noobs ///
-		  booktabs title(Test of Balance of Observables: Twins versus Non-twins ///
-		  \label{TWINtab:comp}) label ///
-		  cells("mu_1(fmt(a3)) mu_2 d(star pvalue(d_p))" " . . d_se(par)") replace
+        gen varname    = ""
+        gen twinAve    = .
+        gen notwinAve  = .
+        gen difference = .
+        gen diffSe     = .
+        gen star       = ""
 
-	}
+        local iter = 1
+        foreach var of local bvar {
+            reg `var' Treated`num'
+            replace varname = "`var'" in `iter'
+            replace twinAve      = _b[Treated]+_b[_cons] in `iter'
+            replace notwinAve    = _b[_cons] in `iter'
+            replace difference   = _b[Treated] in `iter'
+            replace diffSe       = _se[Treated] in `iter'
+            replace star = "*"   in `iter' if abs(_b[Treated]/_se[Treated])>1.646
+            replace star = "**"  in `iter' if abs(_b[Treated]/_se[Treated])>1.962
+            replace star = "***" in `iter' if abs(_b[Treated]/_se[Treated])>2.581
+            local ++iter
+        }
+        foreach var of varlist twinAve notwinAve difference diffSe {
+            gen str5 tvar = string(`var', "%05.3f")
+            drop `var'
+            gen `var' = tvar 
+            drop tvar
+        }
+        order varname twinAve notwinAve difference star diffSe
+        outsheet varname twinAve notwinAve difference star diffSe in 1/8 /*
+        */ using "$Tables/Balance`num'.tex", replace delimiter("&") noquote
+        drop varname twinAve notwinAge difference star diffSe
+    }
+    restore
 }
 
+
+
+
+
+
+exit
 if `balanceG'==1 {
 	do "$Source/myttests.ado"
 	cap drop Treated
