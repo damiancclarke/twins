@@ -939,8 +939,10 @@ MB, MS, MN = plustable(Results+'IV/'+gend[1],1,13,"fert",'normal',1000)
 
 
 Ns = format(float(FN[0][0]), "n")+', '+format(float(MN[0][0]), "n")+', '
-Ns = Ns + format(float(FN[0][3]),"n")+', '+format(float(MN[0][3]),"n")+', '
+Ns = Ns + format(float(FN[0][4]),"n")+', '+format(float(MN[0][4]),"n")+', '
 Ns = Ns + format(float(FN[0][8]),"n")+', '+format(float(MN[0][8]),"n")
+
+print Ns
 
 if ftype=='tex':
     gendo.write("\\begin{table}[htpb!]\\caption{Q-Q IV Estimates by Gender} \n"
@@ -959,14 +961,14 @@ gendo.write(
 +MB[0][0]+dd+MB[0][1]+dd+MB[0][2]+dd+format(float(MN[0][0]), "n")+ls+'\n'
 +dd+FS[0][0]+dd+FS[0][1]+dd+FS[0][2]+dd+dd
 +MS[0][0]+dd+MS[0][1]+dd+MS[0][2]+dd+ls+'\n' + lineadd +
-"Three Plus "+dd+FB[0][3]+dd+FB[0][4]+dd+FB[0][5]+dd+format(float(FN[0][3]), "n")+dd
-+MB[0][3]+dd+MB[0][4]+dd+MB[0][5]+dd+format(float(MN[0][3]), "n")+ls+'\n'
-+dd+FS[0][3]+dd+FS[0][4]+dd+FS[0][5]+dd+dd
-+MS[0][3]+dd+MS[0][4]+dd+MS[0][5]+dd+ls+'\n'+ lineadd +
-"Four Plus "+dd+FB[0][6]+dd+FB[0][7]+dd+FB[0][8]+dd+format(float(FN[0][8]), "n")+dd
-+MB[0][6]+dd+MB[0][7]+dd+MB[0][8]+dd+format(float(MN[0][8]), "n")+ls+'\n'
-+dd+FS[0][6]+dd+FS[0][7]+dd+FS[0][8]+dd+dd
-+MS[0][6]+dd+MS[0][7]+dd+MS[0][8]+dd+ls+'\n'
+"Three Plus "+dd+FB[0][4]+dd+FB[0][5]+dd+FB[0][6]+dd+format(float(FN[0][3]), "n")+dd
++MB[0][4]+dd+MB[0][5]+dd+MB[0][6]+dd+format(float(MN[0][3]), "n")+ls+'\n'
++dd+FS[0][4]+dd+FS[0][5]+dd+FS[0][6]+dd+dd
++MS[0][4]+dd+MS[0][5]+dd+MS[0][6]+dd+ls+'\n'+ lineadd +
+"Four Plus "+dd+FB[0][8]+dd+FB[0][9]+dd+FB[0][10]+dd+format(float(FN[0][8]), "n")+dd
++MB[0][8]+dd+MB[0][9]+dd+MB[0][10]+dd+format(float(MN[0][8]), "n")+ls+'\n'
++dd+FS[0][8]+dd+FS[0][9]+dd+FS[0][10]+dd+dd
++MS[0][8]+dd+MS[0][9]+dd+MS[0][10]+dd+ls+'\n'
 #+ lineadd +
 #"Five Plus &"+FB[0][9]+'&'+FB[0][10]+'&'+FB[0][11]+'&'
 #+MB[0][9]+'&'+MB[0][10]+'&'+MB[0][11]+'\\\\ \n'
