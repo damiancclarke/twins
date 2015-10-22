@@ -28,6 +28,7 @@ cap log close
 global DAT "~/investigacion/Activa/Twins/Data/NCIS"
 global OUT "~/investigacion/Activa/Twins/Results/Outreg/NHIS"
 global LOG "~/investigacion/Activa/Twins/Log"
+global GRA "~/investigacion/Activa/Twins/Figures"
 
 cap mkdir $OUT
 log using "$LOG/NHISRegs.txt", text replace
@@ -46,11 +47,13 @@ local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 */ stats (r2 N, fmt(%9.2f %9.0g)) starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
 
 local sum     0
-local balance 1
+local balance 0
 local twin    0
 local ols     0
 local ivs     0
 local conley  0
+local gend    0
+local trend   1
 
 ********************************************************************************
 *** (2) Append cleaned files, generate indicators
@@ -243,7 +246,7 @@ if `balance'==1 {
         restore
     }
 }
-exit    
+
 
 ********************************************************************************
 *** (4b) Twin Regression
@@ -399,17 +402,23 @@ if `conley'==1 {
     */ format(%6.4f) replace
 }
 
-exit
+
 ********************************************************************************
 *** (7) IV regressions by gender
 ********************************************************************************
+if `gend'==1 {
 cap mkdir "$OUT/Gender"
+tab H_mheight, gen(HH_)
 foreach gend of numlist 1 2 {
 	foreach y of varlist  `yvars' {
 		foreach f in two three four {
 			preserve
 			keep if childSex==`gend'&`f'_plus==1
-			eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam) [`wt'],             /*
+      eststo: ivreg29 `y' `base' `age' smoke* heightMiss HH_* S_*             /*
+      */ (fert=twin_`f'_fam) [`wt'], `se' first ffirst savefirst savefp(`f'a) /*
+      */ partial(`base')
+
+      eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam) [`wt'],             /*
 			*/ `se' first ffirst savefirst savefp(`f's) partial(`base')
 			dis "`f' base"
 			dis _b[fert]
@@ -428,13 +437,55 @@ foreach gend of numlist 1 2 {
 			dis _b[fert]/_se[fert]
 			restore
 		}
-		local estimates est3 est2 est2 est6 est5 est4 est9 est8 est7
-		local fstage twobfert twohfert twosfert threebfert threehfert threesfert /*
-		*/ fourbfert fourhfert foursfert
+		local estimates est4 est3 est2 est1 est8 est7 est6 est5 est12 est11 est10 est9
+		local fstage twobfert twohfert twosfert twoafert threebfert threehfert  /*
+		*/ threesfert threeafert fourbfert fourhfert foursfert fourafert
 		estout `estimates' using "$OUT/Gender/IVFert`y'G`gend'.xls", replace     /*
 		*/ `estopt' keep(fert `SH')
 		estout `fstage'    using "$OUT/Gender/IVFert`y'1G`gend'.xls", replace    /*
 		*/ `estopt' keep(twin* `SH')
 		estimates clear
 	}
+}
+}
+
+
+********************************************************************************
+*** (8) Global trends from various data sources (USA)
+********************************************************************************
+if `trend'==1 {
+    use "$DAT/../IPUMS/IPUMS20012013", clear
+    keep if age>25&sex==2
+    gen educyrs     = 0  if educ==0
+    replace educyrs = 2  if educ==1
+    replace educyrs = 6  if educ==2
+    replace educyrs = 9  if educ==3
+    replace educyrs = 10 if educ==4
+    replace educyrs = 11 if educ==5
+    replace educyrs = 12 if educ==6
+    replace educyrs = 13 if educ==7
+    replace educyrs = 14 if educ==8
+    replace educyrs = 16 if educ==10
+    replace educyrs = 17 if educ==11
+
+    collapse educyrs [pw=perwt], by(birthyr)
+    replace birthyr = birthyr + 25
+    rename birthyr year
+    tempfile censusEduc
+    save `censusEduc'
+
+    wbopendata, country(USA) indicator(SP.DYN.TFRT.IN) long clear
+    merge 1:1 year using `censusEduc'
+
+    rename sp_dyn_tfrt_in Fertility
+    lab var Fertility "Fertility per Woman (World Bank)"
+    lab var educyrs   "Average Years of Education (ACS)"
+    keep if year>=1960&year<2014
+
+    #delimit ; twoway line educyrs year, yaxis(1) lpattern(longdash)
+    lwidth(medthick) lcolor(black) ytitle("Average Years of Education
+    (ACS)" " ", axis(1)) || line Fertility year, yaxis(2)
+    lcolor(black) lpattern(style) legend(label(1 "Average Years of
+    Education") label(2 "Fertility per Woman")) scheme(s1mono); graph
+    export "$GRA/USTrends.eps", as(eps) replace; #delimit cr
 }
