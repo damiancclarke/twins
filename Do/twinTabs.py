@@ -942,10 +942,9 @@ Ns = format(float(FN[0][0]), "n")+', '+format(float(MN[0][0]), "n")+', '
 Ns = Ns + format(float(FN[0][4]),"n")+', '+format(float(MN[0][4]),"n")+', '
 Ns = Ns + format(float(FN[0][8]),"n")+', '+format(float(MN[0][8]),"n")
 
-print Ns
-
 if ftype=='tex':
-    gendo.write("\\begin{table}[htpb!]\\caption{Q-Q IV Estimates by Gender} \n"
+    gendo.write("\\begin{table}[htpb!]"
+    "\\caption{Q-Q IV Estimates by Gender (Developing Countries)} \n"
     "\\label{TWINtab:gend}\\begin{center}\\begin{tabular}{lcccccccc}\n"
     "\\toprule \\toprule \n"
     "&\\multicolumn{4}{c}{Females}""&\\multicolumn{4}{c}{Males}\\\\ \n" 
@@ -961,8 +960,8 @@ gendo.write(
 +MB[0][0]+dd+MB[0][1]+dd+MB[0][2]+dd+format(float(MN[0][0]), "n")+ls+'\n'
 +dd+FS[0][0]+dd+FS[0][1]+dd+FS[0][2]+dd+dd
 +MS[0][0]+dd+MS[0][1]+dd+MS[0][2]+dd+ls+'\n' + lineadd +
-"Three Plus "+dd+FB[0][4]+dd+FB[0][5]+dd+FB[0][6]+dd+format(float(FN[0][3]), "n")+dd
-+MB[0][4]+dd+MB[0][5]+dd+MB[0][6]+dd+format(float(MN[0][3]), "n")+ls+'\n'
+"Three Plus "+dd+FB[0][4]+dd+FB[0][5]+dd+FB[0][6]+dd+format(float(FN[0][4]), "n")+dd
++MB[0][4]+dd+MB[0][5]+dd+MB[0][6]+dd+format(float(MN[0][4]), "n")+ls+'\n'
 +dd+FS[0][4]+dd+FS[0][5]+dd+FS[0][6]+dd+dd
 +MS[0][4]+dd+MS[0][5]+dd+MS[0][6]+dd+ls+'\n'+ lineadd +
 "Four Plus "+dd+FB[0][8]+dd+FB[0][9]+dd+FB[0][10]+dd+format(float(FN[0][8]), "n")+dd
@@ -982,6 +981,76 @@ gendo.write(
 if ftype=='tex':
     gendo.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
     "\\end{tabular}\\end{center}\\end{table}")
+
+gendo.close()
+
+
+gendo = open(Tables+'GenderUSA.'+end, 'w')
+
+girl = 'IVFertEducationZscoreG2.xls'
+boys = 'IVFertEducationZscoreG1.xls'
+FB, FS, FN = plustable(Results+'NHIS/Gender/'+girl,1,13,"fert",'normal',1000)
+MB, MS, MN = plustable(Results+'NHIS/Gender/'+boys,1,13,"fert",'normal',1000)
+
+if ftype=='tex':
+    gendo.write("\\begin{table}[htpb!]"
+    "\\caption{Q-Q IV Estimates by Gender (USA)} \n"
+    "\\label{TWINtab:gend}\\begin{center}\\begin{tabular}{lcccccccc}\n"
+    "\\toprule \\toprule \n"
+    "&\\multicolumn{4}{c}{Females}""&\\multicolumn{4}{c}{Males}\\\\ \n" 
+    "\\cmidrule(r){2-5} \\cmidrule(r){6-9} \n" 
+    "&Base&Socioec&Health&Obs.&Base&Socioec&Health&Obs. \\\\ \\midrule \n"+lineadd)
+elif ftype=='csv':
+    gendo.write(";Females;;;Males;; \n"  
+    ";Base;Socioec;Health;Obs.;Base;Socioec;Health;Obs. \n")
+
+gendo.write('\\multicolumn{6}{l}{\\textbf{Panel A: School Z-Score}}\\\\')
+
+gendo.write(
+"Two Plus "+dd+FB[0][0]+dd+FB[0][1]+dd+FB[0][2]+dd+format(float(FN[0][0]), "n")+dd
++MB[0][0]+dd+MB[0][1]+dd+MB[0][2]+dd+format(float(MN[0][0]), "n")+ls+'\n'
++dd+FS[0][0]+dd+FS[0][1]+dd+FS[0][2]+dd+dd
++MS[0][0]+dd+MS[0][1]+dd+MS[0][2]+dd+ls+'\n' + lineadd +
+"Three Plus "+dd+FB[0][4]+dd+FB[0][5]+dd+FB[0][6]+dd+format(float(FN[0][4]), "n")+dd
++MB[0][4]+dd+MB[0][5]+dd+MB[0][6]+dd+format(float(MN[0][4]), "n")+ls+'\n'
++dd+FS[0][4]+dd+FS[0][5]+dd+FS[0][6]+dd+dd
++MS[0][4]+dd+MS[0][5]+dd+MS[0][6]+dd+ls+'\n'+ lineadd +
+"Four Plus "+dd+FB[0][8]+dd+FB[0][9]+dd+FB[0][10]+dd+format(float(FN[0][8]), "n")+dd
++MB[0][8]+dd+MB[0][9]+dd+MB[0][10]+dd+format(float(MN[0][8]), "n")+ls+'\n'
++dd+FS[0][8]+dd+FS[0][9]+dd+FS[0][10]+dd+dd
++MS[0][8]+dd+MS[0][9]+dd+MS[0][10]+dd+ls+'\n')
+
+
+girl = 'IVFertexcellentHealthG2.xls'
+boys = 'IVFertexcellentHealthG1.xls'
+FB, FS, FN = plustable(Results+'NHIS/Gender/'+girl,1,13,"fert",'normal',1000)
+MB, MS, MN = plustable(Results+'NHIS/Gender/'+boys,1,13,"fert",'normal',1000)
+
+gendo.write('\\multicolumn{6}{l}{\\textbf{Panel B: Child Health}}\\\\')
+gendo.write(
+"Two Plus "+dd+FB[0][0]+dd+FB[0][1]+dd+FB[0][2]+dd+format(float(FN[0][0]), "n")+dd
++MB[0][0]+dd+MB[0][1]+dd+MB[0][2]+dd+format(float(MN[0][0]), "n")+ls+'\n'
++dd+FS[0][0]+dd+FS[0][1]+dd+FS[0][2]+dd+dd
++MS[0][0]+dd+MS[0][1]+dd+MS[0][2]+dd+ls+'\n' + lineadd +
+"Three Plus "+dd+FB[0][4]+dd+FB[0][5]+dd+FB[0][6]+dd+format(float(FN[0][4]), "n")+dd
++MB[0][4]+dd+MB[0][5]+dd+MB[0][6]+dd+format(float(MN[0][4]), "n")+ls+'\n'
++dd+FS[0][4]+dd+FS[0][5]+dd+FS[0][6]+dd+dd
++MS[0][4]+dd+MS[0][5]+dd+MS[0][6]+dd+ls+'\n'+ lineadd +
+"Four Plus "+dd+FB[0][8]+dd+FB[0][9]+dd+FB[0][10]+dd+format(float(FN[0][8]), "n")+dd
++MB[0][8]+dd+MB[0][9]+dd+MB[0][10]+dd+format(float(MN[0][8]), "n")+ls+'\n'
++dd+FS[0][8]+dd+FS[0][9]+dd+FS[0][10]+dd+dd
++MS[0][8]+dd+MS[0][9]+dd+MS[0][10]+dd+ls+'\n'
++mr+mc1+twid[5]+tcm[5]+mc3+
+"Female or male refers to the gender of the index child of the regression. \n"
+"All regressions include full controls including socioeconomic and maternal "
+"health variables.  The full list of controls are available in the \n"
+"notes to table \\ref{TWINtab:NHISAll}. Standard errors are clustered by mother."
++foot+"\n")
+if ftype=='tex':
+    gendo.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
+    "\\end{tabular}\\end{center}\\end{table}")
+
+
 
 gendo.close()
 
