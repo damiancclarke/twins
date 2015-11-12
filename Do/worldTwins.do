@@ -83,12 +83,35 @@ outsheet using "$OUT/countryEstimates.csv", comma replace
 ********************************************************************************
 *** (3) Make Graph
 ********************************************************************************
-insheet using "$OUT/countryEstimates.csv", comma names
+use "$DAT/GDPpc_WorldBank"
+keep if year==2013
+tempfile GDP
+save `GDP', replace
+
+insheet using "$OUT/countryEstimates.csv", comma names clear
 gsort -heightest
 gen numb = _n
-
-
 encode countryname, gen(cc)
+
+replace countryname=subinstr(countryname, "-", " ", .)
+replace countryname= "Congo, Dem. Rep." if countryname == "Congo Democratic Republic"
+replace countryname= "Congo, Rep." if countryname == "Congo Brazzaville"
+replace countryname= "Cote d'Ivoire" if countryname == "Cote d Ivoire"
+replace countryname= "Egypt, Arab Rep." if countryname == "Egypt"
+merge 1:1 countryname using `GDP'
+keep if _merge==3
+gen logGDP = log(ny_gdp_pcap_cd)
+
+
+format heightest %9.2f
+format heightlb  %9.2f
+format heightub  %9.2f
+format educest   %9.2f
+format educlb    %9.2f
+format educub    %9.2f
+format logGDP    %9.2f
+
+
 #delimit ;
 eclplot heightest heightlb heightub numb, scheme(s1mono) estopts(mcolor(black))
 ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
@@ -105,8 +128,7 @@ xlabel(1 "Guyana" 2 "Brazil" 3 "Maldives" 4 "Sao Tome" 5 "Azerbaijan" 6 "CAR"
        50 "Cote D'Ivoire" 51 "Bangladesh" 52 "Comoros" 53 "Zambia" 54 "Chad"
        55 "Liberia" 56 "Guinea" 57 "Zimbabwe" 58 "Benin" 59 "Cambodia" 60
        "Uzbekistan"
-       ,angle(65) labsize(vsmall))
-;
+       ,angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/HeightDif.eps", as(eps) replace
 
@@ -130,7 +152,92 @@ xlabel(1 "Nigeria" 2 "Cameroon" 3 "India" 4 "Ghana" 5 "Peru" 6 "Bolivia"
        48 "Senegal" 49 "Niger" 50  "Kazakhstan" 51 "Mali" 52 "Burkina Faso"
        53 "Morocco" 54 "Chad" 55 "Swaziland" 56 "Lesotho" 57 "Sierra Leone"
        58 "Guinea" 59 "Liberia" 60 "Kyrgyz Republic"
-       ,angle(65) labsize(vsmall))
-;
+       ,angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/EducDif.eps", as(eps) replace
+
+#delimit ;
+scatter heightest logGDP  [w=sp_pop_totl], msymbol(circle_hollow)
+scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
+ytitle("Height Difference (cm)" "twin - non-twin");
+graph export "$GRA/HeightGDP.eps", as(eps) replace;
+
+scatter educest logGDP  [w=sp_pop_totl], msymbol(circle_hollow)
+scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
+ytitle("Education Difference (years)" "twin - non-twin");
+graph export "$GRA/EducGDP.eps", as(eps) replace;
+
+
+
+scatter heighte logG [w=sp_] if regionc=="EAS", msymbol(O) mcolor(lavender) ||
+scatter heighte logG [w=sp_] if regionc=="ECS", msymbol(O) mcolor(sandb)    ||
+scatter heighte logG [w=sp_] if regionc=="LCN", msymbol(O) mcolor(mint)     ||
+scatter heighte logG [w=sp_] if regionc=="MEA", msymbol(O) mcolor(navy)     ||
+scatter heighte logG [w=sp_] if regionc=="SAS", msymbol(O) mcolor(magenta)  ||
+scatter heighte logG [w=sp_] if regionc=="SSF", msymbol(O) mcolor(ebblue)
+legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
+       lab(5 "South Asia") lab(6 "Sub Saharan Africa"))
+ytitle("Height Difference (cm)" "twin - non-twin")
+xtitle("log(GDP per capita)");
+graph export "$GRA/HeightGDPregion.eps", as(eps) replace;
+#delimit cr
+
+corr educest   logGDP
+corr heightest logGDP
+corr educest   ny_gdp
+corr heightest ny_gdp
+
+expand 6
+sort countryname region
+replace heightest=. if mod(_n,6) > 0
+replace educest=.   if mod(_n,6) > 0
+
+gen     regionNum = 1 if regionc=="EAS"
+replace regionNum = 2 if regionc=="ECS"
+replace regionNum = 3 if regionc=="LCN"
+replace regionNum = 4 if regionc=="MEA"
+replace regionNum = 5 if regionc=="SAS"
+replace regionNum = 6 if regionc=="SSF"
+
+
+recode regionN (1=2) (2=3) (3=4) (4=5) (5=6) (6=1) if mod(_n,6) == 1
+recode regionN (1=3) (2=4) (3=5) (4=6) (5=1) (6=2) if mod(_n,6) == 2
+recode regionN (1=4) (2=5) (3=6) (4=1) (5=2) (6=3) if mod(_n,6) == 3
+recode regionN (1=5) (2=6) (3=1) (4=2) (5=3) (6=4) if mod(_n,6) == 4
+recode regionN (1=6) (2=1) (3=2) (4=3) (5=4) (6=5) if mod(_n,6) == 5
+
+#delimit ;
+scatter heighte logG [w=sp_] if regionN==1, msymbol(O) mcolor(lavender) ||
+scatter heighte logG [w=sp_] if regionN==2, msymbol(O) mcolor(sandb)    ||
+scatter heighte logG [w=sp_] if regionN==3, msymbol(O) mcolor(mint)     ||
+scatter heighte logG [w=sp_] if regionN==4, msymbol(O) mcolor(navy)     ||
+scatter heighte logG [w=sp_] if regionN==5, msymbol(O) mcolor(magenta)  ||
+scatter heighte logG [w=sp_] if regionN==6, msymbol(O) mcolor(ebblue)
+legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
+       lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
+yline(0, lcolor(red)) ytitle("Height Difference (cm)" "twin - non-twin")
+xtitle("log(GDP per capita)");
+graph export "$GRA/HeightGDPregionW.eps", as(eps) replace;
+
+
+scatter educest logG [w=sp_] if regionN==1, msymbol(O) mcolor(lavender) ||
+scatter educest logG [w=sp_] if regionN==2, msymbol(O) mcolor(sandb)    ||
+scatter educest logG [w=sp_] if regionN==3, msymbol(O) mcolor(mint)     ||
+scatter educest logG [w=sp_] if regionN==4, msymbol(O) mcolor(navy)     ||
+scatter educest logG [w=sp_] if regionN==5, msymbol(O) mcolor(magenta)  ||
+scatter educest logG [w=sp_] if regionN==6, msymbol(O) mcolor(ebblue)
+legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
+       lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
+yline(0, lcolor(red)) xtitle("log(GDP per capita)")
+ytitle("Education Difference (years)" "twin - non-twin");
+graph export "$GRA/EducGDPregionW.eps", as(eps) replace;
+#delimit cr
+
+
+
+**scatter heightest logGDP [w=sp_pop_totl], msymbol(circle_hollow)
+**scheme(lean1) yline(0, lcolor(red))
+**|| scatter heightest logGDP, ms(i) mlab(cc) mlabpos(c) mlabsize(vsmall)
+**mlabcol(gs6) legend(off);
+**graph export "$GRA/HeightGDPlabelled.eps", as(eps) replace;
+**
