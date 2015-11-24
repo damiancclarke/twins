@@ -21,14 +21,17 @@ cap log close
 *** (1) globals
 ********************************************************************************
 global DAT "~/investigacion/Activa/Twins/Data"
+global USA "~/database/NVSS/Births/dta"
 global GRA "~/investigacion/Activa/Twins/Figures"
 global LOG "~/investigacion/Activa/Twins/Log"
 global OUT "~/investigacion/Activa/Twins/Results/Sum"
+global REG "~/investigacion/Activa/Twins/Results/World"
 
 log using "$LOG/worldTwins.txt", text replace
+cap mkdir "$REG"
 /*
 ********************************************************************************
-*** (2) DHS figures
+*** (2) DHS Regressions
 ********************************************************************************
 use "$DAT/DHS_twins"
 keep if _merge==3
@@ -36,8 +39,48 @@ keep if motherage>17&motherage<50
 
 replace height = . if height>240
 replace height = . if height<70
+replace bmi    = . if bmi > 50
 
 levelsof country, local(cc)
+exit
+
+#delimit ;
+gen Africa = country=="Benin"|country=="Burkina-Faso"|country=="Burundi"     |
+             country=="Cameroon"|country=="Central-African-Republic"         |
+             country=="Chad"|country=="Comoros"|country=="Congo-Brazzaville" |
+             country=="Congo-Democratic-Republic"|country=="Cote-d-Ivoire"   |
+             country=="Egypt"|country=="Ethiopia"|country=="Gabon"           |
+             country=="Ghana"|country=="Guinea"|country=="Kenya"             |
+             country=="Lesotho"|country=="Liberia"|country=="Madagascar"     |
+             country=="Malawi"|country=="Mali"|country=="Maldives"           |
+             country=="Morocco"|country=="Mozambique"|country=="Namibia"     |
+             country=="Niger"|country=="Nigeria"|country=="Rwanda"           |
+             country=="Sao-Tome-and-Principe"|country=="Senegal"             |
+             country=="Sierra-Leone"|country=="South-Africa"                 |
+             country=="Swaziland"|country=="Tanzania"|country=="Togo"        |
+             country=="Uganda"|country=="Zambia"|country=="Zimbabwe"         ;
+gen LatAm  = country=="Bolivia"|country=="Brazil"|country=="Colombia"        |
+             country=="Dominican-Republic"|country=="Guyana"|country=="Haiti"|
+             country=="Honduras"|country=="Nicaragua"|country=="Peru"        |
+             country=="Guatemala"                                            ;
+gen Europe = country=="Albania"|country=="Armenia"|country=="Azerbaijan"     |
+             country=="Kazakhstan"|country=="Kyrgyz-Republic"                |
+             country=="Turkey"|country=="Ukraine"|country=="Uzbekistan"      |
+             country=="Jordan"|country=="Yemen"                              ;
+gen Asia   = country=="Bangladesh"|country=="Cambodia"|country=="India"      |
+             country=="Indonesia"|country=="Pakistan"|country=="Philippines" |
+             country=="Vietnam"                                              ;
+#delimit cr
+
+replace twind100 = twind*100
+local cs i.agemay i.child_yob
+local se abs(country) cluster(id)
+
+eststo: areg twind100 height bmi educf `cs' if Africa==1, `se'
+eststo: areg twind100 height bmi educf `cs' if LatAm ==1, `se'
+eststo: areg twind100 height bmi educf `cs' if Europe==1, `se'
+eststo: areg twind100 height bmi educf `cs' if Asia  ==1, `se'
+
 gen countryName = ""
 gen heightEst   = .
 gen heightLB    = .
@@ -78,10 +121,88 @@ dis "Number of countries: `iter'"
 keep in 1/`iter'
 keep countryName heightEst heightLB heightUB educEst educLB educUB
 outsheet using "$OUT/countryEstimates.csv", comma replace
-*/
 
+*/
 ********************************************************************************
-*** (3) Make Graph
+*** (3) USA regressions
+********************************************************************************
+foreach year of numlist 2009(1)2013 {
+    use "$USA/natl`year'"
+    keep if mager>18&mager<=45
+    gen twin     = dplural == 2 if dplural < 3
+    gen twin100  = twin*100
+    gen heightcm = m_ht_in*2.54 if m_ht_in!=99
+    gen smoke0   = cig_0>0 if cig_0<=98
+    gen smoke1   = cig_1>0 if cig_1<=98
+    gen smoke2   = cig_2>0 if cig_2<=98
+    gen smoke3   = cig_3>0 if cig_3<=98
+    gen infert   = rf_inftr=="Y" if rf_inftr!="U" & rf_inftr!=""
+    gen ART      = rf_artec=="Y" if rf_artec!="U" & rf_artec!=""
+    gen fertDrug = rf_fedrg=="Y" if rf_fedrg!="U" & rf_fedrg!=""
+    gen diabetes = rf_diab =="Y" if rf_diab !="U" & rf_diab !=""
+    gen gestDiab = rf_gest =="Y" if rf_gest !="U" & rf_gest !=""
+    gen eclampsia= rf_eclam=="Y" if rf_eclam!="U" & rf_eclam!=""
+    gen hypertens= rf_phyp =="Y" if rf_phyp !="U" & rf_phyp !=""
+    gen pregHyper= rf_ghyp =="Y" if rf_ghyp !="U" & rf_ghyp !=""
+    gen married  = mar==1 if marr!=.
+    gen year = `year'
+    #delimit ;
+    dis "Twin Regressions: `year' (Non-Infertility Users)";
+    areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
+                 i.mbrace i.lbo_rec if infert==0, abs(mager);
+    dis "Twin Regressions: `year' (Infertility Treatment Users)";
+    areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
+                 i.mbrace i.lbo_rec if infert==1, abs(mager);
+    #delimit cr
+    tempfile t`year'
+    save `t`year''
+}
+
+clear
+append using `t2009' `t2010' `t2011' `t2012' `t2013'
+gen bin=rnormal()
+keep if bin>0.7
+
+#delimit ;
+local usvars heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes gestDiab
+             eclampsia hypertens pregHyper married;
+
+lab var heightcm "Mother's height (cm)";
+lab var meduc    "Mother's education (years)";
+lab var smoke0   "Mother Smoked Before Pregnancy";
+lab var smoke1   "Mother Smoked in 1st Trimester";
+lab var smoke2   "Mother Smoked in 2nd Trimester";
+lab var smoke3   "Mother Smoked in 3rd Trimester";
+lab var diabet   "Mother had pre-pregnancy diabetes";
+lab var gestDia  "Mother had gestational diabetes";
+lab var eclampsi "Mother had eclampsia";
+lab var hyperten "Mother had pre-pregnancy hypertension";
+lab var pregHyp  "Mother had pregnancy-associated hypertension";
+lab var married  "Mother is married";
+
+dis "Twin Regressions: Pooled";
+areg twin100 `usvars' i.mbrace i.lbo_rec i.year, abs(mager) robust;
+outreg2 `usvars' using "$REG/USregs.xls", label excel replace;
+gen tsample = 1 if e(sample)==1;
+
+areg twin100 `usvars' i.mbrace i.lbo_rec i.year if infert==0, abs(mager) robust;
+outreg2 `usvars' using "$REG/USregs.xls", label excel append;
+areg twin100 `usvars' i.mbrace i.lbo_rec i.year if infert==1, abs(mager) robust;
+outreg2 `usvars' using "$REG/USregs.xls", label excel append;
+#delimit cr
+
+qui areg twin100 `usvars' i.mbrace i.lbo_rec i.year, abs(mager) robust
+foreach var of varlist `usvars' {
+    areg twin100 `var' i.lbo_rec if tsample==1, abs(mager) robust
+    outreg2 `var' using "$REG/USttestFE.xls", label excel
+    
+    reg twin100 `var' if tsample==1, robust
+    outreg2 `var' using "$REG/USttest.xls", label excel
+}
+
+exit
+********************************************************************************
+*** (4) Figures
 ********************************************************************************
 use "$DAT/GDPpc_WorldBank"
 keep if year==2013
@@ -186,7 +307,7 @@ corr educest   logGDP
 corr heightest logGDP
 corr educest   ny_gdp
 corr heightest ny_gdp
-
+exit
 expand 6
 sort countryname region
 replace heightest=. if mod(_n,6) > 0
