@@ -47,16 +47,20 @@ Dominican-Republic Dominican-Republic Dominican-Republic Dominican-Republic
 Ecuador Egypt Egypt Egypt Egypt Egypt Egypt El-Salvador Ethiopia Ethiopia
 Ethiopia Gabon Gabon Ghana Ghana Ghana Ghana Ghana Guatemala Guatemala Guinea
 Guinea Guinea Guyana Guyana Haiti Haiti Haiti Haiti
-Honduras Honduras
-;
+Honduras Honduras;
+
+local cunique Albania Armenia Azerbaijan Bangladesh Benin Bolivia Brazil
+Burkina-Faso Burundi Cambodia Cameroon Central-African-Republic Chad Colombia
+Comoros Congo-Brazzaville Congo-Democratic-Republic Cote-d-Ivoire
+Dominican-Republic Ecuador Egypt El-Salvador Ethiopia Gabon Ghana Guatemala
+Guinea Guyana Haiti Honduras;
 
 local year 2008 2000 2005 2010 2006 1994 1997 2000 2004 2007 2011 1996 2001 2006
  2012 1989 1994 1998 2003 2008 1986 1991 1996 1993 1999 2003 2010 1987 2010 2000
  2005 2010 1991 1998 2004 2011 1994 1997 2004 1986 1990 1995 2000 2005 2010 1996
  2005 2009 2011 2007 1994 1998 2005 2012 1986 1991 1996 1999 2002 2007 1987 1988
  1992 1995 2000 2005 2008 1985 2000 2005 2011 2000 2012 1988 1993 1998 2003 2008
- 1987 1995 1999 2005 2012 2005 2009 1994 2000 2006 2012 2005 2011
-;
+ 1987 1995 1999 2005 2012 2005 2009 1994 2000 2006 2012 2005 2011;
 
 local surveys     ALIR50DT AMIR42DT AMIR54DT AMIR61DT AZIR52DT BDIR31DT BDIR3ADT
 BDIR41DT BDIR4JDT BDIR51DT BDIR61DT BJIR31DT BJIR41DT BJIR51DT BJIR61DT BOIR01DT
@@ -68,8 +72,7 @@ CIIR50DT CIIR61DT DRIR01DT DRIR21DT DRIR32DT DRIR41DT DRIR4ADT DRIR52DT ECIR01DT
 EGIR01DT EGIR21DT EGIR33DT EGIR42DT EGIR51DT EGIR5ADT ESIR00DT ETIR41DT ETIR51DT
 ETIR61DT GAIR41DT GAIR60DT GHIR02DT GHIR31DT GHIR41DT GHIR4BDT GHIR5ADT GUIR01DT
 GUIR34DT GNIR41DT GNIR52DT GNIR61DT GYIR51DT GYIR51DT HTIR31DT HTIR42DT HTIR52DT
-HTIR61DT HNIR52DT HNIR62DT
-;
+HTIR61DT HNIR52DT HNIR62DT;
 
 #delimit cr
 
@@ -79,31 +82,43 @@ foreach i of numlist 1(1)`w' {
     local cou : word `i' of `countries'
     local yrs : word `i' of `year'
     local sur : word `i' of `surveys'
+    local fname subinstr("`cou'", "-","",.)
+    local fname `=`fname''
+    dis "Fname is `fname'"
 
-    dis "Country:    `cou'"
+    dis "Country:    `cou', old country: `oldcountry'"
     dis "Year/Survey `yrs'/`sur'"
     if `"`cou'"'!=`"`oldcountry'"' {
         use "~/database/DHS/DHS_Data/`cou'/`yrs'/`sur'", clear
+        count
+        tempfile `fname'
+        gen twin  =.
+        gen anemia=.
     }
     else {
-        append using "~/database/DHS/DHS_Data/`cou'/`yrs'/`sur'"
+        append using "~/database/DHS/DHS_Data/`cou'/`yrs'/`sur'", force
     }
     
 
-    gen twin=.
     foreach num in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 {
         qui cap replace twin=0 if b0_`num'==0
         qui cap replace twin=1 if b0_`num'==1|b0_`num'==2 
     }
     local se
     qui cap {
-        gen anemia = 0 if v457==4
+        replace anemia=0 if v457==4
         replace anemia=1 if v457==3
         replace anemia=2 if v457==2|v457==1
-        reg twin anemia
-        local se = _b[anemia]/_se[anemia]
     }
-    dis `se'
+    save ``fname'', replace
+    local oldcountry `cou'
+}
+
+foreach c of local cunique {
+    dis "`c'"
+    local fname subinstr(`c', "-","",.)
+    use ``fname''
+    reg twin anemia
     
 }
 
