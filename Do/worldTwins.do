@@ -16,7 +16,7 @@ vers 11
 clear all
 set more off
 cap log close
-set maxvar 10000
+set maxvar 20000
 
 ********************************************************************************
 *** (1) globals
@@ -46,21 +46,29 @@ Cote-d-Ivoire Cote-d-Ivoire Dominican-Republic Dominican-Republic
 Dominican-Republic Dominican-Republic Dominican-Republic Dominican-Republic
 Ecuador Egypt Egypt Egypt Egypt Egypt Egypt El-Salvador Ethiopia Ethiopia
 Ethiopia Gabon Gabon Ghana Ghana Ghana Ghana Ghana Guatemala Guatemala Guinea
-Guinea Guinea Guyana Guyana Haiti Haiti Haiti Haiti
-Honduras Honduras;
+Guinea Guinea Guyana Guyana Haiti Haiti Haiti Haiti Honduras Honduras India
+India India Indonesia Indonesia Indonesia Indonesia Indonesia Indonesia
+Indonesia Jordan Jordan Jordan Jordan Jordan Kazakhstan Kazakhstan Kenya Kenya
+Kenya Kenya Kenya Kyrgyz-Republic Kyrgyz-Republic Lesotho Lesotho Liberia
+Liberia Madagascar Madagascar Madagascar Madagascar Malawi Malawi Malawi Malawi
+;
 
 local cunique Albania Armenia Azerbaijan Bangladesh Benin Bolivia Brazil
 Burkina-Faso Burundi Cambodia Cameroon Central-African-Republic Chad Colombia
 Comoros Congo-Brazzaville Congo-Democratic-Republic Cote-d-Ivoire
 Dominican-Republic Ecuador Egypt El-Salvador Ethiopia Gabon Ghana Guatemala
-Guinea Guyana Haiti Honduras;
+Guinea Guyana Haiti Honduras India Indonesia Jordan Kazakhstan Kenya
+Kyrgyz-Republic Lesotho Liberia Madagascar Malawi;
 
 local year 2008 2000 2005 2010 2006 1994 1997 2000 2004 2007 2011 1996 2001 2006
  2012 1989 1994 1998 2003 2008 1986 1991 1996 1993 1999 2003 2010 1987 2010 2000
  2005 2010 1991 1998 2004 2011 1994 1997 2004 1986 1990 1995 2000 2005 2010 1996
  2005 2009 2011 2007 1994 1998 2005 2012 1986 1991 1996 1999 2002 2007 1987 1988
  1992 1995 2000 2005 2008 1985 2000 2005 2011 2000 2012 1988 1993 1998 2003 2008
- 1987 1995 1999 2005 2012 2005 2009 1994 2000 2006 2012 2005 2011;
+ 1987 1995 1999 2005 2012 2005 2009 1994 2000 2006 2012 2005 2011 1993 1999 2006
+ 1987 1991 1994 1997 2003 2007 2012 1990 1997 2002 2007 2012 1995 1999 1989 1993
+ 1998 2003 2008 1997 2012 2004 2009 1986 2007 1992 1997 2004 2008 1992 2000 2004
+ 2010;
 
 local surveys     ALIR50DT AMIR42DT AMIR54DT AMIR61DT AZIR52DT BDIR31DT BDIR3ADT
 BDIR41DT BDIR4JDT BDIR51DT BDIR61DT BJIR31DT BJIR41DT BJIR51DT BJIR61DT BOIR01DT
@@ -71,8 +79,12 @@ COIR53DT COIR61DT KMIR32DT CGIR51DT CGIR5HDT CGIR60DT CDIR50DT CIIR35DT CIIR3ADT
 CIIR50DT CIIR61DT DRIR01DT DRIR21DT DRIR32DT DRIR41DT DRIR4ADT DRIR52DT ECIR01DT
 EGIR01DT EGIR21DT EGIR33DT EGIR42DT EGIR51DT EGIR5ADT ESIR00DT ETIR41DT ETIR51DT
 ETIR61DT GAIR41DT GAIR60DT GHIR02DT GHIR31DT GHIR41DT GHIR4BDT GHIR5ADT GUIR01DT
-GUIR34DT GNIR41DT GNIR52DT GNIR61DT GYIR51DT GYIR51DT HTIR31DT HTIR42DT HTIR52DT
-HTIR61DT HNIR52DT HNIR62DT;
+GUIR34DT GNIR41DT GNIR52DT GNIR61DT GYIR51DT GYIR5IDT HTIR31DT HTIR42DT HTIR52DT
+HTIR61DT HNIR52DT HNIR62DT IAIR23DT IAIR42DT IAIR52DT IDIR01DT IDIR21DT IDIR31DT
+IDIR3ADT IDIR42DT IDIR51DT IDIR61DT JOIR21DT JOIR31DT JOIR42DT JOIR51DT JOIR6BDT
+KKIR31DT KKIR42DT KEIR03DT KEIR33DT KEIR3ADT KEIR42DT KEIR52DT KYIR31DT KYIR60DT
+LSIR41DT LSIR60DT LBIR01DT LBIR51DT MDIR21DT MDIR31DT MDIR41DT MDIR51DT MWIR22DT
+MWIR41DT MWIR4DDT MWIR61DT;
 
 #delimit cr
 
@@ -94,6 +106,7 @@ foreach i of numlist 1(1)`w' {
         tempfile `fname'
         gen twin  =.
         gen anemia=.
+        gen year  =.
     }
     else {
         append using "~/database/DHS/DHS_Data/`cou'/`yrs'/`sur'", force
@@ -101,24 +114,36 @@ foreach i of numlist 1(1)`w' {
     
 
     foreach num in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 {
-        qui cap replace twin=0 if b0_`num'==0
-        qui cap replace twin=1 if b0_`num'==1|b0_`num'==2 
+        qui cap replace twin=1 if b0_`num'>0&b0_`num'!=.
     }
-    local se
+    replace twin=0 if twin!=1
+    replace twin=. if v201==0
     qui cap {
         replace anemia=0 if v457==4
         replace anemia=1 if v457==3
         replace anemia=2 if v457==2|v457==1
     }
+    replace year = `yrs' if year==. 
     save ``fname'', replace
     local oldcountry `cou'
 }
 
 foreach c of local cunique {
-    dis "`c'"
-    local fname subinstr(`c', "-","",.)
-    use ``fname''
-    reg twin anemia
+    local fname subinstr("`c'", "-","",.)
+    local fname `=`fname''
+    use ``fname'', clear
+
+    rename v012 agemay
+    rename v201 fert
+    rename v445 bmi
+    rename v005 sampleweight
+    
+    cap reg twin anemia i.agemay i.fert [pw=sampleweight]
+    local anem = _b[anemia]/_se[anemia]
+    qui reg twin bmi    i.agemay i.fert [pw=sampleweight]
+    local bmi  = _b[bmi]/_se[bmi]
+
+    dis "Country: `c', Anemia: `anem', BMI: `bmi'"
     
 }
 
