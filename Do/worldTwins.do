@@ -34,6 +34,7 @@ cap mkdir "$REG"
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
+/*
 #delimit ;
 local countries Albania Armenia Armenia Armenia Azerbaijan Bangladesh Bangladesh
 Bangladesh Bangladesh Bangladesh Bangladesh Benin Benin Benin Benin Bolivia
@@ -138,17 +139,14 @@ foreach c of local cunique {
     rename v445 bmi
     rename v005 sampleweight
     
-    cap reg twin anemia i.agemay i.fert [pw=sampleweight]
-    local anem = _b[anemia]/_se[anemia]
-    qui reg twin bmi    i.agemay i.fert [pw=sampleweight]
-    local bmi  = _b[bmi]/_se[bmi]
+    cap reg anemia twin i.year [pw=sampleweight]
+    local anem = _b[twin]/_se[twin]
+    qui reg bmi    twin i.year [pw=sampleweight]
+    local bmi  = _b[twin]/_se[twin]
 
     dis "Country: `c', Anemia: `anem', BMI: `bmi'"
-    
 }
-
-exit
-/*
+*/
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
@@ -161,7 +159,7 @@ replace height = . if height<70
 replace bmi    = . if bmi > 50
 
 levelsof country, local(cc)
-exit
+
 
 #delimit ;
 gen Africa = country=="Benin"|country=="Burkina-Faso"|country=="Burundi"     |
@@ -195,53 +193,62 @@ replace twind100 = twind*100
 local cs i.agemay i.child_yob
 local se abs(country) cluster(id)
 
-eststo: areg twind100 height bmi educf `cs' if Africa==1, `se'
-eststo: areg twind100 height bmi educf `cs' if LatAm ==1, `se'
-eststo: areg twind100 height bmi educf `cs' if Europe==1, `se'
-eststo: areg twind100 height bmi educf `cs' if Asia  ==1, `se'
+lab var height  "Mother's Height (cm)"
+lab var bmi     "Mother's BMI"
+lab var educf   "Mother's Education"
 
+local ovar height bmi educf
+areg twind100 height bmi educf `cs' if Africa==1, `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Africa") replace
+areg twind100 height bmi educf `cs' if LatAm ==1, `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
+areg twind100 height bmi educf `cs' if Europe==1, `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe")
+areg twind100 height bmi educf `cs' if Asia  ==1, `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Asia")
+
+
+/*
 gen countryName = ""
-gen heightEst   = .
-gen heightLB    = .
-gen heightUB    = .
-gen educEst     = .
-gen educLB      = .
-gen educUB      = .
+foreach var in height underweight educf {
+    gen `var'Est = .
+    gen `var'LB  = .
+    gen `var'UB  = .
 
+    gen `var'EstNoFE = .
+    gen `var'LBNoFE  = .
+    gen `var'UBNoFE  = .
+}
 
 local iter = 1
 foreach c of local cc {
     if `"`c'"'=="Indonesia"|`"`c'"'=="Pakistan"|`"`c'"'=="Paraguay"      exit
     if `"`c'"'=="Philippines"|`"`c'"'=="South-Africa"|`"`c'"'=="Ukraine" exit
     if `"`c'"'=="Vietnam"|`"`c'"'=="Yemen" exit
-    qui areg height twindfamily i.fert if country=="`c'", abs(motherage)
-    local estl `=_b[twindfamily]-1.96*_se[twindfamily]'
-    local estu `=_b[twindfamily]+1.96*_se[twindfamily]'
-    dis "country is `c', 95% CI is [`estl',`estu']"
 
     qui replace countryName = "`c'" in `iter'
-    qui replace heightEst   = _b[twindfamily] in `iter'
-    qui replace heightLB    = `estl' in `iter'
-    qui replace heightUB    = `estu' in `iter'
-
-    qui areg educf twindfamily i.fert if country=="`c'", abs(motherage)
-    local estl `=_b[twindfamily]-1.96*_se[twindfamily]'
-    local estu `=_b[twindfamily]+1.96*_se[twindfamily]'
-    dis "country is `c', educ 95% CI is [`estl',`estu']"
-
-    qui replace educEst   = _b[twindfamily] in `iter'
-    qui replace educLB    = `estl' in `iter'
-    qui replace educUB    = `estu' in `iter'
-
+    
+    foreach var of varlist height underweight educf {
+        qui areg `var' twindfamily i.fert if country=="`c'", abs(motherage)
+        local estl `=_b[twindfamily]-1.96*_se[twindfamily]'
+        local estu `=_b[twindfamily]+1.96*_se[twindfamily]'
+        dis "country is `c', 95% CI for `var' is [`estl',`estu']"
+        
+        qui replace `var'Est   = _b[twindfamily] in `iter'
+        qui replace `var'LB    = `estl' in `iter'
+        qui replace `var'UB    = `estu' in `iter'        
+    }
     local ++iter
 }
 dis "Number of countries: `iter'"
 
 keep in 1/`iter'
-keep countryName heightEst heightLB heightUB educEst educLB educUB
+keep countryName heightEst heightLB heightUB educfEst educfLB educfUB /*
+*/ underweightEst underweightLB underweightUB
 outsheet using "$OUT/countryEstimates.csv", comma replace
 
-*/
+
+
 ********************************************************************************
 *** (3) USA regressions
 ********************************************************************************
@@ -320,6 +327,7 @@ foreach var of varlist `usvars' {
 }
 
 exit
+*/
 ********************************************************************************
 *** (4) Figures
 ********************************************************************************
@@ -343,13 +351,16 @@ keep if _merge==3
 gen logGDP = log(ny_gdp_pcap_cd)
 
 
-format heightest %9.2f
-format heightlb  %9.2f
-format heightub  %9.2f
-format educest   %9.2f
-format educlb    %9.2f
-format educub    %9.2f
-format logGDP    %9.2f
+format heightest      %9.2f
+format heightlb       %9.2f
+format heightub       %9.2f
+format educest        %9.2f
+format educlb         %9.2f
+format educub         %9.2f
+format underweightest %9.2f
+format underweightlb  %9.2f
+format underweightub  %9.2f
+format logGDP         %9.2f
 
 
 #delimit ;
@@ -396,6 +407,30 @@ xlabel(1 "Nigeria" 2 "Cameroon" 3 "India" 4 "Ghana" 5 "Peru" 6 "Bolivia"
 #delimit cr
 graph export "$GRA/EducDif.eps", as(eps) replace
 
+gsort underweightest
+gen numb = _n
+#delimit ;
+eclplot educest educlb educub numb, scheme(s1mono) estopts(mcolor(black))
+ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
+ytitle("Difference in Proportion Underweight" "twin - non-twin")
+xlabel(1 "Chad" 2 "Bangladesh" 3 "Cambodia" 4 "India" 5 "Brazil" 6 "Ghana"
+       7 "Nepal" 8 "Uzbekistan" 9 "Nigeria" 10 "Comoros" 11 "Liberia" 12
+       "Kenya" 13 "Madagascar" 14 "Tanzania" 15 "Zimbabwe" 16 "Niger" 17
+       "Cameroon" 18 "Benin" 19 "Uganda" 20 "Mali" 21 "Azerbaijan" 22 "Guatemala" 
+       23 "Morocco" 24 "Burundi" 25 "Haiti" 26 "DRC" 27 "Nicaragua" 28 "Togo"
+       29 "Namibia" 30 "Dominican Republic" 31 "Zambia" 32 "Jordan" 33 "Guinea"
+       34 "Bolivia" 35 "Colombia" 36 "Peru" 37 "Turkey" 38 "Egypt" 39 "Armenia"
+       40 "Mozambique" 41 "Senegal" 42 "Lesotho" 43 "Rwanda" 44 "Malawi" 45
+       "Congo Brazzaville" 46 "CAR" 47 "Cote D'Ivoire" 48 "Gabon" 49 "Albania"
+       50 "Burkina Faso" 51 "Moldova" 52 "Honduras" 53 "Kazakhstan" 54 "Swaziland"
+       55 "Guyana" 56 "Sao Tome and Principe" 57 "Ethiopia" 58 "Maldives" 59
+       "Kyrgyz Republic" 60 "Sierra Leone"
+       ,angle(65) labsize(vsmall));
+#delimit cr
+graph export "$GRA/UnderweightDif.eps", as(eps) replace
+
+
+
 #delimit ;
 scatter heightest logGDP  [w=sp_pop_totl], msymbol(circle_hollow)
 scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
@@ -407,6 +442,10 @@ scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Education Difference (years)" "twin - non-twin");
 graph export "$GRA/EducGDP.eps", as(eps) replace;
 
+scatter underweightest logGDP  [w=sp_pop_totl], msymbol(circle_hollow)
+scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
+ytitle("Difference in Pr(underweight)" "twin - non-twin");
+graph export "$GRA/UnderweightGDP.eps", as(eps) replace;
 
 
 scatter heighte logG [w=sp_] if regionc=="EAS", msymbol(O) mcolor(lavender) ||
@@ -431,6 +470,7 @@ expand 6
 sort countryname region
 replace heightest=. if mod(_n,6) > 0
 replace educest=.   if mod(_n,6) > 0
+replace underweightest=. if mod(_n,6) > 0
 
 gen     regionNum = 1 if regionc=="EAS"
 replace regionNum = 2 if regionc=="ECS"
@@ -471,6 +511,19 @@ legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
 yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Education Difference (years)" "twin - non-twin");
 graph export "$GRA/EducGDPregionW.eps", as(eps) replace;
+#delimit cr
+
+scatter underweightest logG [w=sp_] if regionN==1, msymbol(O) mcolor(lavender) ||
+scatter underweightest logG [w=sp_] if regionN==2, msymbol(O) mcolor(sandb)    ||
+scatter underweightest logG [w=sp_] if regionN==3, msymbol(O) mcolor(mint)     ||
+scatter underweightest logG [w=sp_] if regionN==4, msymbol(O) mcolor(navy)     ||
+scatter underweightest logG [w=sp_] if regionN==5, msymbol(O) mcolor(magenta)  ||
+scatter underweightest logG [w=sp_] if regionN==6, msymbol(O) mcolor(ebblue)
+legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
+       lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
+yline(0, lcolor(red)) xtitle("log(GDP per capita)")
+ytitle("Difference in Pr(underweight)" "twin - non-twin");
+graph export "$GRA/UnderweightGDPregionW.eps", as(eps) replace;
 #delimit cr
 
 
