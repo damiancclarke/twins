@@ -31,122 +31,7 @@ global REG "~/investigacion/Activa/Twins/Results/World"
 log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
-********************************************************************************
-*** (2) DHS Regressions
-********************************************************************************
 /*
-#delimit ;
-local countries Albania Armenia Armenia Armenia Azerbaijan Bangladesh Bangladesh
-Bangladesh Bangladesh Bangladesh Bangladesh Benin Benin Benin Benin Bolivia
-Bolivia Bolivia Bolivia Bolivia Brazil Brazil Brazil Burkina-Faso Burkina-Faso
-Burkina-Faso Burkina-Faso Burundi Burundi Cambodia Cambodia Cambodia Cameroon
-Cameroon Cameroon Cameroon Central-African-Republic Chad Chad Colombia Colombia
-Colombia Colombia Colombia Colombia Comoros Congo-Brazzaville Congo-Brazzaville
-Congo-Brazzaville Congo-Democratic-Republic Cote-d-Ivoire Cote-d-Ivoire
-Cote-d-Ivoire Cote-d-Ivoire Dominican-Republic Dominican-Republic
-Dominican-Republic Dominican-Republic Dominican-Republic Dominican-Republic
-Ecuador Egypt Egypt Egypt Egypt Egypt Egypt El-Salvador Ethiopia Ethiopia
-Ethiopia Gabon Gabon Ghana Ghana Ghana Ghana Ghana Guatemala Guatemala Guinea
-Guinea Guinea Guyana Guyana Haiti Haiti Haiti Haiti Honduras Honduras India
-India India Indonesia Indonesia Indonesia Indonesia Indonesia Indonesia
-Indonesia Jordan Jordan Jordan Jordan Jordan Kazakhstan Kazakhstan Kenya Kenya
-Kenya Kenya Kenya Kyrgyz-Republic Kyrgyz-Republic Lesotho Lesotho Liberia
-Liberia Madagascar Madagascar Madagascar Madagascar Malawi Malawi Malawi Malawi
-;
-
-local cunique Albania Armenia Azerbaijan Bangladesh Benin Bolivia Brazil
-Burkina-Faso Burundi Cambodia Cameroon Central-African-Republic Chad Colombia
-Comoros Congo-Brazzaville Congo-Democratic-Republic Cote-d-Ivoire
-Dominican-Republic Ecuador Egypt El-Salvador Ethiopia Gabon Ghana Guatemala
-Guinea Guyana Haiti Honduras India Indonesia Jordan Kazakhstan Kenya
-Kyrgyz-Republic Lesotho Liberia Madagascar Malawi;
-
-local year 2008 2000 2005 2010 2006 1994 1997 2000 2004 2007 2011 1996 2001 2006
- 2012 1989 1994 1998 2003 2008 1986 1991 1996 1993 1999 2003 2010 1987 2010 2000
- 2005 2010 1991 1998 2004 2011 1994 1997 2004 1986 1990 1995 2000 2005 2010 1996
- 2005 2009 2011 2007 1994 1998 2005 2012 1986 1991 1996 1999 2002 2007 1987 1988
- 1992 1995 2000 2005 2008 1985 2000 2005 2011 2000 2012 1988 1993 1998 2003 2008
- 1987 1995 1999 2005 2012 2005 2009 1994 2000 2006 2012 2005 2011 1993 1999 2006
- 1987 1991 1994 1997 2003 2007 2012 1990 1997 2002 2007 2012 1995 1999 1989 1993
- 1998 2003 2008 1997 2012 2004 2009 1986 2007 1992 1997 2004 2008 1992 2000 2004
- 2010;
-
-local surveys     ALIR50DT AMIR42DT AMIR54DT AMIR61DT AZIR52DT BDIR31DT BDIR3ADT
-BDIR41DT BDIR4JDT BDIR51DT BDIR61DT BJIR31DT BJIR41DT BJIR51DT BJIR61DT BOIR01DT
-BOIR31DT BOIR3BDT BOIR41DT BOIR51DT BRIR01DT BRIR21DT BRIR31DT BFIR21DT BFIR31DT
-BFIR43DT BFIR61DT BUIR01DT BUIR61DT KHIR42DT KHIR51DT KHIR61DT CMIR22DT CMIR31DT
-CMIR44DT CMIR60DT CFIR31DT TDIR31DT TDIR41DT COIR01DT COIR22DT COIR31DT COIR41DT
-COIR53DT COIR61DT KMIR32DT CGIR51DT CGIR5HDT CGIR60DT CDIR50DT CIIR35DT CIIR3ADT
-CIIR50DT CIIR61DT DRIR01DT DRIR21DT DRIR32DT DRIR41DT DRIR4ADT DRIR52DT ECIR01DT
-EGIR01DT EGIR21DT EGIR33DT EGIR42DT EGIR51DT EGIR5ADT ESIR00DT ETIR41DT ETIR51DT
-ETIR61DT GAIR41DT GAIR60DT GHIR02DT GHIR31DT GHIR41DT GHIR4BDT GHIR5ADT GUIR01DT
-GUIR34DT GNIR41DT GNIR52DT GNIR61DT GYIR51DT GYIR5IDT HTIR31DT HTIR42DT HTIR52DT
-HTIR61DT HNIR52DT HNIR62DT IAIR23DT IAIR42DT IAIR52DT IDIR01DT IDIR21DT IDIR31DT
-IDIR3ADT IDIR42DT IDIR51DT IDIR61DT JOIR21DT JOIR31DT JOIR42DT JOIR51DT JOIR6BDT
-KKIR31DT KKIR42DT KEIR03DT KEIR33DT KEIR3ADT KEIR42DT KEIR52DT KYIR31DT KYIR60DT
-LSIR41DT LSIR60DT LBIR01DT LBIR51DT MDIR21DT MDIR31DT MDIR41DT MDIR51DT MWIR22DT
-MWIR41DT MWIR4DDT MWIR61DT;
-
-#delimit cr
-
-local oldcountry 
-local w : word count `countries'
-foreach i of numlist 1(1)`w' {
-    local cou : word `i' of `countries'
-    local yrs : word `i' of `year'
-    local sur : word `i' of `surveys'
-    local fname subinstr("`cou'", "-","",.)
-    local fname `=`fname''
-    dis "Fname is `fname'"
-
-    dis "Country:    `cou', old country: `oldcountry'"
-    dis "Year/Survey `yrs'/`sur'"
-    if `"`cou'"'!=`"`oldcountry'"' {
-        use "~/database/DHS/DHS_Data/`cou'/`yrs'/`sur'", clear
-        count
-        tempfile `fname'
-        gen twin  =.
-        gen anemia=.
-        gen year  =.
-    }
-    else {
-        append using "~/database/DHS/DHS_Data/`cou'/`yrs'/`sur'", force
-    }
-    
-
-    foreach num in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 {
-        qui cap replace twin=1 if b0_`num'>0&b0_`num'!=.
-    }
-    replace twin=0 if twin!=1
-    replace twin=. if v201==0
-    qui cap {
-        replace anemia=0 if v457==4
-        replace anemia=1 if v457==3
-        replace anemia=2 if v457==2|v457==1
-    }
-    replace year = `yrs' if year==. 
-    save ``fname'', replace
-    local oldcountry `cou'
-}
-
-foreach c of local cunique {
-    local fname subinstr("`c'", "-","",.)
-    local fname `=`fname''
-    use ``fname'', clear
-
-    rename v012 agemay
-    rename v201 fert
-    rename v445 bmi
-    rename v005 sampleweight
-    
-    cap reg anemia twin i.year [pw=sampleweight]
-    local anem = _b[twin]/_se[twin]
-    qui reg bmi    twin i.year [pw=sampleweight]
-    local bmi  = _b[twin]/_se[twin]
-
-    dis "Country: `c', Anemia: `anem', BMI: `bmi'"
-}
-*/
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
@@ -208,7 +93,7 @@ areg twind100 height bmi educf `cs' if Asia  ==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Asia")
 
 
-/*
+
 gen countryName = ""
 foreach var in height underweight educf {
     gen `var'Est = .
@@ -246,7 +131,7 @@ keep in 1/`iter'
 keep countryName heightEst heightLB heightUB educfEst educfLB educfUB /*
 */ underweightEst underweightLB underweightUB
 outsheet using "$OUT/countryEstimates.csv", comma replace
-
+*/
 
 
 ********************************************************************************
@@ -271,14 +156,15 @@ foreach year of numlist 2009(1)2013 {
     gen hypertens= rf_phyp =="Y" if rf_phyp !="U" & rf_phyp !=""
     gen pregHyper= rf_ghyp =="Y" if rf_ghyp !="U" & rf_ghyp !=""
     gen married  = mar==1 if mar!=.
+    gen gestation=estgest if estgest!=99 
     gen year = `year'
     #delimit ;
     dis "Twin Regressions: `year' (Non-Infertility Users)";
     areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
-                 i.mbrace i.lbo_rec if infert==0, abs(mager);
+                 i.mbrace i.lbo_rec i.gestation if infert==0, abs(mager);
     dis "Twin Regressions: `year' (Infertility Treatment Users)";
     areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
-                 i.mbrace i.lbo_rec if infert==1, abs(mager);
+                 i.mbrace i.lbo_rec i.gestation if infert==1, abs(mager);
     #delimit cr
     tempfile t`year'
     save `t`year''
@@ -307,19 +193,21 @@ lab var pregHyp  "Mother had pregnancy-associated hypertension";
 lab var married  "Mother is married";
 
 dis "Twin Regressions: Pooled";
-areg twin100 `usvars' i.mbrace i.lbo_rec i.year, abs(mager) robust;
-outreg2 `usvars' using "$REG/USregs.xls", label excel replace;
+areg twin100 `usvars' i.mbrace i.lbo_rec i.year i.gestation, abs(mager) robust;
+outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel replace;
 gen tsample = 1 if e(sample)==1;
 
-areg twin100 `usvars' i.mbrace i.lbo_rec i.year if infert==0, abs(mager) robust;
-outreg2 `usvars' using "$REG/USregs.xls", label excel append;
-areg twin100 `usvars' i.mbrace i.lbo_rec i.year if infert==1, abs(mager) robust;
-outreg2 `usvars' using "$REG/USregs.xls", label excel append;
+areg twin100 `usvars' i.mbrace i.lbo_rec i.year i.gestation if infert==0,
+     abs(mager) robust;
+outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append;
+areg twin100 `usvars' i.mbrace i.lbo_rec i.year i.gestation if infert==1, 
+     abs(mager) robust;
+outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append;
 #delimit cr
 
-qui areg twin100 `usvars' i.mbrace i.lbo_rec i.year, abs(mager) robust
+qui areg twin100 `usvars' i.mbrace i.lbo_rec i.year i.gestation, abs(mager)
 foreach var of varlist `usvars' {
-    areg twin100 `var' i.lbo_rec if tsample==1, abs(mager) robust
+    areg twin100 `var' i.lbo_rec i.gestation if tsample==1, abs(mager) robust
     outreg2 `var' using "$REG/USttestFE.xls", label excel
     
     reg twin100 `var' if tsample==1, robust
@@ -331,7 +219,7 @@ exit
 ********************************************************************************
 *** (4) Figures
 ********************************************************************************
-use "$DAT/GDPpc_WorldBank"
+use "$DAT/GDPpc_WorldBank", clear
 keep if year==2013
 tempfile GDP
 save `GDP', replace
@@ -354,9 +242,9 @@ gen logGDP = log(ny_gdp_pcap_cd)
 format heightest      %9.2f
 format heightlb       %9.2f
 format heightub       %9.2f
-format educest        %9.2f
-format educlb         %9.2f
-format educub         %9.2f
+format educfest       %9.2f
+format educflb        %9.2f
+format educfub        %9.2f
 format underweightest %9.2f
 format underweightlb  %9.2f
 format underweightub  %9.2f
@@ -385,10 +273,10 @@ graph export "$GRA/HeightDif.eps", as(eps) replace
 
 
 drop numb
-gsort -educest
+gsort -educfest
 gen numb = _n
 #delimit ;
-eclplot educest educlb educub numb, scheme(s1mono) estopts(mcolor(black))
+eclplot educfest educflb educfub numb, scheme(s1mono) estopts(mcolor(black))
 ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
 ytitle("Education Difference (years)" "twin - non-twin")
 xlabel(1 "Nigeria" 2 "Cameroon" 3 "India" 4 "Ghana" 5 "Peru" 6 "Bolivia"
@@ -407,12 +295,13 @@ xlabel(1 "Nigeria" 2 "Cameroon" 3 "India" 4 "Ghana" 5 "Peru" 6 "Bolivia"
 #delimit cr
 graph export "$GRA/EducDif.eps", as(eps) replace
 
+drop numb
 gsort underweightest
 gen numb = _n
 #delimit ;
-eclplot educest educlb educub numb, scheme(s1mono) estopts(mcolor(black))
-ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
-ytitle("Difference in Proportion Underweight" "twin - non-twin")
+eclplot underweightest underweightlb underweightub numb, scheme(s1mono)
+estopts(mcolor(black))ciopts(lcolor(black)) yline(0, lcolor(red))
+xtitle(" ") ytitle("Difference in Proportion Underweight" "twin - non-twin")
 xlabel(1 "Chad" 2 "Bangladesh" 3 "Cambodia" 4 "India" 5 "Brazil" 6 "Ghana"
        7 "Nepal" 8 "Uzbekistan" 9 "Nigeria" 10 "Comoros" 11 "Liberia" 12
        "Kenya" 13 "Madagascar" 14 "Tanzania" 15 "Zimbabwe" 16 "Niger" 17
@@ -437,7 +326,7 @@ scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Height Difference (cm)" "twin - non-twin");
 graph export "$GRA/HeightGDP.eps", as(eps) replace;
 
-scatter educest logGDP  [w=sp_pop_totl], msymbol(circle_hollow)
+scatter educfest logGDP  [w=sp_pop_totl], msymbol(circle_hollow)
 scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Education Difference (years)" "twin - non-twin");
 graph export "$GRA/EducGDP.eps", as(eps) replace;
@@ -461,15 +350,15 @@ xtitle("log(GDP per capita)");
 graph export "$GRA/HeightGDPregion.eps", as(eps) replace;
 #delimit cr
 
-corr educest   logGDP
+corr educfest   logGDP
 corr heightest logGDP
-corr educest   ny_gdp
+corr educfest   ny_gdp
 corr heightest ny_gdp
-exit
+
 expand 6
 sort countryname region
 replace heightest=. if mod(_n,6) > 0
-replace educest=.   if mod(_n,6) > 0
+replace educfest=.   if mod(_n,6) > 0
 replace underweightest=. if mod(_n,6) > 0
 
 gen     regionNum = 1 if regionc=="EAS"
@@ -500,18 +389,18 @@ xtitle("log(GDP per capita)");
 graph export "$GRA/HeightGDPregionW.eps", as(eps) replace;
 
 
-scatter educest logG [w=sp_] if regionN==1, msymbol(O) mcolor(lavender) ||
-scatter educest logG [w=sp_] if regionN==2, msymbol(O) mcolor(sandb)    ||
-scatter educest logG [w=sp_] if regionN==3, msymbol(O) mcolor(mint)     ||
-scatter educest logG [w=sp_] if regionN==4, msymbol(O) mcolor(navy)     ||
-scatter educest logG [w=sp_] if regionN==5, msymbol(O) mcolor(magenta)  ||
-scatter educest logG [w=sp_] if regionN==6, msymbol(O) mcolor(ebblue)
+scatter educfest logG [w=sp_] if regionN==1, msymbol(O) mcolor(lavender) ||
+scatter educfest logG [w=sp_] if regionN==2, msymbol(O) mcolor(sandb)    ||
+scatter educfest logG [w=sp_] if regionN==3, msymbol(O) mcolor(mint)     ||
+scatter educfest logG [w=sp_] if regionN==4, msymbol(O) mcolor(navy)     ||
+scatter educfest logG [w=sp_] if regionN==5, msymbol(O) mcolor(magenta)  ||
+scatter educfest logG [w=sp_] if regionN==6, msymbol(O) mcolor(ebblue)
 legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
        lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
 yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Education Difference (years)" "twin - non-twin");
 graph export "$GRA/EducGDPregionW.eps", as(eps) replace;
-#delimit cr
+
 
 scatter underweightest logG [w=sp_] if regionN==1, msymbol(O) mcolor(lavender) ||
 scatter underweightest logG [w=sp_] if regionN==2, msymbol(O) mcolor(sandb)    ||
