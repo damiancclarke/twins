@@ -34,7 +34,6 @@ cap mkdir "$REG"
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
-/*
 use "$DAT/DHS_twins"
 
 keep if _merge==3
@@ -83,18 +82,16 @@ lab var height  "Mother's Height (cm)"
 lab var bmi     "Mother's BMI"
 lab var educf   "Mother's Education"
 
-local ovar height bmi educf
-areg twind100 height bmi educf `cs' if Africa==1, `se'
+local ovar height bmi educf prenate*
+areg twind100 height bmi educf prenate* `cs' if Africa==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Africa") replace
-areg twind100 height bmi educf `cs' if LatAm ==1, `se'
+areg twind100 height bmi educf prenate* `cs' if LatAm ==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
-areg twind100 height bmi educf `cs' if Europe==1, `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe")
-areg twind100 height bmi educf `cs' if Asia  ==1, `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Asia")
+areg twind100 height bmi educf prenate* `cs' if Europe==1|Asia==1, `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
 
-
-
+exit
+/*
 gen countryName = ""
 foreach var in height underweight educf {
     gen `var'Est = .
