@@ -34,8 +34,9 @@ cap mkdir "$REG"
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
-*use "$DAT/DHS_twins"
-use "$DAT/DHS_twins10samp"
+use "$DAT/DHS_twins"
+*use "$DAT/DHS_twins10samp"
+
 keep if _merge==3
 keep if motherage>17&motherage<50
 
@@ -113,8 +114,8 @@ foreach c of local cc {
     if `"`c'"'=="Vietnam"|`"`c'"'=="Yemen" exit
 
     qui replace countryName = "`c'" in `iter'
-    qui sum twind [iw=sweight] if countryName == "`c'"
-    qui replace twinProp = r(mean) if countryName == "`c'"
+    sum twind [aw=sweight] if country == "`c'"
+    replace twinProp = `r(mean)' if countryName == "`c'"
     
     foreach var of varlist height underweight educf {
         qui areg `var' twindfamily i.fert if country=="`c'", abs(motherage)
@@ -132,16 +133,16 @@ dis "Number of countries: `iter'"
 
 keep in 1/`iter'
 keep countryName heightEst heightLB heightUB educfEst educfLB educfUB /*
-*/ underweightEst underweightLB underweightUB
+*/ underweightEst underweightLB underweightUB twinProp
 outsheet using "$OUT/countryEstimates.csv", comma replace
 
 
-/*
+
 ********************************************************************************
 *** (3) USA regressions
 ********************************************************************************
 foreach year of numlist 2009(1)2013 {
-    use "$USA/natl`year'"
+    use "$USA/natl`year'", clear
     keep if mager>18&mager<=45
     gen twin     = dplural == 2 if dplural < 3
     gen twin100  = twin*100
@@ -159,7 +160,7 @@ foreach year of numlist 2009(1)2013 {
     gen hypertens= rf_phyp =="Y" if rf_phyp !="U" & rf_phyp !=""
     gen pregHyper= rf_ghyp =="Y" if rf_ghyp !="U" & rf_ghyp !=""
     gen married  = mar==1 if mar!=.
-    gen gestation=estgest if estgest<48 
+    gen gestation=estgest if estgest>19 & estgest<46
     gen year = `year'
     #delimit ;
     dis "Twin Regressions: `year' (Non-Infertility Users)";
@@ -215,7 +216,7 @@ foreach var of varlist `usvars' {
     reg twin100 `var' if tsample==1, robust
     outreg2 `var' using "$REG/USttest.xls", label excel
 }
-*/
+
 ********************************************************************************
 *** (4) Figures
 ********************************************************************************
@@ -237,7 +238,14 @@ replace countryname= "Egypt, Arab Rep." if countryname == "Egypt"
 merge 1:1 countryname using `GDP'
 keep if _merge==3
 gen logGDP = log(ny_gdp_pcap_cd)
-
+encode regioncode, gen(rc)
+gen rcode = rc
+rename heightest heightEst
+rename educfest educfEst
+rename underweightest underweightEst
+rename twinprop twinProp
+local outvars heightEst educfEst underweightEst twinProp logGDP rcode
+outsheet `outvars' using "$OUT/countryEstimatesGDP.csv", comma replace
 
 format heightest      %9.2f
 format heightlb       %9.2f
@@ -321,28 +329,28 @@ graph export "$GRA/UnderweightDif.eps", as(eps) replace
 
 
 #delimit ;
-scatter heightest logGDP  [w=twinProp], msymbol(circle_hollow)
+scatter heightest logGDP  [w=twinprop], msymbol(circle_hollow)
 scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Height Difference (cm)" "twin - non-twin");
 graph export "$GRA/HeightGDP.eps", as(eps) replace;
 
-scatter educfest logGDP  [w=twinProp], msymbol(circle_hollow)
+scatter educfest logGDP  [w=twinprop], msymbol(circle_hollow)
 scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Education Difference (years)" "twin - non-twin");
 graph export "$GRA/EducGDP.eps", as(eps) replace;
 
-scatter underweightest logGDP  [w=twinProp], msymbol(circle_hollow)
+scatter underweightest logGDP  [w=twinprop], msymbol(circle_hollow)
 scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Difference in Pr(underweight)" "twin - non-twin");
 graph export "$GRA/UnderweightGDP.eps", as(eps) replace;
 
 
-scatter heighte logG [w=twinP] if regionc=="EAS", msymbol(O) mcolor(lavender) ||
-scatter heighte logG [w=twinP] if regionc=="ECS", msymbol(O) mcolor(sandb)    ||
-scatter heighte logG [w=twinP] if regionc=="LCN", msymbol(O) mcolor(mint)     ||
-scatter heighte logG [w=twinP] if regionc=="MEA", msymbol(O) mcolor(navy)     ||
-scatter heighte logG [w=twinP] if regionc=="SAS", msymbol(O) mcolor(magenta)  ||
-scatter heighte logG [w=twinP] if regionc=="SSF", msymbol(O) mcolor(ebblue)
+scatter heighte logG [w=twinp] if regionc=="EAS", msymbol(O) mcolor(lavender) ||
+scatter heighte logG [w=twinp] if regionc=="ECS", msymbol(O) mcolor(sandb)    ||
+scatter heighte logG [w=twinp] if regionc=="LCN", msymbol(O) mcolor(mint)     ||
+scatter heighte logG [w=twinp] if regionc=="MEA", msymbol(O) mcolor(navy)     ||
+scatter heighte logG [w=twinp] if regionc=="SAS", msymbol(O) mcolor(magenta)  ||
+scatter heighte logG [w=twinp] if regionc=="SSF", msymbol(O) mcolor(ebblue)
 legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
        lab(5 "South Asia") lab(6 "Sub Saharan Africa"))
 ytitle("Height Difference (cm)" "twin - non-twin")
@@ -376,12 +384,12 @@ recode regionN (1=5) (2=6) (3=1) (4=2) (5=3) (6=4) if mod(_n,6) == 4
 recode regionN (1=6) (2=1) (3=2) (4=3) (5=4) (6=5) if mod(_n,6) == 5
 
 #delimit ;
-scatter heighte logG [w=twinP] if regionN==1, msymbol(O) mcolor(lavender) ||
-scatter heighte logG [w=twinP] if regionN==2, msymbol(O) mcolor(sandb)    ||
-scatter heighte logG [w=twinP] if regionN==3, msymbol(O) mcolor(mint)     ||
-scatter heighte logG [w=twinP] if regionN==4, msymbol(O) mcolor(navy)     ||
-scatter heighte logG [w=twinP] if regionN==5, msymbol(O) mcolor(magenta)  ||
-scatter heighte logG [w=twinP] if regionN==6, msymbol(O) mcolor(ebblue)
+scatter heighte logG [w=twinp] if regionN==1, msymbol(O) mcolor(lavender) ||
+scatter heighte logG [w=twinp] if regionN==2, msymbol(O) mcolor(sandb)    ||
+scatter heighte logG [w=twinp] if regionN==3, msymbol(O) mcolor(mint)     ||
+scatter heighte logG [w=twinp] if regionN==4, msymbol(O) mcolor(navy)     ||
+scatter heighte logG [w=twinp] if regionN==5, msymbol(O) mcolor(magenta)  ||
+scatter heighte logG [w=twinp] if regionN==6, msymbol(O) mcolor(ebblue)
 legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
        lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
 yline(0, lcolor(red)) ytitle("Height Difference (cm)" "twin - non-twin")
@@ -389,12 +397,12 @@ xtitle("log(GDP per capita)");
 graph export "$GRA/HeightGDPregionW.eps", as(eps) replace;
 
 
-scatter educfest logG [w=twinP] if regionN==1, msymbol(O) mcolor(lavender) ||
-scatter educfest logG [w=twinP] if regionN==2, msymbol(O) mcolor(sandb)    ||
-scatter educfest logG [w=twinP] if regionN==3, msymbol(O) mcolor(mint)     ||
-scatter educfest logG [w=twinP] if regionN==4, msymbol(O) mcolor(navy)     ||
-scatter educfest logG [w=twinP] if regionN==5, msymbol(O) mcolor(magenta)  ||
-scatter educfest logG [w=twinP] if regionN==6, msymbol(O) mcolor(ebblue)
+scatter educfest logG [w=twinp] if regionN==1, msymbol(O) mcolor(lavender) ||
+scatter educfest logG [w=twinp] if regionN==2, msymbol(O) mcolor(sandb)    ||
+scatter educfest logG [w=twinp] if regionN==3, msymbol(O) mcolor(mint)     ||
+scatter educfest logG [w=twinp] if regionN==4, msymbol(O) mcolor(navy)     ||
+scatter educfest logG [w=twinp] if regionN==5, msymbol(O) mcolor(magenta)  ||
+scatter educfest logG [w=twinp] if regionN==6, msymbol(O) mcolor(ebblue)
 legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
        lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
 yline(0, lcolor(red)) xtitle("log(GDP per capita)")
@@ -402,12 +410,12 @@ ytitle("Education Difference (years)" "twin - non-twin");
 graph export "$GRA/EducGDPregionW.eps", as(eps) replace;
 
 
-scatter underweightest logG [w=twinP] if regionN==1, msymbol(O) mcolor(lavender) ||
-scatter underweightest logG [w=twinP] if regionN==2, msymbol(O) mcolor(sandb)    ||
-scatter underweightest logG [w=twinP] if regionN==3, msymbol(O) mcolor(mint)     ||
-scatter underweightest logG [w=twinP] if regionN==4, msymbol(O) mcolor(navy)     ||
-scatter underweightest logG [w=twinP] if regionN==5, msymbol(O) mcolor(magenta)  ||
-scatter underweightest logG [w=twinP] if regionN==6, msymbol(O) mcolor(ebblue)
+scatter underweightest logG [w=twinp] if regionN==1, msymbol(O) mcolor(lavender) ||
+scatter underweightest logG [w=twinp] if regionN==2, msymbol(O) mcolor(sandb)    ||
+scatter underweightest logG [w=twinp] if regionN==3, msymbol(O) mcolor(mint)     ||
+scatter underweightest logG [w=twinp] if regionN==4, msymbol(O) mcolor(navy)     ||
+scatter underweightest logG [w=twinp] if regionN==5, msymbol(O) mcolor(magenta)  ||
+scatter underweightest logG [w=twinp] if regionN==6, msymbol(O) mcolor(ebblue)
 legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
        lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
 yline(0, lcolor(red)) xtitle("log(GDP per capita)")

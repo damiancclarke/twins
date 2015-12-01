@@ -8,32 +8,61 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import matplotlib.ticker as mtick
+
 
 #-------------------------------------------------------------------------------
 #--- (1) Import data
 #-------------------------------------------------------------------------------
 loc    = '/home/damiancclarke/investigacion/Activa/Twins/Results/Sum/'
 fname  = 'countryEstimatesGDP.csv'
+sav    = '/home/damiancclarke/investigacion/Activa/Twins/Results/World/'
 data   = np.genfromtxt(loc+fname, delimiter=',', skip_header=0,  
                       skip_footer=10, names=True)
-%data['rcode'] = data['rcode']/6
+
 
 #-------------------------------------------------------------------------------
 #--- (2) Graph settings
 #-------------------------------------------------------------------------------
-colors     = np.r_[np.linspace(0.1, 1, 6), np.linspace(0.1, 1, 6)]
-mymap      = plt.get_cmap("Reds")
-fig, axes  = plt.subplots(1,1)
-my_colors  = mymap(colors)
-area       = data['twinProp']
-area       = area*20000
+area       = data['twinProp']*40000
+labels     = ['East Asia and Pacific','Europe and Central Asia',
+              'Latin America and Caribbean','Middle East and North Africa',
+              'South Asia','Sub-Saharan Africa']
 
 #-------------------------------------------------------------------------------
-#--- (3) Graph              
+#--- (3) Graph function
 #-------------------------------------------------------------------------------
-for n in range(6):
-    axes.scatter(data['logGDP'][data['rcode']==(n+1)],
-                 data['heightEst'][data['rcode']==(n+1)],
-                 s=area,color=my_colors[n],label="point %d" %(n))
-plt.legend(scatterpoints=1)
-plt.show()
+def gdpplot(varname, axislabel, savename,limits):
+    colors     = np.r_[np.linspace(0.1, 1, 6), np.linspace(0.1, 1, 6)]
+    mymap      = plt.get_cmap("gist_rainbow")
+    fig, axes  = plt.subplots(1,1)
+    my_colors  = mymap(colors)
+    for n in range(6):
+        axes.scatter(data['logGDP'][data['rcode']==(n+1)],
+                     data[varname][data['rcode']==(n+1)],
+                     s=area,color=my_colors[n],label=labels[n],alpha=0.5,
+                     marker='o',edgecolor='black', linewidth='1')
+    plt.legend(scatterpoints=1,markerscale=0.35,fontsize=10,loc=2)
+    axes.axhline(0, linestyle='--', color='k') 
+    axes.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
+    axes.xaxis.set_major_formatter(mtick.FormatStrFormatter('%.2f'))
+    plt.xlabel('log(GDP) per capita')
+    plt.ylabel(axislabel)
+    plt.ylim(limits)
+    plt.savefig(sav+savename, bbox_inches='tight')
+    plt.clf()
+    return
+
+
+#-------------------------------------------------------------------------------
+#--- (4) Plots
+#-------------------------------------------------------------------------------
+heightlab  = 'Height Difference in cm (twin $-$ non-twin)'
+educlab    = 'Education Difference in years (twin $-$ non-twin)'
+uWeightlab = 'Difference in Proportion of Underweight Mothers (twin $-$ non-twin)'
+
+
+gdpplot('heightEst'     , heightlab ,'heightGDP.png'     , [-0.5,3.5])
+gdpplot('educfEst'      , educlab   ,  'educGDP.png'     , [-0.5,2])
+gdpplot('underweightEst', uWeightlab,'underweightGDP.png', [-0.06,0.08])
+
