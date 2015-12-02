@@ -34,6 +34,7 @@ cap mkdir "$REG"
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
+/*
 use "$DAT/DHS_twins"
 
 keep if _merge==3
@@ -90,8 +91,8 @@ outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
 areg twind100 height bmi educf prenate* `cs' if Europe==1|Asia==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
 
-exit
-/*
+
+
 gen countryName = ""
 foreach var in height underweight educf {
     gen `var'Est = .
@@ -134,9 +135,8 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB /*
 outsheet using "$OUT/countryEstimates.csv", comma replace
 
 
-
 ********************************************************************************
-*** (3) USA regressions
+*** (3a) USA regressions with IVF
 ********************************************************************************
 foreach year of numlist 2009(1)2013 {
     use "$USA/natl`year'", clear
@@ -214,6 +214,94 @@ foreach var of varlist `usvars' {
     outreg2 `var' using "$REG/USttest.xls", label excel
 }
 */
+
+********************************************************************************
+*** (3b) USA regressions of births and fetal deaths
+********************************************************************************
+foreach year of numlist 2003 2004 2005 2006 {
+    use "$USA/natl`year'", clear
+    keep if mager>18&mager<=45
+    gen twin     = dplural == 2 if dplural < 3
+    gen fDeath   = 0
+    gen twin100  = twin*100
+    gen smoke1   = cig_1>0 if cig_1<=98
+    gen smoke2   = cig_2>0 if cig_2<=98
+    gen smoke3   = cig_3>0 if cig_3<=98
+    gen diabetes = urf_diab   == 1 if urf_diab   !=9 & urf_diab   !=.
+    gen hypertens= urf_chyper == 1 if urf_chyper !=9 & urf_chyper !=.
+    gen pregHyper= urf_phyper == 1 if urf_phyper !=9 & urf_phyper !=.
+    gen eclampsia= urf_eclam  == 1 if urf_eclam  !=9 & urf_eclam  !=.    
+    gen married  = mar==1 if mar!=.
+    gen gestation=estgest if estgest>19 & estgest<46
+    gen year = `year'
+    tempfile b`year'
+    save `b`year''
+
+    use "$USA/../../FetalDeaths/dta/fetl`year'", clear
+    keep if mager>18&mager<=45
+    cap destring cig_1, replace
+    cap destring cig_2, replace
+    cap destring cig_3, replace
+    
+    gen twin     = dplural == 2 if dplural < 3
+    gen fDeath   = 100
+    gen twin100  = twin*100
+    gen smoke1   = cig_1>0 if cig_1<=98
+    gen smoke2   = cig_2>0 if cig_2<=98
+    gen smoke3   = cig_3>0 if cig_3<=98
+    gen diabetes = urf_diab   == 1 if urf_diab   !=9 & urf_diab   !=.
+    gen hypertens= urf_chyper == 1 if urf_chyper !=9 & urf_chyper !=.
+    gen pregHyper= urf_phyper == 1 if urf_phyper !=9 & urf_phyper !=.
+    gen eclampsia= urf_eclam  == 1 if urf_eclam  !=9 & urf_eclam  !=.    
+    gen married  = mar==1 if mar!=.
+    gen gestation=estgest if estgest<46
+    gen year = `year'
+    tempfile f`year'
+    save `f`year''
+}
+clear
+append using `b2003' `b2004' `b2005' `b2006' `f2003' `f2004' `f2005' `f2006' 
+
+local usvars smoke1 smoke2 smoke3 diabetes eclampsia hypertens pregHyper married
+local twinvars 
+foreach var of local usvars {
+    gen twinX`var'=twin*`var'
+    local twinvars `twinvars' twinX`var'
+}
+lab var smoke1   "Mother Smoked in 1st Trimester"
+lab var smoke2   "Mother Smoked in 2nd Trimester"
+lab var smoke3   "Mother Smoked in 3rd Trimester"
+lab var diabet   "Mother had pre-pregnancy diabetes"
+lab var eclampsi "Mother had eclampsia"
+lab var hyperten "Mother had pre-pregnancy hypertension"
+lab var pregHyp  "Mother had pregnancy-associated hypertension"
+lab var married  "Mother is married"
+lab var twin     "Twin Pregnancy"
+lab var smoke1   "Twin*Smoked in 1st Trimester"
+lab var smoke2   "Twin*Smoked in 2nd Trimester"
+lab var smoke3   "Twin*Smoked in 3rd Trimester"
+lab var diabet   "Twin*Pre-pregnancy diabetes"
+lab var eclampsi "Twin*Eclampsia"
+lab var hyperten "Twin*Pre-pregnancy hypertension"
+lab var pregHyp  "Twin*Pregnancy-associated hypertension"
+lab var married  "Twin*Mother is married"
+
+#delimit ;
+areg fDeath twin `usvars' `twinvars' i.mbrace i.lbo_rec i.year i.gestation,
+     abs(mager) robust;
+outreg2 `usvars' twin `twinvars' using "$REG/USfDeath.xls", label excel replace;
+#delimit cr
+
+foreach var of varlist `usvars' {
+    areg fDeath twin `var' twinX`var' i.lbo_rec i.gestation if tsample==1, /*
+    */ abs(mager) robust
+    outreg2 twin `var' twinX`var' using "$REG/USfDeathTtest.xls", label excel
+}
+
+
+
+
+exit
 ********************************************************************************
 *** (4) Figures
 ********************************************************************************
