@@ -218,9 +218,12 @@ foreach var of varlist `usvars' {
 ********************************************************************************
 *** (3b) USA regressions of births and fetal deaths
 ********************************************************************************
-foreach year of numlist 2003 2004 2005 2006 {
+foreach year of numlist 2004 2005 2006 {
     use "$USA/natl`year'", clear
     keep if mager>18&mager<=45
+    cap destring cig_1, replace
+    cap destring cig_2, replace
+    cap destring cig_3, replace
     gen twin     = dplural == 2 if dplural < 3
     gen fDeath   = 0
     gen twin100  = twin*100
@@ -232,8 +235,9 @@ foreach year of numlist 2003 2004 2005 2006 {
     gen pregHyper= urf_phyper == 1 if urf_phyper !=9 & urf_phyper !=.
     gen eclampsia= urf_eclam  == 1 if urf_eclam  !=9 & urf_eclam  !=.    
     gen married  = mar==1 if mar!=.
-    gen gestation=estgest if estgest>19 & estgest<46
+    gen gestation=estgest if estgest>9 & estgest<46
     gen year = `year'
+    keep if smoke1 != .
     tempfile b`year'
     save `b`year''
 
@@ -254,13 +258,15 @@ foreach year of numlist 2003 2004 2005 2006 {
     gen pregHyper= urf_phyper == 1 if urf_phyper !=9 & urf_phyper !=.
     gen eclampsia= urf_eclam  == 1 if urf_eclam  !=9 & urf_eclam  !=.    
     gen married  = mar==1 if mar!=.
-    gen gestation=estgest if estgest<46
+    gen gestation=estgest if estgest>9 & estgest<46
     gen year = `year'
+    keep if smoke1 != .
     tempfile f`year'
     save `f`year''
 }
 clear
-append using `b2003' `b2004' `b2005' `b2006' `f2003' `f2004' `f2005' `f2006' 
+append using `b2004' `b2005' `b2006' `f2004' `f2005' `f2006', force
+
 
 local usvars smoke1 smoke2 smoke3 diabetes eclampsia hypertens pregHyper married
 local twinvars 
@@ -268,28 +274,29 @@ foreach var of local usvars {
     gen twinX`var'=twin*`var'
     local twinvars `twinvars' twinX`var'
 }
-lab var smoke1   "Mother Smoked in 1st Trimester"
-lab var smoke2   "Mother Smoked in 2nd Trimester"
-lab var smoke3   "Mother Smoked in 3rd Trimester"
-lab var diabet   "Mother had pre-pregnancy diabetes"
-lab var eclampsi "Mother had eclampsia"
-lab var hyperten "Mother had pre-pregnancy hypertension"
-lab var pregHyp  "Mother had pregnancy-associated hypertension"
-lab var married  "Mother is married"
-lab var twin     "Twin Pregnancy"
-lab var smoke1   "Twin*Smoked in 1st Trimester"
-lab var smoke2   "Twin*Smoked in 2nd Trimester"
-lab var smoke3   "Twin*Smoked in 3rd Trimester"
-lab var diabet   "Twin*Pre-pregnancy diabetes"
-lab var eclampsi "Twin*Eclampsia"
-lab var hyperten "Twin*Pre-pregnancy hypertension"
-lab var pregHyp  "Twin*Pregnancy-associated hypertension"
-lab var married  "Twin*Mother is married"
+lab var smoke1        "Mother Smoked in 1st Trimester"
+lab var smoke2        "Mother Smoked in 2nd Trimester"
+lab var smoke3        "Mother Smoked in 3rd Trimester"
+lab var diabet        "Mother had pre-pregnancy diabetes"
+lab var eclampsi      "Mother had eclampsia"
+lab var hyperten      "Mother had pre-pregnancy hypertension"
+lab var pregHyp       "Mother had pregnancy-associated hypertension"
+lab var married       "Mother is married"
+lab var twin          "Twin Pregnancy"
+lab var twinXsmoke1   "Twin*Smoked in 1st Trimester"
+lab var twinXsmoke2   "Twin*Smoked in 2nd Trimester"
+lab var twinXsmoke3   "Twin*Smoked in 3rd Trimester"
+lab var twinXdiabet   "Twin*Pre-pregnancy diabetes"
+lab var twinXeclampsi "Twin*Eclampsia"
+lab var twinXhyperten "Twin*Pre-pregnancy hypertension"
+lab var twinXpregHyp  "Twin*Pregnancy-associated hypertension"
+lab var twinXmarried  "Twin*Mother is married"
 
 #delimit ;
 areg fDeath twin `usvars' `twinvars' i.mbrace i.lbo_rec i.year i.gestation,
      abs(mager) robust;
 outreg2 `usvars' twin `twinvars' using "$REG/USfDeath.xls", label excel replace;
+gen tsample = e(sample);
 #delimit cr
 
 foreach var of varlist `usvars' {
