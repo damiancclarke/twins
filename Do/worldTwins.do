@@ -213,7 +213,7 @@ foreach var of varlist `usvars' {
     reg twin100 `var' if tsample==1, robust
     outreg2 `var' using "$REG/USttest.xls", label excel
 }
-*/
+
 
 ********************************************************************************
 *** (3b) USA regressions of births and fetal deaths
@@ -293,15 +293,15 @@ lab var twinXpregHyp  "Twin*Pregnancy-associated hypertension"
 lab var twinXmarried  "Twin*Mother is married"
 
 #delimit ;
-areg fDeath twin `usvars' `twinvars' i.mbrace i.lbo_rec i.year i.gestation,
-     abs(mager) robust;
+reg fDeath twin `usvars' `twinvars' i.mbrace#c.twin i.year#c.twin i.mager#c.twin,
+            robust;
 outreg2 `usvars' twin `twinvars' using "$REG/USfDeath.xls", label excel replace;
 gen tsample = e(sample);
 #delimit cr
 
 foreach var of varlist `usvars' {
-    areg fDeath twin `var' twinX`var' i.lbo_rec i.gestation if tsample==1, /*
-    */ abs(mager) robust
+    reg fDeath twin `var' twinX`var' i.lbo_rec#c.twin i.mager#c.twin  /*
+    */ if tsample==1, robust
     outreg2 twin `var' twinX`var' using "$REG/USfDeathTtest.xls", label excel
 }
 
@@ -514,3 +514,76 @@ yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Difference in Pr(underweight)" "twin - non-twin");
 graph export "$GRA/UnderweightGDPregionW.eps", as(eps) replace;
 #delimit cr
+*/
+
+********************************************************************************
+*** (5) Coverage
+********************************************************************************
+use "$DAT/world/world"
+#delimit ;
+drop if NAME=="Aruba"|NAME=="Aland"|NAME=="American Samoa"|NAME=="Antarctica";
+drop if NAME=="Ashmore and Cartier Is."|NAME=="Fr. S. Antarctic Lands";
+drop if NAME=="Bajo Nuevo Bank (Petrel Is.)"|NAME=="Clipperton I.";
+drop if NAME=="Cyprus U.N. Buffer Zone"|NAME=="Cook Is."|NAME=="Coral Sea Is.";
+drop if NAME=="Cayman Is."|NAME=="N. Cyprus"|NAME=="Dhekelia"|NAME=="Falkland Is.";
+drop if NAME=="Faeroe Is."|NAME=="Micronesia"|NAME=="Guernsey";
+drop if NAME=="Heard I. and McDonald Is."|NAME=="Isle of Man"|NAME=="Indian Ocean Ter.";
+drop if NAME=="Br. Indian Ocean Ter."|NAME=="Baikonur"|NAME=="Siachen Glacier";
+drop if NAME=="St. Kitts and Nevis"|NAME=="Saint Lucia"|NAME=="St-Martin";
+drop if NAME=="Marshall Is."|NAME=="N. Mariana Is."|NAME=="New Caledonia";
+drop if NAME=="Norfolk Island"|NAME=="Niue"|NAME=="Nauru"|NAME=="Pitcairn Is.";
+drop if NAME=="Spratly Is."|NAME=="Fr. Polynesia"|NAME=="Scarborough Reef";
+drop if NAME=="Serranilla Bank"|NAME=="S. Geo. and S. Sandw. Is."|NAME=="San Marino";
+drop if NAME=="St. Pierre and Miquelon"|NAME=="Sint Maarten"|NAME=="Seychelles";
+drop if NAME=="Turks and Caicos Is."|NAME=="U.S. Minor Outlying Is.";
+drop if NAME=="St. Vin. and Gren."|NAME=="British Virgin Is.";
+drop if NAME=="USNB Guantanamo Bay"|NAME=="Wallis and Futuna Is."|NAME=="Akrotiri";
+drop if NAME=="Antigua and Barb."|NAME=="Bermuda"|NAME=="Kiribati"|NAME=="St-Barthélemy";
+drop if NAME=="Curaçao"|NAME=="Dominica"|NAME=="Guam";
+drop if NAME=="Malta"|NAME=="Montserrat"|NAME=="Palau"|NAME=="Mauritius";
+drop if NAME=="Tonga"|NAME=="Trinidad and Tobago";
+drop if NAME=="Tuvalu"|NAME=="U.S. Virgin Is."|NAME=="Vanuatu";
+
+generat coverage=3 if NAME=="Albania"|NAME=="Azerbaijan"|NAME=="Armenia";
+replace coverage=3 if NAME=="Brazil"|NAME=="Bolivia"|NAME=="Burundi";
+replace coverage=3 if NAME=="Burkina Faso"|NAME=="Benin"|NAME=="Bangladesh";
+replace coverage=3 if NAME=="Central African Rep."|NAME=="Colombia"|NAME=="Chad";
+replace coverage=3 if NAME=="Comoros"|NAME=="Cambodia"|NAME=="Côte d'Ivoire";
+replace coverage=3 if NAME=="Cameroon"|NAME=="Congo"|NAME=="Dem. Rep. Congo";
+replace coverage=3 if NAME=="Dominican Rep."|NAME=="Egypt"|NAME=="Ethiopia";
+replace coverage=3 if NAME=="Kyrgyzstan"|NAME=="Kazakhstan"|NAME=="Jordan";
+replace coverage=3 if NAME=="Guatemala"|NAME=="Ghana"|NAME=="Gabon"|NAME=="Guinea";
+replace coverage=3 if NAME=="Honduras"|NAME=="Haiti"|NAME=="Guyana"|NAME=="India";
+replace coverage=3 if NAME=="Lesotho"|NAME=="Liberia"|NAME=="Mali"|NAME=="Malawi";
+replace coverage=3 if NAME=="Maldives"|NAME=="Mozambique"|NAME=="Moldova";
+replace coverage=3 if NAME=="Morocco"|NAME=="Madagascar"|NAME=="Nicaragua";
+replace coverage=3 if NAME=="Namibia"|NAME=="Nepal"|NAME=="Nigeria"|NAME=="Niger";
+replace coverage=3 if NAME=="Peru"|NAME=="Rwanda"|NAME=="Sierra Leone";
+replace coverage=3 if NAME=="São Tomé and Principe"|NAME=="Swaziland";
+replace coverage=3 if NAME=="Senegal"|NAME=="Togo"|NAME=="Turkey"|NAME=="Tanzania"; 
+replace coverage=3 if NAME=="Uganda"|NAME=="Uzbekistan"|NAME=="Zambia";
+replace coverage=3 if NAME=="Zimbabwe"|NAME=="Kenya";
+
+replace coverage=1 if NAME=="United States"|NAME=="Sweden";
+replace coverage=2 if NAME=="United Kingdom";
+replace coverage=4 if NAME=="Chile";
+replace coverage=5 if NAME=="Spain"|NAME=="Mexico"|NAME=="Ireland";
+replace coverage=6 if NAME=="Romania";
+
+spmap coverage using "$DAT/world/world_coords" , id(_ID) osize(vvthin)
+fcolor(Rainbow) clmethod(unique) clbreaks(0 1 2 3 4 5 6)
+legend(title("Twin Coverage", size(*0.5) bexpand justification(left)))
+legend(label(1 "No Surveys")) legend(label(2 "Full Birth Records"))
+legend(label(3 "Surveys (Regional)")) legend(label(4 "Surveys (Demographic)"))
+legend(label(5 "Surveys (Early Life)"))
+legend(label(6 "Birth Records (No Health Information)"))
+legend(label(7 "Survey Data (No Health Information)"));
+
+graph export "$GRA/coverage.eps", as(eps) replace;
+
+
+#delimit cr
+
+
+
+
