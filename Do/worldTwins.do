@@ -159,17 +159,10 @@ foreach year of numlist 2009(1)2013 {
     gen married  = mar==1 if mar!=.
     gen gestation=estgest if estgest>19 & estgest<46
     gen year = `year'
-*    #delimit ;
-*    dis "Twin Regressions: `year' (Non-Infertility Users)";
-*    areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
-*                 i.mbrace i.lbo_rec i.gestation if infert==0, abs(mager);
-*    dis "Twin Regressions: `year' (Infertility Treatment Users)";
-*    areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
-*                 i.mbrace i.lbo_rec i.gestation if infert==1, abs(mager);
-*    #delimit cr
+    
     tempfile t`year'
 		gen bin=runiform()
-		keep if bin>0.9
+		keep if bin>0.95
     save `t`year''
 }
 
@@ -205,54 +198,55 @@ dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `usvars' {
     qui sum `var'
     local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_b[`var']*r(sd))*1000)/1000
+    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
     local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
     local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    dis "`var',`betasd',`se_sd',`lCIsd',`uCIsd',`nobs'"
+    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
 }
 
-areg twin100 `usvars' `FEs' if infert==0, abs(mager) robust;
-outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append;
+tab twin100 if infert==0
+areg twin100 `usvars' `FEs' if infert==0, abs(mager) robust
+outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
 local nobs = e(N)
 dis "Non-Infertility Users"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `usvars' {
     qui sum `var'
     local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_b[`var']*r(sd))*1000)/1000
+    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
     local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
     local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    dis "`var',`betasd',`se_sd',`lCIsd',`uCIsd',`nobs'"
+    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
 }
 
-areg twin100 `usvars' `FEs' if infert==1, abs(mager) robust;
-outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append;
+areg twin100 `usvars' `FEs' if infert==1, abs(mager) robust
+outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
 local nobs = e(N)
 dis "Infertility Users"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `usvars' {
     qui sum `var'
     local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_b[`var']*r(sd))*1000)/1000
+    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
     local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
     local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    dis "`var',`betasd',`se_sd',`lCIsd',`uCIsd',`nobs'"
+    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
 }
 
 dis "Conditional T-tests"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `usvars' {
     qui areg twin100 `var' i.lbo_rec i.gestation if tsample==1, abs(mager) robust
-    outreg2 `var' using "$REG/USttestFE.xls", label excel
+    qui outreg2 `var' using "$REG/USttestFE.xls", label excel
     qui sum `var'
     local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_b[`var']*r(sd))*1000)/1000
+    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
     local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
     local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    dis "`var',`betasd',`se_sd',`lCIsd',`uCIsd',`nobs'"
+    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
     
     qui reg twin100 `var' if tsample==1, robust
-    outreg2 `var' using "$REG/USttest.xls", label excel
+    qui outreg2 `var' using "$REG/USttest.xls", label excel
 }
 
 
