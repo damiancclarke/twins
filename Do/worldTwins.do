@@ -133,7 +133,7 @@ keep in 1/`iter'
 keep countryName heightEst heightLB heightUB educfEst educfLB educfUB /*
 */ underweightEst underweightLB underweightUB twinProp
 outsheet using "$OUT/countryEstimates.csv", comma replace
-
+*/
 
 ********************************************************************************
 *** (3a) USA regressions with IVF
@@ -159,22 +159,22 @@ foreach year of numlist 2009(1)2013 {
     gen married  = mar==1 if mar!=.
     gen gestation=estgest if estgest>19 & estgest<46
     gen year = `year'
-    #delimit ;
-    dis "Twin Regressions: `year' (Non-Infertility Users)";
-    areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
-                 i.mbrace i.lbo_rec i.gestation if infert==0, abs(mager);
-    dis "Twin Regressions: `year' (Infertility Treatment Users)";
-    areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
-                 i.mbrace i.lbo_rec i.gestation if infert==1, abs(mager);
-    #delimit cr
+*    #delimit ;
+*    dis "Twin Regressions: `year' (Non-Infertility Users)";
+*    areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
+*                 i.mbrace i.lbo_rec i.gestation if infert==0, abs(mager);
+*    dis "Twin Regressions: `year' (Infertility Treatment Users)";
+*    areg twin100 heightcm meduc smoke* diab gestD eclamp hypertens pregHyp
+*                 i.mbrace i.lbo_rec i.gestation if infert==1, abs(mager);
+*    #delimit cr
     tempfile t`year'
+		gen bin=rnormal()
+		keep if bin>0.95
     save `t`year''
 }
 
 clear
 append using `t2009' `t2010' `t2011' `t2012' `t2013'
-gen bin=rnormal()
-keep if bin>0.7
 
 #delimit ;
 local usvars heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes gestDiab
@@ -197,7 +197,20 @@ dis "Twin Regressions: Pooled";
 areg twin100 `usvars' i.mbrace i.lbo_rec i.year i.gestation, abs(mager) robust;
 outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel replace;
 gen tsample = 1 if e(sample)==1;
+local nobs = e(N)
+#delimit cr
 
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `usvars' {
+    qui sum `var'
+    local betasd = round((_b[`var']*r(sd))*1000)/1000
+    local se_sd  = round((_b[`var']*r(sd))*1000)/1000
+    local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    dis "`var',`betasd',`se_sd',`lCIsd',`uCIsd',`nobs'"
+}
+exit
+#delimit ;
 areg twin100 `usvars' i.mbrace i.lbo_rec i.year i.gestation if infert==0,
      abs(mager) robust;
 outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append;
