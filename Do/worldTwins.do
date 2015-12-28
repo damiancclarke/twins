@@ -195,18 +195,35 @@ outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel replace
 gen tsample = 1 if e(sample)==1
 local nobs = e(N)
 
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `usvars' {
+    qui sum `var'
+    local betasd = round((_b[`var']*r(sd))*1000)/1000
+    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
+    local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
+}
+
+
+tab twin100 if infert==0
+areg twin100 `usvars' `FEs' if infert==0, abs(mager) robust
+outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
+local nobs = e(N)
+
 local counter = 1
 gen countryname = ""
 gen varname     = ""
-foreach newvar in betasd se_sd uCIsd lCIsd {
-    gen `newvar'==.
+foreach newvar in betasd se_sd uCIsd lCIsd observations {
+    gen `newvar'=.
 }
 
+dis "Non-Infertility Users"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `usvars' {
     replace countryname = "USA"   in `counter'
     replace varname     = "`var'" in `counter'
-
+    replace observations= `nobs'  in `counter'
     qui sum `var'
     local betasd   = round((_b[`var']*r(sd))*1000)/1000
     replace betasd = `betasd' in `counter'
@@ -224,23 +241,8 @@ foreach var of varlist `usvars' {
     local ++counter
 }
 outsheet countryname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
-*/ "$OUT/testfile.csv", comma
+*/ "$REG/worldEstimates.csv", delimit(";") replace
 
-
-tab twin100 if infert==0
-areg twin100 `usvars' `FEs' if infert==0, abs(mager) robust
-outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
-local nobs = e(N)
-dis "Non-Infertility Users"
-dis "varname;beta;sd;lower-bound;upper-bound;N"
-foreach var of varlist `usvars' {
-    qui sum `var'
-    local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
-    local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
-}
 
 areg twin100 `usvars' `FEs' if infert==1, abs(mager) robust
 outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
@@ -271,11 +273,6 @@ foreach var of varlist `usvars' {
     qui reg twin100 `var' if tsample==1, robust
     qui outreg2 `var' using "$REG/USttest.xls", label excel
 }
-
-
-********************************************************************************
-*** (3b) Chile regressions
-********************************************************************************
 
 exit
 ********************************************************************************
