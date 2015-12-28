@@ -9,7 +9,8 @@
    Kenya  : DHS
    USA    : Administrative data (NVSS)
 
-
+ Pre-23/12/2015 included data on US fetal deaths.  Roll back to this date to use
+ it.
 */
 
 vers 11
@@ -194,15 +195,37 @@ outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel replace
 gen tsample = 1 if e(sample)==1
 local nobs = e(N)
 
+local counter = 1
+gen countryname = ""
+gen varname     = ""
+foreach newvar in betasd se_sd uCIsd lCIsd {
+    gen `newvar'==.
+}
+
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `usvars' {
+    replace countryname = "USA"   in `counter'
+    replace varname     = "`var'" in `counter'
+
     qui sum `var'
-    local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
-    local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    local betasd   = round((_b[`var']*r(sd))*1000)/1000
+    replace betasd = `betasd' in `counter'
+    
+    local se_sd   = round((_se[`var']*r(sd))*1000)/1000
+    replace se_sd = `se_sd' in `counter'
+    
+    local uCIsd   = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace uCIsd = `uCIsd' in `counter'
+    
+    local lCIsd   = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace lCIsd = `lCIsd' in `counter'
+    
     dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
+    local ++counter
 }
+outsheet countryname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
+*/ "$OUT/testfile.csv", comma
+
 
 tab twin100 if infert==0
 areg twin100 `usvars' `FEs' if infert==0, abs(mager) robust
@@ -251,97 +274,8 @@ foreach var of varlist `usvars' {
 
 
 ********************************************************************************
-*** (3b) USA regressions of births and fetal deaths
+*** (3b) Chile regressions
 ********************************************************************************
-foreach year of numlist 2004 2005 2006 {
-    use "$USA/natl`year'", clear
-    keep if mager>18&mager<=45
-    cap destring cig_1, replace
-    cap destring cig_2, replace
-    cap destring cig_3, replace
-    gen twin     = dplural == 2 if dplural < 3
-    gen fDeath   = 0
-    gen twin100  = twin*100
-    gen smoke1   = cig_1>0 if cig_1<=98
-    gen smoke2   = cig_2>0 if cig_2<=98
-    gen smoke3   = cig_3>0 if cig_3<=98
-    gen diabetes = urf_diab   == 1 if urf_diab   !=9 & urf_diab   !=.
-    gen hypertens= urf_chyper == 1 if urf_chyper !=9 & urf_chyper !=.
-    gen pregHyper= urf_phyper == 1 if urf_phyper !=9 & urf_phyper !=.
-    gen eclampsia= urf_eclam  == 1 if urf_eclam  !=9 & urf_eclam  !=.    
-    gen married  = mar==1 if mar!=.
-    gen gestation=estgest if estgest>9 & estgest<46
-    gen year = `year'
-    keep if smoke1 != .
-    tempfile b`year'
-    save `b`year''
-
-    use "$USA/../../FetalDeaths/dta/fetl`year'", clear
-    keep if mager>18&mager<=45
-    cap destring cig_1, replace
-    cap destring cig_2, replace
-    cap destring cig_3, replace
-    
-    gen twin     = dplural == 2 if dplural < 3
-    gen fDeath   = 100
-    gen twin100  = twin*100
-    gen smoke1   = cig_1>0 if cig_1<=98
-    gen smoke2   = cig_2>0 if cig_2<=98
-    gen smoke3   = cig_3>0 if cig_3<=98
-    gen diabetes = urf_diab   == 1 if urf_diab   !=9 & urf_diab   !=.
-    gen hypertens= urf_chyper == 1 if urf_chyper !=9 & urf_chyper !=.
-    gen pregHyper= urf_phyper == 1 if urf_phyper !=9 & urf_phyper !=.
-    gen eclampsia= urf_eclam  == 1 if urf_eclam  !=9 & urf_eclam  !=.    
-    gen married  = mar==1 if mar!=.
-    gen gestation=estgest if estgest>9 & estgest<46
-    gen year = `year'
-    keep if smoke1 != .
-    tempfile f`year'
-    save `f`year''
-}
-clear
-append using `b2004' `b2005' `b2006' `f2004' `f2005' `f2006', force
-
-
-local usvars smoke1 smoke2 smoke3 diabetes eclampsia hypertens pregHyper married
-local twinvars 
-foreach var of local usvars {
-    gen twinX`var'=twin*`var'
-    local twinvars `twinvars' twinX`var'
-}
-lab var smoke1        "Mother Smoked in 1st Trimester"
-lab var smoke2        "Mother Smoked in 2nd Trimester"
-lab var smoke3        "Mother Smoked in 3rd Trimester"
-lab var diabet        "Mother had pre-pregnancy diabetes"
-lab var eclampsi      "Mother had eclampsia"
-lab var hyperten      "Mother had pre-pregnancy hypertension"
-lab var pregHyp       "Mother had pregnancy-associated hypertension"
-lab var married       "Mother is married"
-lab var twin          "Twin Pregnancy"
-lab var twinXsmoke1   "Twin*Smoked in 1st Trimester"
-lab var twinXsmoke2   "Twin*Smoked in 2nd Trimester"
-lab var twinXsmoke3   "Twin*Smoked in 3rd Trimester"
-lab var twinXdiabet   "Twin*Pre-pregnancy diabetes"
-lab var twinXeclampsi "Twin*Eclampsia"
-lab var twinXhyperten "Twin*Pre-pregnancy hypertension"
-lab var twinXpregHyp  "Twin*Pregnancy-associated hypertension"
-lab var twinXmarried  "Twin*Mother is married"
-
-#delimit ;
-reg fDeath twin `usvars' `twinvars' i.mbrace#c.twin i.year#c.twin i.mager#c.twin,
-            robust;
-outreg2 `usvars' twin `twinvars' using "$REG/USfDeath.xls", label excel replace;
-gen tsample = e(sample);
-#delimit cr
-
-foreach var of varlist `usvars' {
-    reg fDeath twin `var' twinX`var' i.lbo_rec#c.twin i.mager#c.twin  /*
-    */ if tsample==1, robust
-    outreg2 twin `var' twinX`var' using "$REG/USfDeathTtest.xls", label excel
-}
-
-
-
 
 exit
 ********************************************************************************
