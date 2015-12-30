@@ -39,6 +39,7 @@ use "$DAT/DHS_twins"
 
 keep if _merge==3
 keep if motherage>17&motherage<50
+gen normalweight = bmi>=18.5&bmi<30
 
 replace height = . if height>240
 replace height = . if height<70
@@ -124,12 +125,12 @@ foreach var of varlist `ovar' {
     dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
     local ++counter
 }
-outsheet countryname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
+outsheet countryname varname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
 */ "$REG/worldEstimatesDHS.csv", delimit(";") replace
 
 
 gen countryName = ""
-foreach var in height underweight educf {
+foreach var in height underweight normalweight educf {
     gen `var'Est     = .
     gen `var'LB      = .
     gen `var'UB      = .
@@ -154,7 +155,7 @@ foreach c of local cc {
     sum twind [aw=sweight] if country == "`c'"
     replace twinProp = `r(mean)' if countryName == "`c'"
     
-    foreach var of varlist height underweight educf {
+    foreach var of varlist height underweight normalweight educf {
         qui areg `var' twindfamily i.fert if country=="`c'", abs(motherage)
         local estl `=_b[twindfamily]-1.96*_se[twindfamily]'
         local estu `=_b[twindfamily]+1.96*_se[twindfamily]'
@@ -180,10 +181,11 @@ foreach c of local cc {
 dis "Number of countries: `iter'"
 
 keep in 1/`iter'
-keep countryName heightEst heightLB heightUB educfEst educfLB educfUB   /*
-*/ underweightEst underweightLB underweightUB heightEst_SD heightLB_SD  /*
-*/ heightUB_SD educfEst_SD educfLB_SD educfUB_SD underweightEst_SD      /*
-*/ underweightLB_SD underweightUB_SD twinProp
+keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
+*/ underweightEst underweightLB underweightUB normalweightEst normalweightLB  /*
+*/ normalweightUB heightEst_SD heightLB_SD heightUB_SD educfEst_SD educfLB_SD /*
+*/ educfUB_SD underweightEst_SD underweightLB_SD underweightUB_SD             /*
+*/ normalweightEst_SD normalweightLB_SD normalweightUB_SD twinProp
 outsheet using "$OUT/countryEstimates.csv", comma replace
 
 
@@ -293,7 +295,7 @@ foreach var of varlist `usvars' {
     dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
     local ++counter
 }
-outsheet countryname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
+outsheet countryname varname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
 */ "$REG/worldEstimates.csv", delimit(";") replace
 
 
