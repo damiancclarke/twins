@@ -35,7 +35,6 @@ cap mkdir "$REG"
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
-/*
 use "$DAT/DHS_twins"
 
 keep if _merge==3
@@ -80,6 +79,8 @@ replace twind100 = twind*100
 local cs i.agemay i.child_yob
 local se abs(country) cluster(id)
 
+tab twind100
+
 lab var height  "Mother's Height (cm)"
 lab var bmi     "Mother's BMI"
 lab var educf   "Mother's Education"
@@ -91,18 +92,55 @@ areg twind100 height bmi educf prenate* `cs' if LatAm ==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
 areg twind100 height bmi educf prenate* `cs' if Europe==1|Asia==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
+areg twind100 height bmi educf prenate* `cs', `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("All")
+local nobs = e(N)
 
+local counter = 1
+gen countryname = ""
+gen varname     = ""
+foreach newvar in betasd se_sd uCIsd lCIsd observations {
+    gen `newvar'=.
+}
+
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `ovar' {
+    replace countryname = "DHS"   in `counter'
+    replace varname     = "`var'" in `counter'
+    replace observations= `nobs'  in `counter'
+    qui sum `var'
+    local betasd   = round((_b[`var']*r(sd))*1000)/1000
+    replace betasd = `betasd' in `counter'
+    
+    local se_sd   = round((_se[`var']*r(sd))*1000)/1000
+    replace se_sd = `se_sd' in `counter'
+    
+    local uCIsd   = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace uCIsd = `uCIsd' in `counter'
+    
+    local lCIsd   = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace lCIsd = `lCIsd' in `counter'
+    
+    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
+    local ++counter
+}
+outsheet countryname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
+*/ "$REG/worldEstimatesDHS.csv", delimit(";") replace
 
 
 gen countryName = ""
 foreach var in height underweight educf {
-    gen `var'Est = .
-    gen `var'LB  = .
-    gen `var'UB  = .
+    gen `var'Est     = .
+    gen `var'LB      = .
+    gen `var'UB      = .
 
     gen `var'EstNoFE = .
     gen `var'LBNoFE  = .
     gen `var'UBNoFE  = .
+
+    gen `var'Est_SD  = .
+    gen `var'LB_SD   = .
+    gen `var'UB_SD   = .
 }
 gen twinProp = .
 
@@ -124,21 +162,35 @@ foreach c of local cc {
         
         qui replace `var'Est   = _b[twindfamily] in `iter'
         qui replace `var'LB    = `estl' in `iter'
-        qui replace `var'UB    = `estu' in `iter'        
+        qui replace `var'UB    = `estu' in `iter'
+
+        qui sum `var'
+        local betasd   = round((_b[twindfamily]/r(sd))*1000)/1000
+        replace `var'Est_SD = `betasd' in `iter'
+    
+        local se_sd   = round((_se[twindfamily]/r(sd))*1000)/1000
+        local uCIsd   = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
+        replace `var'UB_SD = `uCIsd' in `iter'
+    
+        local lCIsd   = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+        replace `var'LB_SD = `lCIsd' in `iter'
     }
     local ++iter
 }
 dis "Number of countries: `iter'"
 
 keep in 1/`iter'
-keep countryName heightEst heightLB heightUB educfEst educfLB educfUB /*
-*/ underweightEst underweightLB underweightUB twinProp
+keep countryName heightEst heightLB heightUB educfEst educfLB educfUB   /*
+*/ underweightEst underweightLB underweightUB heightEst_SD heightLB_SD  /*
+*/ heightUB_SD educfEst_SD educfLB_SD educfUB_SD underweightEst_SD      /*
+*/ underweightLB_SD underweightUB_SD twinProp
 outsheet using "$OUT/countryEstimates.csv", comma replace
-*/
+
 
 ********************************************************************************
 *** (3a) USA regressions with IVF
 ********************************************************************************
+set seed 543
 foreach year of numlist 2009(1)2013 {
     use "$USA/natl`year'", clear
     keep if mager>18&mager<=45
@@ -163,7 +215,8 @@ foreach year of numlist 2009(1)2013 {
     
     tempfile t`year'
 		gen bin=runiform()
-		keep if bin>0.95
+    tab twin if ART==0
+		keep if bin>0.70
     save `t`year''
 }
 
