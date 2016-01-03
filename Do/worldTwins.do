@@ -213,14 +213,21 @@ foreach year of numlist 2009(1)2013 {
     gen pregHyper= rf_ghyp =="Y" if rf_ghyp !="U" & rf_ghyp !=""
     gen married  = mar==1 if mar!=.
     gen gestation=estgest if estgest>19 & estgest<46
+    gen birthweight = dbwt if dbwt<6500&dbwt>500
     gen year = `year'
     
     tempfile t`year'
 		gen bin=runiform()
     tab twin if ART==0
-		keep if bin>0.70
+		*keep if bin>0.70
     save `t`year''
+
+    gen birth = 1
+    collapse twin birthweight (sum) birth, by(dob_mm)
+    tempfile c`year'
+    save `c`year''
 }
+
 
 clear
 append using `t2009' `t2010' `t2011' `t2012' `t2013'
