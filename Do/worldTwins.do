@@ -187,7 +187,7 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ educfUB_SD underweightEst_SD underweightLB_SD underweightUB_SD             /*
 */ normalweightEst_SD normalweightLB_SD normalweightUB_SD twinProp
 outsheet using "$OUT/countryEstimates.csv", comma replace
-*/
+
 
 ********************************************************************************
 *** (3a) USA regressions with IVF
@@ -251,33 +251,35 @@ twoway line birthweight concep, yaxis(1) lcolor(black) lpattern(dash)
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Conception Month")
     legend(lab(1 "Birthweight") lab(2 "Twins"));
 #delimit cr
-graph export "$REG/twinSurvivalConcepMonth.eps", as(eps) replace
+graph export "$REG/twinSurvivalConcepMonth45.eps", as(eps) replace
+exit
 
-
-
+*/
 local bfiles
 local cfiles
 
 foreach year of numlist 1971(1)2002 {
     use "$USA/natl`year'", clear
-    keep if dmage>18&dmage<30
+    *keep if dmage>18&dmage<30
+    keep if dmage==28
     gen twin = dplural == 2 if dplural < 3
     gen birthweight = dbirwt if dbirwt>=500&dbirwt<6500
     gen gestation = dgestat if dgestat!=99
     gen birth = 1
+    gen boy   = csex==1
 
     gen conceptionMonth = birmon - round(gestation*7/30.5)
     replace conceptionMonth = conceptionMonth + 12 if conceptionMonth<1
 
     preserve
-    collapse twin birthweight (sum) birth, by(birmon)
+    collapse twin birthweight boy (sum) birth, by(birmon)
     tempfile b`year'
     gen year = `year'
     save `b`year''
     local bfiles `bfiles' `b`year''
     restore
 
-    collapse twin birthweight (sum) birth, by(conceptionMonth)
+    collapse twin birthweight boy (sum) birth, by(conceptionMonth)
     tempfile c`year'
     gen year = `year'
     save `c`year''
@@ -285,72 +287,72 @@ foreach year of numlist 1971(1)2002 {
 }
 clear
 append using `bfiles'
-collapse twin birthweight [fw=birth], by(birmon)
+collapse twin boy birthweight [fw=birth], by(birmon)
 lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
 */ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
 lab val birmon mon
 
 #delimit ;
-twoway line birthweight birmon, yaxis(1) lcolor(black) lpattern(dash) 
+twoway line boy  birmon, yaxis(1) lcolor(black) lpattern(dash) 
     || line twin birmon, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Average Birth Weight") ytitle("Proportion Twin", axis(2))
+    ytitle("Proportion Boy") ytitle("Proportion Twin", axis(2))
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Birth Month")
-    legend(lab(1 "Birthweight") lab(2 "Twins"));
+    legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
 #delimit cr
-graph export "$REG/twinBirthMonth.eps", as(eps) replace
+graph export "$REG/twinBirthMonth_28.eps", as(eps) replace
 
 clear
 append using `cfiles'
 keep if conceptionMonth!=.
-collapse twin birthweight [fw=birth], by(conceptionMonth)
+collapse twin birthweight boy [fw=birth], by(conceptionMonth)
 lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
 */ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
 lab val concep mon
 
 #delimit ;
-twoway line birthweight concep, yaxis(1) lcolor(black) lpattern(dash) 
+twoway line boy  concep, yaxis(1) lcolor(black) lpattern(dash) 
     || line twin concep, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Average Birth Weight") ytitle("Proportion Twin", axis(2))
+    ytitle("Proportion Boy") ytitle("Proportion Twin", axis(2))
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Conception Month")
-    legend(lab(1 "Birthweight") lab(2 "Twins"));
+    legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
 #delimit cr
-graph export "$REG/twinConcepMonth.eps", as(eps) replace
+graph export "$REG/twinConcepMonth_28.eps", as(eps) replace
 
 
 clear
 append using `bfiles'
 keep if year<1985
-collapse twin birthweight [fw=birth], by(birmon)
+collapse twin boy birthweight [fw=birth], by(birmon)
 lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
 */ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
 lab val birmon mon
 
 #delimit ;
-twoway line birthweight birmon, yaxis(1) lcolor(black) lpattern(dash) 
+twoway line boy  birmon, yaxis(1) lcolor(black) lpattern(dash) 
     || line twin birmon, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Average Birth Weight") ytitle("Proportion Twin", axis(2))
+    ytitle("Proportion Boy") ytitle("Proportion Twin", axis(2))
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Birth Month")
-    legend(lab(1 "Birthweight") lab(2 "Twins"));
+    legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
 #delimit cr
-graph export "$REG/twinBirthMonth7085.eps", as(eps) replace
+graph export "$REG/twinBirthMonth7085_28.eps", as(eps) replace
 
 clear
 append using `cfiles'
 keep if year<1985
 keep if conceptionMonth!=.
-collapse twin birthweight [fw=birth], by(conceptionMonth)
+collapse twin boy [fw=birth], by(conceptionMonth)
 lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
 */ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
 lab val concep mon
 
 #delimit ;
-twoway line birthweight concep, yaxis(1) lcolor(black) lpattern(dash) 
+twoway line boy concep, yaxis(1) lcolor(black) lpattern(dash) 
     || line twin concep, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Average Birth Weight") ytitle("Proportion Twin", axis(2))
+    ytitle("Pr(Boy)") ytitle("Proportion Twin", axis(2))
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Conception Month")
-    legend(lab(1 "Birthweight") lab(2 "Twins"));
+    legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
 #delimit cr
-graph export "$REG/twinConcepMonth7085.eps", as(eps) replace
+graph export "$REG/twinConcepMonth7085_28.eps", as(eps) replace
 
 
 
