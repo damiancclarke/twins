@@ -31,7 +31,8 @@ global REG "~/investigacion/Activa/Twins/Results/World"
 
 log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
-/*
+
+
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
@@ -44,6 +45,7 @@ gen normalweight = bmi>=18.5&bmi<30
 replace height = . if height>240
 replace height = . if height<70
 replace bmi    = . if bmi > 50
+replace educf  = . if educf >27
 
 levelsof country, local(cc)
 
@@ -76,7 +78,13 @@ gen Asia   = country=="Bangladesh"|country=="Cambodia"|country=="India"      |
              country=="Vietnam"                                              ;
 #delimit cr
 
+keep if height!=. & bmi!=.
+
 replace twind100 = twind*100
+bys v001 _year: egen prenateDoctorC = mean(prenate_doc)
+bys v001 _year: egen prenateNurseC  = mean(prenate_nurse)
+bys v001 _year: egen prenateNoneC   = mean(prenate_none)
+
 local cs i.agemay i.child_yob
 local se abs(country) cluster(id)
 
@@ -86,14 +94,14 @@ lab var height  "Mother's Height (cm)"
 lab var bmi     "Mother's BMI"
 lab var educf   "Mother's Education"
 
-local ovar height bmi educf prenate*
-areg twind100 height bmi educf prenate* `cs' if Africa==1, `se'
+local ovar height bmi educf prenateDoctorC prenateNurseC prenateNoneC
+areg twind100 `ovar' `cs' if Africa==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Africa") replace
-areg twind100 height bmi educf prenate* `cs' if LatAm ==1, `se'
+areg twind100 `ovar' `cs' if LatAm ==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
-areg twind100 height bmi educf prenate* `cs' if Europe==1|Asia==1, `se'
+areg twind100 `ovar' `cs' if Europe==1|Asia==1, `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
-areg twind100 height bmi educf prenate* `cs', `se'
+areg twind100 `ovar' `cs', `se'
 outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("All")
 local nobs = e(N)
 
@@ -101,7 +109,8 @@ local counter = 1
 gen countryname = ""
 gen varname     = ""
 foreach newvar in betasd se_sd uCIsd lCIsd observations {
-    gen `newvar'=.
+    gen `newvar'   =.
+    gen `newvar'_u =.
 }
 
 dis "varname;beta;sd;lower-bound;upper-bound;N"
@@ -123,12 +132,21 @@ foreach var of varlist `ovar' {
     replace lCIsd = `lCIsd' in `counter'
     
     dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
+
+    areg twind100 `var' `cs', `se'
+    replace betasd_u = round((_b[`var'])*1000)/1000 in `counter'
+    replace se_sd_u  = round((_se[`var'])*1000)/1000 in `counter'
+    local uC = round((betasd_u+invttail(`nobs',0.025)*se_sd_u)*1000)/1000
+    local lC = round((betasd_u-invttail(`nobs',0.025)*se_sd_u)*1000)/1000
+    replace uCIsd_u  = `uC' in `counter'
+    replace lCIsd_u  = `lC' in `counter'
+    
     local ++counter
 }
-outsheet countryname varname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
-*/ "$REG/worldEstimatesDHS.csv", delimit(";") replace
+outsheet countryname varname betasd se_sd uCIsd lCIsd betasd_u se_sd_u uCIsd_u /*
+*/ lCIsd_u in 1/`counter' using "$REG/worldEstimatesDHS.csv", delimit(";") replace
 
-
+exit
 gen countryName = ""
 foreach var in height underweight normalweight educf {
     gen `var'Est     = .
@@ -260,8 +278,8 @@ local cfiles
 
 foreach year of numlist 1971(1)2002 {
     use "$USA/natl`year'", clear
-    *keep if dmage>18&dmage<30
-    keep if dmage==28
+    keep if dmage>18&dmage<30
+    
     gen twin = dplural == 2 if dplural < 3
     gen birthweight = dbirwt if dbirwt>=500&dbirwt<6500
     gen gestation = dgestat if dgestat!=99
@@ -299,7 +317,7 @@ twoway line boy  birmon, yaxis(1) lcolor(black) lpattern(dash)
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Birth Month")
     legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
 #delimit cr
-graph export "$REG/twinBirthMonth_28.eps", as(eps) replace
+graph export "$REG/twinBirthMonth.eps", as(eps) replace
 
 clear
 append using `cfiles'
@@ -316,7 +334,7 @@ twoway line boy  concep, yaxis(1) lcolor(black) lpattern(dash)
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Conception Month")
     legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
 #delimit cr
-graph export "$REG/twinConcepMonth_28.eps", as(eps) replace
+graph export "$REG/twinConcepMonth.eps", as(eps) replace
 
 
 clear
@@ -334,7 +352,7 @@ twoway line boy  birmon, yaxis(1) lcolor(black) lpattern(dash)
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Birth Month")
     legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
 #delimit cr
-graph export "$REG/twinBirthMonth7085_28.eps", as(eps) replace
+graph export "$REG/twinBirthMonth7085.eps", as(eps) replace
 
 clear
 append using `cfiles'
@@ -352,7 +370,7 @@ twoway line boy concep, yaxis(1) lcolor(black) lpattern(dash)
     xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Conception Month")
     legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
 #delimit cr
-graph export "$REG/twinConcepMonth7085_28.eps", as(eps) replace
+graph export "$REG/twinConcepMonth7085.eps", as(eps) replace
 
 
 
