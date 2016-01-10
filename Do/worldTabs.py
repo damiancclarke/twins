@@ -46,9 +46,26 @@ tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel B: Pooled Demographic and Health Surveys}} \\\\ \n')
-for line in DHSi:
+for i,line in enumerate(DHSi):
+    if i==1: 
+        CI = '[' + str(line.split(';')[5]) + str(line.split(';')[4]) + ']'
+        n1 = 'Mother\'s Height&'+str(line.split(';')[2]) + '&' + CI + '&'
+    elif i==2: 
+        CI = '[' + str(line.split(';')[5]) + str(line.split(';')[4]) + ']'
+        n2 = 'Mother\'s BMI&'+str(line.split(';')[2]) + '&' + CI + '&'
+    elif i==4: 
+        CI = '[' + str(line.split(';')[5]) + str(line.split(';')[4]) + ']'
+        n3 = 'Doctor Availability&'+str(line.split(';')[2]) + '&' + CI + '\\\\'
+    elif i==5: 
+        CI = '[' + str(line.split(';')[5]) + str(line.split(';')[4]) + ']'
+        n4 = 'Nurse Availability&'+str(line.split(';')[2]) + '&' + CI + '\\\\'
+    elif i==6: 
+        CI = '[' + str(line.split(';')[5]) + str(line.split(';')[4]) + ']'
+        n5 = 'No Prenatal Care&'+str(line.split(';')[2]) + '&' + CI + '\\\\'
+
     print line
-    
+tabl.write(n1+n3 + '\n' + n2+n4+ '\n' + '&&&'+n5+'\n')
+
 
 tabl.write('\\bottomrule \n \\end{tabular} \n \\end{center} \\end{table} \n'
            '\n \\end{spacing}')
