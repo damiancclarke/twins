@@ -85,7 +85,7 @@ bys v001 _year: egen prenateDoctorC = mean(prenate_doc)
 bys v001 _year: egen prenateNurseC  = mean(prenate_nurse)
 bys v001 _year: egen prenateNoneC   = mean(prenate_none)
 
-local cs i.agemay i.child_yob
+local cs i.agemay 
 local se abs(country) cluster(id)
 
 tab twind100
@@ -106,11 +106,12 @@ outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("All")
 local nobs = e(N)
 
 local counter = 1
-gen countryname = ""
-gen varname     = ""
-foreach newvar in betasd se_sd uCIsd lCIsd observations {
-    gen `newvar'   =.
-    gen `newvar'_u =.
+gen countryname  = ""
+gen varname      = ""
+gen observations = .
+foreach newvar in beta se uCI lCI {
+    gen `newvar'_sd =.
+    gen `newvar'_u  =.
 }
 
 dis "varname;beta;sd;lower-bound;upper-bound;N"
@@ -119,32 +120,38 @@ foreach var of varlist `ovar' {
     replace varname     = "`var'" in `counter'
     replace observations= `nobs'  in `counter'
     qui sum `var'
-    local betasd   = round((_b[`var']*r(sd))*1000)/1000
-    replace betasd = `betasd' in `counter'
+    local betasd    = round((_b[`var']*r(sd))*1000)/1000
+    replace beta_sd = `betasd' in `counter'
     
-    local se_sd   = round((_se[`var']*r(sd))*1000)/1000
-    replace se_sd = `se_sd' in `counter'
+    local se_sd     = round((_se[`var']*r(sd))*1000)/1000
+    replace se_sd   = `se_sd' in `counter'
     
-    local uCIsd   = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace uCIsd = `uCIsd' in `counter'
+    local uCIsd    = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace uCI_sd = `uCIsd' in `counter'
     
-    local lCIsd   = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace lCIsd = `lCIsd' in `counter'
+    local lCIsd    = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace lCI_sd = `lCIsd' in `counter'
     
-    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
-
-    areg twind100 `var' `cs', `se'
-    replace betasd_u = round((_b[`var'])*1000)/1000 in `counter'
-    replace se_sd_u  = round((_se[`var'])*1000)/1000 in `counter'
-    local uC = round((betasd_u+invttail(`nobs',0.025)*se_sd_u)*1000)/1000
-    local lC = round((betasd_u-invttail(`nobs',0.025)*se_sd_u)*1000)/1000
-    replace uCIsd_u  = `uC' in `counter'
-    replace lCIsd_u  = `lC' in `counter'
-    
+    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"    
     local ++counter
 }
-outsheet countryname varname betasd se_sd uCIsd lCIsd betasd_u se_sd_u uCIsd_u /*
-*/ lCIsd_u in 1/`counter' using "$REG/worldEstimatesDHS.csv", delimit(";") replace
+
+local counte2 = 1
+foreach var of varlist `ovar' {
+    areg twind100 `var' `cs', `se'
+    local bU = round((_b[`var'])*1000)/1000 
+    local sU = round((_se[`var'])*1000)/1000
+    local uC = round((`bU'+invttail(`nobs',0.025)*`sU')*1000)/1000
+    local lC = round((`bU'-invttail(`nobs',0.025)*`sU')*1000)/1000
+    replace beta_u = `bU' in `counte2'
+    replace se_u   = `sU' in `counte2'
+    replace uCI_u  = `uC' in `counte2'
+    replace lCI_u  = `lC' in `counte2'
+    local ++counte2
+}
+
+outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
+*/ in 1/`counter' using "$REG/worldEstimatesDHS.csv", delimit(";") replace
 
 exit
 gen countryName = ""
