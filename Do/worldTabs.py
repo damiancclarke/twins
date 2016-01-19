@@ -24,18 +24,18 @@ foot = "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01"
 def formatLine(line):
     beta = float(line.split(";")[2])
     se   = float(line.split(";")[3])
-    lCI  = str(float(line.split(";")[5]))
-    uCI  = str(float(line.split(";")[4]))
+    lCI  = format(float(line.split(";")[5]),'.3f')
+    uCI  = format(float(line.split(";")[4]),'.3f')
 
     t    = abs(beta/se)
     if t>2.576:
-        beta = str(beta)+'$^{***}$'
+        beta = format(beta,'.3f')+'$^{***}$'
     elif t>1.96:
-        beta = str(beta)+'$^{**}$'
+        beta = format(beta,'.3f')+'$^{**}$'
     elif t>1.645:
-        beta = str(beta)+'$^{*}$'
+        beta = format(beta,'.3f')+'$^{*}$'
     else:
-        beta=str(beta)
+        beta = format(beta,'.3f')
     
     lineOUT = beta + '&[' + lCI + ',' + uCI + ']'
     return lineOUT
