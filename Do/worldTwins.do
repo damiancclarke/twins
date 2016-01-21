@@ -32,7 +32,7 @@ global REG "~/investigacion/Activa/Twins/Results/World"
 log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
-
+/*
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
@@ -95,14 +95,14 @@ lab var bmi     "Mother's BMI"
 lab var educf   "Mother's Education"
 
 local ovar height bmi educf prenateDoctorC prenateNurseC prenateNoneC
-areg twind100 `ovar' `cs' if Africa==1, `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Africa") replace
-areg twind100 `ovar' `cs' if LatAm ==1, `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
-areg twind100 `ovar' `cs' if Europe==1|Asia==1, `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
+*areg twind100 `ovar' `cs' if Africa==1, `se'
+*outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Africa") replace
+*areg twind100 `ovar' `cs' if LatAm ==1, `se'
+*outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
+*areg twind100 `ovar' `cs' if Europe==1|Asia==1, `se'
+*outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
 areg twind100 `ovar' `cs', `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("All")
+*outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("All")
 local nobs = e(N)
 
 local counter = 1
@@ -279,7 +279,6 @@ twoway line birthweight concep, yaxis(1) lcolor(black) lpattern(dash)
 graph export "$REG/twinSurvivalConcepMonth45.eps", as(eps) replace
 exit
 
-*/
 local bfiles
 local cfiles
 
@@ -411,8 +410,8 @@ foreach year of numlist 2009(1)2013 {
     tempfile t`year'
 		gen bin=runiform()
     tab twin if ART==0
-		*keep if bin>0.70
-    *save `t`year''
+		keep if bin>0.90
+    save `t`year''
 }
 
 clear
@@ -456,14 +455,17 @@ foreach var of varlist `usvars' {
 
 tab twin100 if infert==0
 areg twin100 `usvars' `FEs' if infert==0, abs(mager) robust
+gen Esample = e(sample)
 outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
 local nobs = e(N)
 
 local counter = 1
-gen countryname = ""
-gen varname     = ""
-foreach newvar in betasd se_sd uCIsd lCIsd observations {
-    gen `newvar'=.
+gen countryname  = ""
+gen varname      = ""
+gen observations = `nobs'
+foreach newvar in beta se uCI lCI  {
+    gen `newvar'_sd = .
+    gen `newvar'_u  = .
 }
 
 dis "Non-Infertility Users"
@@ -471,26 +473,41 @@ dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `usvars' {
     replace countryname = "USA"   in `counter'
     replace varname     = "`var'" in `counter'
-    replace observations= `nobs'  in `counter'
     qui sum `var'
-    local betasd   = round((_b[`var']*r(sd))*1000)/1000
-    replace betasd = `betasd' in `counter'
+    local betasd    = round((_b[`var']*r(sd))*1000)/1000
+    replace beta_sd = `betasd' in `counter'
     
-    local se_sd   = round((_se[`var']*r(sd))*1000)/1000
-    replace se_sd = `se_sd' in `counter'
+    local se_sd     = round((_se[`var']*r(sd))*1000)/1000
+    replace se_sd   = `se_sd' in `counter'
     
-    local uCIsd   = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace uCIsd = `uCIsd' in `counter'
+    local uCIsd = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace uCI_sd  = `uCIsd' in `counter'
     
-    local lCIsd   = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace lCIsd = `lCIsd' in `counter'
+    local lCIsd = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace lCI_sd  = `lCIsd' in `counter'
     
     dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
     local ++counter
 }
-outsheet countryname varname betasd se_sd uCIsd lCIsd in 1/`counter' using /*
-*/ "$REG/worldEstimates.csv", delimit(";") replace
 
+local counte2 = 1
+foreach var of varlist `usvars' {
+    areg twin100 `var' `FEs' if Esample == 1, abs(mager) robust
+    local bU = round((_b[`var'])*1000)/1000 
+    local sU = round((_se[`var'])*1000)/1000
+    local uC = round((`bU'+invttail(`nobs',0.025)*`sU')*1000)/1000
+    local lC = round((`bU'-invttail(`nobs',0.025)*`sU')*1000)/1000
+    replace beta_u = `bU' in `counte2'
+    replace se_u   = `sU' in `counte2'
+    replace uCI_u  = `uC' in `counte2'
+    replace lCI_u  = `lC' in `counte2'
+    local ++counte2
+}
+
+outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
+*/ in 1/`counter' using "$REG/worldEstimates.csv", delimit(";") replace
+
+exit
 
 areg twin100 `usvars' `FEs' if infert==1, abs(mager) robust
 outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
@@ -521,10 +538,80 @@ foreach var of varlist `usvars' {
     qui reg twin100 `var' if tsample==1, robust
     qui outreg2 `var' using "$REG/USttest.xls", label excel
 }
+*/
+********************************************************************************
+*** (4) Chile Regressions
+********************************************************************************
+use "$DAT/Chile_twins"
+#delimit ;
+local base    indigenous;
+local region  i.region i.age rural i.m_age_birth i.birthorder;
+local cond    a16==13&m_age_birth<=45;
+local wt      [pw=fexp_enc];
+local prePreg obesePre lowWeightPre;
+local preg    pregDiab pregDepr pregSmoked pregDrugsModerate pregDrugsHigh
+              pregAlcoholModerate pregAlcoholHigh pregHosp;
+#delimit cr
+
+gen twind = twin*100
+
+eststo: reg twind `region' `prePreg' `preg' `base' `wt' if `cond' 
+keep if e(sample)==1
+local nobs = e(N)
+
+local counter = 1
+gen countryname  = ""
+gen varname      = ""
+gen observations = .
+foreach newvar in beta se uCI lCI {
+    gen `newvar'_sd =.
+    gen `newvar'_u  =.
+}
+
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `prePreg' `preg' {
+    replace countryname = "Chile"   in `counter'
+    replace varname     = "`var'" in `counter'
+    replace observations= `nobs'  in `counter'
+    qui sum `var'
+    local betasd    = round((_b[`var']*r(sd))*1000)/1000
+    replace beta_sd = `betasd' in `counter'
+    
+    local se_sd     = round((_se[`var']*r(sd))*1000)/1000
+    replace se_sd   = `se_sd' in `counter'
+    
+    local uCIsd    = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace uCI_sd = `uCIsd' in `counter'
+    
+    local lCIsd    = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
+    replace lCI_sd = `lCIsd' in `counter'
+    
+    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"    
+    local ++counter
+}
+
+local counte2 = 1
+foreach var of varlist `prePreg' `preg' {
+    reg twind `var' `region' `base' `wt'
+    local bU = round((_b[`var'])*1000)/1000 
+    local sU = round((_se[`var'])*1000)/1000
+    local uC = round((`bU'+invttail(`nobs',0.025)*`sU')*1000)/1000
+    local lC = round((`bU'-invttail(`nobs',0.025)*`sU')*1000)/1000
+    replace beta_u = `bU' in `counte2'
+    replace se_u   = `sU' in `counte2'
+    replace uCI_u  = `uC' in `counte2'
+    replace lCI_u  = `lC' in `counte2'
+    local ++counte2
+}
+
+outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
+*/ in 1/`counter' using "$REG/worldEstimatesChile.csv", delimit(";") replace
+
+
 
 exit
 ********************************************************************************
-*** (4) Figures
+*** (5) Figures
 ********************************************************************************
 use "$DAT/GDPpc_WorldBank", clear
 keep if year==2013
@@ -731,7 +818,7 @@ graph export "$GRA/UnderweightGDPregionW.eps", as(eps) replace;
 */
 
 ********************************************************************************
-*** (5) Coverage
+*** (6) Coverage
 ********************************************************************************
 use "$DAT/world/world"
 #delimit ;

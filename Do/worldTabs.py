@@ -52,8 +52,8 @@ def formatLine(line, vers):
 DHSi = open(RIN +    'worldEstimatesDHS.csv').readlines()[1:-1]
 USAi = open(RIN +       'worldEstimates.csv').readlines()[1:-1]
 SWEi = open(RIN + 'worldEstimatesSweden.csv').readlines()[1:-1]
-#CHIi = open(RIN + ).readlines()
-#UKSi = open(RIN + ).readlines()
+CHIi = open(RIN +  'worldEstimatesChile.csv').readlines()[1:-1]
+#UKSi = open(RIN + ).readlines()[1:-1]
 
 tabl = open(OUT + 'twinEffectsCond.tex', 'w')
 
@@ -132,6 +132,32 @@ tabl.write(n4+n2+'\n' + n5+n3+'\n' + n6+n1+'\n' + n7+'&&\\\\')
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chilean Survey of Early Infancy}} \\\\ \n')
+for i,line in enumerate(CHIi):
+    line = formatLine(line,1)
+    if i==0: 
+        n1 = 'Obese (pre)&'        + line + '\\\\'
+    if i==1: 
+        n2 = 'Underweight (pre)&'  + line + '\\\\'
+    if i==2: 
+        n3 = 'Gestation Diabetes&' + line + '\\\\'
+    if i==3: 
+        n4 = 'Gestation Depression&'+ line + '\\\\'
+    if i==4:
+        n5 = 'Smoked in Pregnancy&' + line + '&'
+    if i==5:
+        n6 = 'Drugs (Moderate) &'   + line + '&'
+    if i==6:
+        n7 = 'Drugs (High) &'       + line + '&'
+    if i==7:
+        n8 = 'Alcohol (Moderate) &' + line + '&'
+    if i==8:
+        n9 = 'Alcohol (High) &'     + line + '&'
+
+tabl.write(n5+n1+'\n' + 
+           n6+n2+'\n' +
+           n7+n3+'\n' +
+           n8+n4+'\n' +
+           n9+'&&\\\\')
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel E: Somerset Birth Survey (United Kingdom)}} \\\\ \n')
@@ -229,6 +255,33 @@ tabl.write(n4+n2+'\n' + n5+n3+'\n' + n6+n1+'\n' + n7+'&&\\\\')
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chilean Survey of Early Infancy}} \\\\ \n')
+for i,line in enumerate(CHIi):
+    if i>-1:
+        line = formatLine(line,2)
+        if i==0: 
+            n1 = 'Obese (pre)&'        + line + '\\\\'
+        if i==1: 
+            n2 = 'Underweight (pre)&'  + line + '\\\\'
+        if i==2: 
+            n3 = 'Gestation Diabetes&' + line + '\\\\'
+        if i==3: 
+            n4 = 'Gestation Depression&'+ line + '\\\\'
+        if i==4:
+            n5 = 'Smoked in Pregnancy&' + line + '&'
+        if i==5:
+            n6 = 'Drugs (Moderate) &'   + line + '&'
+        if i==6:
+            n7 = 'Drugs (High) &'       + line + '&'
+        if i==7:
+            n8 = 'Alcohol (Moderate) &' + line + '&'
+        if i==8:
+            n9 = 'Alcohol (High) &'     + line + '&'
+
+tabl.write(n5+n1+'\n' + 
+           n6+n2+'\n' +
+           n7+n3+'\n' +
+           n8+n4+'\n' +
+           n9+'&&\\\\')
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel E: Somerset Birth Survey (United Kingdom)}} \\\\ \n')
