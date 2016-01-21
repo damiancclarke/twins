@@ -95,16 +95,17 @@ tabl.write(n2+n1+'\n' + n3+n5+'\n' + n4+n8+'\n' + '&&&'+n6+'\n'
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel B: Pooled Demographic and Health Surveys}} \\\\ \n')
 for i,line in enumerate(DHSi):
+    print line
     line = formatLine(line,1)
-    if i==1: 
+    if i==0: 
         n1 = 'Mother\'s Height&'   + line + '&'
-    elif i==2: 
+    elif i==1: 
         n2 = 'Mother\'s BMI&'      + line + '&'
-    elif i==4: 
+    elif i==3: 
         n3 = 'Doctor Availability&'+ line + '\\\\'
-    elif i==5: 
+    elif i==4: 
         n4 = 'Nurse Availability&' + line + '\\\\'
-    elif i==6: 
+    elif i==5: 
         n5 = 'No Prenatal Care&'   + line + '\\\\'
 
 tabl.write(n1+n3 + '\n' + n2+n4+ '\n' + '&&&'+n5+'\n')
@@ -113,22 +114,24 @@ tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: Swedish Medical Birth Registry}} \\\\ \n')
 for i,line in enumerate(SWEi):
     line = formatLine(line,1)
+    if i==0: 
+        n1 = 'Asthma&'              + line + '\\\\'
     if i==1: 
-        n1 = 'Asthma&'             + line + '\\\\'
+        n2 = 'Diabetes (pre)&'      + line + '\\\\'
     if i==2: 
-        n2 = 'Diabetes (pre)&'     + line + '\\\\'
+        ne = 'Kidney Disease (pre)&'+ line + '\\\\'
     if i==3: 
-        n3 = 'Hypertension (pre)&' + line + '\\\\'
+        n3 = 'Hypertension (pre)&'  + line + '\\\\'
     if i==4: 
-        n4 = 'Smoked Trimester 1&' + line + '&'
+        n4 = 'Smoked Trimester 1&'  + line + '&'
     if i==5: 
-        n5 = 'Smoked Trimester 3&' + line + '&'
+        n5 = 'Smoked Trimester 3&'  + line + '&'
     if i==6: 
-        n6 = 'Mother\'s Height&'   + line + '&'
+        n6 = 'Mother\'s Height&'    + line + '&'
     if i==7: 
-        n7 = 'Mother\'s Weight&'   + line + '&'
+        n7 = 'Mother\'s Weight&'    + line + '&'
 
-tabl.write(n4+n2+'\n' + n5+n3+'\n' + n6+n1+'\n' + n7+'&&\\\\')
+tabl.write(n4+n2+'\n' + n5+n3+'\n' + n6+n1+'\n' + n7+ne)
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chilean Survey of Early Infancy}} \\\\ \n')
@@ -219,15 +222,15 @@ tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel B: Pooled Demographic and Health Surveys}} \\\\ \n')
 for i,line in enumerate(DHSi):
     line = formatLine(line,2)
-    if i==1: 
+    if i==0: 
         n1 = 'Mother\'s Height&'   + line + '&'
-    elif i==2: 
+    elif i==1: 
         n2 = 'Mother\'s BMI&'      + line + '&'
-    elif i==4: 
+    elif i==3: 
         n3 = 'Doctor Availability&'+ line + '\\\\'
-    elif i==5: 
+    elif i==4: 
         n4 = 'Nurse Availability&' + line + '\\\\'
-    elif i==6: 
+    elif i==5: 
         n5 = 'No Prenatal Care&'   + line + '\\\\'
 
 tabl.write(n1+n3 + '\n' + n2+n4+ '\n' + '&&&'+n5+'\n')
@@ -235,23 +238,26 @@ tabl.write(n1+n3 + '\n' + n2+n4+ '\n' + '&&&'+n5+'\n')
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: Swedish Medical Birth Registry}} \\\\ \n')
 for i,line in enumerate(SWEi):
+    print line
     line = formatLine(line,2)
+    if i==0: 
+        n1 = 'Asthma&'              + line + '\\\\'
     if i==1: 
-        n1 = 'Asthma&'             + line + '\\\\'
+        n2 = 'Diabetes (pre)&'      + line + '\\\\'
     if i==2: 
-        n2 = 'Diabetes (pre)&'     + line + '\\\\'
+        ne = 'Kidney Disease (pre)&'+ line + '\\\\'
     if i==3: 
-        n3 = 'Hypertension (pre)&' + line + '\\\\'
+        n3 = 'Hypertension (pre)&'  + line + '\\\\'
     if i==4: 
-        n4 = 'Smoked Trimester 1&' + line + '&'
+        n4 = 'Smoked Trimester 1&'  + line + '&'
     if i==5: 
-        n5 = 'Smoked Trimester 3&' + line + '&'
+        n5 = 'Smoked Trimester 3&'  + line + '&'
     if i==6: 
-        n6 = 'Mother\'s Height&'   + line + '&'
+        n6 = 'Mother\'s Height&'    + line + '&'
     if i==7: 
-        n7 = 'Mother\'s Weight&'   + line + '&'
+        n7 = 'Mother\'s Weight&'    + line + '&'
 
-tabl.write(n4+n2+'\n' + n5+n3+'\n' + n6+n1+'\n' + n7+'&&\\\\')
+tabl.write(n4+n2+'\n' + n5+n3+'\n' + n6+n1+'\n' + n7+ne)
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chilean Survey of Early Infancy}} \\\\ \n')
