@@ -16,6 +16,41 @@ RIN  = "/home/damiancclarke/investigacion/Activa/Twins/Results/World/"
 OUT  = "/home/damiancclarke/investigacion/Activa/Twins/paper/twinsHealth/tex/"
 
 
+noteT1 = ('\\textbf{Effect of Maternal Health on Twinning} This table displa' + 
+'ys results from Ordinary Least Square regressions of a child\'s birth type ' +
+'(twin or singleton) on the mother\'s health behaviours and conditions. The ' +
+'outcome variable is a binary variable for twin (=1) or singleton (=0) multi' +
+'plied by 100, so all coefficients are expressed in terms of the percent inc' +
+'rease in twinning.  All variables are standardised so coefficients can be i' +
+'terpreted as the percent change in twin births associated with a 1 standard' +
+' deviation (1 $\\sigma$) increase in the variable of interest. All models i' +
+'nclude fixed effects for age and birth order, and where possible, for gesta' +
+'tion of the birth in weeks (panels A and C). Stars next to the coefficients' +
+'nts indicate significance levels, with: *p$<$0.1  **p$<$0.05  ***p$<$0.01. ' +
+'95\% confidence intervals are displayed in parentheses. Further details reg' +
+'arding estimation samples and variable construction can be found in Supplem' +
+'entary Information')
+
+noteS1 = ('Effect of Maternal Health on Twinning (Unconditional Results) Thi' +
+'s table displa ys results from Ordinary Least Square regressions of a child' +
+'\'s birth type (twin or singleton) on the mother\'s health behaviours and c' +
+'onditions. Each cell represents a seperate regression, where only the varia' +
+'ble of interest and fixed effects for control variables are included. The o' +
+'utcome variable is a binary variable for twin (=1) or singleton (=0) multip' +
+'lied by 100, so all coefficients are expressed in terms of the percent incr' + 
+'rease in twinning.  Height is measured in centimetres, BMI is measured in  ' +
+'$\\frac{kilograms}{metres^2}$, availability measures in panel B refer to the' +
+'proportion of births in the women\'s survey cluster which were attended/una' +
+'ttended, and all remaining variables are binary.  In each case the interpre' +
+'tion of the coefficient is the effect that a 1 unit increase of the variabl' +
+'e will have on the probability that a woman gives birth to twins. All model' +
+'s include fixed effects for age and birth order, and where possible, for ge' +
+'station of the birth in weeks (panels A and C). Stars next to the coefficie' +
+'ntsnts indicate significance levels, with: *p$<$0.1  **p$<$0.05  ***p$<$0.0' +
+'1. 95\% confidence intervals are displayed in parentheses. Further details ' +
+'regarding estimation samples and variable construction can be found in the ' +
+'Supplementary Information provided above.')
+
 #==============================================================================
 #== (1b) Options
 #==============================================================================
@@ -58,7 +93,8 @@ CHIi = open(RIN +  'worldEstimatesChile.csv').readlines()[1:-1]
 tabl = open(OUT + 'twinEffectsCond.tex', 'w')
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
-           '\\begin{center}\n\\caption{Twin Effects}\n'
+           '\\begin{center}\n\\caption{' + noteT1 + '}\n'
+           '\scalebox{0.92}{'
            '\\begin{tabular}{llcllc}\n \\toprule'
            '\\multicolumn{3}{c}{Health Behaviours} &'
            '\\multicolumn{3}{c}{Health Conditions} \\\\ \n'
@@ -170,7 +206,7 @@ tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
 
 
 
-tabl.write('\\bottomrule \n \\end{tabular} \n \\end{center} \\end{table} \n'
+tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
            '\n \\end{spacing}')
 
 tabl.close()
@@ -185,7 +221,8 @@ tabl.close()
 tabl = open(OUT + 'twinEffectsUncond.tex', 'w')
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
-           '\\begin{center}\n\\caption{Twin Effects}\n'
+           '\\begin{center}\n \\caption{ ' + noteS1 + '}\n'
+           '\scalebox{0.92}{'
            '\\begin{tabular}{llcllc}\n \\toprule'
            '\\multicolumn{3}{c}{Health Behaviours} &'
            '\\multicolumn{3}{c}{Health Conditions} \\\\ \n'
@@ -292,7 +329,7 @@ tabl.write(n5+n1+'\n' +
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel E: Somerset Birth Survey (United Kingdom)}} \\\\ \n')
 
-tabl.write('\\bottomrule \n \\end{tabular} \n \\end{center} \\end{table} \n'
+tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
            '\n \\end{spacing}')
 
 tabl.close()
