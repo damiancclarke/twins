@@ -136,6 +136,7 @@ tabl.write(n4+n2+'\n' + n5+n3+'\n' + n6+n1+'\n' + n7+ne)
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chilean Survey of Early Infancy}} \\\\ \n')
 for i,line in enumerate(CHIi):
+    print line
     line = formatLine(line,1)
     if i==0: 
         n1 = 'Obese (pre)&'        + line + '\\\\'
@@ -238,7 +239,6 @@ tabl.write(n1+n3 + '\n' + n2+n4+ '\n' + '&&&'+n5+'\n')
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: Swedish Medical Birth Registry}} \\\\ \n')
 for i,line in enumerate(SWEi):
-    print line
     line = formatLine(line,2)
     if i==0: 
         n1 = 'Asthma&'              + line + '\\\\'

@@ -32,7 +32,7 @@ global REG "~/investigacion/Activa/Twins/Results/World"
 log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
-/*
+
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
@@ -46,8 +46,11 @@ replace height = . if height>240
 replace height = . if height<70
 replace bmi    = . if bmi > 50
 replace educf  = . if educf >27
-
+exit
+tab twind if height!=.&bmi!=.&educf!=.
 levelsof country, local(cc)
+/*
+
 
 
 #delimit ;
@@ -154,8 +157,10 @@ outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u
 */ in 1/`counter' using "$REG/worldEstimatesDHS.csv", delimit(";") replace
 
 exit
+*/
 gen countryName = ""
-foreach var in height underweight normalweight educf {
+gen surveyYear  = .
+foreach var in height underweight educf {
     gen `var'Est     = .
     gen `var'LB      = .
     gen `var'UB      = .
@@ -169,6 +174,7 @@ foreach var in height underweight normalweight educf {
     gen `var'UB_SD   = .
 }
 gen twinProp = .
+destring _year, gen(yearint)
 
 local iter = 1
 foreach c of local cc {
@@ -179,8 +185,10 @@ foreach c of local cc {
     qui replace countryName = "`c'" in `iter'
     sum twind [aw=sweight] if country == "`c'"
     replace twinProp = `r(mean)' if countryName == "`c'"
+    sum yearint [aw=sweight] if country == "`c'"
+    replace surveyYear = `r(mean)' if countryName == "`c'"
     
-    foreach var of varlist height underweight normalweight educf {
+    foreach var in height underweight educf {
         qui areg `var' twindfamily i.fert if country=="`c'", abs(motherage)
         local estl `=_b[twindfamily]-1.96*_se[twindfamily]'
         local estu `=_b[twindfamily]+1.96*_se[twindfamily]'
@@ -193,13 +201,11 @@ foreach c of local cc {
         qui sum `var'
         local betasd   = round((_b[twindfamily]/r(sd))*1000)/1000
         replace `var'Est_SD = `betasd' in `iter'
-    
         local se_sd   = round((_se[twindfamily]/r(sd))*1000)/1000
         local uCIsd   = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-        replace `var'UB_SD = `uCIsd' in `iter'
-    
+        replace `var'UB_SD = `betasd'+invttail(`nobs',0.025)*`se_sd' in `iter'
         local lCIsd   = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-        replace `var'LB_SD = `lCIsd' in `iter'
+        replace `var'LB_SD = `betasd'-invttail(`nobs',0.025)*`se_sd' in `iter'
     }
     local ++iter
 }
@@ -207,182 +213,15 @@ dis "Number of countries: `iter'"
 
 keep in 1/`iter'
 keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
-*/ underweightEst underweightLB underweightUB normalweightEst normalweightLB  /*
-*/ normalweightUB heightEst_SD heightLB_SD heightUB_SD educfEst_SD educfLB_SD /*
-*/ educfUB_SD underweightEst_SD underweightLB_SD underweightUB_SD             /*
-*/ normalweightEst_SD normalweightLB_SD normalweightUB_SD twinProp
+*/ underweightEst underweightLB underweightUB heightEst_SD heightLB_SD        /*
+*/ heightUB_SD educfEst_SD educfLB_SD educfUB_SD underweightEst_SD            /*
+*/ underweightLB_SD underweightUB_SD twinProp surveyYear
 outsheet using "$OUT/countryEstimates.csv", comma replace
-
+exit
 
 ********************************************************************************
 *** (3a) USA regressions with IVF
 ********************************************************************************
-local afiles
-local dfiles
-
-foreach year of numlist 1988(1)2002 {
-    use "$USA/natl`year'", clear
-    keep if dmage>18&dmage<30
-    gen twinBirth = dplural == 2 if dplural < 3
-    gen birthweight = dbirwt if dbirwt>=500&dbirwt<6500
-    gen gestation = dgestat if dgestat!=99
-    gen birth = 1
-    gen conceptionMonth = birmon - round(gestation*7/30.5)
-    replace conceptionMonth = conceptionMonth + 12 if conceptionMonth<1
-
-    collapse twinB birthweight (sum) birth, by(conceptionMonth)
-    tempfile a`year'
-    gen year = `year'
-    save `a`year''
-    local afiles `afiles' `a`year''
-
-    use "$USA/../../FetalDeaths/dta/fetl`year'", clear
-    keep if dmage>18&dmage<30
-    gen twinDeath = dplural == 2 if dplural < 3
-    gen gestation = dgestat if dgestat!=99
-    gen death = 1
-    gen conceptionMonth = delmon - round(gestation*7/30.5)
-    replace conceptionMonth = conceptionMonth + 12 if conceptionMonth<1
-
-    collapse twinD (sum) death, by(conceptionMonth)
-    tempfile d`year'
-    gen year = `year'
-    save `d`year''
-    local dfiles `dfiles' `d`year''
-}
-clear
-append using `dfiles'
-tempfile file1
-save `file1'
-
-clear
-append using `afiles'
-merge 1:1 conceptionMonth year using `file1'
-drop _merge
-keep if conceptionMonth!=.
-gen twinDeaths = twinDeath*death
-gen twinBirths = twinBirth*birth
-gen proportionSurvive = twinBirths/(twinDeaths+twinBirths)
-collapse proportionSurvive birthweight, by(conceptionMonth)
-
-lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
-*/ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
-lab val concep mon
-
-#delimit ;
-twoway line birthweight concep, yaxis(1) lcolor(black) lpattern(dash) 
-    || line proportionS concep, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Average Birth Weight") ytitle("Twin Births/(Twin Births+Deaths)", axis(2))
-    xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Conception Month")
-    legend(lab(1 "Birthweight") lab(2 "Twins"));
-#delimit cr
-graph export "$REG/twinSurvivalConcepMonth45.eps", as(eps) replace
-exit
-
-local bfiles
-local cfiles
-
-foreach year of numlist 1971(1)2002 {
-    use "$USA/natl`year'", clear
-    keep if dmage>18&dmage<30
-    
-    gen twin = dplural == 2 if dplural < 3
-    gen birthweight = dbirwt if dbirwt>=500&dbirwt<6500
-    gen gestation = dgestat if dgestat!=99
-    gen birth = 1
-    gen boy   = csex==1
-
-    gen conceptionMonth = birmon - round(gestation*7/30.5)
-    replace conceptionMonth = conceptionMonth + 12 if conceptionMonth<1
-
-    preserve
-    collapse twin birthweight boy (sum) birth, by(birmon)
-    tempfile b`year'
-    gen year = `year'
-    save `b`year''
-    local bfiles `bfiles' `b`year''
-    restore
-
-    collapse twin birthweight boy (sum) birth, by(conceptionMonth)
-    tempfile c`year'
-    gen year = `year'
-    save `c`year''
-    local cfiles `cfiles' `c`year''    
-}
-clear
-append using `bfiles'
-collapse twin boy birthweight [fw=birth], by(birmon)
-lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
-*/ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
-lab val birmon mon
-
-#delimit ;
-twoway line boy  birmon, yaxis(1) lcolor(black) lpattern(dash) 
-    || line twin birmon, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Proportion Boy") ytitle("Proportion Twin", axis(2))
-    xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Birth Month")
-    legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
-#delimit cr
-graph export "$REG/twinBirthMonth.eps", as(eps) replace
-
-clear
-append using `cfiles'
-keep if conceptionMonth!=.
-collapse twin birthweight boy [fw=birth], by(conceptionMonth)
-lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
-*/ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
-lab val concep mon
-
-#delimit ;
-twoway line boy  concep, yaxis(1) lcolor(black) lpattern(dash) 
-    || line twin concep, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Proportion Boy") ytitle("Proportion Twin", axis(2))
-    xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Conception Month")
-    legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
-#delimit cr
-graph export "$REG/twinConcepMonth.eps", as(eps) replace
-
-
-clear
-append using `bfiles'
-keep if year<1985
-collapse twin boy birthweight [fw=birth], by(birmon)
-lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
-*/ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
-lab val birmon mon
-
-#delimit ;
-twoway line boy  birmon, yaxis(1) lcolor(black) lpattern(dash) 
-    || line twin birmon, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Proportion Boy") ytitle("Proportion Twin", axis(2))
-    xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Birth Month")
-    legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
-#delimit cr
-graph export "$REG/twinBirthMonth7085.eps", as(eps) replace
-
-clear
-append using `cfiles'
-keep if year<1985
-keep if conceptionMonth!=.
-collapse twin boy [fw=birth], by(conceptionMonth)
-lab def mon 1 "Jan" 2 "Feb" 3 "Mar" 4 "Apr" 5 "May" 6 "Jun" 7 "Jul" 8 "Aug" /*
-*/ 9 "Sep" 10 "Oct" 11 "Nov" 12 "Dec"
-lab val concep mon
-
-#delimit ;
-twoway line boy concep, yaxis(1) lcolor(black) lpattern(dash) 
-    || line twin concep, yaxis(2) lcolor(black) lwidth(thick)
-    ytitle("Pr(Boy)") ytitle("Proportion Twin", axis(2))
-    xlabel(1(1)12, valuelabels) scheme(s1mono) xtitle("Conception Month")
-    legend(lab(1 "Pr(Boy)") lab(2 "Pr(Twins)"));
-#delimit cr
-graph export "$REG/twinConcepMonth7085.eps", as(eps) replace
-
-
-
-exit
-
-
 set seed 543
 foreach year of numlist 2009(1)2013 {
     use "$USA/natl`year'", clear
@@ -410,7 +249,7 @@ foreach year of numlist 2009(1)2013 {
     tempfile t`year'
 		gen bin=runiform()
     tab twin if ART==0
-		keep if bin>0.90
+		*keep if bin>0.90
     save `t`year''
 }
 
@@ -421,6 +260,10 @@ count
 local usvars heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes gestDiab
              eclampsia hypertens pregHyper married;
 #delimit cr
+
+tab twin
+tab twin if ART==0
+
 
 lab var heightcm "Mother's height (cm)"
 lab var meduc    "Mother's education (years)"
@@ -558,6 +401,9 @@ gen twind = twin*100
 eststo: reg twind `region' `prePreg' `preg' `base' `wt' if `cond' 
 keep if e(sample)==1
 local nobs = e(N)
+
+tab twind
+exit
 
 local counter = 1
 gen countryname  = ""

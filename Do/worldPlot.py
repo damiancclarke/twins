@@ -16,6 +16,7 @@ import matplotlib.ticker as mtick
 #-------------------------------------------------------------------------------
 loc    = '/home/damiancclarke/investigacion/Activa/Twins/Results/Sum/'
 fname  = 'countryEstimatesGDP.csv'
+fname  = 'countryEstimatesGDP_SD.csv'
 sav    = '/home/damiancclarke/investigacion/Activa/Twins/Results/World/'
 data   = np.genfromtxt(loc+fname, delimiter=',', skip_header=0,  
                       skip_footer=10, names=True)
@@ -62,7 +63,10 @@ educlab    = 'Education Difference in years (twin $-$ non-twin)'
 uWeightlab = 'Difference in Proportion of Underweight Mothers (twin $-$ non-twin)'
 
 
-gdpplot('heightEst'     , heightlab ,'heightGDP.png'     , [-0.5,3.5])
-gdpplot('educfEst'      , educlab   ,  'educGDP.png'     , [-0.5,2])
-gdpplot('underweightEst', uWeightlab,'underweightGDP.png', [-0.06,0.08])
+#gdpplot('heightEst'     , heightlab ,'heightGDP.png'     , [-0.5,3.5])
+#gdpplot('educfEst'      , educlab   ,  'educGDP.png'     , [-0.5,2])
+#gdpplot('underweightEst', uWeightlab,'underweightGDP.png', [-0.06,0.08])
+gdpplot('heightEst'     , heightlab ,'heightGDPsd.png'     , [-0.1,0.6])
+gdpplot('educfEst'      , educlab   ,  'educGDPsd.png'     , [-0.1,0.5])
+gdpplot('underweightEst', uWeightlab,'underweightGDPsd.png', [-0.3,0.2])
 
