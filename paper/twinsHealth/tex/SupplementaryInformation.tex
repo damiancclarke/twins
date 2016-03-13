@@ -1,0 +1,121 @@
+\documentclass{nature}
+\bibliographystyle{naturemag}
+\usepackage{graphicx}
+\usepackage[capposition=bottom]{floatrow}
+\usepackage{subfloat}
+\usepackage{subcaption}
+\usepackage{lineno}
+\usepackage{bm}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+\definecolor{LightCyan}{rgb}{0.7,0.9,1}
+\renewcommand\thetable{S\arabic{table}}  
+\renewcommand\thefigure{S\arabic{figure}}  
+
+
+\title{Supplementary Information}
+
+\begin{document}
+
+\maketitle
+
+\begin{linenumbers}
+
+The supplementary information for ``Improvements in Maternal Behaviors and Conditions Increase Twinning'' provides additional details regarding data and estimation methodologies to support the findings in the paper that twinning depends upon positive maternal health investments, behaviours, and stocks.  The supplementary information consists of a more extensive discussion of data sources and key variable construction, and additional robustness tests to document that the results of interest are robust to estimation as individual regressions of twin birth on each maternal health variable rather than one regression per sample on all variables.
+
+\section{Data}
+We collect microdata from multiple sources of publicly available data (either freely or by application) which contain measures of a woman's full fertility history, as well as measures of her health stocks and/or health behaviors during or prior to pregnancy.  This data consists of both nationally representative household surveys, as well as national vital statistics data which records the characteristics of all births occurring in a country.  As discussed in the body of the paper and in table 1, this consists of the following sources of data:
+\begin{itemize}
+\item United States Vital Statistics Data (``National Vital Statistics System'')
+\item Swedish Medical Birth Register
+\item Demographic and Health Surveys (DHS) for all countries
+\item Chilean Survey of Early Infancy (ELPI)
+\item UK Somerset birth survey
+\end{itemize}
+We considered using alternative publicly available vital statistics data including Mexico, Spain, and India, however these do not contain appropriate measures of mother's health for us to test our hypothesis.  The geographic distribution and availability of birth records linked to maternal health measures is described in figure \ref{fig:twincoverage}.  In the subsections which follow, each source of data, its coverage, and principal variables are discussed in further depth.
+
+\subsection{United States National Vital Statistics System (NVSS)}
+The NVSS is maintained by the Center for Disease Control and Prevention (CDC) and collects a range of vital statistics with complete coverage nationwide in the United States. Birth data in the NVSS consists of a record for each birth registered in the U.S., and contain the information recorded on the U.S. Standard Certificate of Live Birth.  This includes the child's sex, birth type, and various health measures, as well as health indicators and behaviors of the mother during pregnancy.  This data has been collected with 100\% coverage from 1972 onwards.  For our regressions of interest, we use births in NVSS data from 2009-2013\cite{Martinetal2013}.  We focus on this time period given that 2009 was the first year in which the data records whether or not the mother engaged in artificial reproductive technologies (ART), an important indicator which may confound our reported results.  Our final estimation sample thus consists of all singleton and twin births occurring in the United States between 2009-2013 in which ART was not used, and for which all variables of interest are recorded.  The total sample is 15,345,243 births, of which 466,518 (or 3.14\%) are twins, and the remaining 14,878,725 are singletons.
+%2,527,084 (78,806) 3.02
+%2,798,309 (87,285) 3.02  
+%3,086,323 (96,662) 3.04 
+%3,193,766 (99,651) 3.03 
+%3,273,243 (104,114) 3.08
+
+Our variables of interest are the child's twin status, and all available measures of maternal health \emph{preceding} the birth of the child.  This includes maternal health behaviours during pregnancy, and maternal health stocks prior to pregnancy.  All of these variables are directly reported on birth certificates, and available in data.  Relevant health measures available from the long form birth certificate in 2009-2013 are: whether the mother smokes in each trimester of pregnancy, whether she suffered from diabetes and hypertension before pregnancy, as well as whether she suffered from hypertension, eclampsia, or diabetes during pregnancy.  We also use the reported mother's age, total number of prior births, and the gestational length of the birth as control variables\cite{Hall2003,Hoekstraetal2008}.
+
+\subsection{Swedish Medical Birth Register}
+The Swedish Medical Birth Register contains data on nearly the entire universe of births occurring in Sweden starting in 1973.  This register provides records of live and still births, with corresponding information regarding the health of the mother and child, as well as the birth type (singleton or twin) of the child.  Our estimation sample consists of all live singleton or twin  births for which full information is available occurring between 1993 and 2012 (a period where a number of key variables are recorded).  The sample with full covariates recorded consists of 1,233,546 births, of which 29,482 are twins (2.39\%). 
+
+Mother's health variables which are consistently recorded for the estimation sample are whether the mother smoked at gestation week 10-12, whether she smoked in weeks 30-32, her height and weight, as well as medical diagnoses before pregnancy.  The conditions we are able to include in regression models as measures of chronic disease are diabetes, asthma, hypertension, and kidney disease.  We observe maternal age, total number of prior births, and gestational length, and include them as control variables as was the case with data from the USA.  In supplementary information regarding estimation methodology we lay out these specifications in greater details.
+
+\subsection{Demographic and Health Surveys}
+The demographic and health surveys are funded by USAID, and collect information on population and health in 90 developing countries.  These surveys are nationally representative, and have a module focusing on fertile aged women, which record measures of health, fertility, and birth types (twin/singleton).  We collect all publicly available surveys conducted between 1990 and 2013, resulting in data from 68 countries on 2,058,324 births, of which 43,020 (2.09\%) are twins, and the remained are singletons.  Births with multiplicity of greater than 2 (ie triplets and quadruplets, which form less than 0.008\% of the sample) are removed.  A full list of all surveys which are publicly available (and hence included in our data) is available as table S2.
+
+Our estimation sample consists of all births in DHS surveys to women aged between 18 and 49 years, for whom height and BMI were recorded.  We remove from the sample any women with a recorded height greater than 240cm or less than 70cm, and those with a BMI greater than 50, as these are likely to recording errors.  This results in a sample of children born between 1961 and 2012, and mothers born between 1941 (aged 49 in 1990) and 1994 (aged 18 in 2012).  
+
+In DHS data we observe height (which is largely time invariant for women between the ages of 18-49), Body Mass Index (BMI) at the time of the survey, as well as indicators of medical availability in the women's survey cluster.  The DHS is administered in local clusters which are the primary sampling unit.  In our sample, the average number of children in a given cluster is 87.  In order to determine the availability of medical care (rather than the actual usage), we calculate the proportion of all births in a given cluster which were attended by doctors, attended by nurses, attended by village health workers, and unattended by medical professionals.  These variables are constant at the level of the cluster, and in regressions, attended by village health workers is used as the omitted base category.  
+
+\subsection{Chilean Survey of Early Infancy}
+The Longitudinal Survey of Early Infancy is an ongoing nationally representative survey conducted in Chile, starting in 2009.  The survey interviews (and will follow over time) the principal carers of children, asking them questions regarding their births, the conditions during pregnancy, and the birth type (singleton or twin).  15,175 surveys were conducted in the first round, of which we retain the 14915 cases which have complete records for children.  370 twin births (2.48\%) are observed.
+
+Maternal health variables include measures of their weight (grouped in ranges), behaviours during pregnancy (smoking, alchol consumption, and drug consumption), as well as a limited number of questions regarding conditions during pregnancy (gestational diabetes, and depression).  When asked about alcohol and (recreational) drug consumption, mothers were asked to indicate whether they consumed these never, sporadically, or regularly.  These are the principal independent variables in the regression, however we also control for mother's age, indigienity, and number of prior births.
+
+\section{Estimation Methodology}
+If twins are random (conditional on well known hormonal predictors which are correlated with age, race and completed fertility\cite{Hall2003,Hoekstraetal2008}), then once conditioning on these variables, twin mothers should appear no more or less healthy than non-twin mothers.  We test the null hypothesis that twin mothers and non-twin mothers are equally healthy by estimating linear probability models of the form:
+\renewcommand\theequation{S.\arabic{equation}}  
+\begin{equation}
+\label{reg:twincond}
+twin_{ijt}=\alpha + \bm{\beta_1} \bm{Conditions}_j + \bm{\beta_2} \bm{Behaviours}_j + \phi_t 
+           + f(age_j) + b(order_i) + \varepsilon_{ijt}.
+\end{equation}
+Here $twin_{ijt}$ takes the value of 1 (or rescaled to 100) if child $i$ of mother $j$ at time $t$ is a twin, and 0 otherwise.  Flexible non-parametric controls (fixed effects) are included for mother's age at birth and the birth order of the child, denoted $f(\cdot)$ and $b(\cdot)$ respectively, to take into account the well-known biological relationship between twinning, maternal age, and total number of prior births.  Where possible, we control for gestational length of births given that twin gestation is on average shorter shorter, and potentially correlated with maternal health conditions\cite{Morrison2005}.  When we estimate this equation using nationally representative survey data, we weight observations using inverse probability weights, and standard errors are clusetered at the level of the mother to allow for arbitrary correlations in stochastic elements ($\varepsilon_{ijt}$) across children born to the same mother.
+
+The vectors of variables $\bm{Conditions}_j$ and $\bm{Behaviours}_j$ refer to measures of maternal health conditions and behaviours prior to a child's birth.  The estimated coefficients $\bm{\beta_1}$ and $\bm{\beta_2}$ thus reflect average marginal effects of maternal health, \emph{conditional} on the full set of controls included in (\ref{reg:twincond}).  Each coefficient is expressed in terms of a one standard deviation ($\sigma$) increase in the variable of interest, so coefficients can be compared across different variables.  Our null hypothesis thus consists of the test: $H_0:\ \beta=0$, versus the alternative that $H_1:\ \beta\neq 0$ for each of the health variables included in the regression. Rejection of the null implies that twin mothers look different (either more or less healthy) than non-twin mothers, and casts doubt on the assumption that twin births occur (conditionally) randomly in the population.  These results are presented in the body of the letter.  
+
+As a supplementary test, we present results which display \emph{unconditional} results, where a child's twin status is regressed against each maternal health condition or behaviour seperately, one regression at a time.  In this case, the estimated equations are:
+\begin{equation}
+twin_{ijt}=\alpha + \beta Health_j + \phi_t + f(age_j) + b(order_i) + \varepsilon_{ijt}
+\end{equation}
+where $Health_j$ refers to a single maternal health variable, and $\beta$, the unconditional coefficient on this variable, refers to the average marginal effect of a one standard-deviation increase in $Health_j$.  These alternative results are quite similar to the main results in the body of the paper, and are presented in the section which follows.  Once again, when survey data is used, inverse probability weights are used, and standard errors are clustered at the level of the mother.  No weighting is used when complete birth records are used, though standard errors are once again clustered by mother.
+
+\section{Unconditional Analyses: Regressions of Twinning on Each Health Outcome}
+Regression results corresponding to specification S.1 are presented in table 1 in the main document.  Table S.2 demonstrates that these results are not sensitive to including the variables one-by-one (conditional on age and total parity) in a regression of twins on each characteristic.  In table S2, results are \emph{not} standardised, so in each case refer to the effect that a 1 unit increase in the independent variable has on the probability that the mother gives birth to a twin.
+
+In nearly all cases the direction of the coefficients and the significance level in unconditional regressions are the same as the conditional counterparts in the main document.  The main exceptions to this is that smoking in the first trimester in Sweden is now (unconditionally) associated with a significant reduction in twinning,: an effect which was largely absorbed by smoking in the third trimester in the conditional regressions.  Similarly, greater doctor availability in DHS clusters is now associated with an increase in the probability of twinning (p$<$0.001).  The only unexpected move in coefficients occurs with hypertension in the USA.  While in conditional regressions this had a negative insignificant effect on twin rates, in unconditional tests it has positive significant effects on twinning: a sign that this variable is likely to be associated with other health variables, and that mothers who have hypertensions may decide to embrace \emph{more} health seeking behaviours to mitigate this condition.
+
+As discussed in the main test, in nearly every case, the regression results suggest that greater health seeking behaviours during pregnancy and health stocks prior to pregnancy predict higher rates of twinning.  Smoking, consuming drugs and consuming alcohol reduces the likelihood that a mother will be observed to give live birth to twins (even conditional on IVF use in USA data), while mothers with worse health stocks as measured by chronic conditions are also considerably less likely to twin.
+
+\input{twinEffectsUncond.tex}
+
+
+
+\clearpage
+\begin{figure}[ht!]
+\includegraphics[width=0.9\textwidth]{coverage.eps}
+\caption{Coverage of data (twinning and maternal health) by country and data type.  Different colours represent different types of data (surveys, national vital statistics, and so forth).  Refer to the legend for a description.}
+\label{fig:twincoverage}
+\end{figure}
+
+\begin{figure}[htpb!]
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.6]{./HeightDif-eps-converted-to}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.6]{./EducDif-eps-converted-to}
+\end{subfigure}
+\caption{Points and confidence intervals represent the absoulte difference between mothers who have twins and mothers who do not have twins.  Bars represent 95\% confidence intervals, and all results condition on maternal age at birth and total fertility: variables which are known to be positively associated with twinning.}
+\end{figure}
+
+\clearpage
+\input{Countries.tex}
+
+\clearpage
+\section*{References}
+\bibliography{refs}
+
+
+\end{linenumbers}
+\end{document}
