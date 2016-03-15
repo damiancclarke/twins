@@ -32,7 +32,7 @@ global REG "~/investigacion/Activa/Twins/Results/World"
 log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
-
+/*
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
@@ -46,10 +46,10 @@ replace height = . if height>240
 replace height = . if height<70
 replace bmi    = . if bmi > 50
 replace educf  = . if educf >27
-exit
+
 tab twind if height!=.&bmi!=.&educf!=.
 levelsof country, local(cc)
-/*
+
 
 
 
@@ -156,23 +156,25 @@ foreach var of varlist `ovar' {
 outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
 */ in 1/`counter' using "$REG/worldEstimatesDHS.csv", delimit(";") replace
 
-exit
-*/
+
 gen countryName = ""
 gen surveyYear  = .
-foreach var in height underweight educf {
+foreach var in height educf {
     gen `var'Est     = .
     gen `var'LB      = .
     gen `var'UB      = .
 
-    gen `var'EstNoFE = .
-    gen `var'LBNoFE  = .
-    gen `var'UBNoFE  = .
-
-    gen `var'Est_SD  = .
-    gen `var'LB_SD   = .
-    gen `var'UB_SD   = .
+    bys country: egen Mean = mean(`var')
+    bys country: egen SDev = sd(`var')
+    gen `var'_std = (`var'-Mean)/SDev
+    drop Mean SDev
 }
+foreach var in height_std educf_std {
+    gen `var'Est     = .
+    gen `var'LB      = .
+    gen `var'UB      = .
+}
+
 gen twinProp = .
 destring _year, gen(yearint)
 
@@ -188,24 +190,16 @@ foreach c of local cc {
     sum yearint [aw=sweight] if country == "`c'"
     replace surveyYear = `r(mean)' if countryName == "`c'"
     
-    foreach var in height underweight educf {
+    foreach var in height educf height_std educf_std {
         qui areg `var' twindfamily i.fert if country=="`c'", abs(motherage)
-        local estl `=_b[twindfamily]-1.96*_se[twindfamily]'
-        local estu `=_b[twindfamily]+1.96*_se[twindfamily]'
+        local nobs  = e(N)
+        local estl `=_b[twindfamily]-invttail(`nobs',0.025)*_se[twindfamily]'
+        local estu `=_b[twindfamily]+invttail(`nobs',0.025)*_se[twindfamily]'
         dis "country is `c', 95% CI for `var' is [`estl',`estu']"
         
         qui replace `var'Est   = _b[twindfamily] in `iter'
         qui replace `var'LB    = `estl' in `iter'
         qui replace `var'UB    = `estu' in `iter'
-
-        qui sum `var'
-        local betasd   = round((_b[twindfamily]/r(sd))*1000)/1000
-        replace `var'Est_SD = `betasd' in `iter'
-        local se_sd   = round((_se[twindfamily]/r(sd))*1000)/1000
-        local uCIsd   = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-        replace `var'UB_SD = `betasd'+invttail(`nobs',0.025)*`se_sd' in `iter'
-        local lCIsd   = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-        replace `var'LB_SD = `betasd'-invttail(`nobs',0.025)*`se_sd' in `iter'
     }
     local ++iter
 }
@@ -213,11 +207,10 @@ dis "Number of countries: `iter'"
 
 keep in 1/`iter'
 keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
-*/ underweightEst underweightLB underweightUB heightEst_SD heightLB_SD        /*
-*/ heightUB_SD educfEst_SD educfLB_SD educfUB_SD underweightEst_SD            /*
-*/ underweightLB_SD underweightUB_SD twinProp surveyYear
+*/ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
+*/ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimates.csv", comma replace
-exit
+
 
 ********************************************************************************
 *** (3a) USA regressions with IVF
@@ -350,7 +343,6 @@ foreach var of varlist `usvars' {
 outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
 */ in 1/`counter' using "$REG/worldEstimates.csv", delimit(";") replace
 
-exit
 
 areg twin100 `usvars' `FEs' if infert==1, abs(mager) robust
 outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
@@ -381,11 +373,60 @@ foreach var of varlist `usvars' {
     qui reg twin100 `var' if tsample==1, robust
     qui outreg2 `var' using "$REG/USttest.xls", label excel
 }
-*/
+
+keep if infert == 0
+
+gen countryName = "USA"
+gen surveyYear  = 2011
+rename heightcm height
+rename meduc    educf
+
+foreach var in height educf {
+    gen `var'Est     = .
+    gen `var'LB      = .
+    gen `var'UB      = .
+
+    egen Mean = mean(`var')
+    egen SDev = sd(`var')
+    gen `var'_std = (`var'-Mean)/SDev
+    drop Mean SDev
+}
+foreach var in height_std educf_std {
+    gen `var'Est     = .
+    gen `var'LB      = .
+    gen `var'UB      = .
+}
+gen twinProp = .
+gen twind = twin100/100
+
+gen yearint = 2011
+
+sum twind 
+replace twinProp = `r(mean)' 
+gen fert = lbo_rec
+foreach var in height educf height_std educf_std {
+    qui areg `var' twind i.fert, abs(mager)
+    local nobs  = e(N)
+    local estl `=_b[twind]-invttail(`nobs',0.025)*_se[twind]'
+    local estu `=_b[twind]+invttail(`nobs',0.025)*_se[twind]'
+    dis "95% CI for `var' is [`estl',`estu']"
+        
+    qui replace `var'Est   = _b[twind] in 1
+    qui replace `var'LB    = `estl'    in 1
+    qui replace `var'UB    = `estu'    in 1
+}
+
+keep in 1
+keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
+*/ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
+*/ educf_stdUB twinProp surveyYear
+outsheet using "$OUT/countryEstimates2.csv", comma replace
+
+
 ********************************************************************************
 *** (4) Chile Regressions
 ********************************************************************************
-use "$DAT/Chile_twins"
+use "$DAT/Chile_twins", clear
 #delimit ;
 local base    indigenous;
 local region  i.region i.age rural i.m_age_birth i.birthorder;
@@ -455,7 +496,7 @@ outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u
 
 
 
-exit
+*/
 ********************************************************************************
 *** (5) Figures
 ********************************************************************************
@@ -464,15 +505,23 @@ keep if year==2013
 tempfile GDP
 save `GDP', replace
 
+insheet using "$OUT/countryEstimates2.csv", comma names clear
+tempfile USA
+save `USA', replace
+
 insheet using "$OUT/countryEstimates.csv", comma names clear
+append  using  `USA'
+
 gsort -heightest
 gen numb = _n
 encode countryname, gen(cc)
+drop if cc==.
 
 replace countryname=subinstr(countryname, "-", " ", .)
 replace countryname= "Congo, Dem. Rep." if countryname == "Congo Democratic Republic"
-replace countryname= "Congo, Rep." if countryname == "Congo Brazzaville"
-replace countryname= "Cote d'Ivoire" if countryname == "Cote d Ivoire"
+replace countryname= "United States"    if countryname == "USA"
+replace countryname= "Congo, Rep."      if countryname == "Congo Brazzaville"
+replace countryname= "Cote d'Ivoire"    if countryname == "Cote d Ivoire"
 replace countryname= "Egypt, Arab Rep." if countryname == "Egypt"
 merge 1:1 countryname using `GDP'
 keep if _merge==3
@@ -481,9 +530,10 @@ encode regioncode, gen(rc)
 gen rcode = rc
 rename heightest heightEst
 rename educfest educfEst
-rename underweightest underweightEst
+rename height_stdest height_stdEst
+rename educf_stdest  educf_stdEst
 rename twinprop twinProp
-local outvars heightEst educfEst underweightEst twinProp logGDP rcode
+local outvars heightEst educfEst height_stdEst educf_stdEst twinProp logGDP rcode
 outsheet `outvars' using "$OUT/countryEstimatesGDP.csv", comma replace
 
 format heightEst      %9.2f
@@ -492,31 +542,53 @@ format heightub       %9.2f
 format educfEst       %9.2f
 format educflb        %9.2f
 format educfub        %9.2f
-format underweightEst %9.2f
-format underweightlb  %9.2f
-format underweightub  %9.2f
 format logGDP         %9.2f
-
 
 #delimit ;
 eclplot heightEst heightlb heightub numb, scheme(s1mono) estopts(mcolor(black))
 ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
 ytitle("Height Difference (cm)" "twin - non-twin")
 xlabel(1 "Guyana" 2 "Brazil" 3 "Maldives" 4 "Sao Tome" 5 "Azerbaijan" 6 "CAR"
-       7 "Albania" 8 "Guatemala" 9 "Dom. Rep." 10 "Ghana" 11 "Mozambiqu" 12
-       "Kyrgyz Rep." 13 "Colombia" 14 "Honduras" 15 "Burundi" 16 "Sierra Leone"
-       17 "DRC" 18 "Gabon" 19 "Ethiopia" 20 "Namibia" 21 "Jordan" 22 "Nepal" 23
-       "Lesotho" 24 "Peru" 25 "Bolivia" 26 "Malawi" 27 "Togo" 28 "Turkey" 29
-       "Uganda" 30 "Moldova" 31 "Congo Brazzaville" 32 "Kazakhstan" 33 "Rwanda"
-       34 "Senegal" 35 "Swaziland" 36 "Cameroon" 37 "Kenya" 38 "Morocco" 39
-       "Egypt" 40 "Armenia" 41 "Nicaragua" 42 "Burkina Faso" 43 "India" 44
-       "Nigeria" 45 "Haiti" 46 "Mali" 47 "Tanzania" 48 "Niger" 49 "Madagascar"
-       50 "Cote D'Ivoire" 51 "Bangladesh" 52 "Comoros" 53 "Zambia" 54 "Chad"
-       55 "Liberia" 56 "Guinea" 57 "Zimbabwe" 58 "Benin" 59 "Cambodia" 60
-       "Uzbekistan"
-       ,angle(65) labsize(vsmall));
+       7 "Albania" 8 "Guatemala" 9 "Dom. Rep." 10 "Ghana" 11 "USA" 12 "Mozambique"
+       13 "Kyrgyz Rep." 14 "Colombia" 15 "Honduras" 16 "Burundi" 17 "Sierra Leone"
+       18 "DRC" 19 "Gabon" 20 "Ethiopia" 21 "Namibia" 22 "Jordan" 23 "Nepal" 24
+       "Lesotho" 25 "Peru" 26 "Bolivia" 27 "Malawi" 28 "Togo" 29 "Turkey" 30
+       "Uganda" 31 "Moldova" 32 "Congo Brazzaville" 33 "Kazakhstan" 34 "Rwanda"
+       35 "Senegal" 36 "Swaziland" 37 "Cameroon" 38 "Kenya" 39 "Morocco" 40
+       "Egypt" 41 "Armenia" 42 "Nicaragua" 43 "Burkina Faso" 44 "India" 45
+       "Nigeria" 46 "Haiti" 47 "Mali" 48 "Tanzania" 49 "Niger" 50 "Madagascar"
+       51 "Cote D'Ivoire" 52 "Bangladesh" 53 "Comoros" 54 "Zambia" 55 "Chad"
+       56 "Liberia" 57 "Guinea" 58 "Zimbabwe" 59 "Benin" 60 "Cambodia" 61
+       "Uzbekistan",angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/HeightDif.eps", as(eps) replace
+
+drop numb
+gsort -height_stdEst
+gen numb = _n
+#delimit ;
+eclplot height_stdEst height_stdlb height_stdub numb, scheme(s1mono)
+estopts(mcolor(black)) ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
+ytitle("Standardised Height Difference (cm)" "twin - non-twin")
+xlabel(1  "Brazil"       2  "Guyana"         3  "Maldives"     4  "Azerbaijan"
+       5  "Guatemala"    6  "CAR"            7  "Kyrgyz Rep."  8  "Albania"   
+       9  "Dom. Rep."    10 "Mozambique"     11 "Sao Tome"     12 "Ghana"  
+       13 "Colombia"     14 "Honduras"       15 "USA"          16 "Burundi" 
+       17 "Nepal"        18 "Gabon"          19 "Peru"         20 "Ethiopia"
+       21 "Jordan"       22 "Bolivia"        23 "DRC"          24 "Turkey"    
+       25 "Malawi"       26 "Lesotho"        27 "Togo"         28 "Namibia"
+       29 "Moldova"      30 "Kazakhstan"     31 "Uganda"       32 "Rwanda"
+       33 "Swaziland"    34 "Congo Rep."     35 "Armenia"      36 "Egypt"    
+       37 "Morocco"      38 "Cameroon"       39 "Sierra Leone" 40 "India"
+       41 "Nicaragua"    42 "Burkina Faso"   43 "Haiti"        44 "Kenya"  
+       45 "Senegal"      46 "Mali"           47 "Niger"        48 "Tanzania"
+       49 "Madagascar"   50 "Bangladesh"    51 "Cote D'Ivoire" 52 "Nigeria"
+       53 "Comoros"      54 "Zambia"         55 "Chad"         56 "Liberia"
+       57 "Guinea"       58 "Zimbabwe"       59 "Benin" 
+       60 "Cambodia"     61 "Uzbekistan"
+       ,angle(65) labsize(vsmall));
+#delimit cr
+graph export "$GRA/HeightStdDif.eps", as(eps) replace
 
 
 drop numb
@@ -526,45 +598,48 @@ gen numb = _n
 eclplot educfEst educflb educfub numb, scheme(s1mono) estopts(mcolor(black))
 ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
 ytitle("Education Difference (years)" "twin - non-twin")
-xlabel(1 "Nigeria" 2 "Cameroon" 3 "India" 4 "Ghana" 5 "Peru" 6 "Bolivia"
+xlabel(1 "Cameroon" 2 "Nigeria" 3 "India" 4 "Ghana" 5 "Peru" 6 "Bolivia"
        7 "Burundi" 8 "Egypt" 9 "Guyana" 10 "Jordan" 11 "Kenya" 12 "Colombia"
-       13 "Dom. Rep." 14 "Malawi" 15 "Tanzania" 16 "Armenia" 17 "DRC" 18
-       "Madagascar" 19 "Gabon" 20 "Honduras" 21 "Turkey" 22 "Bangladesh"
-       23 "Maldives" 24 "Nepal" 25 "Azerbaijan" 26 "Zimbabwe" 27 "Moldova"
-       28 "Albania" 29 "Uganda" 30 "Nicaragua" 31 "CAR" 32 "Mozambique" 33
-       "Uzbekistan" 34 "Sao Tome" 35 "Haiti" 36 "Benin" 37 "Togo" 38 "Zambia"
-       39 "Cambodia" 40 "Congo Brazzaville" 41 "Guatemala" 42 "Brazil" 43
-       "Ethiopia" 44 "Comoros" 45 "Rwanda" 46 "Namibia" 47 "Cote D'Ivoire"
-       48 "Senegal" 49 "Niger" 50  "Kazakhstan" 51 "Mali" 52 "Burkina Faso"
-       53 "Morocco" 54 "Chad" 55 "Swaziland" 56 "Lesotho" 57 "Sierra Leone"
-       58 "Guinea" 59 "Liberia" 60 "Kyrgyz Republic"
+       13 "Dom. Rep." 14 "Malawi" 15 "Gabon" 16 "Tanzania" 17 "Maldives" 18
+       "Honduras" 19 "Bangladesh" 20 "Turkey" 21 "Nepal" 22 "Zimbabwe" 23
+       "Azerbaijan" 24 "Moldova" 25 "Albania" 26 "Armenia" 27 "Uganda" 28
+       "Nicaragua" 29 "CAR" 30 "Madagascar" 31 "Mozambique" 32 "Haiti" 33
+       "Uzbekistan" 34 "Brazil" 35 "Sao Tome" 36 "Togo" 37 "Cambodia" 38
+       "Zambia" 39 "Congo Brazzaville" 40 "USA" 41 "Guatemala" 42 "Ethiopia"
+       43 "Benin" 44 "Comoros" 45 "DRC" 46 "Rwanda" 47 "Namibia" 48
+       "Cote D'Ivoire" 49 "Senegal" 50 "Niger" 51 "Mali" 52 "Kazakhstan" 53
+       "Burkina Faso" 54 "Liberia" 55 "Chad" 56 "Morocco" 57 "Swaziland" 58
+       "Lesotho" 59 "Guinea" 60 "Sierra Leone" 61 "Kyrgyz Rep."    
        ,angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/EducDif.eps", as(eps) replace
 
 drop numb
-gsort underweightEst
+gsort -educf_stdEst
 gen numb = _n
 #delimit ;
-eclplot underweightEst underweightlb underweightub numb, scheme(s1mono)
-estopts(mcolor(black))ciopts(lcolor(black)) yline(0, lcolor(red))
-xtitle(" ") ytitle("Difference in Proportion Underweight" "twin - non-twin")
-xlabel(1 "Chad" 2 "Bangladesh" 3 "Cambodia" 4 "India" 5 "Brazil" 6 "Ghana"
-       7 "Nepal" 8 "Uzbekistan" 9 "Nigeria" 10 "Comoros" 11 "Liberia" 12
-       "Kenya" 13 "Madagascar" 14 "Tanzania" 15 "Zimbabwe" 16 "Niger" 17
-       "Cameroon" 18 "Benin" 19 "Uganda" 20 "Mali" 21 "Azerbaijan" 22 "Guatemala" 
-       23 "Morocco" 24 "Burundi" 25 "Haiti" 26 "DRC" 27 "Nicaragua" 28 "Togo"
-       29 "Namibia" 30 "Dominican Republic" 31 "Zambia" 32 "Jordan" 33 "Guinea"
-       34 "Bolivia" 35 "Colombia" 36 "Peru" 37 "Turkey" 38 "Egypt" 39 "Armenia"
-       40 "Mozambique" 41 "Senegal" 42 "Lesotho" 43 "Rwanda" 44 "Malawi" 45
-       "Congo Brazzaville" 46 "CAR" 47 "Cote D'Ivoire" 48 "Gabon" 49 "Albania"
-       50 "Burkina Faso" 51 "Moldova" 52 "Honduras" 53 "Kazakhstan" 54 "Swaziland"
-       55 "Guyana" 56 "Sao Tome and Principe" 57 "Ethiopia" 58 "Maldives" 59
-       "Kyrgyz Republic" 60 "Sierra Leone"
+eclplot educf_stdEst educf_stdlb educf_stdub numb, scheme(s1mono)
+estopts(mcolor(black)) ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
+ytitle("Standardised Education Difference (years)" "twin - non-twin")
+xlabel(1  "Cameroon"     2  "Burundi"        3  "Nigeria"    4  "Guyana"
+       5  "Peru"         6  "India"          7  "Moldova"    8  "Azerbaijan"
+       9  "Ghana"        10 "Albania"        11 "Kenya"      12 "Bolivia"
+       13 "Uzbekistan"   14 "Armenia"        15 "Malawi"     16 "Gabon"
+       17 "Colombia"     18  "Nepal"         19 "USA"        20 "Tanzania"
+       21 "Jordan"       22 "Turkey"         23 "Bangladesh" 24 "Dom. Rep."
+       25 "Honduras"     26 "Zimbabwe"       27 "Maldives"   28 "Egypt"
+       29 "CAR"          30 "Sao Tome"       31 "Mozambique" 32 "Togo"
+       33 "Uganda"       34 "Cambodia"       35 "Madagascar" 36 "Nicaragua"
+       37 "Ethiopia"     38 "Benin"          39 "Haiti"      40 "Zambia"
+       41 "Guatemala"    42 "Congo Republic" 43 "Comoros"    44 "Brazil"
+       45 "Rwanda"       46 "Kazakhstan"     47 "Mali"       48 "Niger"
+       49 "DRC"          50 "Cote D'Ivoire"  51 "Senegal"    52 "Namibia"
+       53 "Burkina Faso" 54 "Chad"           55 "Liberia"    56 "Morocco"
+       57 "Swaziland"    58 "Lesotho"        59 "Guinea"
+       60 "Sierra Leone" 61 "Kyrgyz Rep."     
        ,angle(65) labsize(vsmall));
 #delimit cr
-graph export "$GRA/UnderweightDif.eps", as(eps) replace
-
+graph export "$GRA/EducStdDif.eps", as(eps) replace
 
 
 #delimit ;
@@ -577,12 +652,6 @@ scatter educfEst logGDP  [w=twinProp], msymbol(circle_hollow)
 scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
 ytitle("Education Difference (years)" "twin - non-twin");
 graph export "$GRA/EducGDP.eps", as(eps) replace;
-
-scatter underweightEst logGDP  [w=twinProp], msymbol(circle_hollow)
-scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
-ytitle("Difference in Pr(underweight)" "twin - non-twin");
-graph export "$GRA/UnderweightGDP.eps", as(eps) replace;
-
 
 scatter heightE logG [w=twinP] if regionc=="EAS", msymbol(O) mcolor(lavender) ||
 scatter heightE logG [w=twinP] if regionc=="ECS", msymbol(O) mcolor(sandb)    ||
@@ -597,72 +666,12 @@ xtitle("log(GDP per capita)");
 graph export "$GRA/HeightGDPregion.eps", as(eps) replace;
 #delimit cr
 
-corr educfEst   logGDP
-corr heightEst logGDP
-corr educfEst   ny_gdp
-corr heightEst ny_gdp
+reg educfEst      ny_gdp_pcap_cd
+reg educf_stdEst  ny_gdp_pcap_cd
+reg heightEst     ny_gdp_pcap_cd
+reg height_stdEst ny_gdp_pcap_cd
 
-expand 6
-sort countryname region
-replace heightEst=. if mod(_n,6) > 0
-replace educfEst=.   if mod(_n,6) > 0
-replace underweightEst=. if mod(_n,6) > 0
-
-gen     regionNum = 1 if regionc=="EAS"
-replace regionNum = 2 if regionc=="ECS"
-replace regionNum = 3 if regionc=="LCN"
-replace regionNum = 4 if regionc=="MEA"
-replace regionNum = 5 if regionc=="SAS"
-replace regionNum = 6 if regionc=="SSF"
-
-
-recode regionN (1=2) (2=3) (3=4) (4=5) (5=6) (6=1) if mod(_n,6) == 1
-recode regionN (1=3) (2=4) (3=5) (4=6) (5=1) (6=2) if mod(_n,6) == 2
-recode regionN (1=4) (2=5) (3=6) (4=1) (5=2) (6=3) if mod(_n,6) == 3
-recode regionN (1=5) (2=6) (3=1) (4=2) (5=3) (6=4) if mod(_n,6) == 4
-recode regionN (1=6) (2=1) (3=2) (4=3) (5=4) (6=5) if mod(_n,6) == 5
-
-#delimit ;
-scatter heightE logG [w=twinP] if regionN==1, msymbol(O) mcolor(lavender) ||
-scatter heightE logG [w=twinP] if regionN==2, msymbol(O) mcolor(sandb)    ||
-scatter heightE logG [w=twinP] if regionN==3, msymbol(O) mcolor(mint)     ||
-scatter heightE logG [w=twinP] if regionN==4, msymbol(O) mcolor(navy)     ||
-scatter heightE logG [w=twinP] if regionN==5, msymbol(O) mcolor(magenta)  ||
-scatter heightE logG [w=twinP] if regionN==6, msymbol(O) mcolor(ebblue)
-legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
-       lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
-yline(0, lcolor(red)) ytitle("Height Difference (cm)" "twin - non-twin")
-xtitle("log(GDP per capita)");
-graph export "$GRA/HeightGDPregionW.eps", as(eps) replace;
-
-
-scatter educfEst logG [w=twinP] if regionN==1, msymbol(O) mcolor(lavender) ||
-scatter educfEst logG [w=twinP] if regionN==2, msymbol(O) mcolor(sandb)    ||
-scatter educfEst logG [w=twinP] if regionN==3, msymbol(O) mcolor(mint)     ||
-scatter educfEst logG [w=twinP] if regionN==4, msymbol(O) mcolor(navy)     ||
-scatter educfEst logG [w=twinP] if regionN==5, msymbol(O) mcolor(magenta)  ||
-scatter educfEst logG [w=twinP] if regionN==6, msymbol(O) mcolor(ebblue)
-legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
-       lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
-yline(0, lcolor(red)) xtitle("log(GDP per capita)")
-ytitle("Education Difference (years)" "twin - non-twin");
-graph export "$GRA/EducGDPregionW.eps", as(eps) replace;
-
-
-scatter underweightEst logG [w=twinP] if regionN==1, msymbol(O) mcolor(lavender) ||
-scatter underweightEst logG [w=twinP] if regionN==2, msymbol(O) mcolor(sandb)    ||
-scatter underweightEst logG [w=twinP] if regionN==3, msymbol(O) mcolor(mint)     ||
-scatter underweightEst logG [w=twinP] if regionN==4, msymbol(O) mcolor(navy)     ||
-scatter underweightEst logG [w=twinP] if regionN==5, msymbol(O) mcolor(magenta)  ||
-scatter underweightEst logG [w=twinP] if regionN==6, msymbol(O) mcolor(ebblue)
-legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
-       lab(5 "South Asia") lab(6 "Sub Saharan Africa")) scheme(lean1)
-yline(0, lcolor(red)) xtitle("log(GDP per capita)")
-ytitle("Difference in Pr(underweight)" "twin - non-twin");
-graph export "$GRA/UnderweightGDPregionW.eps", as(eps) replace;
-#delimit cr
-*/
-
+exit
 ********************************************************************************
 *** (6) Coverage
 ********************************************************************************
