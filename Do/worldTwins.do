@@ -247,9 +247,9 @@ foreach year of numlist 2009(1)2013 {
     gen year = `year'
     
     tempfile t`year'
-		gen bin=runiform()
+    gen bin=runiform()
     tab twin if ART==0
-		*keep if bin>0.90
+    keep if bin>0.90
     save `t`year''
 }
 
