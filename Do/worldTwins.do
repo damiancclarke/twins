@@ -32,7 +32,7 @@ global REG "~/investigacion/Activa/Twins/Results/World"
 log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
-/*
+
 ********************************************************************************
 *** (2) DHS Regressions
 ********************************************************************************
@@ -49,9 +49,6 @@ replace educf  = . if educf >27
 
 tab twind if height!=.&bmi!=.&educf!=.
 levelsof country, local(cc)
-
-
-
 
 #delimit ;
 gen Africa = country=="Benin"|country=="Burkina-Faso"|country=="Burundi"     |
@@ -93,19 +90,30 @@ local se abs(country) cluster(id)
 
 tab twind100
 
-lab var height  "Mother's Height (cm)"
-lab var bmi     "Mother's BMI"
-lab var educf   "Mother's Education"
+lab var height    "Mother's Height (cm)"
+lab var bmi       "Mother's BMI"
+lab var educf     "Mother's Education"
+lab var twind100  "Percent Twin Births"
+lab var prenateD  "Attended Births in Area (\% Doctor)"
+lab var prenateNu "Attended Births in Area (\% Nurse)"
+lab var prenateNo "Attended Births in Area (\% None)"
 
 local ovar height bmi educf prenateDoctorC prenateNurseC prenateNoneC
-*areg twind100 `ovar' `cs' if Africa==1, `se'
-*outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Africa") replace
-*areg twind100 `ovar' `cs' if LatAm ==1, `se'
-*outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
-*areg twind100 `ovar' `cs' if Europe==1|Asia==1, `se'
-*outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
+estpost sum `ovar' twind100 agemay
+estout using "$OUT/DHSSum.tex", replace label style(tex)          /*
+*/ cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
+
+
+
+
+areg twind100 `ovar' `cs' if Africa==1, `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Africa") replace
+areg twind100 `ovar' `cs' if LatAm ==1, `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
+areg twind100 `ovar' `cs' if Europe==1|Asia==1, `se'
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
 areg twind100 `ovar' `cs', `se'
-*outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("All")
+outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("All")
 local nobs = e(N)
 
 local counter = 1
@@ -218,7 +226,7 @@ outsheet using "$OUT/countryEstimates.csv", comma replace
 set seed 543
 foreach year of numlist 2009(1)2013 {
     use "$USA/natl`year'", clear
-    keep if mager>18&mager<=45
+    keep if mager>=18&mager<=49
     gen twin     = dplural == 2 if dplural < 3
     gen twin100  = twin*100
     gen heightcm = m_ht_in*2.54 if m_ht_in!=99
@@ -250,8 +258,8 @@ clear
 append using `t2009' `t2010' `t2011' `t2012' `t2013'
 count
 #delimit ;
-local usvars heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes gestDiab
-             eclampsia hypertens pregHyper married;
+local usvars heightcm meduc smoke1 smoke2 smoke3 diabetes
+             eclampsia hypertens married;
 #delimit cr
 
 tab twin
@@ -270,6 +278,13 @@ lab var eclampsi "Mother had eclampsia"
 lab var hyperten "Mother had pre-pregnancy hypertension"
 lab var pregHyp  "Mother had pregnancy-associated hypertension"
 lab var married  "Mother is married"
+lab var mager    "Mother's Age in years"
+lab var twin100  "Percent Twin Births"
+
+estpost sum `usvars' twin100 mager if infert==0
+estout using "$OUT/USASum.tex", replace label style(tex)          /*
+*/ cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
+
 
 local FEs i.mbrace i.lbo_rec i.year i.gestation
 dis "Twin Regressions: Pooled"
@@ -430,21 +445,29 @@ use "$DAT/Chile_twins", clear
 #delimit ;
 local base    indigenous;
 local region  i.region i.age rural i.m_age_birth i.birthorder;
-local cond    a16==13&m_age_birth<=45;
+local cond    a16==13&m_age_birth<=49;
 local wt      [pw=fexp_enc];
 local prePreg obesePre lowWeightPre;
 local preg    pregDiab pregDepr pregSmoked pregDrugsModerate pregDrugsHigh
               pregAlcoholModerate pregAlcoholHigh pregHosp;
+local preg    pregSmoked pregDrugsModerate pregDrugsHigh
+              pregAlcoholModerate pregAlcoholHigh pregHosp;
 #delimit cr
 
+keep if m_age_birth >=18&m_age_birth<=49
 gen twind = twin*100
+
+estpost sum `preg' `prePreg' twind m_age_birth 
+estout using "$OUT/ChileSum.tex", replace label style(tex)          /*
+*/ cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
+
 
 eststo: reg twind `region' `prePreg' `preg' `base' `wt' if `cond' 
 keep if e(sample)==1
 local nobs = e(N)
 
 tab twind
-exit
+
 
 local counter = 1
 gen countryname  = ""
@@ -494,9 +517,6 @@ foreach var of varlist `prePreg' `preg' {
 outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
 */ in 1/`counter' using "$REG/worldEstimatesChile.csv", delimit(";") replace
 
-
-
-*/
 ********************************************************************************
 *** (5) Figures
 ********************************************************************************
@@ -569,8 +589,9 @@ gen numb = _n
 #delimit ;
 eclplot height_stdEst height_stdlb height_stdub numb, scheme(s1mono)
 estopts(mcolor(black)) ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
+ylabel(-0.2(0.2)0.4)
 ytitle("Standardised Height Difference (cm)" "twin - non-twin")
-xlabel(1  "Brazil"       2  "Guyana"         3  "Maldives"     4  "Azerbaijan"
+xlabel(1  "        Brazil" 2  "Guyana"         3  "Maldives"     4  "Azerbaijan"
        5  "Guatemala"    6  "CAR"            7  "Kyrgyz Rep."  8  "Albania"   
        9  "Dom. Rep."    10 "Mozambique"     11 "Sao Tome"     12 "Ghana"  
        13 "Colombia"     14 "Honduras"       15 "USA"          16 "Burundi" 
@@ -585,8 +606,7 @@ xlabel(1  "Brazil"       2  "Guyana"         3  "Maldives"     4  "Azerbaijan"
        49 "Madagascar"   50 "Bangladesh"    51 "Cote D'Ivoire" 52 "Nigeria"
        53 "Comoros"      54 "Zambia"         55 "Chad"         56 "Liberia"
        57 "Guinea"       58 "Zimbabwe"       59 "Benin" 
-       60 "Cambodia"     61 "Uzbekistan"
-       ,angle(65) labsize(vsmall));
+       60 "Cambodia"     61 "Uzbekistan",angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/HeightStdDif.eps", as(eps) replace
 
@@ -666,12 +686,29 @@ xtitle("log(GDP per capita)");
 graph export "$GRA/HeightGDPregion.eps", as(eps) replace;
 #delimit cr
 
-reg educfEst      ny_gdp_pcap_cd
-reg educf_stdEst  ny_gdp_pcap_cd
-reg heightEst     ny_gdp_pcap_cd
-reg height_stdEst ny_gdp_pcap_cd
+reg educfEst i.rcode
+predict eResid, resid
+reg logGDP i.rcode
+predict gResid, resid
+reg heightEst i.rcode
+predict hResid, resid
+reg educf_stdEst i.rcode
+predict esResid, resid
+reg height_stdEst i.rcode
+predict hsResid, resid
 
+corr eResid gResid
+corr hResid gResid
+corr esResid gResid
+corr hsResid gResid
 exit
+
+reg educfEst  logGDP i.rcode, robust
+reg heightEst logGDP i.rcode, robust
+reg educf_sdEst  logGDP i.rcode, robust
+reg heigh_sdtEst logGDP i.rcode, robust
+
+
 ********************************************************************************
 *** (6) Coverage
 ********************************************************************************
