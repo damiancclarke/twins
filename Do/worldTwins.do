@@ -32,9 +32,10 @@ global REG "~/investigacion/Activa/Twins/Results/World"
 log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
+local statform cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
 
 ********************************************************************************
-*** (2) DHS Regressions
+*** (2a) DHS Setup
 ********************************************************************************
 use "$DAT/DHS_twins"
 
@@ -46,49 +47,16 @@ replace height = . if height>240
 replace height = . if height<70
 replace bmi    = . if bmi > 50
 replace educf  = . if educf >27
+keep if height !=. & bmi!=.
 
-tab twind if height!=.&bmi!=.&educf!=.
+tab twind if educf!=.
 levelsof country, local(cc)
 
-#delimit ;
-gen Africa = country=="Benin"|country=="Burkina-Faso"|country=="Burundi"     |
-             country=="Cameroon"|country=="Central-African-Republic"         |
-             country=="Chad"|country=="Comoros"|country=="Congo-Brazzaville" |
-             country=="Congo-Democratic-Republic"|country=="Cote-d-Ivoire"   |
-             country=="Egypt"|country=="Ethiopia"|country=="Gabon"           |
-             country=="Ghana"|country=="Guinea"|country=="Kenya"             |
-             country=="Lesotho"|country=="Liberia"|country=="Madagascar"     |
-             country=="Malawi"|country=="Mali"|country=="Maldives"           |
-             country=="Morocco"|country=="Mozambique"|country=="Namibia"     |
-             country=="Niger"|country=="Nigeria"|country=="Rwanda"           |
-             country=="Sao-Tome-and-Principe"|country=="Senegal"             |
-             country=="Sierra-Leone"|country=="South-Africa"                 |
-             country=="Swaziland"|country=="Tanzania"|country=="Togo"        |
-             country=="Uganda"|country=="Zambia"|country=="Zimbabwe"         ;
-gen LatAm  = country=="Bolivia"|country=="Brazil"|country=="Colombia"        |
-             country=="Dominican-Republic"|country=="Guyana"|country=="Haiti"|
-             country=="Honduras"|country=="Nicaragua"|country=="Peru"        |
-             country=="Guatemala"                                            ;
-gen Europe = country=="Albania"|country=="Armenia"|country=="Azerbaijan"     |
-             country=="Kazakhstan"|country=="Kyrgyz-Republic"                |
-             country=="Turkey"|country=="Ukraine"|country=="Uzbekistan"      |
-             country=="Jordan"|country=="Yemen"                              ;
-gen Asia   = country=="Bangladesh"|country=="Cambodia"|country=="India"      |
-             country=="Indonesia"|country=="Pakistan"|country=="Philippines" |
-             country=="Vietnam"                                              ;
-#delimit cr
-
-keep if height!=. & bmi!=.
 
 replace twind100 = twind*100
 bys v001 _year: egen prenateDoctorC = mean(prenate_doc)
 bys v001 _year: egen prenateNurseC  = mean(prenate_nurse)
 bys v001 _year: egen prenateNoneC   = mean(prenate_none)
-
-local cs i.agemay 
-local se abs(country) cluster(id)
-
-tab twind100
 
 lab var height    "Mother's Height (cm)"
 lab var bmi       "Mother's BMI"
@@ -98,73 +66,135 @@ lab var prenateD  "Attended Births in Area (\% Doctor)"
 lab var prenateNu "Attended Births in Area (\% Nurse)"
 lab var prenateNo "Attended Births in Area (\% None)"
 
+********************************************************************************
+*** (2b) DHS Sum Stats
+********************************************************************************
 local ovar height bmi educf prenateDoctorC prenateNurseC prenateNoneC
-estpost sum `ovar' twind100 agemay
-estout using "$OUT/DHSSum.tex", replace label style(tex)          /*
-*/ cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
+gen a=1
 
+estpost sum `ovar' twind100 agemay a, casewise
+estout using "$OUT/DHSSum.tex", replace label style(tex) `statform' 
 
+********************************************************************************
+*** (2c) DHS Regressions: Conditional and Unconditional, Standardised and Not
+********************************************************************************
+local Zvar Z_heigh Z_bmi Z_educf Z_prenateDoctorC Z_prenateNurseC Z_prenateNoneC
+local cs i.agemay 
+local se abs(country) cluster(id)
 
-
-areg twind100 `ovar' `cs' if Africa==1, `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Africa") replace
-areg twind100 `ovar' `cs' if LatAm ==1, `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Latin America")
-areg twind100 `ovar' `cs' if Europe==1|Asia==1, `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("Europe/Asia")
-areg twind100 `ovar' `cs', `se'
-outreg2 `ovar' using "$REG/DHSGlobal.xls", excel label ctitle("All")
-local nobs = e(N)
-
-local counter = 1
-gen countryname  = ""
-gen varname      = ""
-gen observations = .
-foreach newvar in beta se uCI lCI {
-    gen `newvar'_sd =.
-    gen `newvar'_u  =.
+foreach var of local ovar {
+    gen mean_`var' = mean(`var')
+    gen sd_`var'   = sd(`var')
+                 
+    gen Z_`var' = (`var' - mean_`var')/sd_`var'
+    drop mean_`var' sd_`var'
 }
 
-dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach estimand in beta se uCI lCI obs {
+    gen `estimand'_std_cond  = .
+    gen `estimand'_non_cond  = .
+    gen `estimand'_std_ucond = .
+    gen `estimand'_non_ucond = .
+}
+
+areg twind100 `ovar' `cs', `se'
+local counter = 1
 foreach var of varlist `ovar' {
-    replace countryname = "DHS"   in `counter'
-    replace varname     = "`var'" in `counter'
-    replace observations= `nobs'  in `counter'
-    qui sum `var'
-    local betasd    = round((_b[`var']*r(sd))*1000)/1000
-    replace beta_sd = `betasd' in `counter'
-    
-    local se_sd     = round((_se[`var']*r(sd))*1000)/1000
-    replace se_sd   = `se_sd' in `counter'
-    
-    local uCIsd    = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace uCI_sd = `uCIsd' in `counter'
-    
-    local lCIsd    = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace lCI_sd = `lCIsd' in `counter'
-    
-    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"    
+    qui replace varname     = "`var'" in `counter'
+
+    local nobs = e(N)
+    local beta = round(( _b[`var']*r(sd))*1000)/1000
+    local se   = round((_se[`var']*r(sd))*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_non_cond = `nobs' in `counter'
+    qui replace beta_non_cond = `beta' in `counter'
+    qui replace   se_non_cond = `se'   in `counter'
+    qui replace  uCI_non_cond = `uCI'  in `counter'
+    qui replace  lCI_non_cond = `lCI'  in `counter'
+
     local ++counter
 }
+outsheet varname beta_non_cond se_non_cond uCI_non_cond lCI_non_cond    /*
+*/ in 1/`counter' using "$REG/DHS_est_non_cond.csv", delimit(";") replace
 
-local counte2 = 1
-foreach var of varlist `ovar' {
-    areg twind100 `var' `cs', `se'
-    local bU = round((_b[`var'])*1000)/1000 
-    local sU = round((_se[`var'])*1000)/1000
-    local uC = round((`bU'+invttail(`nobs',0.025)*`sU')*1000)/1000
-    local lC = round((`bU'-invttail(`nobs',0.025)*`sU')*1000)/1000
-    replace beta_u = `bU' in `counte2'
-    replace se_u   = `sU' in `counte2'
-    replace uCI_u  = `uC' in `counte2'
-    replace lCI_u  = `lC' in `counte2'
-    local ++counte2
+
+
+areg twind100 `Zvar' `cs', `se'
+local counter = 1
+foreach var of varlist `Zvar' {
+    local nobs = e(N)
+    local beta = round(( _b[`var']*r(sd))*1000)/1000
+    local se   = round((_se[`var']*r(sd))*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_std_cond = `nobs' in `counter'
+    qui replace beta_std_cond = `beta' in `counter'
+    qui replace   se_std_cond = `se'   in `counter'
+    qui replace  uCI_std_cond = `uCI'  in `counter'
+    qui replace  lCI_std_cond = `lCI'  in `counter'
+
+    local ++counter
 }
+keep if e(sample)
+outsheet varname beta_std_cond se_std_cond uCI_std_cond lCI_std_cond /*
+*/ in 1/`counter' using "$REG/DHS_est_std_cond.csv", delimit(";") replace
 
-outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
-*/ in 1/`counter' using "$REG/worldEstimatesDHS.csv", delimit(";") replace
+
+local counter = 1
+dis "Unstandardised Unconditional"
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `ovar' {
+    qui areg twind100 `var' `cs', `se'
+    local nobs = e(N)
+    local beta = round(( _b[`var']*r(sd))*1000)/1000
+    local se   = round((_se[`var']*r(sd))*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_non_ucond = `nobs' in `counter'
+    qui replace beta_non_ucond = `beta' in `counter'
+    qui replace   se_non_ucond = `se'   in `counter'
+    qui replace  uCI_non_ucond = `uCI'  in `counter'
+    qui replace  lCI_non_ucond = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"    
+    local ++counter
+}
+outsheet varname beta_non_ucond se_non_ucond uCI_non_ucond lCI_non_ucond /*
+*/ in 1/`counter' using "$REG/DHS_est_non_ucond.csv", delimit(";") replace
 
 
+local counter = 1f
+dis "Standardised Unconditional"
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `Zvar' {
+    qui areg twind100 `var' `cs', `se'
+    local nobs = e(N)
+    local beta = round(( _b[`var']*r(sd))*1000)/1000
+    local se   = round((_se[`var']*r(sd))*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_std_ucond = `nobs' in `counter'
+    qui replace beta_std_ucond = `beta' in `counter'
+    qui replace   se_std_ucond = `se'   in `counter'
+    qui replace  uCI_std_ucond = `uCI'  in `counter'
+    qui replace  lCI_std_ucond = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"        
+    local ++counter
+}
+outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
+*/ in 1/`counter' using "$REG/DHS_est_std_ucond.csv", delimit(";") replace
+
+exit
+
+********************************************************************************
+*** (2d) DHS Regressions: 1 per country
+********************************************************************************
 gen countryName = ""
 gen surveyYear  = .
 foreach var in height educf {
@@ -250,16 +280,19 @@ foreach year of numlist 2009(1)2013 {
     tempfile t`year'
     gen bin=runiform()
     tab twin if ART==0
-    keep if bin>0.90
+    *keep if bin>0.90
+    *keep if bin>0.5
     save `t`year''
+
+    use "$USA/../../FetalDeaths/dta/fetl`year'", clear
 }
 
 clear
 append using `t2009' `t2010' `t2011' `t2012' `t2013'
 count
 #delimit ;
-local usvars heightcm meduc smoke1 smoke2 smoke3 diabetes
-             eclampsia hypertens married;
+local usvars heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes
+             hypertens married;
 #delimit cr
 
 tab twin
@@ -274,14 +307,14 @@ lab var smoke2   "Mother Smoked in 2nd Trimester"
 lab var smoke3   "Mother Smoked in 3rd Trimester" 
 lab var diabet   "Mother had pre-pregnancy diabetes"
 lab var gestDia  "Mother had gestational diabetes"
-lab var eclampsi "Mother had eclampsia"
 lab var hyperten "Mother had pre-pregnancy hypertension"
 lab var pregHyp  "Mother had pregnancy-associated hypertension"
 lab var married  "Mother is married"
 lab var mager    "Mother's Age in years"
 lab var twin100  "Percent Twin Births"
 
-estpost sum `usvars' twin100 mager if infert==0
+gen a=1
+estpost sum `usvars' twin100 mager a if infert==0, casewise
 estout using "$OUT/USASum.tex", replace label style(tex)          /*
 */ cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
 
@@ -436,7 +469,7 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
 */ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimates2.csv", comma replace
-
+exit
 
 ********************************************************************************
 *** (4) Chile Regressions
@@ -450,14 +483,26 @@ local wt      [pw=fexp_enc];
 local prePreg obesePre lowWeightPre;
 local preg    pregDiab pregDepr pregSmoked pregDrugsModerate pregDrugsHigh
               pregAlcoholModerate pregAlcoholHigh pregHosp;
-local preg    pregSmoked pregDrugsModerate pregDrugsHigh
-              pregAlcoholModerate pregAlcoholHigh pregHosp;
+local pregS   pregSmoked pregDrugsModerate pregDrugsHigh
+              pregAlcoholModerate pregAlcoholHigh;
 #delimit cr
 
 keep if m_age_birth >=18&m_age_birth<=49
 gen twind = twin*100
+gen a=1
 
-estpost sum `preg' `prePreg' twind m_age_birth 
+lab var pregSmoked    "Mother Smoked During Pregnancy"
+lab var pregDrugsMod  "Drugs During Pregnancy (Sporadically)"
+lab var pregDrugsHigh "Drugs During Pregnancy (Regularly)"
+lab var pregAlcoholM  "Alcohol During Pregnancy (Sporadically)"
+lab var pregAlcoholHi "Alcohol During Pregnancy (Regularly)"
+lab var obesePre      "Mother Obese Prior to Pregnancy"
+lab var lowWeightPre  "Mother Low Weight Prior to Pregnancy"
+lab var twind         "Percent Twin Births"
+lab var m_age_birth   "Mother's Age in Years"
+
+
+estpost sum `pregS' `prePreg' twind m_age_birth a, listwise
 estout using "$OUT/ChileSum.tex", replace label style(tex)          /*
 */ cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
 
@@ -516,7 +561,7 @@ foreach var of varlist `prePreg' `preg' {
 
 outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
 */ in 1/`counter' using "$REG/worldEstimatesChile.csv", delimit(";") replace
-
+exit
 ********************************************************************************
 *** (5) Figures
 ********************************************************************************
