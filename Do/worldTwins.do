@@ -33,7 +33,7 @@ log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
 local statform cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
-
+/*
 ********************************************************************************
 *** (2a) DHS Setup
 ********************************************************************************
@@ -79,17 +79,18 @@ estout using "$OUT/DHSSum.tex", replace label style(tex) `statform'
 *** (2c) DHS Regressions: Conditional and Unconditional, Standardised and Not
 ********************************************************************************
 local Zvar Z_heigh Z_bmi Z_educf Z_prenateDoctorC Z_prenateNurseC Z_prenateNoneC
-local cs i.agemay 
-local se abs(country) cluster(id)
+local cs      i.agemay 
+local regopts abs(country) cluster(id)
 
-foreach var of local ovar {
-    gen mean_`var' = mean(`var')
-    gen sd_`var'   = sd(`var')
+foreach var of varlist `ovar' {
+    egen mean_`var' = mean(`var')
+    egen sd_`var'   = sd(`var')
                  
     gen Z_`var' = (`var' - mean_`var')/sd_`var'
     drop mean_`var' sd_`var'
 }
 
+gen varname = ""
 foreach estimand in beta se uCI lCI obs {
     gen `estimand'_std_cond  = .
     gen `estimand'_non_cond  = .
@@ -97,14 +98,14 @@ foreach estimand in beta se uCI lCI obs {
     gen `estimand'_non_ucond = .
 }
 
-areg twind100 `ovar' `cs', `se'
+areg twind100 `ovar' `cs', `regopts'
 local counter = 1
 foreach var of varlist `ovar' {
     qui replace varname     = "`var'" in `counter'
 
     local nobs = e(N)
-    local beta = round(( _b[`var']*r(sd))*1000)/1000
-    local se   = round((_se[`var']*r(sd))*1000)/1000
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
     local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
     local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
 
@@ -121,12 +122,12 @@ outsheet varname beta_non_cond se_non_cond uCI_non_cond lCI_non_cond    /*
 
 
 
-areg twind100 `Zvar' `cs', `se'
+areg twind100 `Zvar' `cs', `regopts'
 local counter = 1
 foreach var of varlist `Zvar' {
     local nobs = e(N)
-    local beta = round(( _b[`var']*r(sd))*1000)/1000
-    local se   = round((_se[`var']*r(sd))*1000)/1000
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
     local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
     local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
 
@@ -147,10 +148,10 @@ local counter = 1
 dis "Unstandardised Unconditional"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `ovar' {
-    qui areg twind100 `var' `cs', `se'
+    qui areg twind100 `var' `cs', `regopts'
     local nobs = e(N)
-    local beta = round(( _b[`var']*r(sd))*1000)/1000
-    local se   = round((_se[`var']*r(sd))*1000)/1000
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
     local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
     local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
 
@@ -167,14 +168,14 @@ outsheet varname beta_non_ucond se_non_ucond uCI_non_ucond lCI_non_ucond /*
 */ in 1/`counter' using "$REG/DHS_est_non_ucond.csv", delimit(";") replace
 
 
-local counter = 1f
+local counter = 1
 dis "Standardised Unconditional"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `Zvar' {
-    qui areg twind100 `var' `cs', `se'
+    qui areg twind100 `var' `cs', `regopts'
     local nobs = e(N)
-    local beta = round(( _b[`var']*r(sd))*1000)/1000
-    local se   = round((_se[`var']*r(sd))*1000)/1000
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
     local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
     local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
 
@@ -249,9 +250,9 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimates.csv", comma replace
 
-
+*/
 ********************************************************************************
-*** (3a) USA regressions with IVF
+*** (3a) USA Setup
 ********************************************************************************
 set seed 543
 foreach year of numlist 2009(1)2013 {
@@ -276,28 +277,20 @@ foreach year of numlist 2009(1)2013 {
     gen gestation=estgest if estgest>19 & estgest<46
     gen birthweight = dbwt if dbwt<6500&dbwt>500
     gen year = `year'
-    
+
+    keep if infert==0
     tempfile t`year'
     gen bin=runiform()
     tab twin if ART==0
-    *keep if bin>0.90
+    keep if bin>0.90
     *keep if bin>0.5
     save `t`year''
-
-    use "$USA/../../FetalDeaths/dta/fetl`year'", clear
 }
 
 clear
 append using `t2009' `t2010' `t2011' `t2012' `t2013'
-count
-#delimit ;
-local usvars heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes
-             hypertens married;
-#delimit cr
 
 tab twin
-tab twin if ART==0
-
 
 lab var heightcm "Mother's height (cm)"
 lab var meduc    "Mother's education (years)"
@@ -313,117 +306,137 @@ lab var married  "Mother is married"
 lab var mager    "Mother's Age in years"
 lab var twin100  "Percent Twin Births"
 
+********************************************************************************
+*** (3b) USA Sum Stats
+********************************************************************************
+local usv heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes hypertens
 gen a=1
-estpost sum `usvars' twin100 mager a if infert==0, casewise
-estout using "$OUT/USASum.tex", replace label style(tex)          /*
-*/ cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
+
+estpost sum `usv' twin100 mager a, casewise
+estout using "$OUT/USASum.tex", replace label style(tex) `statform'
+
+********************************************************************************
+*** (3c) USA Regressions: Conditional and Unconditional, Standardised and Not
+********************************************************************************
+local Zusv Z_heightcm Z_meduc Z_smoke0 Z_smoke1 Z_smoke2 Z_smoke3 Z_diab Z_hyper
+local FEs i.mbrace i.lbo_rec i.year i.gestation married
+local regopts abs(mager) robust
 
 
-local FEs i.mbrace i.lbo_rec i.year i.gestation
-dis "Twin Regressions: Pooled"
-areg twin100 `usvars' `FEs', abs(mager) robust
-outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel replace
-gen tsample = 1 if e(sample)==1
-local nobs = e(N)
+foreach var of varlist `usv' {
+    egen mean_`var' = mean(`var')
+    egen sd_`var'   = sd(`var')
+                 
+    gen Z_`var' = (`var' - mean_`var')/sd_`var'
+    drop mean_`var' sd_`var'
+}
 
-dis "varname;beta;sd;lower-bound;upper-bound;N"
-foreach var of varlist `usvars' {
-    qui sum `var'
-    local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
-    local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
+gen varname = ""
+foreach estimand in beta se uCI lCI obs {
+    gen `estimand'_std_cond  = .
+    gen `estimand'_non_cond  = .
+    gen `estimand'_std_ucond = .
+    gen `estimand'_non_ucond = .
 }
 
 
-tab twin100 if infert==0
-areg twin100 `usvars' `FEs' if infert==0, abs(mager) robust
-gen Esample = e(sample)
-outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
-local nobs = e(N)
-
+areg twin100 `usv' `FEs', `regopts'
 local counter = 1
-gen countryname  = ""
-gen varname      = ""
-gen observations = `nobs'
-foreach newvar in beta se uCI lCI  {
-    gen `newvar'_sd = .
-    gen `newvar'_u  = .
-}
+foreach var of varlist `usv' {
+    qui replace varname     = "`var'" in `counter'
 
-dis "Non-Infertility Users"
-dis "varname;beta;sd;lower-bound;upper-bound;N"
-foreach var of varlist `usvars' {
-    replace countryname = "USA"   in `counter'
-    replace varname     = "`var'" in `counter'
-    qui sum `var'
-    local betasd    = round((_b[`var']*r(sd))*1000)/1000
-    replace beta_sd = `betasd' in `counter'
-    
-    local se_sd     = round((_se[`var']*r(sd))*1000)/1000
-    replace se_sd   = `se_sd' in `counter'
-    
-    local uCIsd = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace uCI_sd  = `uCIsd' in `counter'
-    
-    local lCIsd = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace lCI_sd  = `lCIsd' in `counter'
-    
-    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_non_cond = `nobs' in `counter'
+    qui replace beta_non_cond = `beta' in `counter'
+    qui replace   se_non_cond = `se'   in `counter'
+    qui replace  uCI_non_cond = `uCI'  in `counter'
+    qui replace  lCI_non_cond = `lCI'  in `counter'
+
     local ++counter
 }
+outsheet varname beta_non_cond se_non_cond uCI_non_cond lCI_non_cond    /*
+*/ in 1/`counter' using "$REG/USA_est_non_cond.csv", delimit(";") replace
 
-local counte2 = 1
-foreach var of varlist `usvars' {
-    areg twin100 `var' `FEs' if Esample == 1, abs(mager) robust
-    local bU = round((_b[`var'])*1000)/1000 
-    local sU = round((_se[`var'])*1000)/1000
-    local uC = round((`bU'+invttail(`nobs',0.025)*`sU')*1000)/1000
-    local lC = round((`bU'-invttail(`nobs',0.025)*`sU')*1000)/1000
-    replace beta_u = `bU' in `counte2'
-    replace se_u   = `sU' in `counte2'
-    replace uCI_u  = `uC' in `counte2'
-    replace lCI_u  = `lC' in `counte2'
-    local ++counte2
+
+areg twin100 `Zusv' `FEs', `regopts'
+local counter = 1
+foreach var of varlist `Zusv' {
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_std_cond = `nobs' in `counter'
+    qui replace beta_std_cond = `beta' in `counter'
+    qui replace   se_std_cond = `se'   in `counter'
+    qui replace  uCI_std_cond = `uCI'  in `counter'
+    qui replace  lCI_std_cond = `lCI'  in `counter'
+
+    local ++counter
 }
+keep if e(sample)
+outsheet varname beta_std_cond se_std_cond uCI_std_cond lCI_std_cond /*
+*/ in 1/`counter' using "$REG/USA_est_std_cond.csv", delimit(";") replace
 
-outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
-*/ in 1/`counter' using "$REG/worldEstimates.csv", delimit(";") replace
 
-
-areg twin100 `usvars' `FEs' if infert==1, abs(mager) robust
-outreg2 `usvars' using "$REG/USregsGestFE.xls", label excel append
-local nobs = e(N)
-dis "Infertility Users"
+local counter = 1
+dis "Unstandardised Unconditional"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
-foreach var of varlist `usvars' {
-    qui sum `var'
-    local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
-    local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
-}
+foreach var of varlist `usv' {
+    qui areg twin100 `var' `FEs', `regopts'
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
 
-dis "Conditional T-tests"
+    qui replace  obs_non_ucond = `nobs' in `counter'
+    qui replace beta_non_ucond = `beta' in `counter'
+    qui replace   se_non_ucond = `se'   in `counter'
+    qui replace  uCI_non_ucond = `uCI'  in `counter'
+    qui replace  lCI_non_ucond = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"    
+    local ++counter
+}
+outsheet varname beta_non_ucond se_non_ucond uCI_non_ucond lCI_non_ucond /*
+*/ in 1/`counter' using "$REG/USA_est_non_ucond.csv", delimit(";") replace
+
+
+local counter = 1f
+dis "Standardised Unconditional"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
-foreach var of varlist `usvars' {
-    qui areg twin100 `var' i.lbo_rec i.gestation if tsample==1, abs(mager) robust
-    qui outreg2 `var' using "$REG/USttestFE.xls", label excel
-    qui sum `var'
-    local betasd = round((_b[`var']*r(sd))*1000)/1000
-    local se_sd  = round((_se[`var']*r(sd))*1000)/1000
-    local uCIsd  = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    local lCIsd  = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"
-    
-    qui reg twin100 `var' if tsample==1, robust
-    qui outreg2 `var' using "$REG/USttest.xls", label excel
+foreach var of varlist `Zusv' {
+    qui areg twin100 `var' `FEs', `regopts'
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_std_ucond = `nobs' in `counter'
+    qui replace beta_std_ucond = `beta' in `counter'
+    qui replace   se_std_ucond = `se'   in `counter'
+    qui replace  uCI_std_ucond = `uCI'  in `counter'
+    qui replace  lCI_std_ucond = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"        
+    local ++counter
 }
+outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
+*/ in 1/`counter' using "$REG/USA_est_std_ucond.csv", delimit(";") replace
 
-keep if infert == 0
 
+exit
+********************************************************************************
+*** (2d) USA Regressions: Twin Dif
+********************************************************************************
 gen countryName = "USA"
 gen surveyYear  = 2011
 rename heightcm height
