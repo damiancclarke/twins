@@ -15,10 +15,15 @@ cap log close
 global DAT "~/database/NVSS/"
 global OUT "~/investigacion/Activa/Twins/Figures"
 global LOG "~/investigacion/Activa/Twins/Log"
+global TAB "~/investigacion/Activa/Twins/Results/World/"
 
 log using "$LOG/fetalDeathGraphs.txt", text replace
 
-
+#delimit ;
+local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par([ ]) )) stats
+             (N, fmt(%9.0g) label(Observations))
+             starlevel ("*" 0.10 "**" 0.05 "***" 0.01) collabels(none) label;
+#delimit cr
 *-------------------------------------------------------------------------------
 *--- (2) Import
 *-------------------------------------------------------------------------------
@@ -84,9 +89,14 @@ replace behaviour = 0 in 3
 replace behaviour = 1 in 4
 gen     outcome   = .
 gen     barposition = cond(birthType=="Singleton", _n, _n+1)
+gen     twinInt   = .
+gen     hvar      = .
+local   se robust
+local   abs abs(motherAge)
 
 local j = 1
 foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEduc {
+    replace hvar = `var' 
     if `j'==1 local l1 "Smoked"
     if `j'==1 local l2 "Did Not Smoke"
     if `j'==2 local l1 "Consumed Alcohol"
@@ -96,19 +106,19 @@ foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEd
     if `j'==4 local l1 "Anemic"
     if `j'==4 local l2 "Not Anemic"
         
-    gen twin`var' = twin*`var'
-    areg death twin `var' twin`var' i.birthOrder i.year, abs(motherAge)
+    replace twinInt = twin*hvar
+    eststo: areg death twin hvar twinInt i.birthOrder i.year, `abs' `se'
 
     replace outcome = _b[_cons] in 1
-    replace outcome = _b[_cons]+_b[`var'] in 2
+    replace outcome = _b[_cons]+_b[hvar] in 2
     replace outcome = _b[_cons]          +_b[twin] in 3
-    replace outcome = _b[_cons]+_b[`var']+_b[twin]+_b[twin`var'] in 4
+    replace outcome = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt] in 4
     local   min = _b[_cons]-1
-    local   max = _b[_cons]+_b[`var']+_b[twin]+_b[twin`var']+1
-    local   twinDif  = string(_b[`var']+_b[twin`var'], "%5.3f")
-    local   singDif  = string(_b[`var']              , "%5.3f")
-    local   twinNote = _b[_cons]+_b[`var']+_b[twin]+_b[twin`var']+1
-    local   singNote = _b[_cons]+_b[`var']+1
+    local   max = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   twinDif  = string(_b[hvar]+_b[twinInt], "%5.3f")
+    local   singDif  = string(_b[hvar]              , "%5.3f")
+    local   twinNote = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   singNote = _b[_cons]+_b[hvar]+1
     
     if `j'<5 {
         #delimit ;
@@ -124,17 +134,17 @@ foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEd
         #delimit cr
     }
         
-    reg death twin `var' twin`var'
+    eststo: reg death twin hvar twinInt
     replace outcome = _b[_cons] in 1
-    replace outcome = _b[_cons]+_b[`var'] in 2
+    replace outcome = _b[_cons]+_b[hvar] in 2
     replace outcome = _b[_cons]          +_b[twin] in 3
-    replace outcome = _b[_cons]+_b[`var']+_b[twin]+_b[twin`var'] in 4
+    replace outcome = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt] in 4
     local   min = _b[_cons]-1
-    local   max = _b[_cons]+_b[`var']+_b[twin]+_b[twin`var']+1
-    local   twinDif  = string(_b[`var']+_b[twin`var'], "%5.3f")
-    local   singDif  = string(_b[`var']              , "%5.3f")
-    local   twinNote = _b[_cons]+_b[`var']+_b[twin]+_b[twin`var']+1
-    local   singNote = _b[_cons]+_b[`var']+1        
+    local   max = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   twinDif  = string(_b[hvar]+_b[twinInt], "%5.3f")
+    local   singDif  = string(_b[hvar]              , "%5.3f")
+    local   twinNote = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   singNote = _b[_cons]+_b[hvar]+1        
     if `j'<5 {
         #delimit ;
         twoway bar  outcome barposition  if behaviour==0, color(red)  
@@ -151,5 +161,44 @@ foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEd
     local ++j
 }
 
+*-------------------------------------------------------------------------------
+*--- (4) Export regression results
+*-------------------------------------------------------------------------------
+#delimit ;
+esttab est1 est3 est5 est7 est9 est11 est13 using "$TAB/FDeath_Cond.tex",
+replace `estopt' keep(_cons hvar twin twinInt) booktabs style(tex)
+title("Fetal Deaths, Twinning, and Health Behaviours"\label{tab:FDcond}) 
+mtitles("Smokes" "Drinks" "No College" "Anemic" "N Cigs" "N Drinks" "Years Educ")
+postfoot("\bottomrule \multicolumn{7}{p{20cm}}{\begin{footnotesize}      "
+         "Each column represents a regression of fetal deaths per 1,000  "
+         "live births on twins, a health behaviour or health stock, and  "
+         "the interaction between twins and the health variable.  The    "
+         "health variable in each column is indicated in the column      "
+         "title.  Each regression also controls for mother's age fixed   "
+         "effects, total number of mother's birth, and the year of birth."
+         "Unconditional results are presented in table \ref{tab:FDucond}."
+         "Coefficients from the regression are reported, and             "
+         "heteroscedasticity robust standard errors are displayed in     "
+         "parentheses.                                                   "
+         "***p-value$<$0.01, **p-value$<$0.05, *p-value$<$0.01.          "
+         "\end{footnotesize}}\end{tabular}\end{table}");
+
+esttab est2 est4 est6 est8 est10 est12 est14 using "$TAB/FDeath_Uncond.tex",
+replace `estopt' keep(_cons hvar twin twinInt) booktabs style(tex)
+title("Fetal Deaths, Twinning, and Health Behaviours"\label{tab:FDucond}) 
+mtitles("Smokes" "Drinks" "No College" "Anemic" "N Cigs" "N Drinks" "Years Educ")
+postfoot("\bottomrule \multicolumn{7}{p{20cm}}{\begin{footnotesize}      "
+         "Each column represents a regression of fetal deaths per 1,000  "
+         "live births on twins, a health behaviour or health stock, and  "
+         "the interaction between twins and the health variable.  The    "
+         "health variable in each column is indicated in the column      "
+         "title.  Similar results conditioning on mother's age and total "
+         "fertility are presented in table \ref{tab:FDcond}. Coefficients"
+         "from the regression are reported, and heteroscedasticity robust"
+         "standard errors are displayed in parentheses.                  "
+         "***p-value$<$0.01, **p-value$<$0.05, *p-value$<$0.01.          "
+         "\end{footnotesize}}\end{tabular}\end{table}");
+
+#delimit cr
 
 
