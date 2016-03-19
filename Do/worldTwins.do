@@ -33,7 +33,7 @@ log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
 local statform cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
-/*
+
 ********************************************************************************
 *** (2a) DHS Setup
 ********************************************************************************
@@ -99,6 +99,7 @@ foreach estimand in beta se uCI lCI obs {
 }
 
 areg twind100 `ovar' `cs', `regopts'
+keep if e(sample)
 local counter = 1
 foreach var of varlist `ovar' {
     qui replace varname     = "`var'" in `counter'
@@ -139,7 +140,6 @@ foreach var of varlist `Zvar' {
 
     local ++counter
 }
-keep if e(sample)
 outsheet varname beta_std_cond se_std_cond uCI_std_cond lCI_std_cond /*
 */ in 1/`counter' using "$REG/DHS_est_std_cond.csv", delimit(";") replace
 
@@ -191,8 +191,7 @@ foreach var of varlist `Zvar' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/DHS_est_std_ucond.csv", delimit(";") replace
 
-exit
-
+/*
 ********************************************************************************
 *** (2d) DHS Regressions: 1 per country
 ********************************************************************************
@@ -248,9 +247,9 @@ keep in 1/`iter'
 keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
 */ educf_stdUB twinProp surveyYear
-outsheet using "$OUT/countryEstimates.csv", comma replace
-
+outsheet using "$OUT/countryEstimatesDHS.csv", comma replace
 */
+
 ********************************************************************************
 *** (3a) USA Setup
 ********************************************************************************
@@ -341,6 +340,7 @@ foreach estimand in beta se uCI lCI obs {
 
 
 areg twin100 `usv' `FEs', `regopts'
+keep if e(sample)
 local counter = 1
 foreach var of varlist `usv' {
     qui replace varname     = "`var'" in `counter'
@@ -380,7 +380,6 @@ foreach var of varlist `Zusv' {
 
     local ++counter
 }
-keep if e(sample)
 outsheet varname beta_std_cond se_std_cond uCI_std_cond lCI_std_cond /*
 */ in 1/`counter' using "$REG/USA_est_std_cond.csv", delimit(";") replace
 
@@ -409,7 +408,7 @@ outsheet varname beta_non_ucond se_non_ucond uCI_non_ucond lCI_non_ucond /*
 */ in 1/`counter' using "$REG/USA_est_non_ucond.csv", delimit(";") replace
 
 
-local counter = 1f
+local counter = 1
 dis "Standardised Unconditional"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `Zusv' {
@@ -432,10 +431,9 @@ foreach var of varlist `Zusv' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/USA_est_std_ucond.csv", delimit(";") replace
 
-
-exit
+/*
 ********************************************************************************
-*** (2d) USA Regressions: Twin Dif
+*** (3d) USA Regressions: Twin Dif
 ********************************************************************************
 gen countryName = "USA"
 gen surveyYear  = 2011
@@ -481,11 +479,11 @@ keep in 1
 keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
 */ educf_stdUB twinProp surveyYear
-outsheet using "$OUT/countryEstimates2.csv", comma replace
-exit
+outsheet using "$OUT/countryEstimatesUSA.csv", comma replace
 
+*/
 ********************************************************************************
-*** (4) Chile Regressions
+*** (4a) Chile Setup
 ********************************************************************************
 use "$DAT/Chile_twins", clear
 #delimit ;
@@ -502,7 +500,6 @@ local pregS   pregSmoked pregDrugsModerate pregDrugsHigh
 
 keep if m_age_birth >=18&m_age_birth<=49
 gen twind = twin*100
-gen a=1
 
 lab var pregSmoked    "Mother Smoked During Pregnancy"
 lab var pregDrugsMod  "Drugs During Pregnancy (Sporadically)"
@@ -515,65 +512,135 @@ lab var twind         "Percent Twin Births"
 lab var m_age_birth   "Mother's Age in Years"
 
 
+********************************************************************************
+*** (4b) Chile Sum Stats
+********************************************************************************
+gen a=1
 estpost sum `pregS' `prePreg' twind m_age_birth a, listwise
-estout using "$OUT/ChileSum.tex", replace label style(tex)          /*
-*/ cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
+estout using "$OUT/ChileSum.tex", replace label style(tex) `statform'
 
 
-eststo: reg twind `region' `prePreg' `preg' `base' `wt' if `cond' 
-keep if e(sample)==1
-local nobs = e(N)
 
-tab twind
+********************************************************************************
+*** (4c) Chile Regressions
+********************************************************************************
+local Zchi Z_obesePre Z_lowWeightPre Z_pregSmoked Z_pregDrugsModerate  /*
+*/         Z_pregDrugsHigh Z_pregAlcoholModerate Z_pregAlcoholHigh
+
+
+*eststo: reg twind `region' `prePreg' `preg' `base' `wt' if `cond' 
+
+foreach var of varlist `pregS' `prePreg' {
+    egen mean_`var' = mean(`var')
+    egen sd_`var'   = sd(`var')
+                 
+    gen Z_`var' = (`var' - mean_`var')/sd_`var'
+    drop mean_`var' sd_`var'
+}
+
+gen varname = ""
+foreach estimand in beta se uCI lCI obs {
+    gen `estimand'_std_cond  = .
+    gen `estimand'_non_cond  = .
+    gen `estimand'_std_ucond = .
+    gen `estimand'_non_ucond = .
+}
+
+
+reg twind `region' `pregS' `prePreg' `base' `wt' if `cond' 
+keep if e(sample)
+local counter = 1
+foreach var of varlist `pregS' `prePreg' {
+    qui replace varname     = "`var'" in `counter'
+
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_non_cond = `nobs' in `counter'
+    qui replace beta_non_cond = `beta' in `counter'
+    qui replace   se_non_cond = `se'   in `counter'
+    qui replace  uCI_non_cond = `uCI'  in `counter'
+    qui replace  lCI_non_cond = `lCI'  in `counter'
+
+    local ++counter
+}
+outsheet varname beta_non_cond se_non_cond uCI_non_cond lCI_non_cond    /*
+*/ in 1/`counter' using "$REG/CHI_est_non_cond.csv", delimit(";") replace
+
+
+reg twind `region' `Zchi' `base' `wt' if `cond' 
+local counter = 1
+foreach var of varlist `Zchi' {
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_std_cond = `nobs' in `counter'
+    qui replace beta_std_cond = `beta' in `counter'
+    qui replace   se_std_cond = `se'   in `counter'
+    qui replace  uCI_std_cond = `uCI'  in `counter'
+    qui replace  lCI_std_cond = `lCI'  in `counter'
+
+    local ++counter
+}
+outsheet varname beta_std_cond se_std_cond uCI_std_cond lCI_std_cond /*
+*/ in 1/`counter' using "$REG/CHI_est_std_cond.csv", delimit(";") replace
 
 
 local counter = 1
-gen countryname  = ""
-gen varname      = ""
-gen observations = .
-foreach newvar in beta se uCI lCI {
-    gen `newvar'_sd =.
-    gen `newvar'_u  =.
-}
-
+dis "Unstandardised Unconditional"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
-foreach var of varlist `prePreg' `preg' {
-    replace countryname = "Chile"   in `counter'
-    replace varname     = "`var'" in `counter'
-    replace observations= `nobs'  in `counter'
-    qui sum `var'
-    local betasd    = round((_b[`var']*r(sd))*1000)/1000
-    replace beta_sd = `betasd' in `counter'
-    
-    local se_sd     = round((_se[`var']*r(sd))*1000)/1000
-    replace se_sd   = `se_sd' in `counter'
-    
-    local uCIsd    = round((`betasd'+invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace uCI_sd = `uCIsd' in `counter'
-    
-    local lCIsd    = round((`betasd'-invttail(`nobs',0.025)*`se_sd')*1000)/1000
-    replace lCI_sd = `lCIsd' in `counter'
-    
-    dis "`var';`betasd';`se_sd';`lCIsd';`uCIsd';`nobs'"    
+foreach var of varlist `pregS' `prePreg' {
+    qui reg twind `region' `var' `base' `wt' if `cond' 
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_non_ucond = `nobs' in `counter'
+    qui replace beta_non_ucond = `beta' in `counter'
+    qui replace   se_non_ucond = `se'   in `counter'
+    qui replace  uCI_non_ucond = `uCI'  in `counter'
+    qui replace  lCI_non_ucond = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"    
     local ++counter
 }
+outsheet varname beta_non_ucond se_non_ucond uCI_non_ucond lCI_non_ucond /*
+*/ in 1/`counter' using "$REG/CHI_est_non_ucond.csv", delimit(";") replace
 
-local counte2 = 1
-foreach var of varlist `prePreg' `preg' {
-    reg twind `var' `region' `base' `wt'
-    local bU = round((_b[`var'])*1000)/1000 
-    local sU = round((_se[`var'])*1000)/1000
-    local uC = round((`bU'+invttail(`nobs',0.025)*`sU')*1000)/1000
-    local lC = round((`bU'-invttail(`nobs',0.025)*`sU')*1000)/1000
-    replace beta_u = `bU' in `counte2'
-    replace se_u   = `sU' in `counte2'
-    replace uCI_u  = `uC' in `counte2'
-    replace lCI_u  = `lC' in `counte2'
-    local ++counte2
+
+local counter = 1
+dis "Standardised Unconditional"
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `Zchi' {
+    qui reg twind `region' `var' `base' `wt' if `cond' 
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_std_ucond = `nobs' in `counter'
+    qui replace beta_std_ucond = `beta' in `counter'
+    qui replace   se_std_ucond = `se'   in `counter'
+    qui replace  uCI_std_ucond = `uCI'  in `counter'
+    qui replace  lCI_std_ucond = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"        
+    local ++counter
 }
+outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
+*/ in 1/`counter' using "$REG/CHI_est_std_ucond.csv", delimit(";") replace
 
-outsheet countryname varname beta_sd se_sd uCI_sd lCI_sd beta_u se_u uCI_u lCI_u /*
-*/ in 1/`counter' using "$REG/worldEstimatesChile.csv", delimit(";") replace
+
+
 exit
 ********************************************************************************
 *** (5) Figures
@@ -583,11 +650,11 @@ keep if year==2013
 tempfile GDP
 save `GDP', replace
 
-insheet using "$OUT/countryEstimates2.csv", comma names clear
+insheet using "$OUT/countryEstimatesUSA.csv", comma names clear
 tempfile USA
 save `USA', replace
 
-insheet using "$OUT/countryEstimates.csv", comma names clear
+insheet using "$OUT/countryEstimatesDHS.csv", comma names clear
 append  using  `USA'
 
 gsort -heightest
