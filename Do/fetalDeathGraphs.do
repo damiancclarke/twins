@@ -1,7 +1,14 @@
 /* fetalDeathGraphs v0.00        damiancclarke             yyyy-mm-dd:2016-03-19
 ----|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
+ This file combines data from the United States Vital Statistics System on Fetal
+Deaths and live births to examine rates of death among twin and non-twin births 
+by mother's health and education status. NVSS data from 1999-2002 is used, as th
+is was the final year before the rearrangement of the birth certificate and feta
+l death records in 2003. After the updated recording of these events, considerab
+le detail was removed from the fetal death files, and in recent years no health
+variables were recorded at all.
 
-
+contact: damian.clarke@usach.cl
 */
 
 vers 11
@@ -21,7 +28,7 @@ log using "$LOG/fetalDeathGraphs.txt", text replace
 
 #delimit ;
 local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par([ ]) )) stats
-             (N, fmt(%9.0g) label(Observations))
+             (N, fmt(%12.2gc) label(Observations))
              starlevel ("*" 0.10 "**" 0.05 "***" 0.01) collabels(none) label;
 #delimit cr
 *-------------------------------------------------------------------------------
@@ -164,12 +171,15 @@ foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEd
 *-------------------------------------------------------------------------------
 *--- (4) Export regression results
 *-------------------------------------------------------------------------------
+lab var twin    "Twin"
+lab var hvar    "Health (Dis)amenity"
+lab var twinInt "Twin $\times$ Health"
 #delimit ;
 esttab est1 est3 est5 est7 est9 est11 est13 using "$TAB/FDeath_Cond.tex",
 replace `estopt' keep(_cons hvar twin twinInt) booktabs style(tex)
 title("Fetal Deaths, Twinning, and Health Behaviours"\label{tab:FDcond}) 
 mtitles("Smokes" "Drinks" "No College" "Anemic" "N Cigs" "N Drinks" "Years Educ")
-postfoot("\bottomrule \multicolumn{7}{p{20cm}}{\begin{footnotesize}      "
+postfoot("\bottomrule \multicolumn{8}{p{20cm}}{\begin{footnotesize}      "
          "Each column represents a regression of fetal deaths per 1,000  "
          "live births on twins, a health behaviour or health stock, and  "
          "the interaction between twins and the health variable.  The    "
@@ -187,7 +197,7 @@ esttab est2 est4 est6 est8 est10 est12 est14 using "$TAB/FDeath_Uncond.tex",
 replace `estopt' keep(_cons hvar twin twinInt) booktabs style(tex)
 title("Fetal Deaths, Twinning, and Health Behaviours"\label{tab:FDucond}) 
 mtitles("Smokes" "Drinks" "No College" "Anemic" "N Cigs" "N Drinks" "Years Educ")
-postfoot("\bottomrule \multicolumn{7}{p{20cm}}{\begin{footnotesize}      "
+postfoot("\bottomrule \multicolumn{8}{p{20cm}}{\begin{footnotesize}      "
          "Each column represents a regression of fetal deaths per 1,000  "
          "live births on twins, a health behaviour or health stock, and  "
          "the interaction between twins and the health variable.  The    "
