@@ -48,6 +48,8 @@ replace height = . if height<70
 replace bmi    = . if bmi > 50
 replace educf  = . if educf >27
 keep if height !=. & bmi!=.
+gen underweight = bmi <= 18.5
+gen obese       = bmi > 30 if bmi!=.
 
 tab twind if educf!=.
 levelsof country, local(cc)
@@ -191,7 +193,8 @@ foreach var of varlist `Zvar' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/DHS_est_std_ucond.csv", delimit(";") replace
 
-/*
+exit
+
 ********************************************************************************
 *** (2d) DHS Regressions: 1 per country
 ********************************************************************************
@@ -248,7 +251,7 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
 */ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimatesDHS.csv", comma replace
-*/
+
 
 ********************************************************************************
 *** (3a) USA Setup
@@ -276,16 +279,17 @@ foreach year of numlist 2009(1)2013 {
     gen gestation=estgest if estgest>19 & estgest<46
     gen birthweight = dbwt if dbwt<6500&dbwt>500
     gen year = `year'
-
+    gen nonmissing = smoke1!=.&hypertens!=.&heightcm!=.&meduc!=.
+    
     keep if infert==0
     tempfile t`year'
     gen bin=runiform()
-    tab twin if ART==0
-    keep if bin>0.90
+    tab twin if ART==0&nonmissing==1
+    *keep if bin>0.90
     *keep if bin>0.5
     save `t`year''
 }
-
+exit
 clear
 append using `t2009' `t2010' `t2011' `t2012' `t2013'
 
@@ -431,7 +435,7 @@ foreach var of varlist `Zusv' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/USA_est_std_ucond.csv", delimit(";") replace
 
-/*
+
 ********************************************************************************
 *** (3d) USA Regressions: Twin Dif
 ********************************************************************************
@@ -481,7 +485,8 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimatesUSA.csv", comma replace
 
-*/
+exit
+
 ********************************************************************************
 *** (4a) Chile Setup
 ********************************************************************************
@@ -491,7 +496,7 @@ local base    indigenous;
 local region  i.region i.age rural i.m_age_birth i.birthorder;
 local cond    a16==13&m_age_birth<=49;
 local wt      [pw=fexp_enc];
-local prePreg obesePre lowWeightPre;
+local prePreg obesePre lowWeightPre meduc;
 local preg    pregDiab pregDepr pregSmoked pregDrugsModerate pregDrugsHigh
               pregAlcoholModerate pregAlcoholHigh pregHosp;
 local pregS   pregSmoked pregDrugsModerate pregDrugsHigh
@@ -500,6 +505,8 @@ local pregS   pregSmoked pregDrugsModerate pregDrugsHigh
 
 keep if m_age_birth >=18&m_age_birth<=49
 gen twind = twin*100
+recode mother_educ (1/2=0) (3=4) (4=10) (5=12) (6=13) (7/8=14) (9=16), gen(meduc)
+
 
 lab var pregSmoked    "Mother Smoked During Pregnancy"
 lab var pregDrugsMod  "Drugs During Pregnancy (Sporadically)"
@@ -510,7 +517,7 @@ lab var obesePre      "Mother Obese Prior to Pregnancy"
 lab var lowWeightPre  "Mother Low Weight Prior to Pregnancy"
 lab var twind         "Percent Twin Births"
 lab var m_age_birth   "Mother's Age in Years"
-
+lab var meduc         "Mother's Education in Years"
 
 ********************************************************************************
 *** (4b) Chile Sum Stats
@@ -524,8 +531,8 @@ estout using "$OUT/ChileSum.tex", replace label style(tex) `statform'
 ********************************************************************************
 *** (4c) Chile Regressions
 ********************************************************************************
-local Zchi Z_obesePre Z_lowWeightPre Z_pregSmoked Z_pregDrugsModerate  /*
-*/         Z_pregDrugsHigh Z_pregAlcoholModerate Z_pregAlcoholHigh
+local Zchi Z_pregSmoked Z_pregDrugsModerate Z_pregDrugsHigh Z_pregAlcoholModerate/*
+*/ Z_pregAlcoholHigh Z_obesePre Z_lowWeightPre Z_meduc 
 
 
 *eststo: reg twind `region' `prePreg' `preg' `base' `wt' if `cond' 
@@ -638,8 +645,6 @@ foreach var of varlist `Zchi' {
 }
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/CHI_est_std_ucond.csv", delimit(";") replace
-
-
 
 exit
 ********************************************************************************
