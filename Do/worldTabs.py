@@ -12,8 +12,6 @@ print('\n\n FORMATTING WORLD TWIN TABLES \n\n')
 #==============================================================================
 #== (1a) File names (comes from Twin_Regressions.do)
 #==============================================================================
-#RIN  = "/home/damiancclarke/investigacion/Activa/Twins/Results/World/"
-#OUT  = "/home/damiancclarke/investigacion/Activa/Twins/paper/twinsHealth/tex/"
 RIN  = "/home/damian/investigacion/Activa/Twins/Results/World/"
 SUM  = "/home/damian/investigacion/Activa/Twins/Results/Sum/"
 OUT  = "/home/damian/investigacion/Activa/Twins/paper/twinsHealth/tex/"
@@ -89,6 +87,7 @@ def formatLine(line, vers):
 #==============================================================================
 DHSs = open(SUM +   'DHSSum.tex').readlines()[1:-1]
 USAs = open(SUM +   'USASum.tex').readlines()[1:-1]
+UKAs = open(SUM +   'UKASum.tex').readlines()[1:-1]
 CHIs = open(SUM + 'ChileSum.tex').readlines()[1:-1]
 #SWEi = open(RIN +   'worldEstimatesSweden.csv').readlines()[1:-1]
 
@@ -106,16 +105,23 @@ for i,line in enumerate(USAs):
         tabl.write(line)
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
-           '{\\textbf{Panel B: Developing Countries}} \\\\ \n')
-for i,line in enumerate(DHSs):
-    if i>0:
-        tabl.write(line)
-tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
-           '{\\textbf{Panel C: Chile}} \\\\ \n')
-for i,line in enumerate(CHIs):
+           '{\\textbf{Panel C: United Kingdom (Avon)}} \\\\ \n')
+for i,line in enumerate(UKAs):
     if i>0:
         tabl.write(line)
 
+tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{Panel D: Chile}} \\\\ \n')
+for i,line in enumerate(CHIs):
+    if i>0:
+        tabl.write(line)
+tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{Panel E: Developing Countries}} \\\\ \n')
+for i,line in enumerate(DHSs):
+    if i>0:
+        tabl.write(line)
+
+        
 tabl.write('\\bottomrule \n \\end{tabular} \n \\end{center} \\end{table} \n'
            '\n \\end{spacing}')
 
@@ -128,9 +134,131 @@ DHSi = open(RIN + 'DHS_est_std_ucond.csv').readlines()[1:-1]
 USAi = open(RIN + 'USA_est_std_ucond.csv').readlines()[1:-1]
 CHIi = open(RIN + 'CHI_est_std_ucond.csv').readlines()[1:-1]
 SWEi = open(RIN + 'worldEstimatesSweden.csv').readlines()[1:-1]
+UKAi = open(RIN + 'UKA_est_std_ucond.csv').readlines()[1:-1]
+
+nameUSA = ['Height','Education', 'Smoked Before Pregnancy','Smoked Trimester 1',
+           'Smoked Trimester 2', 'Smoked Trimester 3','Diabetes','Hypertension',
+           'Underweight','Obese']
+lineUSA = []
+
+tabl = open(OUT + 'twinEffectsUncond.tex', 'w')
+
+tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
+           '\\begin{center}\n\\caption{' + noteS1 + '}\n'
+           '\scalebox{0.92}{'
+           '\\begin{tabular}{llcllc}\n \\toprule'
+           '\\multicolumn{3}{c}{Health Behaviours / Access} &'
+           '\\multicolumn{3}{c}{Health Conditions } \\\\ \n'
+           '\\cmidrule(r){1-3} \\cmidrule(r){4-6} \n'
+           'Variable & Estimate & [95\\% CI] &Variable & Estimate & [95\\% CI]'
+           '\\\\ \\midrule \n'
+           '\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{Panel A: United States}} \\\\ \n')
+
+for i,line in enumerate(USAi):
+    line = formatLine(line,1)
+    for j in range(0,11):
+        if i==j:
+            lineUSA.append(nameUSA[j]+'&'+line)
+
+tabl.write(lineUSA[2]+'&'+lineUSA[0]+'\\\\' +
+           lineUSA[3]+'&'+lineUSA[8]+'\\\\' +
+           lineUSA[4]+'&'+lineUSA[9]+'\\\\' +
+           lineUSA[5]+'&'+lineUSA[6]+'\\\\' +
+           '&&&'         +lineUSA[7]+'\\\\' +
+           '&&&'         +lineUSA[1]+'\\\\')            
+
+tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{Panel B: Sweden}} \\\\ \n')
 
 
-tabl = open(OUT + 'twinEffectsCond.tex', 'w')
+"""
+for i,line in enumerate(SWEi):
+    line = formatLine(line,2)
+    if i==0: 
+        n1 = 'Asthma&'              + line + '\\\\'
+    if i==1: 
+        n2 = 'Diabetes (pre)&'      + line + '\\\\'
+    if i==2: 
+        ne = 'Kidney Disease (pre)&'+ line + '\\\\'
+    if i==3: 
+        n3 = 'Hypertension (pre)&'  + line + '\\\\'
+    if i==4: 
+        n4 = 'Smoked Trimester 1&'  + line + '&'
+    if i==5: 
+        n5 = 'Smoked Trimester 3&'  + line + '&'
+    if i==6: 
+        n6 = 'Mother\'s Height&'    + line + '&'
+    if i==7: 
+        n7 = 'Mother\'s Weight&'    + line + '&'
+
+tabl.write(n4+n2+'\n' + n5+n3+'\n' + n6+n1+'\n' + n7+ne)
+
+tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{Panel C: Chile}} \\\\ \n')
+for i,line in enumerate(CHIi):
+    print line
+    line = formatLine(line,1)
+    if i==0:
+        n1 = 'Smoked in Pregnancy&' + line + '&'        
+    if i==1:
+        n2 = 'Drugs (Moderate) &'   + line + '&'
+    if i==2:
+        n3 = 'Drugs (High) &'       + line + '&'
+    if i==3:
+        n4 = 'Alcohol (Moderate) &' + line + '&'
+    if i==4:
+        n5 = 'Alcohol (High) &'     + line + '&'
+    if i==5:
+        n6 = 'Obese (pre)&'        + line + '\\\\'
+    if i==6:
+        n7 = 'Underweight (pre)&'  + line + '\\\\'
+
+
+tabl.write(n1+n6+'\n' + 
+           n2+n7+'\n' +
+           n3+'&&\\\\'+
+           n4+'&&\\\\'+
+           n5+'&&\\\\')
+
+
+tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{Panel D: Developing Countries}} \\\\ \n')
+for i,line in enumerate(DHSi):
+    line = formatLine(line,1)
+    if i==0: 
+        n1 = 'Mother\'s Height&'   + line + '&'
+    elif i==1: 
+        n2 = 'Mother\'s BMI&'      + line + '&'
+    elif i==2: 
+        n3 = 'Mother\'s Education&'+ line + '&'
+    elif i==3: 
+        n4 = 'Doctor Availability&'+ line + '\\\\'
+    elif i==4: 
+        n5 = 'Nurse Availability&' + line + '\\\\'
+    elif i==5: 
+        n6 = 'No Prenatal Care&'   + line + '\\\\'
+
+tabl.write(n1+n4 + '\n' + n2+n5+ '\n' + n3+n6+'\n')
+
+tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{Panel E: Somerset Birth Survey (United Kingdom)}} \\\\ \n')
+"""
+tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
+           '\n \\end{spacing}')
+
+tabl.close()
+"""
+#==============================================================================
+#== (2b) Write Unconditional Unstandardised 
+#==============================================================================
+DHSi = open(RIN + 'DHS_est_non_ucond.csv').readlines()[1:-1]
+USAi = open(RIN + 'USA_est_non_ucond.csv').readlines()[1:-1]
+CHIi = open(RIN + 'CHI_est_non_ucond.csv').readlines()[1:-1]
+SWEi = open(RIN + 'worldEstimatesSweden.csv').readlines()[1:-1]
+
+
+tabl = open(OUT + 'twinEffectsUncondUnStand.tex', 'w')
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n\\caption{' + noteS1 + '}\n'
@@ -243,8 +371,9 @@ tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
 
 tabl.close()
 
+
 #==============================================================================
-#== (2a) Write Conditional Standardised 
+#== (2c) Write Conditional Standardised 
 #==============================================================================
 DHSi = open(RIN + 'DHS_est_std_cond.csv').readlines()[1:-1]
 USAi = open(RIN + 'USA_est_std_cond.csv').readlines()[1:-1]
@@ -252,7 +381,7 @@ CHIi = open(RIN + 'CHI_est_std_cond.csv').readlines()[1:-1]
 SWEi = open(RIN + 'worldEstimatesSweden.csv').readlines()[1:-1]
 
 
-tabl = open(OUT + 'twinEffectsUncond.tex', 'w')
+tabl = open(OUT + 'twinEffectsCond.tex', 'w')
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n\\caption{' + noteT1 + '}\n'
@@ -364,7 +493,7 @@ tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
            '\n \\end{spacing}')
 
 tabl.close()
-
+"""
 
 """
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
