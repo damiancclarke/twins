@@ -89,7 +89,7 @@ DHSs = open(SUM +   'DHSSum.tex').readlines()[1:-1]
 USAs = open(SUM +   'USASum.tex').readlines()[1:-1]
 UKAs = open(SUM +   'UKASum.tex').readlines()[1:-1]
 CHIs = open(SUM + 'ChileSum.tex').readlines()[1:-1]
-#SWEi = open(RIN +   'worldEstimatesSweden.csv').readlines()[1:-1]
+SWEs = open(SUM +   'SweSum.tex').readlines()[1:-1]
 
 tabl = open(OUT + 'summaryStatsWorld.tex', 'w')
 
@@ -101,6 +101,12 @@ tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel A: United States}} \\\\ \n')
 for i,line in enumerate(USAs):
+    if i>0:
+        tabl.write(line)
+
+tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{Panel B: Sweden}} \\\\ \n')
+for i,line in enumerate(SWEs):
     if i>0:
         tabl.write(line)
 
@@ -133,7 +139,7 @@ tabl.close()
 DHSi = open(RIN + 'DHS_est_std_ucond.csv').readlines()[1:-1]
 USAi = open(RIN + 'USA_est_std_ucond.csv').readlines()[1:-1]
 CHIi = open(RIN + 'CHI_est_std_ucond.csv').readlines()[1:-1]
-SWEi = open(RIN + 'worldEstimatesSweden.csv').readlines()[1:-1]
+SWEi = open(RIN + 'SWE_est_std_ucond.csv').readlines()[1:-1]
 UKAi = open(RIN + 'UKA_est_std_ucond.csv').readlines()[1:-1]
 
 tabl = open(OUT + 'twinEffectsUncond.tex', 'w')
@@ -143,8 +149,8 @@ nameUSA = ['Height','Education', 'Smoked Before Pregnancy','Smoked Trimester 1',
            'Underweight','Obese']
 nameUKA = ['BMI','Height','Diabetes','Hypertension','Infections',
            'Drug Addiction','Alcoholism','Healthy Foods','Fresh Fruit']
-nameSWE = ['BMI','Height','Diabetes','Hypertension','Infections',
-           'Drug Addiction','Alcoholism','Healthy Foods','Fresh Fruit']
+nameSWE = ['Asthma','Diabetes','Kidney Disease','Hypertension','Smoked (12 weeks)',
+           'Smoked (30-32 weeks)','Height','Underweight','Obese']
 nameCHI = ['Smoked during Pregnancy','Drugs (Infrequently)','Drugs (Frequently)',
            'Alcohol (Infrequently)','Alcohol (Frequently)','Obese','Underweight',
            'Education']
@@ -179,10 +185,23 @@ tabl.write(lineUSA[2]+'&'+lineUSA[0]+'\\\\' +
            lineUSA[3]+'&'+lineUSA[8]+'\\\\' +
            lineUSA[4]+'&'+lineUSA[9]+'\\\\' +
            lineUSA[5]+'&'+lineUSA[6]+'\\\\' +
-           lineUSA[1]+'&'+lineUSA[7]+'\\\\' )            
+           lineUSA[1]+'&'+lineUSA[7]+'\\\\' )
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel B: Sweden}} \\\\ \n')
+for i,line in enumerate(SWEi):
+    line = formatLine(line,1)
+    for j in range(0,9):
+        if i==j:
+            lineSWE.append(nameSWE[j]+'&'+line)
+
+tabl.write(lineSWE[4]+'&'+lineSWE[6]+'\\\\' +
+           lineSWE[5]+'&'+lineSWE[7]+'\\\\' +
+           '&&&'         +lineSWE[8]+'\\\\' +
+           '&&&'         +lineSWE[0]+'\\\\' +
+           '&&&'         +lineSWE[1]+'\\\\' +  
+           '&&&'         +lineSWE[2]+'\\\\' +            
+           '&&&'         +lineSWE[3]+'\\\\' )
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: United Kingdom (Avon)}} \\\\ \n')
@@ -237,7 +256,7 @@ tabl.close()
 DHSi = open(RIN + 'DHS_est_non_ucond.csv').readlines()[1:-1]
 USAi = open(RIN + 'USA_est_non_ucond.csv').readlines()[1:-1]
 CHIi = open(RIN + 'CHI_est_non_ucond.csv').readlines()[1:-1]
-SWEi = open(RIN + 'worldEstimatesSweden.csv').readlines()[1:-1]
+SWEi = open(RIN + 'SWE_est_non_ucond.csv').readlines()[1:-1]
 UKAi = open(RIN + 'UKA_est_non_ucond.csv').readlines()[1:-1]
 
 tabl = open(OUT + 'twinEffectsUncondUnstand.tex', 'w')
@@ -275,6 +294,19 @@ tabl.write(lineUSA[2]+'&'+lineUSA[0]+'\\\\' +
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel B: Sweden}} \\\\ \n')
+for i,line in enumerate(SWEi):
+    line = formatLine(line,1)
+    for j in range(0,9):
+        if i==j:
+            lineSWE.append(nameSWE[j]+'&'+line)
+
+tabl.write(lineSWE[4]+'&'+lineSWE[6]+'\\\\' +
+           lineSWE[5]+'&'+lineSWE[7]+'\\\\' +
+           '&&&'         +lineSWE[8]+'\\\\' +
+           '&&&'         +lineSWE[0]+'\\\\' +
+           '&&&'         +lineSWE[1]+'\\\\' +  
+           '&&&'         +lineSWE[2]+'\\\\' +            
+           '&&&'         +lineSWE[3]+'\\\\' )
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: United Kingdom (Avon)}} \\\\ \n')
@@ -329,7 +361,7 @@ tabl.close()
 DHSi = open(RIN + 'DHS_est_std_cond.csv').readlines()[1:-1]
 USAi = open(RIN + 'USA_est_std_cond.csv').readlines()[1:-1]
 CHIi = open(RIN + 'CHI_est_std_cond.csv').readlines()[1:-1]
-SWEi = open(RIN + 'worldEstimatesSweden.csv').readlines()[1:-1]
+SWEi = open(RIN + 'SWE_est_std_cond.csv').readlines()[1:-1]
 UKAi = open(RIN + 'UKA_est_std_cond.csv').readlines()[1:-1]
 
 tabl = open(OUT + 'twinEffectsCond.tex', 'w')
@@ -367,6 +399,19 @@ tabl.write(lineUSA[2]+'&'+lineUSA[0]+'\\\\' +
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel B: Sweden}} \\\\ \n')
+for i,line in enumerate(SWEi):
+    line = formatLine(line,1)
+    for j in range(0,9):
+        if i==j:
+            lineSWE.append(nameSWE[j]+'&'+line)
+
+tabl.write(lineSWE[4]+'&'+lineSWE[6]+'\\\\' +
+           lineSWE[5]+'&'+lineSWE[7]+'\\\\' +
+           '&&&'         +lineSWE[8]+'\\\\' +
+           '&&&'         +lineSWE[0]+'\\\\' +
+           '&&&'         +lineSWE[1]+'\\\\' +  
+           '&&&'         +lineSWE[2]+'\\\\' +            
+           '&&&'         +lineSWE[3]+'\\\\' )
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: United Kingdom (Avon)}} \\\\ \n')
