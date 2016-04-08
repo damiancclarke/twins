@@ -235,7 +235,7 @@ Estimated coefficients represent the average rate of observed miscarriage (per 1
 \begin{spacing}{1}
 \begin{figure}[htpb!]
 \includegraphics[width=0.9\textwidth]{coverage.eps}
-\caption{Coverage of data (twinning and maternal health) by country and data type.  Different colours represent different types of data (surveys, national vital statistics, and so forth).  Refer to the legend for a description.}
+\caption{\textbf{Coverage of data (twinning and maternal health) by country and data type}. {\footnotesize  Different colours represent different types of data (surveys, national vital statistics, or no data collected).  Each data type is described in the figure legend.}}
 \label{fig:twincoverage}
 \end{figure}
 
@@ -251,11 +251,12 @@ Estimated coefficients represent the average rate of observed miscarriage (per 1
 \end{subfigure}
 %\captionsetup{labelformat=empty}
 \caption{\textbf{Descriptive Trends of Twinning over Time}: Each plot presents the proprtion of
-twins of all births in a given year and the average life expectancy of women in that year. In
-both cases, life expectancy data comes from the World Bank Data Bank (indiciator SP.DYN.LE00.FE.IN) and refers to the life expectancy at birth for a female infant born in that year if the prevailing mortality rates remained unchanged throughout her life.  For Sub-Saharan Africa, twin proportions ar calculated based on all births in these countries from DHS data (see Supplementary Information for more information).  The plot begins in 1975 and ends in 2010, as beyond these years very few births are recorded.  A 3 year moving average is plotted.  In the United States, twin proportions are determined from full birth certficate data in each year.  The graph begins at 1971 as before this year the birth type variable was not recorded.  The vertical dotted line represents the first successful case of IVF in the country.}
+twins of all births in a given year, and the average life expectancy of women in that year. In
+both cases, life expectancy data comes from the World Bank Data Bank (indiciator SP.DYN.LE00.FE.IN) and refers to the life expectancy at birth for a female infant born in that year if the prevailing mortality rates remained unchanged throughout her life.  For Sub-Saharan Africa, twin proportions ar calculated based on all births in these countries from DHS data (see Supplementary Information for more information).  The plot begins in 1975 and ends in 2010, in line with the range of availaibility of birth information from the sample of DHS countries.  A 3 year moving average is plotted.  In the United States, twin proportions are determined from full birth certficate data in each year.  The graph begins at 1971 as before this year the birth type variable was not recorded.  The vertical dotted line represents the first successful case of IVF in the country.}
 \end{figure}
 
 \clearpage
+\thispagestyle{empty}
 \input{summaryStatsWorld.tex}
 \input{summaryStatsWorld_DE.tex}
 \input{USADeathSumTab.tex}
@@ -263,6 +264,14 @@ both cases, life expectancy data comes from the World Bank Data Bank (indiciator
 \input{twinEffectsCond.tex}
 \input{twinEffectsUncondUnstand.tex}
 
+%NOTE FOR SUM TALBE: FETAL DEATHS & BIRTHS FROM NVSS:
+%%\\textbf{Summary Statistics: Births and Fetal Deaths 1999-2002 (USA)}
+%% {\\footnotesize Descriptive statistics are presented for all births
+%% and fetal deaths recorded in USA National Vital Statistics Data prior
+%% to the birth and death certificate reorganisation in 2003. Full data
+%% collection details are avilable in supplementary methods. All variables
+%% are either binary measures, or with units indicated in the variable
+%% name.}
 
 \clearpage
 
@@ -281,18 +290,8 @@ both cases, life expectancy data comes from the World Bank Data Bank (indiciator
 \end{subfigure}
 %\captionsetup{labelformat=empty}
 \vspace{5mm}
-\caption{\textbf{Twin Effects exist at all Income Levels}: Each plot displays the difference in z-scores of height (left-hand side) or education z-score (right-hand side) between twin and non-twin mothers. Z-scores compare each mother's outcome to the mean and standard deviation in her country.  The top two plots present multivariate regression estimates of the difference between twin and non-twin mothers along with their 95\% confidence intervals for each country in which this microdata is available.  All estimates are conditional on total fertility and mother's age.  The bottom two panels plot these differences against log GDP per capita, where log GDP per capita data comes from the World Bank Data Bank (indicator NY.GDP.PCAP.PP.KD), and is expressed at Purchasing Power Parity.  Each circle represents a particular country.  In the left-hand panel, circles above the horizontal dotted line imply that twin mothers are taller than non-twin mothers, while in the right-hand panel circles above the dotted line imply that twin mothers have more education than non-twin mothers.  Both measures are taken at the time of the survey, not the time of the birth.  The size of the circle indicates the proportion of all births in the country which are twins, with larger points implying a larger proportion of twins. The global correlation between standardized height difference and GDP conditional on continent fixed effects is 0.265 (t-statistic 1.83), and between standardized education and GDP is 0.136 (t-statistic 0.86). Figure 2 in the text replicates these figures using unstandardized values for education and mother's height.}
+\caption{\textbf{Twin Effects exist at all Income Levels}: {\footnotesize Each plot displays the difference in z-scores of height (left-hand side) or education z-score (right-hand side) between twin and non-twin mothers. Z-scores compare each mother's outcome to the mean and standard deviation in her country.  The top two plots present multivariate regression estimates of the difference between twin and non-twin mothers along with their 95\% confidence intervals for each country in which this microdata is available.  All estimates are conditional on total fertility and mother's age.  The bottom two panels plot these differences against log GDP per capita, where log GDP per capita data comes from the World Bank Data Bank (indicator NY.GDP.PCAP.PP.KD), and is expressed at Purchasing Power Parity.  Each circle represents a particular country.  In the left-hand panel, circles above the horizontal dotted line imply that twin mothers are taller than non-twin mothers, while in the right-hand panel circles above the dotted line imply that twin mothers have more education than non-twin mothers.  Both measures are taken at the time of the survey, not the time of the birth.  The size of the circle indicates the proportion of all births in the country which are twins, with larger points implying a larger proportion of twins. The global correlation between standardized height difference and GDP conditional on continent fixed effects is 0.265 (t-statistic 1.83), and between standardized education and GDP is 0.136 (t-statistic 0.86). Figures 2 and 3 in the text replicate these figures using unstandardized values for education and mother's height.}}
 \end{figure}
-
-%\begin{figure}[htpb!]
-%\begin{subfigure}{.5\textwidth}
-%  \includegraphics[scale=0.6]{./HeightDif-eps-converted-to}
-%\end{subfigure}%
-%\begin{subfigure}{.5\textwidth}
-%  \includegraphics[scale=0.6]{./EducDif-eps-converted-to}
-%\end{subfigure}
-%\caption{Points and confidence intervals represent the absoulte difference between mothers who have twins and mothers who do not have twins.  Bars represent 95\% %confidence intervals, and all results condition on maternal age at birth and total fertility: variables which are known to be positively associated with twinning.}
-%\end{figure}
 
 \begin{figure}[htpb!]
 \begin{subfigure}{.5\textwidth}
@@ -309,7 +308,7 @@ both cases, life expectancy data comes from the World Bank Data Bank (indiciator
 \end{subfigure}
 %\captionsetup{labelformat=empty}
 \vspace{5mm}
-\caption{\textbf{Rates of Miscarriage are higher for twins with unhealthy mothers}: Conditional on mother age fixed effects, total fertility fixed effects, and year of birth fixed effects.  For the unconditional results, refer to figure 2 of the paper.}
+\caption{\textbf{Rates of Miscarriage are higher for twins with unhealthy mothers}: {\footnotesize Each column presents the difference in rates of miscarriage based on whether the mother engages in a particular health behaviour, or has a particular health stock.  Each value is conditional on mother age fixed effects, total fertility fixed effects, and year of birth fixed effects.  For the unconditional results, and further notes, refer to figure 4 of the paper.}}
 \end{figure}
 \end{spacing}
 

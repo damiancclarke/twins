@@ -17,40 +17,56 @@ SUM  = "/home/damian/investigacion/Activa/Twins/Results/Sum/"
 OUT  = "/home/damian/investigacion/Activa/Twins/paper/twinsHealth/tex/"
 
 
-noteT1 = ('\\textbf{Effect of Maternal Health on Twinning} This table displa' + 
-'ys results from Ordinary Least Square regressions of a child\'s birth type ' +
-'(twin or singleton) on the mother\'s health behaviours and conditions. The ' +
-'outcome variable is a binary variable for twin (=1) or singleton (=0) multi' +
-'plied by 100, so all coefficients are expressed in terms of the percent inc' +
-'rease in twinning.  All variables are standardised so coefficients can be i' +
-'terpreted as the percent change in twin births associated with a 1 standard' +
-' deviation (1 $\\sigma$) increase in the variable of interest. All models i' +
-'nclude fixed effects for age and birth order, and where possible, for gesta' +
-'tion of the birth in weeks (panels A and C). Stars next to the coefficients' +
-'nts indicate significance levels, with: *p$<$0.1  **p$<$0.05  ***p$<$0.01. ' +
-'95\% confidence intervals are displayed in parentheses. Further details reg' +
-'arding estimation samples and variable construction can be found in Supplem' +
-'entary Information')
+noteE1 = ('\\textbf{Effect of Maternal Health on Twinning} {\\footnotesize  ' +
+'Results from OLS regressions of a child\'s birth type (twin or singleton)  ' +
+'on the mother\'s health behaviours and conditions are displayed. These     ' +
+'results accompany figure 1 in the main text.  The outcome variable is a    ' +
+'binary variable for a twin (=1) or singleton (=0) birth, multiplied by 100,' +
+' so all coefficients are expressed in terms of the percent increase in     ' +
+'twinning. Dependent variables are standardised so coefficients can be      ' +
+'interpreted as the percent change in twin births associated with a 1       ' +
+'standard deviation (1 $\\sigma$) increase in the variable of interest. All ' +
+'models include fixed effects for age and birth order, and where possible,  ' +
+'for gestation of the birth in weeks (panels A and C). Asterisks indicate   ' +
+'significance levels of p-values, with: *p$<$0.1  **p$<$0.05  ***p$<$0.01.  ' +
+'95\% confidence intervals are displayed in parentheses. Further details    ' +
+'regarding estimation samples and variable construction are available in    '
+'Supplementary Information.}')
+noteE2 = ('\\textbf{Effect of Maternal Health on Twinning (Conditional      ' +
+'Results)} \\footnotesize{ Results from OLS regressions of a child\'s birth ' +
+'type (twin or singleton) on the mother\'s health behaviours and conditions ' +
+'are displayed.  Specifications are identical to those in extended data     ' +
+'table 5, however each variable ubdependent variable is included together   ' +
+'in estimated regression. Asterisks indicate significance levels of p-values,'+
+'with: *p$<$0.1  **p$<$0.05  ***p$<$0.01. 95\% confidence intervals are     ' +
+'displayed in parentheses. Further details regarding estimation samples and ' +
+'variable construction are available in Supplementary Information.}')
+noteE3 = ('\\textbf{Effect of Maternal Health on Twinning (Unstandardised   ' +
+'Variables)} \\footnotesize{ Results from OLS regressions of a child\'s     ' +
+'birth type (twin or singleton) on the mother\'s health behaviours and      ' +
+'conditions are displayed. Specifications are identical to those in extended' +
+' data table 5, however each independent variable is unstandardised, so     ' +
+'all coefficients are interpreted as the effect of a 1 unit increase in the ' +
+'indepdent variable. Asterisks indicate significance levels of p-values,    ' +
+'with: *p$<$0.1  **p$<$0.05  ***p$<$0.01. 95\% confidence intervals are     ' +
+'displayed in parentheses. Further details regarding estimation samples and ' +
+'variable construction are available in Supplementary Information.}')
+noteS1 = ('\\textbf{Summary Statistics: All Samples (Panels A-C)} {         ' +
+'\\footnotesize Each panel presents descriptive statisticss of data from each'+
+'context examined. Panel A comes from the United States Vital Statistics    ' +
+'System for all non-ART users from 2009-2013, Panel B consists of all births' +
+' from the Swedish Medical Birth Register from 1990-2011, and Panel C comes ' +
+'Avon Longitudinal Study of Parents and Children.  Full data collection     ' +
+'details are avilable in supplementary methods. All variables are either    ' +
+'binary measures, or with units indicated in the variable name.} ' )
+noteS2 = ('\\textbf{Summary Statistics: All Samples (Panels D-E)} {         ' +
+'\\footnotesize Each panel presents descriptive statistics of data from each' +
+' context examined. Panel D comes from the Chilean longitudinal study of    ' +
+'early infancy, and panel E comes from all pooled publicly available        ' +
+'Demographic and Health Surveys.  Full data collection details are avilable ' +
+'in supplementary methods. All variables are either binary measures, or with' +
+' units indicated in the variable name. }' )
 
-noteS1 = ('Effect of Maternal Health on Twinning (Unconditional Results) Thi' +
-'s table displa ys results from Ordinary Least Square regressions of a child' +
-'\'s birth type (twin or singleton) on the mother\'s health behaviours and c' +
-'onditions. Each cell represents a seperate regression, where only the varia' +
-'ble of interest and fixed effects for control variables are included. The o' +
-'utcome variable is a binary variable for twin (=1) or singleton (=0) multip' +
-'lied by 100, so all coefficients are expressed in terms of the percent incr' + 
-'rease in twinning.  Height is measured in centimetres, BMI is measured in  ' +
-'$\\frac{kilograms}{metres^2}$, availability measures in panel B refer to the' +
-'proportion of births in the women\'s survey cluster which were attended/una' +
-'ttended, and all remaining variables are binary.  In each case the interpre' +
-'tion of the coefficient is the effect that a 1 unit increase of the variabl' +
-'e will have on the probability that a woman gives birth to twins. All model' +
-'s include fixed effects for age and birth order, and where possible, for ge' +
-'station of the birth in weeks (panels A and C). Stars next to the coefficie' +
-'ntsnts indicate significance levels, with: *p$<$0.1  **p$<$0.05  ***p$<$0.0' +
-'1. 95\% confidence intervals are displayed in parentheses. Further details ' +
-'regarding estimation samples and variable construction can be found in the ' +
-'Supplementary Information provided above.')
 
 #==============================================================================
 #== (1b) Options
@@ -94,7 +110,7 @@ SWEs = open(SUM +   'SweSum.tex').readlines()[1:-1]
 tabl = open(OUT + 'summaryStatsWorld.tex', 'w')
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n'
-           '\\caption{Summary Statistics: All Samples (Panels A-C)}\n'
+           '\\caption{' + noteS1 + '}\n'
            '\\begin{tabular}{lccccc}\n \\toprule \n'
            '&N&Mean&Std.Dev.&Min&Max \\\\ \n'
            '\\midrule \n'
@@ -124,7 +140,7 @@ tabl.close()
 tabl = open(OUT + 'summaryStatsWorld_DE.tex', 'w')
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n'
-           '\\caption{Summary Statistics: All Samples (Panels D-E)}\n'
+           '\\caption{' + noteS2 + '}\n'
            '\\begin{tabular}{lccccc}\n \\toprule \n'
            '&N&Mean&Std.Dev.&Min&Max \\\\ \n'
            '\\midrule \n'
@@ -176,7 +192,7 @@ lineDHS = []
 
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
-           '\\begin{center}\n\\caption{' + noteS1 + '}\n'
+           '\\begin{center}\n\\caption{' + noteE1 + '}\n'
            '\scalebox{0.92}{'
            '\\begin{tabular}{llcllc}\n \\toprule'
            '\\multicolumn{3}{c}{Health Behaviours / Access} &'
@@ -281,7 +297,7 @@ lineDHS = []
 
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
-           '\\begin{center}\n\\caption{' + noteS1 + '}\n'
+           '\\begin{center}\n\\caption{' + noteE3 + '}\n'
            '\scalebox{0.92}{'
            '\\begin{tabular}{llcllc}\n \\toprule'
            '\\multicolumn{3}{c}{Health Behaviours / Access} &'
@@ -386,7 +402,7 @@ lineDHS = []
 
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
-           '\\begin{center}\n\\caption{' + noteT1 + '}\n'
+           '\\begin{center}\n\\caption{' + noteE2 + '}\n'
            '\scalebox{0.92}{'
            '\\begin{tabular}{llcllc}\n \\toprule'
            '\\multicolumn{3}{c}{Health Behaviours / Access} &'
