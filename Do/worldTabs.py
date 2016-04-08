@@ -92,9 +92,9 @@ CHIs = open(SUM + 'ChileSum.tex').readlines()[1:-1]
 SWEs = open(SUM +   'SweSum.tex').readlines()[1:-1]
 
 tabl = open(OUT + 'summaryStatsWorld.tex', 'w')
-
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
-           '\\begin{center}\n\\caption{Summary Statistics: All Samples}\n'
+           '\\begin{center}\n'
+           '\\caption{Summary Statistics: All Samples (Panels A-C)}\n'
            '\\begin{tabular}{lccccc}\n \\toprule \n'
            '&N&Mean&Std.Dev.&Min&Max \\\\ \n'
            '\\midrule \n'
@@ -115,8 +115,20 @@ tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
 for i,line in enumerate(UKAs):
     if i>0:
         tabl.write(line)
+tabl.write('\\bottomrule \n \\end{tabular} \n \\end{center} \\end{table} \n'
+           '\n \\end{spacing}')
 
-tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+tabl.close()
+
+
+tabl = open(OUT + 'summaryStatsWorld_DE.tex', 'w')
+tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
+           '\\begin{center}\n'
+           '\\caption{Summary Statistics: All Samples (Panels D-E)}\n'
+           '\\begin{tabular}{lccccc}\n \\toprule \n'
+           '&N&Mean&Std.Dev.&Min&Max \\\\ \n'
+           '\\midrule \n'
+           '\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chile}} \\\\ \n')
 for i,line in enumerate(CHIs):
     if i>0:
