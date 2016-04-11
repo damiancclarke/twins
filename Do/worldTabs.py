@@ -52,7 +52,7 @@ noteE3 = ('\\textbf{Effect of Maternal Health on Twinning (Unstandardised   ' +
 'displayed in parentheses. Further details regarding estimation samples and ' +
 'variable construction are available in Supplementary Information.}')
 noteS1 = ('\\textbf{Summary Statistics: All Samples (Panels A-C)} {         ' +
-'\\footnotesize Each panel presents descriptive statisticss of data from each'+
+'\\footnotesize Each panel presents descriptive statistics of data from each' +
 'context examined. Panel A comes from the United States Vital Statistics    ' +
 'System for all non-ART users from 2009-2013, Panel B consists of all births' +
 ' from the Swedish Medical Birth Register from 1990-2011, and Panel C comes ' +
