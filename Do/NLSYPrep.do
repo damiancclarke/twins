@@ -25,10 +25,41 @@ cap log close
 ********************************************************************************
 *** (1) Globals and locals
 ********************************************************************************
-global OUT "~/investigacion/Activa/Twins/Data/NLSY"
+global DAT "~/investigacion/Activa/Twins/Data/NLSY79"
 global LOG "~/investigacion/Activa/Twins/Log"
-global DAT "~/database/NLSY"
 
 cap mkdir "$OUT"
 log using "$LOG/NLSYPrep.txt", text replace
 
+********************************************************************************
+*** (2) Import NLSY79 data
+********************************************************************************
+infile using "$DAT/NLYS79.dct"
+do "$DAT/NLYS79-value-labels.do"
+
+keep if SAMPLE_SEX_1979==2
+
+
+********************************************************************************
+*** (3) Generate mother variables
+********************************************************************************
+gen age1979          = FAM_1B_1979
+gen hypertension     = H40_CHRC_1_XRND == 1
+gen hypertensionYear = H40_CHRC_1A_Y_XRND if H40_CHRC_1A_Y_XRND>0
+gen diabetes         = H40_CHRC_2_XRND == 1
+gen diabetesYear     = H40_CHRC_2A_Y_XRND if H40_CHRC_2A_Y_XRND>0
+gen cancer           = H40_CHRC_3_XRND == 1
+gen cancerYear       = H40_CHRC_3B_01_Y_XRND if H40_CHRC_3B_01_Y_XRND>0
+gen heartfail        = H40_CHRC_6_XRND == 1
+gen heartfailYear    = H40_CHRC_6A_Y_XRND if H40_CHRC_6A_Y_XRND>0
+gen birthYear        = Q1_3_A_Y_1979
+gen birthMonth       = Q1_3_A_M_1979
+gen birthCountry     = FAM_2A_1979
+
+gen 
+exit
+
+#delimit ;
+keep age1979 hypertension* diabetes* cancer* heartfail* CASEID_1979 HHID_1979
+birth* ;
+#delimit cr
