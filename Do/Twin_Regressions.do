@@ -69,7 +69,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         1
+local samp5         0
 local resave        0
 local samples       0
 local matchrate     0
@@ -86,6 +86,7 @@ local Oster         0
 local RF            0
 local IV            0
 local IVnl          0
+local IVfee         1
 local IVtwin        0
 local desire        0
 local compl_fert    0
@@ -93,7 +94,7 @@ local twinoccur_ols 0
 local twinoccur_iv  0
 local conley        0
 local thresholdtest 0
-local balance       1
+local balance       0
 local country       0
 local adj_fert      0
   local ADJIV       0
@@ -217,7 +218,7 @@ if `samp5'!=1 {
 
 	if `resave'==1 save "$Data/DHS_twins_mortality", replace
 }
-	
+
 if `samp5'==1 {
 *	set seed 2727
 *	gen sampler=runiform()
@@ -1109,53 +1110,52 @@ if `RF'==1 {
 **** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
 ********************************************************************************
 if `IV'==1 {
-	tokenize `fnames'
-	foreach condition of local conditions {
-		
-		local n1=1
-		local n2=2
-		local n3=3
-		local n4=4
-		local estimates
-		local fstage
+    tokenize `fnames'
+    foreach condition of local conditions {
+        local n1=1
+	local n2=2
+	local n3=3
+	local n4=4
+	local estimates
+	local fstage
 
-		local OUT "$Tables/IV/`1'"
-    local ll=3
-    
-		foreach n in `gplus' {
-			preserve
-			keep `cond'&`condition'&`n'_plus==1
+	local OUT "$Tables/IV/`1'"
+        local ll=3
 
-			foreach y in $outcomes {
-        *`y'`ll'p
-        eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',      /*
-				*/ `se' savefirst savefp(f`n4') partial(`base')
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',       /*
-				*/ `se' savefirst savefp(f`n3') partial(`base')
-				eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'           /*
-				*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
-				eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),     /*
-				*/ `se' savefirst savefp(f`n1') partial(`base')
+        foreach n in `gplus' {
+            preserve
+            keep `cond'&`condition'&`n'_plus==1
+            
+            foreach y in $outcomes {
+                *`y'`ll'p
+                eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',      /*
+                */ `se' savefirst savefp(f`n4') partial(`base')
+                eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',       /*
+                */ `se' savefirst savefp(f`n3') partial(`base')
+                eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'           /*
+		*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
+                eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),     /*
+		*/ `se' savefirst savefp(f`n1') partial(`base')
 
-				local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
-				local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert f`n4'fert
-				local n1=`n1'+4
-				local n2=`n2'+4
-				local n3=`n3'+4
-				local n4=`n4'+4				
-			}
-			restore
-      local ++ll
-		}
-
-		estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
-		*/ keep(fert $age $S $H $HP)
-		estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-		*/ keep(twin_* $age $S $H $HP)
-
-		estimates clear
-		macro shift
-	}
+                local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
+                local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert f`n4'fert
+                local n1=`n1'+4
+                local n2=`n2'+4
+                local n3=`n3'+4
+                local n4=`n4'+4				
+            }
+            restore
+            local ++ll
+        }
+        
+        estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
+        */ keep(fert $age $S $H $HP)
+        estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
+        */ keep(twin_* $age $S $H $HP)
+        
+        estimates clear
+        macro shift
+    }
 }
 
 ********************************************************************************
@@ -1188,6 +1188,85 @@ if `IVnl'==1 {
   estimates clear
 }
 
+********************************************************************************
+**** (6c) IV split by fee non-fee status
+********************************************************************************
+if `IVfee'==1 {
+
+    #delimit ;
+    gen free= (country=="Albania"        &child_yob>=1985)|
+              (country=="Armenia"        &child_yob>=1984)|
+              (country=="Bangladesh"     &child_yob>=1994)|
+              (country=="Cameroon"       &child_yob>=1994)|
+              (country=="Egypt"          &child_yob>=1993)|
+              (country=="Ethiopia"       &child_yob>=1988)|
+              (country=="Ghana"          &child_yob>=1999)|
+              (country=="Guyana"         &child_yob>=1982)|
+              (country=="India"          &child_yob>=2000)|
+              (country=="Kenya"          &child_yob>=1997)|
+              (country=="Kyrgyz-Republic"&child_yob>=1983)|
+              (country=="Lesotho"        &child_yob>=1993)|
+              (country=="Madagascar"     &child_yob>=1996)|
+              (country=="Malawi"         &child_yob>=1988)|
+              (country=="Morocco"        &child_yob>=1957)|
+              (country=="Mozambique"     &child_yob>=1998)|
+              (country=="Nigeria"        &child_yob>=1993)|
+              (country=="Rwanda"         &child_yob>=1996)|
+              (country=="Swaziland"      &child_yob>=2004)|
+              (country=="Tanzania"       &child_yob>=1994)|
+              (country=="Uganda"         &child_yob>=1990)|
+              (country=="Zambia"         &child_yob>=1996);
+    #delimit cr
+
+    local feetype fees no-fees
+    local feecond free==0 free==1
+    tokenize `feetype'
+    foreach condition of local feecond {
+        local n1=1
+	local n2=2
+	local n3=3
+	local n4=4
+	local estimates
+	local fstage
+
+	local OUT "$Tables/IV/`1'"
+
+        foreach n in `gplus' {
+            preserve
+            keep `cond'&`condition'&`n'_plus==1
+            
+            foreach y in $outcomes {
+                *`y'`ll'p
+                eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',      /*
+                */ `se' savefirst savefp(f`n4') partial(`base')
+                eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',       /*
+                */ `se' savefirst savefp(f`n3') partial(`base')
+                eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'           /*
+		*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
+                eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),     /*
+		*/ `se' savefirst savefp(f`n1') partial(`base')
+
+                local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
+                local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert f`n4'fert
+                local n1=`n1'+4
+                local n2=`n2'+4
+                local n3=`n3'+4
+                local n4=`n4'+4				
+            }
+            restore
+        }
+        
+        estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
+        */ keep(fert $age $S $H $HP)
+        estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
+        */ keep(twin_* $age $S $H $HP)
+        
+        estimates clear
+        macro shift
+    }
+}
+
+exit
 ********************************************************************************
 **** (7) IV including twins and pre-twins
 ********************************************************************************
