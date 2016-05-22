@@ -1,0 +1,849 @@
+%================================================================================
+%== SETUP - CAN IGNORE
+%================================================================================
+
+%below is where we can change font of slides
+\documentclass[9pt,letterpaper,subeqn]{beamer}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{\begin{center}\small\insertframenumber\end{center}}
+\usefonttheme{serif}
+\usecolortheme{orchid}
+
+
+
+\usepackage[english]{babel}
+\selectlanguage{english}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[update,prepend]{epstopdf}
+\usepackage{framed}
+\usepackage{fleqn}
+\usepackage{graphics}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage{textcomp}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\setbeamertemplate{caption}[numbered]
+
+%================================================================================
+%== TITLE, NAMES, DATE
+%================================================================================
+\title{The Twin Instrument and The Fertility-Investment Trade-off}
+%make his into normal author tex symbol
+\author{Sonia Bhalotra\inst{\dag} \and Damian Clarke\inst{\ddag}}
+\institute{\inst{\dag} University of Essex \and \inst{\ddag} University of Oxford & University of Santiago}
+\date{May 2016}
+
+
+
+\begin{document}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+%%Damian i started before you woke up and so i started on the tex file used for the Germany/Essen talk in Apr-2015. Looking at the PDF of this i think it is worth experimenting with using a slightly 
+%smaller font so we get less crowded slides, with more spaces
+%%RESPONSE: No problem.  I will do this once I compile the first time.  Above where it says "10pt" (after documentclass) we can change it to 9pt.
+
+%While editing in tex i am not sure how crowded my slides are so after the first compilation we can break some into 2 parts.
+%%RESPONSE: Yes, makes sense!  Feel free to write and then once compiling we can shift around based on how it looks.
+
+%================================================================================
+%== Twins: A Natural Experiment
+%================================================================================
+
+\section{Introduction}
+
+\frame{\frametitle{Twins As A Natural Experiment}
+\begin{itemize}
+\item A vast literature in economics, behavioural genetics and psychology relies upon the premise that twin births occur as an act of nature -- and are allocated randomly across families.\\ \vspace{5mm}
+\item A twin birth generates a natural experiment. 
+\begin{itemize}
+\item It allows us to compare families that unexpectedly have an additional child because they have a twin birth with families who have the same number of birth events but only singleton births. \\ \vspace{5mm}
+\end {itemize} 
+\item This is useful when one is interested in identifying causal effects of fertility (number of children) on investments in child quality (e.g. education), or on mothers' workforce participation.
+\end{itemize}
+}
+
+
+
+%================================================================================
+%== Twin Births Are Not Random
+%================================================================================
+
+
+\frame{\frametitle{Our Critique: Twin Births Are Not Random}
+\begin{itemize}
+\item Even if twin conceptions are `random', twin births are not because taking twins to term depends on health stocks and behaviours of mothers during pregnancy.
+\item If health and health-seeking behaviour are correlated with the outcomes, the natural experiment breaks down.\\ \vspace{5mm}
+\item We present the first evidence that this is a widespread phenomenon in rich and poor countries
+\item In poor countries, many women are severely under-nourished and may not be fit enough to carry twin conceptions to birth, and antenatal services are weak. 
+\item In richer countries, many women engage in risky behaviours and/or experience medical problems in pregnancy.
+\end{itemize}
+}
+
+%================================================================================
+%== Mechanism
+%================================================================================
+
+
+\begin{frame}[label=mech]
+\frametitle{Mechanisms}
+\item The mechanism we propose is selective foetal death. 
+	\begin{itemize}
+	\item Twin conceptions are more demanding of maternal resources \& hence more likely to suffer miscarriage or stillbirth.
+	\item About 1 in 8 twin conceptions results in a live birth. Spontaneous abortion rate among twins three times that for singletons (Boklage 1990). \\ \vspace{3mm}
+	\item Supporting medical evidence: FSH is associated with the risk of dizygotic twins and is more prevalent among heavier and taller women (Li et al.\ 2003, Hall 2003) \\ \vspace{3mm}
+	\end{itemize}
+\item We  provide evidence in favour of this mechanism.
+\end{itemize}
+\end{frame}
+}
+
+%================================================================================
+%== Invalidity of Twin IV
+%================================================================================
+
+
+\frame{\frametitle{Maternal Health- Multidimensional, Unobservable}
+\begin{itemize}
+\item Maternal health and pregnancy behaviours are multidimensional and at best partially observed.
+\item Therefore impossible to adjust for them and restore validity of the twin instrument.
+\item Examples of unobservables include stress, sleep, breakfast-skipping, folic acid supplementation, pollution exposure.
+\end{itemize}
+}
+
+
+%================================================================================
+%== Why Do We Care
+%================================================================================
+
+\frame{\frametitle{Relevance of this Critique}
+\begin{itemize}
+\item Estimates using twins to instrument fertility are biased on account of mothers of twins being positively selected.
+\item Plausible that women's health is positively correlated with their labour supply and the quality of their children.
+\item If so, the twin-IV estimator will tend to under-estimate the tradeoffs between fertility and (a) labour supply and (b) child quality.
+\item Relevant to lively scholarly and policy interest in the career costs of children (Adda et al. 2015) and the quantity-quality tradeoff (Angrist et al. 2010).  
+\item Relevant for instance to motivating fertility-control policies (China vs Italy).
+\end{itemize}
+}
+
+
+%================================================================================
+%== The Quantity-Quality Tradeoff
+%================================================================================
+
+\frame{\frametitle{The Quantity--Quality Trade-off}
+\begin{itemize}
+\item In this paper, to illustrate the problem, we focus upon the QQ tradeoff.
+\item Empirical regularity- cross-section & time series- large families are associated with weaker educational outcomes (Hanushek 1992, Blake 1989, Galor 2012). \vspace{3mm}
+\item Could signify a QQ trade-off (Becker and Lewis 1973, Becker and Tomes 1976) or, alternatively, shift factors like income. \vspace{3mm}
+\item Recent studies using the twin instrument reject the Q-Q tradeoff (Angrist et al.\ 2010, Black et al.\ 2005), while other approaches do not (Cohen et al. 2013).
+\item We argue that an underlying trade-off is veiled by the IV-bias created by omitted maternal health. 
+\end{itemize}
+}
+
+
+%================================================================================
+%== What We Do
+%================================================================================
+
+\frame{\frametitle{What We Do}
+\begin{itemize}
+\item Demonstrate that twin births are correlated with maternal health using cross-sectional and within-mother variation in microdata from many countries.
+\item Provide evidence of the driving mechanism i.e. that twin births are more likely to miscarry, and especially among less healthy women.
+ 
+\item Present OLS estimates: Potential negative selection of women into high fertility.
+\item Present IV estimates: Potential positive selection of women into high fertility.
+\item True estimate will lie between the OLS and IV estimates.
+\end{itemize}
+}
+
+\frame{\frametitle{What We Do- continued}
+\begin{itemize}
+\item First-stage IV: Show that twins are a powerful predictor of fertility.
+\item Second-stage IV: Show (partial) bias-correction following (partial) adjustment for maternal health and other characteristics.
+\item Adjustment for maternal characteristics will narrow the gap [bounds] between the OLS and IV estimates.
+\end{itemize}
+
+\item Estimate bounds on the IV estimates on premise that twins are plausibly (rather than strictly) exogenous (Conley et al. 2012).
+\item Provide estimates for the USA and for a pooled sample of developing countries.
+\end{itemize}
+}
+
+
+%================================================================================
+%== Data
+%================================================================================
+
+\section{Data}
+\frame{\frametitle{Data}
+\begin{itemize}
+\item Large samples are useful given twins are rare (around 2\%) 
+\item This said, twins are not as rare as we may think: 1 in 80 livebirths, so 1 in 40 babies is a twin.
+\item Comparable cross-country micro-data for developing countries
+\item Surveys conducted 1991-2013: sample of ~3m. children born in 68 countries. Birth cohorts 1971-2012 (condition on country and birth cohort FE)\\ \vspace{5mm}
+\item American National Health Interview Surveys conducted 1997-2013 \\ \vspace{5mm}
+\item Administrative birth registries and surveys from the UK, Scotland, Sweden, Chile, Spain.
+\end{itemize}
+}
+
+%%% Damian can we create a new slide here which is just a title slide that says Part I: Showing that twins are more likely to be born of healthy mothers. Then we will have similar title slides for 
+%% Parts 2 and 3 of the paper below
+%%RESPONSE: The below slide will do this.  I can add in others v easily.
+\frame{
+\begin{center}
+\Large Showing that twins are more likely to be born of healthy mothers
+\end{center}
+}
+
+%================================================================================
+%== Part I: Showing Twin births are not random- CS
+%================================================================================
+
+\frame{\frametitle{Twins have selectively healthy mothers- CS}
+
+\begin{enumerate}
+\item Cross-sectional microdata evidence from many rich and poor countries.
+\item Regress twin birth on indicators of maternal health, $\bm{H}$ (height, BMI during pregnancy, antenatal care availability, smoking/drinking/drugs and medical problems during pregnancy  
+\item Conditional upon $\bm{X}$ (age, parity, race, ethnicity) and $\bm{S}$ (wealth, education). \vspace{3mm}
+\end{enumerate}
+
+\begin{equation}
+\label{TWINeqn:twinreg}
+P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
+                  + \bm{H}\bm{\gamma}_3 + \varepsilon_{j}.
+\end{equation}
+
+\begin{itemize}
+\item If twin birth is a random event $\bm{\gamma_1}=\bm{\gamma_2}=\bm{\gamma_3}=0$.
+\item Except for maternal age and parity which are factors that geneticists have previously associated with twin births. 
+\item Equivalent to a test for balance of characteristics of `treated' (with twins) and `control' (without twins) mothers.
+\item Confirm that the association of interest holds for cohorts born prior to the introduction of IVF.
+\end{itemize}
+
+}
+
+
+
+%================================================================================
+%== Showing Twin births are not random- within mother
+%================================================================================
+\frame{\frametitle{Twin births are more likely in health families: within mother}
+\vspace{5mm}
+
+\begin{itemize}
+\item Within-mother microdata evidence from poor countries. 
+\item Consider families with at least two births. 
+\item Compare infant mortality of first births followed by a twin with that of first births followed by a singleton. 
+%\item Hypothesis is that first-born children are healthier in families that subsequently have twins. \vspace{3mm}
+\end{itemize}
+
+\vspace{2mm}
+\[Infant health_{t-k}=\alpha twins_{t}+\bm{X}\delta + \varepsilon \]
+\vspace{5mm}
+
+\begin{itemize}
+\item If twins occur randomly, $\alpha=0$.  If positively selected, $\alpha<0$.
+\item Can think of infant mortality as an index of maternal health. 
+\item In this case, also useful to think of it as an indicator of child quality.
+\end{itemize}
+
+\end{itemize}
+}
+
+%================================================================================
+%== Results- within mother- 
+%================================================================================
+
+\frame{\frametitle{Are healthy mothers more likely to produce twins?}
+\input{./tables/IMRtest.tex}
+}
+
+%================================================================================
+%== Results- CS of mothers 
+%================================================================================
+
+%%Damian please check syntax below
+%%Damian can we add Nature (table 3 in extended-data and Figure 1 of coef plots) here and a new slide with ALSPAC results too
+%% Then --after-- the main results showing Pr(twin) depends on maternal health; below, add Fig 2 and 3 from Nature showing relation of phenomena with income etc.
+%%RESPONSE: I will add these in later.  Certainly no problem to do so.
+
+\subsection{Are twin births positively correlated with maternal health?}
+\frame{\frametitle{Mother's Health}
+}
+
+
+\frame{
+\vspace{5mm}
+\input{./tables/TwinReg.tex}
+}
+
+
+\begin{frame}[label=USA2]
+\input{./tables/NHIStwin.tex}
+\end{frame}
+
+
+
+\begin{frame}[label=USA1]
+\input{./tables/USBirths.tex}
+\end{frame}
+
+
+\begin{frame}[label=Scotland]
+\input{./tables/ScotlandTwin.tex}
+\end{frame}
+
+
+
+\begin{frame}[label=Chile]
+\input{./tables/ChileTwin.tex}
+\end{frame}
+
+
+\begin{frame}[label=Spain2]
+%\begin{figure}
+%\caption{Twin Births and Stress (Quintana-Domeque and R\'odenas)}
+\input{./tables/Stress.tex}
+\end{frame}
+
+\begin{frame}[label=UK]
+ \input{./tables/UKTwin.tex}
+\end{frame}
+
+
+
+%================================================================================
+%==Effect Sizes and Relation to Other birth outcomes
+%================================================================================
+%% Damian would be good to add a few other effect sizes below esp for smoking, drinking, maybe antental care. If we can do the Pietro index then that too, maybe on a new slide including method.
+%%RESPONSE: Yes, good point.  I will make some notes.  We have all the standardised effect sizes in various Nature tables now (Extended Data tables 3-6), so shouldn't take long to focus on the ones we want.
+
+\begin{frame}[label=robust]
+\frametitle{Effect Sizes}
+We find substantial marginal effects of observed indicators of mother’s health on the probability of twin births (mean$\approx$2\%)
+%Damian check syntax
+\item No previous evidence of maternal health being a predictor of twin births.
+\item But our findings are in line with maternal health and behaviours affecting other birth outcomes e.g. birth weight or Pr(boys) 
+\item Mazumder and Seeskin, 2014; Black et al.\ 2014;  Bhalotra and Rawlings 2013; Almond et al.\ 2011; Barker 1995).\vspace{6mm}
+\begin{itemize}
+\item A one s.d. change in the height of the mother results in an increase of 0.44\% points (22\% of mean)
+\item A one s.d. change in mother's BMI results in an increase of 0.20\% points (10\% of mean)\\ \vspace{5mm}
+\end{itemize}
+\end{frame}
+
+
+%================================================================================
+%==Results- Mech- Miscarriage
+%================================================================================
+
+%%Damian i had trouble with hyperlinks in Essen. One problem is how to get back to where i was from the table i am jumped to by the link. If easy to fix/explain then good to keep these links.
+%%if not then let's display the table here and i can flip through it quickly given too many slides.
+%%RESPONSE: I will add a "back" hyperlink on each table.  Maybe it's best to put all these tables at the end like an appendix, and then you can just jump to some examples to make the country-specific point?  This way you don't have to scroll through all, and the return can be easy with the "back" hyperlink. 
+%%thanks Damian that sounds good
+
+%%Damian below we mention Nepal, Spain but didnt we have miscarriage for the USA too? If yes can we add it here?
+%% Damian would be good to add effect sizes below.
+%%RESPONSE: Yes, the USA test looks quite good.  We also have the double-difference style graphs and table from the Nature paper, which to me seems more compelling.  Note that this is dated and we have to take out the Nepal results.  A while ago we realised that they were problematic given that all we had was whether the mother had ever had any miscarriage, not whether a particular pregnancy was a miscarriage, so the essence of the test was lost.
+%% thanks Damian- good to replace Nepal with US then. for Nature i like the histograms but for econ i think the regression interaction with a t-stat attd to it is stronger evidence. in the plots we %have the t-test for each pair but not for the difference across pairs which economists would want to see.
+
+\begin{frame}[label=mech]
+\frametitle{Mechanisms- Miscarriage}
+\item It is hard to find data on twin conceptions and on miscarriage. 
+\item We found relevant data from \hyperlink{TwinDeathNepal}{\textcolor{blue}{Nepal}} and \hyperlink{TwinDeathSpain}{\textcolor{blue}{Spain}} which establish that:
+\begin{enumerate}
+\item[(i)] Miscarriage is more frequent among less healthy women (health indicated by under-weight, short, hypertension, etc.)
+\item[(ii)] Miscarriage is more frequent among twins
+\item[(iii)] Miscarriage is most frequent among less healthy women carrying twins
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+%================================================================================
+%==Results- Check on Survival Selection among Mothers
+%================================================================================
+
+%%Damian i had trouble with hyperlinks in Essen. One problem is how to get back to where i was from the table i am jumped to by the link. If easy to fix/explain then good to keep these links.
+%%if not then let's display the table here and i can flip through it quickly given too many slides.
+%%On another matter - Damian- i like figure 6 in the Paper- can you put it below?
+%%RESPONE.  Definitely.  As a note to me, figure 6 is "Height and Selective Survival"
+
+\frame{\frametitle{Potential Concern: Selection on Maternal Survival}
+\begin{itemize}
+\item If unhealthy women who delivered twins died in childbirth, the (DHS) data will not contain those mothers or births.
+\item So our observation that twin birth is correlated with maternal health may be driven by selection on maternal survival. 
+%%Damian is this also true in the US data? It is true in DHS because mother is respondent. But if US is hospital data then they would record the births even if the mother died?
+%%RESPONSE: In the USA birth data, the birth *would* be recorded even if the mother died, given that as you say it's vital statistics.  If mother and child died, we would also see this in the fetal death file. 
+%%DAMIAN- but for mothers who died, if we record a birth, would we still have a record of the mothers health characteristics even though she died (because the charac were presumably noted during her antenatal visits before birth. if yes then we can claim that there is no selection problem in our US estimates.
+\item We (over-)correct for this \hyperlink{MMRselec}{\beamergotobutton{Procedure}} \\ \vspace{5mm}\item 
+\item There is no evidence that selection drives our findings.
+\end{itemize}
+}
+
+
+
+%================================================================================
+%==Part 2 - OLS and IV Estimators- Bias Adjustment
+%================================================================================
+
+\frame{
+\begin{center}
+\Large \textcolor{blue}{Bias Adjustment: OLS and IV Estimators}
+\end{center}
+}
+
+%================================================================================
+%== OLS 
+%================================================================================
+\frame{\frametitle{OLS}
+\begin{itemize}
+\item OLS fails to recover consistent estimates of the QQ trade-off.
+\item This is because preferences for fertility are correlated with preferences for child quality. 
+\item If this correlation is negative, OLS will over-estimate the trade-off.
+%\item We expect this correlation to be negative in general, but it is growing positive in richer countries (?)
+% damian we need to check the evidence for the US.
+%%RESPONSE: Agreed.  I will make OLS tables etc asap.
+\item 
+\end{itemize}
+}
+
+%================================================================================
+%== IV - Standard
+%================================================================================
+\frame{\frametitle{IV Procedure}
+Fertility is often instrumented with occurence of a twin birth. 
+\vspace{6mm}
+\begin{equation}
+\label{TWINeqn:secondstage}
+educ_{ij}=\beta_0+\beta_1 fert_{j} + \bm{X}\bm{\beta}_2+u_{ij}.
+\end{equation}
+\begin{equation}
+\label{TWINeqn:firststage}
+fert_{j}=\alpha_0+\alpha_1 twins_{j}+\bm{X}\bm{\alpha}_2+\nu_{j},
+\end{equation}
+\vspace{2mm}
+And so assuming:
+\[
+\mathbb{E}[fert_j\cdot u_{ij}] \neq 0, \ \mathbb{E}[twins_j\cdot u_{ij}] = 0
+\]
+\vspace{6mm}
+\begin{itemize}
+\item Another critique of twin-IV argues it incurs bias by failing to account for reinforcing investments and scale-economies- Rosenzweig & Zhang 2009  
+\item But Angrist et al. 2010 find no evidence of this using data from Israel. In any case, our critique is independent of this.
+\end{itemize}
+}
+
+
+%================================================================================
+%== IV - Inconsistency
+%================================================================================
+
+%% Damian - maybe replace with the new methodology section that we discussed.
+%%RESPONSE: Yes, to be edited!
+
+\frame{\frametitle{Addressing Inconsistency of Twin-IV- Refurbish Covariates}
+Assuming additive separability of $u_{ij}$: $u_{ij}=u_{ij}^S+u_{ij}^H+u_{ij}^*$.  The typical IV estimate is 
+then the population value, plus (unobserved) error components:
+\[
+\hat\beta_1^{IV} = \beta_1 + P\lim \frac{1}{N}twin_ju^S_{ij} + 
+P\lim \frac{1}{N}twin_ju^H_{ij} + P\lim \frac{1}{N}twin_ju^*_{ij}
+\]
+
+\vspace{6mm}
+We can remove certain observed variables from the error term.  By including elements $S$ and $H$ as additional controls in $\bm{X}$, the IV estimate becomes:
+\[
+\hat\beta_1^{IV,S+H} = \beta_1 + P\lim N^{-1}twin_ju^*_{ij},
+\]
+\vspace{3mm}
+where it is likely that $\hat\beta_1^{IV}>\hat\beta_1^{IV,H}>\hat\beta_1^{IV,S+H}>\beta_1.$
+}
+
+%================================================================================
+%== IV - Inconsistency- how we address it
+%================================================================================
+%Damian i may have a syntax error below
+%%RESPONSE: I will check when compiling (it looks okay, but I'll confirm).
+\frame{\frametitle{Addressing Inconsistency of Twin-IV- Bounds}
+\begin{center}
+\[\hat\beta_1^{IV}>\hat\beta_1^{IV,H}>\hat\beta_1^{IV,S+H}>\beta_1.\]
+\end{center}
+\vspace{6mm}
+\begin{spacing}{1.2}
+But maternal health and pregnancy behaviours are multidimensional and only ever partially unobserved. 
+In order to put limits on the inconsistency, we use partial identification and bounds techniques
+\end{spacing}
+\vspace{2mm}
+\begin{itemize}
+\item Bound between (upward biased) OLS and (downward biased) IV
+\item Combine OLS with Altonji-Taber, and Oster bounds
+\item Combine IV with Conley et al 2012 bounds (similar to Rosen and Nevo 2012)
+\end{itemize}
+}
+
+
+%================================================================================
+%== IV Estimation Samples
+%================================================================================
+
+
+\frame{\frametitle{Constructing Estimation Samples for IV}
+\begin{itemize}
+\item Study effects of twins at parity $j$ on quality indicator for births before $j$ (following Black et al. 2005). 
+%\begin{itemize}
+%\item Predictions are for infra-marginal children.
+%\end{itemize}
+%\item Restricting to pre-twins avoids selection problems that arise because families who choose to have another child after a twin birth may differ from families who choose to have another child after a singleton birth.
+\item Restrict to families with at least $j$ births to ensure that fertility preferences are the same in families with twins at the $j^{th}$ birth as for families with singletons at order $j$.
+\item The ``2+ sample'' consists of firstborn subjects in families with at least two births. 
+\begin{itemize}
+\item In this sample, we instrument with twins at second birth
+\end{itemize}
+\item The ``3+ sample'' contains first and second born subjects in families with at least three births 
+\begin{itemize}
+\item Instrument with twins at third birth
+\item Note that twin-IV estimates are often not precise (and distinguishable from OLS estimates); Angrist et al.\ 2010.
+\end{itemize}
+\end{itemize}
+}
+
+
+%================================================================================
+%==OLS  Estimates
+%================================================================================
+
+
+\frame{\frametitle{OLS Estimates (and Bounds)}
+Adding controls for predictors of twin birth diminishes the estimated trade-off
+\input{./tables/OLS.tex}
+}
+
+\frame{\frametitle{Altonji, Elder, Taber 2005, extension in Bellows and Miguel 2009}
+\[
+educ = \beta fert + X\delta + e
+\]
+
+\begin{itemize}
+\item Assume that the observed and unobserved components of X are correlated and selection on unobservables is similar to selection on observables.
+\item Compute the ratio of $\hat\beta_c/(\hat\beta_n-\hat\beta_c)$. Compute this with and without controls for maternal health (and socioeconomic status).
+\item A large ratio arises if adding controls does not change $\hat\beta$ much.
+ %suggests it is implausible that unobservables can explain away the estimated impact.
+\item Our estimate is about $\sim$2. So for unobservables to explain the OLS coefficient, the variation explained by unobservables would need to be about twice as large as the variation that is explained by the covariates included in our specification.
+\end{itemize}
+}
+
+%%Damian i would like to show OLS for NHIS here separately from the IV table (also in the paper so that USA and DHS are similarly presented).
+%% Can you make an OLS table like the DHS one for NHIS? We need to then add a remark about AMerican preferenes for fertility possibly being positively correlated with prefs for child quality, in contrast %%to the case in poor countries.
+%%RESPONSE: Good point!  I will do this.  This will also be useful for the paper.
+
+%================================================================================
+%==IV  Estimates- 1st stage
+%================================================================================
+
+%Damian can we have First stage IV regs here.
+%%RESPONSE: I will move,
+
+
+\begin{frame}[label=FS1]
+\frametitle{First Stage Twins Shift Distribution of Family Size}
+\begin{figure}[htpb!]
+\centering
+  %\caption{Total births in families with and without a twin birth}
+  %\label{TWINfig:famsize}
+  \includegraphics[scale=0.75]{./figures/famsize.eps}
+\end{figure}
+\hyperlink{Fstage}{\beamergotobutton{Regression}}
+\end{frame}
+
+
+%================================================================================
+%==IV  Estimates- 2nd stage - DHS and NHIS
+%================================================================================
+
+\begin{frame}[label=IV]
+\input{./tables/IVTogether.tex}
+\hyperlink{Fstage2}{\beamergotobutton{First stage}}
+\end{frame}
+
+
+\frame{\frametitle{IV Results by Gender}
+\input{./tables/Gender.tex}
+}
+
+
+%%Damian can you bring NHIS IV results here for 2nd stage (with the 1st stage and OLS removed into separate tables please?)
+\begin{frame}[label=USAIV]
+\input{./tables/AllNHIS.tex}
+\end{frame}
+
+%% Damian i have stopped editing at this point today and will continue tomorrow. You can see the drift of my restructuring.
+
+%% Damian could you add a nicer, systematic discussion of Conley's method and our approach to estimation of gamma in USA and Nigeria somewhere here.
+%%RESPONSE: I will aim to set out estimation pieces this weekend for both the paper and the slides.  I will follow your outline in the email with planned structure from 19 May 2016.
+
+%================================================================================
+%== Summary of OLS and IV estimates
+%================================================================================
+
+\frame{\frametitle{Summary: OLS and\ IV}
+\begin{itemize}
+\item Education, developing countries: OLS $-0.08^{*}$ (parity pooled), smaller conditional on mother characteristics. 
+\item IV $-0.04^{*}$ (3+, all) to $-0.06^{*}$ (3+, middle income), larger conditional on mother characteristics. 
+\end{itemize}       \\ \vspace{5mm}
+
+%%Damian we need to add the effect sizes here, if in paper i will add in next round. Need to be sure i know the units/ if standardized
+\begin{itemize}
+\item Education, USA: OLS xxxx estimates with/without conditioning 
+\item IV xxxx estimates with/without conditioning
+\item Health, USA OLS xxxx estimates with/without conditioning
+\item IV xxxx estimates with/without conditioning
+\end{itemize}
+\item First stage indicates twin birth is a powerful instrument, coefficient 0.8 in developing countries, 0.xx in USA. 
+\end{itemize}
+}
+
+
+
+%================================================================================
+%== Bounds - idea
+%================================================================================
+
+\frame{
+\begin{center}
+\Large Estimating Bounds on the IV Estimates
+\end{center}
+}
+
+\frame{\frametitle{Plausible exogeneity}
+An approach to inference for IV models with instruments whose validity is debatable.
+\[
+schooling = \beta fertility + \textcolor{red}{\gamma twins} + X\delta+ e
+\]
+\begin{itemize}
+\item Relax the exclusion restriction that $\gamma=0$.
+\item Plausible exogeneity corresponds to having prior information that $\gamma$ is near 0 but not exactly 0 (Conley et al.\ 2012)
+\item The 2SLS estimator is less sensitive to violations of the exclusion restriction when the instrument is strong (related, Bound, Jaeger, Baker 1995). \ Ours is such a case.
+\item Similar strategy in Nevo and Rosen (2012).
+\end{itemize}
+}
+
+%================================================================================
+%== Bounds - Conley procedures
+%================================================================================
+
+%%Damian is going to rewrite the next few slides and add one each on the procedures for estimating gamma from nigeria and usasulfa data.
+
+\frame{\frametitle{Procedures}
+Conley et al. 2012 present four complementary inference strategies that use prior information about $\gamma$ to different extents. We implement two of these: union of confidence interval (UCI) and the local to zero approach (LTZ)
+\vspace{4mm}
+\begin{itemize}
+\item We specify a set of plausible values for $\gamma$ and obtain interval estimates for $\beta$ conditional upon each.  Grid over 0 to 2$\hat\gamma$.
+\item Taking the union of these interval estimates across values of $\gamma$ provides a conservative interval estimate for $\beta$.
+\begin{itemize}
+\item The plus is that we don’t need to specify a prior distribution for $\gamma$, just a range of plausible values.
+\item The minus is that the estimated interval around $\beta$ may be wide
+\end{itemize}
+\item The LTZ approach views prior probabilities for $\gamma$ as analogous to objective probabilities in a 2-step DGP.  Here we must specificy a prior distribution.
+\end{itemize}
+}
+
+================================================================================
+%== Bounds - Conley Results
+%================================================================================
+
+%%Damian to add results not only on bounds as below but also on the 2 components of gamma, the plot of the distribution.. maybe with hyperlinks going fwd and back.
+
+\frame{\frametitle{Estimates of bounds: UCI and LTZ Approaches}
+\input{./tables/Conley.tex}
+}
+
+\frame{\frametitle{Estimates (3+) Assuming that $\gamma \sim U(0,\delta)$}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/LTZ_three.eps}
+\end{figure}
+\hyperlink{2+}{\beamergotobutton{two}}\ \hyperlink{4+}{\beamergotobutton{four}}
+}
+
+
+%================================================================================
+%== Slide 32: Conclusions
+%================================================================================
+\section{Conclusions}
+\frame{\frametitle{Conclusions}
+\begin{itemize}
+\item Indicators of mother's health and pregnancy behaviours are significant predictors of twin birth.\\ \vspace{5mm}
+\item Conditioning upon available twin predictors produces evidence of a trade-off in IV ($\sim -0.04$ s.d.) and RF estimates.\\ \vspace{5mm}
+\item Recognizing that twins are at best plausibly exogenous results in a QQ parameter interval with an upper bound of $\sim -0.15$ s.d. \\ \vspace{5mm}
+\item Significantly larger trade-off for middle income countries and for female children\\ \vspace{5mm}
+\item Ignoring the twin bias will similarly tend to lead to under-estimation of the trade-off between fertility and women's labour force participation.
+\end{itemize}
+}
+
+
+% Summary stats for DHS
+% Damian can you add under this the summ stats table for NHIS we have in the paper
+%%RESPONSE: Yes, I will bring in the NHIS results.
+\frame{
+\input{./tables/Summarymin.tex}
+}
+
+
+
+\section{Appendices}
+\frame{
+\begin{center}
+\Large \textcolor{blue}{Appendices}
+\end{center}
+}
+
+\frame{
+\begin{center}
+\Large \textcolor{blue}{Appendix Tables}
+\end{center}
+}
+
+\begin{frame}[label=Fstage]
+\frametitle{First Stage: Twins Increase Family Size by $\sim$0.8}
+\input{./tables/firstStage.tex}
+\hyperlink{FS1}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=Fstage2]
+\frametitle{First Stage: Twins Increase Family Size by $\sim$0.8}
+\input{./tables/firstStage.tex}
+\hyperlink{IV}{\beamergotobutton{Back}}
+\end{frame}
+
+ \begin{frame}[label=Spain1]
+\input{./tables/SpainTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+ \begin{frame}[label=Brazil]
+\input{./tables/BrazilTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=Sweden]
+\input{./tables/SwedenTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}
+\input{./tables/SpainLFD.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=MMRselec]
+\frametitle{Height and Selective Maternal Survival (1)} 
+\begin{itemize}
+\item We use unique data on maternal mortality rates of sisters of female respondents in the DHS.
+\item We count the number of `unhealthy' women whose sisters died ($N_u$) and the number of `healthy' women whose sisters died ($N_h$).
+\item We assume $N_u > N_h$ given that our data show that maternal mortality (of sisters) depends upon height (assumes height correlated across sisters).
+\item First, we expand our sample to include $N_u + N_h$ women, choosing them randomly from within our file, based upon their `health'.
+\item We use different measures of `health' to check sensitivity of results to this. We use different thresholds and combine being short and being underweight.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Height and Selective Maternal Survival (2)}
+\begin{itemize}
+\item Second, we assume that the unhealthy women who died in childbirth were all carrying twins and that the healthy women who died in childbirth were all carrying singletons. 
+\item This is an extreme assumption intended to produce a severe test of selection.
+\item We then re-estimate the regression of prob(twin) on indicators of mother's health using the simulated sample.
+\item We continue to find significant impacts of maternal health on twinning probabilities. So selection is not driving our results.
+\item We should note how much the coef on maternal health change so that we can say something about the size of the selection effect.
+\end{itemize}
+\end{frame}
+	
+
+\begin{frame}[label=surv]
+\input{./tables/Alderman.tex}
+\hyperlink{robust}{\beamergotobutton{Back}}
+\end{frame}
+
+\frame{
+\begin{center}
+\Large \textcolor{blue}{Appendix Figures}
+\end{center}
+}
+
+\frame{\frametitle{Twins Are More Likely to Occur at Higher Birth Orders}
+\begin{figure}[htpb!]
+\centering
+  %\caption{Total births by Family Type}
+  %\label{TWINfig:famsize}
+  \includegraphics[scale=0.75]{./figures/twinbybord.eps}
+\end{figure}
+}
+
+\frame{
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/height_country.eps}
+  \caption{Height as a Proxy for Health}
+  \label{TWINfig:height}
+\end{figure}
+}
+
+
+\begin{frame}
+\frametitle{Height and Selective Survival}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/MMRcuts.eps}
+\end{figure}
+\hyperlink{robust}{\beamergotobutton{Back}}
+\end{frame}
+
+
+\begin{frame}[label=two]
+\frametitle{Estimates (2+) Assuming that $\gamma \sim U(0,\delta)$}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/LTZ_two.eps}
+\end{figure}
+\hyperlink{Conley}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=four]
+\frametitle{Estimates (4+) Assuming that $\gamma \sim U(0,\delta)$}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/LTZ_four.eps}
+\end{figure}
+\hyperlink{Conley}{\beamergotobutton{Back}}
+\end{frame}
+
+\end{document}
+
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+%********************************************************************************
+\frame{\frametitle{USA Birth Records}
+In preliminary results from National Vital Statistics System (NVSS) which register all births in USA from 1995-2000 (23.5 million observations):
+\vspace{5mm}
+\begin{itemize}
+\item Education is significantly positively related to having a twin
+\item Drinking while pregnant is significantly negatively related to having a twin
+\item Smoking while pregnant is significantly negatively related to having a twin
+\item Age, race and more previous births are significant predictors
+\end{itemize}
+}
