@@ -1,7 +1,6 @@
 %================================================================================
 %== SETUP - CAN IGNORE
 %================================================================================
-
 %below is where we can change font of slides
 \documentclass[9pt,letterpaper,subeqn]{beamer}
 \setbeamertemplate{navigation symbols}{}
@@ -26,17 +25,21 @@
 \usepackage{textcomp}
 \usepackage{wrapfig}
 \usepackage{multirow}
-\usepackage{caption}
+\usepackage[compatibility=false]{caption}
 \usepackage{subcaption}
 \setbeamertemplate{caption}[numbered]
+\definecolor{LightCyan}{rgb}{0.7,0.9,1}
+\usepackage{colortbl}
+
 
 %================================================================================
 %== TITLE, NAMES, DATE
 %================================================================================
 \title{The Twin Instrument and The Fertility-Investment Trade-off}
-%make his into normal author tex symbol
-\author{Sonia Bhalotra\inst{\dag} \and Damian Clarke\inst{\ddag}}
-\institute{\inst{\dag} University of Essex \and \inst{\ddag} University of Oxford & University of Santiago}
+%make this into normal author tex symbol
+%DONE
+\author{Sonia Bhalotra\inst{*} \and Damian Clarke\inst{\dag}}
+\institute{\inst{*} University of Essex \and \inst{\dag} University of Santiago de Chile}
 \date{May 2016}
 
 
@@ -51,7 +54,7 @@
 
 %%Damian i started before you woke up and so i started on the tex file used for the Germany/Essen talk in Apr-2015. Looking at the PDF of this i think it is worth experimenting with using a slightly 
 %smaller font so we get less crowded slides, with more spaces
-%%RESPONSE: No problem.  I will do this once I compile the first time.  Above where it says "10pt" (after documentclass) we can change it to 9pt.
+%%RESPONSE: DONE
 
 %While editing in tex i am not sure how crowded my slides are so after the first compilation we can break some into 2 parts.
 %%RESPONSE: Yes, makes sense!  Feel free to write and then once compiling we can shift around based on how it looks.
@@ -80,15 +83,16 @@
 %================================================================================
 
 
-\frame{\frametitle{Our Critique: Twin Births Are Not Random}
-\begin{itemize}
-\item Even if twin conceptions are `random', twin births are not because taking twins to term depends on health stocks and behaviours of mothers during pregnancy.
-\item If health and health-seeking behaviour are correlated with the outcomes, the natural experiment breaks down.\\ \vspace{5mm}
-\item We present the first evidence that this is a widespread phenomenon in rich and poor countries
-\item In poor countries, many women are severely under-nourished and may not be fit enough to carry twin conceptions to birth, and antenatal services are weak. 
-\item In richer countries, many women engage in risky behaviours and/or experience medical problems in pregnancy.
-\end{itemize}
-}
+\begin{frame}
+  \frametitle{Our Critique: Twin Births Are Not Random}
+  \begin{itemize}
+  \item Even if twin conceptions are `random', twin births are not because taking twins to term depends on health stocks and behaviours of mothers during pregnancy.
+  \item If health and health-seeking behaviour are correlated with the outcomes, the natural experiment breaks down.\\ \vspace{5mm}
+  \item We present the first evidence that this is a widespread phenomenon in rich and poor countries
+  \item In poor countries, many women are severely under-nourished and may not be fit enough to carry twin conceptions to birth, and antenatal services are weak. 
+  \item In richer countries, many women engage in risky behaviours and/or experience medical problems in pregnancy.
+  \end{itemize}
+\end{frame}
 
 %================================================================================
 %== Mechanism
@@ -96,17 +100,16 @@
 
 
 \begin{frame}[label=mech]
-\frametitle{Mechanisms}
-\item The mechanism we propose is selective foetal death. 
-	\begin{itemize}
-	\item Twin conceptions are more demanding of maternal resources \& hence more likely to suffer miscarriage or stillbirth.
-	\item About 1 in 8 twin conceptions results in a live birth. Spontaneous abortion rate among twins three times that for singletons (Boklage 1990). \\ \vspace{3mm}
-	\item Supporting medical evidence: FSH is associated with the risk of dizygotic twins and is more prevalent among heavier and taller women (Li et al.\ 2003, Hall 2003) \\ \vspace{3mm}
-	\end{itemize}
-\item We  provide evidence in favour of this mechanism.
+  \frametitle{Mechanisms}
+  The mechanism we propose is selective foetal death. 
+  \begin{itemize}
+  \item Twin conceptions are more demanding of maternal resources \& hence more likely to suffer miscarriage or stillbirth.
+  \item About 1 in 8 twin conceptions results in a live birth. Spontaneous abortion rate among twins three times that for singletons (Boklage 1990). \\ \vspace{3mm}
+  \item Supporting medical evidence: FSH is associated with the risk of dizygotic twins and is more prevalent among heavier and taller women (Li et al.\ 2003, Hall 2003) \\ \vspace{3mm}
+  \item We provide evidence in favour of this mechanism.
 \end{itemize}
 \end{frame}
-}
+
 
 %================================================================================
 %== Invalidity of Twin IV
@@ -144,7 +147,7 @@
 \frame{\frametitle{The Quantity--Quality Trade-off}
 \begin{itemize}
 \item In this paper, to illustrate the problem, we focus upon the QQ tradeoff.
-\item Empirical regularity- cross-section & time series- large families are associated with weaker educational outcomes (Hanushek 1992, Blake 1989, Galor 2012). \vspace{3mm}
+\item Empirical regularity- cross-section \& time series- large families are associated with weaker educational outcomes (Hanushek 1992, Blake 1989, Galor 2012). \vspace{3mm}
 \item Could signify a QQ trade-off (Becker and Lewis 1973, Becker and Tomes 1976) or, alternatively, shift factors like income. \vspace{3mm}
 \item Recent studies using the twin instrument reject the Q-Q tradeoff (Angrist et al.\ 2010, Black et al.\ 2005), while other approaches do not (Cohen et al. 2013).
 \item We argue that an underlying trade-off is veiled by the IV-bias created by omitted maternal health. 
@@ -172,8 +175,6 @@
 \item First-stage IV: Show that twins are a powerful predictor of fertility.
 \item Second-stage IV: Show (partial) bias-correction following (partial) adjustment for maternal health and other characteristics.
 \item Adjustment for maternal characteristics will narrow the gap [bounds] between the OLS and IV estimates.
-\end{itemize}
-
 \item Estimate bounds on the IV estimates on premise that twins are plausibly (rather than strictly) exogenous (Conley et al. 2012).
 \item Provide estimates for the USA and for a pooled sample of developing countries.
 \end{itemize}
@@ -183,8 +184,8 @@
 %================================================================================
 %== Data
 %================================================================================
-
 \section{Data}
+
 \frame{\frametitle{Data}
 \begin{itemize}
 \item Large samples are useful given twins are rare (around 2\%) 
@@ -201,7 +202,7 @@
 %%RESPONSE: The below slide will do this.  I can add in others v easily.
 \frame{
 \begin{center}
-\Large Showing that twins are more likely to be born of healthy mothers
+\Large \textcolor{blue}{Showing that twins are more likely to be born of healthy mothers}
 \end{center}
 }
 
@@ -256,8 +257,6 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
 \item Can think of infant mortality as an index of maternal health. 
 \item In this case, also useful to think of it as an indicator of child quality.
 \end{itemize}
-
-\end{itemize}
 }
 
 %================================================================================
@@ -271,14 +270,30 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
 %================================================================================
 %== Results- CS of mothers 
 %================================================================================
-
-%%Damian please check syntax below
 %%Damian can we add Nature (table 3 in extended-data and Figure 1 of coef plots) here and a new slide with ALSPAC results too
 %% Then --after-- the main results showing Pr(twin) depends on maternal health; below, add Fig 2 and 3 from Nature showing relation of phenomena with income etc.
-%%RESPONSE: I will add these in later.  Certainly no problem to do so.
+%%Sonia: Can you check if this is what you mean?  I am not sure if you mean first put the plot showing all effects of height by country, and then later, the plot of height with GDP (which is what I have now), or first have the top plot of the forest plot that is currently figure 1 in Nature (eg only the section with USA with variables), and then later put the other two plots.  If it is the second option, I can change very quickly.
+
+
 
 \subsection{Are twin births positively correlated with maternal health?}
 \frame{\frametitle{Mother's Health}
+}
+
+\begin{frame}[label=HealthTwin]
+\frametitle{Twin Mothers are Taller than Non-Twin Mothers}
+
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.77]{./figures/HeightDif.eps}
+\end{figure}
+\hyperlink{EducTwin}{\beamergotobutton{Education}}
+\end{frame}
+
+
+\frame{
+\vspace{5mm}
+\input{./tables/twinEffectsUncond.tex}
 }
 
 
@@ -320,6 +335,14 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
  \input{./tables/UKTwin.tex}
 \end{frame}
 
+\begin{frame}[label=HealthGDP]
+\frametitle{Twin Selection and Country Income}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.52]{./figures/heightGDP.png}
+\end{figure}
+\hyperlink{EducGDP}{\beamergotobutton{Education}}
+\end{frame}
 
 
 %================================================================================
@@ -332,10 +355,10 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2
 \frametitle{Effect Sizes}
 We find substantial marginal effects of observed indicators of mother’s health on the probability of twin births (mean$\approx$2\%)
 %Damian check syntax
+\begin{itemize}
 \item No previous evidence of maternal health being a predictor of twin births.
 \item But our findings are in line with maternal health and behaviours affecting other birth outcomes e.g. birth weight or Pr(boys) 
 \item Mazumder and Seeskin, 2014; Black et al.\ 2014;  Bhalotra and Rawlings 2013; Almond et al.\ 2011; Barker 1995).\vspace{6mm}
-\begin{itemize}
 \item A one s.d. change in the height of the mother results in an increase of 0.44\% points (22\% of mean)
 \item A one s.d. change in mother's BMI results in an increase of 0.20\% points (10\% of mean)\\ \vspace{5mm}
 \end{itemize}
@@ -358,6 +381,7 @@ We find substantial marginal effects of observed indicators of mother’s health
 
 \begin{frame}[label=mech]
 \frametitle{Mechanisms- Miscarriage}
+\begin{itemize}
 \item It is hard to find data on twin conceptions and on miscarriage. 
 \item We found relevant data from \hyperlink{TwinDeathNepal}{\textcolor{blue}{Nepal}} and \hyperlink{TwinDeathSpain}{\textcolor{blue}{Spain}} which establish that:
 \begin{enumerate}
@@ -376,7 +400,7 @@ We find substantial marginal effects of observed indicators of mother’s health
 %%Damian i had trouble with hyperlinks in Essen. One problem is how to get back to where i was from the table i am jumped to by the link. If easy to fix/explain then good to keep these links.
 %%if not then let's display the table here and i can flip through it quickly given too many slides.
 %%On another matter - Damian- i like figure 6 in the Paper- can you put it below?
-%%RESPONE.  Definitely.  As a note to me, figure 6 is "Height and Selective Survival"
+%%RESPONE.  DONE.
 
 \frame{\frametitle{Potential Concern: Selection on Maternal Survival}
 \begin{itemize}
@@ -385,11 +409,19 @@ We find substantial marginal effects of observed indicators of mother’s health
 %%Damian is this also true in the US data? It is true in DHS because mother is respondent. But if US is hospital data then they would record the births even if the mother died?
 %%RESPONSE: In the USA birth data, the birth *would* be recorded even if the mother died, given that as you say it's vital statistics.  If mother and child died, we would also see this in the fetal death file. 
 %%DAMIAN- but for mothers who died, if we record a birth, would we still have a record of the mothers health characteristics even though she died (because the charac were presumably noted during her antenatal visits before birth. if yes then we can claim that there is no selection problem in our US estimates.
-\item We (over-)correct for this \hyperlink{MMRselec}{\beamergotobutton{Procedure}} \\ \vspace{5mm}\item 
+\item We (over-)correct for this \hyperlink{MMRselec}{\beamergotobutton{Procedure}} 
 \item There is no evidence that selection drives our findings.
 \end{itemize}
 }
 
+\begin{frame}
+\frametitle{Height and Selective Survival}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/MMRcuts.eps}
+\end{figure}
+\hyperlink{robust}{\beamergotobutton{Back}}
+\end{frame}
 
 
 %================================================================================
@@ -438,7 +470,7 @@ And so assuming:
 \]
 \vspace{6mm}
 \begin{itemize}
-\item Another critique of twin-IV argues it incurs bias by failing to account for reinforcing investments and scale-economies- Rosenzweig & Zhang 2009  
+\item Another critique of twin-IV argues it incurs bias by failing to account for reinforcing investments and scale-economies- Rosenzweig \& Zhang 2009  
 \item But Angrist et al. 2010 find no evidence of this using data from Israel. In any case, our critique is independent of this.
 \end{itemize}
 }
@@ -471,8 +503,6 @@ where it is likely that $\hat\beta_1^{IV}>\hat\beta_1^{IV,H}>\hat\beta_1^{IV,S+H
 %================================================================================
 %== IV - Inconsistency- how we address it
 %================================================================================
-%Damian i may have a syntax error below
-%%RESPONSE: I will check when compiling (it looks okay, but I'll confirm).
 \frame{\frametitle{Addressing Inconsistency of Twin-IV- Bounds}
 \begin{center}
 \[\hat\beta_1^{IV}>\hat\beta_1^{IV,H}>\hat\beta_1^{IV,S+H}>\beta_1.\]
@@ -585,8 +615,6 @@ educ = \beta fert + X\delta + e
 \input{./tables/AllNHIS.tex}
 \end{frame}
 
-%% Damian i have stopped editing at this point today and will continue tomorrow. You can see the drift of my restructuring.
-
 %% Damian could you add a nicer, systematic discussion of Conley's method and our approach to estimation of gamma in USA and Nigeria somewhere here.
 %%RESPONSE: I will aim to set out estimation pieces this weekend for both the paper and the slides.  I will follow your outline in the email with planned structure from 19 May 2016.
 
@@ -598,7 +626,7 @@ educ = \beta fert + X\delta + e
 \begin{itemize}
 \item Education, developing countries: OLS $-0.08^{*}$ (parity pooled), smaller conditional on mother characteristics. 
 \item IV $-0.04^{*}$ (3+, all) to $-0.06^{*}$ (3+, middle income), larger conditional on mother characteristics. 
-\end{itemize}       \\ \vspace{5mm}
+\end{itemize}       
 
 %%Damian we need to add the effect sizes here, if in paper i will add in next round. Need to be sure i know the units/ if standardized
 \begin{itemize}
@@ -606,7 +634,6 @@ educ = \beta fert + X\delta + e
 \item IV xxxx estimates with/without conditioning
 \item Health, USA OLS xxxx estimates with/without conditioning
 \item IV xxxx estimates with/without conditioning
-\end{itemize}
 \item First stage indicates twin birth is a powerful instrument, coefficient 0.8 in developing countries, 0.xx in USA. 
 \end{itemize}
 }
@@ -656,7 +683,7 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \end{itemize}
 }
 
-================================================================================
+%================================================================================
 %== Bounds - Conley Results
 %================================================================================
 
@@ -787,6 +814,25 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \end{figure}
 }
 
+\begin{frame}[label=EducTwin]
+\frametitle{Twin Mothers are More Educated than Non-Twin Mothers}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.77]{./figures/EducDif.eps}
+\end{figure}
+\hyperlink{HealthTwin}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=EducGDP]
+\frametitle{Twin Selection (on Education) and Country Income}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.52]{./figures/educGDP.png}
+\end{figure}
+\hyperlink{HealthGDP}{\beamergotobutton{Back}}
+\end{frame}
+
+
 \frame{
 \begin{figure}[htpb!]
 \centering
@@ -795,17 +841,6 @@ Conley et al. 2012 present four complementary inference strategies that use prio
   \label{TWINfig:height}
 \end{figure}
 }
-
-
-\begin{frame}
-\frametitle{Height and Selective Survival}
-\begin{figure}[htpb!]
-\centering
-  \includegraphics[scale=0.75]{./figures/MMRcuts.eps}
-\end{figure}
-\hyperlink{robust}{\beamergotobutton{Back}}
-\end{frame}
-
 
 \begin{frame}[label=two]
 \frametitle{Estimates (2+) Assuming that $\gamma \sim U(0,\delta)$}
