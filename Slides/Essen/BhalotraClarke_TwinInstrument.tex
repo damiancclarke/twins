@@ -99,7 +99,7 @@
 %================================================================================
 
 
-\begin{frame}[label=mech]
+\begin{frame}[label=mech1]
   \frametitle{Mechanisms}
   The mechanism we propose is selective foetal death. 
   \begin{itemize}
@@ -117,7 +117,7 @@
 %================================================================================
 
 
-\frame{\frametitle{Maternal Health- Multidimensional, Unobservable}
+\frame{\frametitle{Maternal Health -- Multidimensional, Unobservable}
 \begin{itemize}
 \item Maternal health and pregnancy behaviours are multidimensional and at best partially observed.
 \item Therefore impossible to adjust for them and restore validity of the twin instrument.
@@ -243,12 +243,12 @@
 %== Showing Twin births are not random- CS
 %================================================================================
 
-\frame{\frametitle{Twins are born of selectively healthy mothers- Cross-sectional microdata evidence}
+\frame{\frametitle{Twins are born of selectively healthy mothers -- Cross-sectional microdata evidence}
 
 \begin{enumerate}
 %\item Cross-sectional microdata evidence from many rich and poor countries.
 \item Regress twin birth on indicators of maternal health, $\bm{H}$ (height, BMI during pregnancy, antenatal care availability, smoking/drinking/drugs and medical problems during pregnancy)  
-\item Condition upon $\bm{X}$ -age, parity, race, ethnicity- which geneticists have associated with twinning.    \vspace{3mm}
+\item Condition upon $\bm{X}$ -- age, parity, race, ethnicity -- which geneticists have associated with twinning.    \vspace{3mm}
 \end{enumerate}
 
 \begin{equation}
@@ -260,7 +260,7 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{H}\bm{\gamma}_2 + \varepsilon_{
 \item If twin birth is a random event $\bm{\gamma_2}=0$. 
 \item Equivalent to a test for balance of characteristics of `treated' (with twins) and `control' (without twins) mothers.
 \item Repeat for cohorts born prior to introduction of IVF.
-\item Add controls for $\bm{S}$ -wealth, education- to make sure H is not just proxying SES. 
+\item Add controls for $\bm{S}$ -- wealth, education -- to make sure H is not just proxying SES. 
 \end{itemize}
 }
 
@@ -276,8 +276,8 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{H}\bm{\gamma}_2 + \varepsilon_{
 
 
 \subsection{Are twin births positively correlated with maternal health?}
-\frame{\frametitle{Mother's Health}
-}
+%\frame{\frametitle{Mother's Health}
+%}
 
 \begin{frame}[label=HealthTwin]
 \frametitle{Twin Mothers are Taller than Non-Twin Mothers}
@@ -295,7 +295,6 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{H}\bm{\gamma}_2 + \varepsilon_{
 \input{./tables/twinEffectsUncond.tex}
 }
 
-
 \frame{
 \vspace{5mm}
 \input{./tables/TwinReg.tex}
@@ -306,32 +305,29 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{H}\bm{\gamma}_2 + \varepsilon_{
 \input{./tables/NHIStwin.tex}
 \end{frame}
 
-
-
-\begin{frame}[label=USA1]
-\input{./tables/USBirths.tex}
+\begin{frame}[label=c]
+  \frametitle{Is This an Artifact of DHS and NHIS Data?}
+  \begin{itemize}
+  \item We have compiled evidence using a number of surveys and administrative data sets:
+    \begin{itemize}
+    \item \hyperlink{Chile}{\textcolor{blue}{Chile}}
+    \item \hyperlink{UK}{\textcolor{blue}{UK}}
+    \item \hyperlink{USA1}{\textcolor{blue}{USA}} 
+    \item \hyperlink{Scotland}{\textcolor{blue}{Scotland}}
+    \item \hyperlink{Spain1}{\textcolor{blue}{Spain}}
+    \item \hyperlink{Brazil}{\textcolor{blue}{Brazil}}
+    \item \hyperlink{Sweden}{\textcolor{blue}{Sweden}}
+    \end{itemize}
+  \item Depending upon data availability we include health stocks, behaviour
+  \item This is not restricted to poor countries.
+  %\item Mechanism?  \hyperlink{TwinDeath}{\textcolor{blue}{Evidence}} that twins are more likely to die in utero when health stocks are low.
+  \end{itemize}
 \end{frame}
-
-
-\begin{frame}[label=Scotland]
-\input{./tables/ScotlandTwin.tex}
-\end{frame}
-
-
-
-\begin{frame}[label=Chile]
-\input{./tables/ChileTwin.tex}
-\end{frame}
-
 
 \begin{frame}[label=Spain2]
 %\begin{figure}
 %\caption{Twin Births and Stress (Quintana-Domeque and R\'odenas)}
 \input{./tables/Stress.tex}
-\end{frame}
-
-\begin{frame}[label=UK]
- \input{./tables/UKTwin.tex}
 \end{frame}
 
 \begin{frame}[label=HealthGDP]
@@ -357,10 +353,10 @@ This relationship holds across countries with very different levels of income.
 \begin{itemize}
 \item No previous evidence of maternal health being a predictor of twin births.
 \item But our findings are in line with maternal health and behaviours affecting other birth outcomes e.g. birth weight or Pr(boys) 
-\item Mazumder and Seeskin, 2014; Black et al.\ 2014;  Bhalotra and Rawlings 2013; Almond et al.\ 2011; Barker 1995.\vspace{6mm}
+\item Mazumder and Seeskin, 2014; Black et al.\ 2014;  Bhalotra and Rawlings 2013; Almond et al.\ 2011; Barker 1995.
 %%Damian we need to update the statements below to indicate at least the DHS and USA results i think they are currently just the dhs figures and not sure if they are consistent with latest tables.
-\item A one s.d. change in the height of the mother results in an increase of 0.44\% points (22\% of mean)
-\item A one s.d. change in mother's BMI results in an increase of 0.20\% points (10\% of mean)\\ \vspace{5mm}
+  \item $\Delta^+$ 1 s.d.\ height of mother $\rightarrow$ $\Delta^+$ twin 0.44\% (22\% of mean)
+  \item $\Delta^+$ 1 s.d.\ BMI of mother \ \ $\rightarrow$ $\Delta^+$ twin 0.20\% (10\% of mean)
 \end{itemize}
 \end{frame}
 
@@ -380,10 +376,10 @@ This relationship holds across countries with very different levels of income.
 %% thanks Damian- good to replace Nepal with US then. for Nature i like the histograms but for econ i think the regression interaction with a t-stat attd to it is stronger evidence. in the plots we %have the t-test for each pair but not for the difference across pairs which economists would want to see.
 
 \begin{frame}[label=mech]
-\frametitle{Mechanisms- Miscarriage}
+\frametitle{Mechanisms -- Miscarriage}
 \begin{itemize}
 \item It is hard to find data on twin conceptions and on miscarriage. 
-\item We found relevant data from \hyperlink{TwinDeathNepal}{\textcolor{blue}{Nepal}} and \hyperlink{TwinDeathSpain}{\textcolor{blue}{Spain}} which establish that:
+\item We found relevant data from \hyperlink{TwinDeathUSA}{\textcolor{blue}{USA}} and \hyperlink{TwinDeathSpain}{\textcolor{blue}{Spain}} which establish that:
 \begin{enumerate}
 \item[(i)] Miscarriage is more frequent among less healthy women (health indicated by under-weight, short, hypertension, etc.)
 \item[(ii)] Miscarriage is more frequent among twins
@@ -391,6 +387,13 @@ This relationship holds across countries with very different levels of income.
 \end{enumerate}
 \end{itemize}
 \end{frame}
+
+\begin{frame}[label=TwinDeathUSA]
+  \frametitle{Fetal Deaths, Twinning and Health Behaviours}
+\input{./tables/FDeath_Uncond.tex}
+\hyperlink{mech}{\beamergotobutton{Back}} \hyperlink{fdgraph}{\beamergotobutton{Graphical Results}}
+\end{frame}
+
 
 
 %================================================================================
@@ -402,17 +405,19 @@ This relationship holds across countries with very different levels of income.
 %%On another matter - Damian- i like figure 6 in the Paper- can you put it below?
 %%RESPONE.  DONE.
 
-\frame{\frametitle{Potential Concern: Selection on Maternal Survival}
+\begin{frame}[label=selectest]
+  \frametitle{Potential Concern: Selection on Maternal Survival}
 \begin{itemize}
 \item If unhealthy women who delivered twins died in childbirth, the (DHS) data will not contain those mothers or births.
 \item So our observation that twin birth is correlated with maternal health may be driven by selection on maternal survival. 
 %%Damian is this also true in the US data? It is true in DHS because mother is respondent. But if US is hospital data then they would record the births even if the mother died?
 %%RESPONSE: In the USA birth data, the birth *would* be recorded even if the mother died, given that as you say it's vital statistics.  If mother and child died, we would also see this in the fetal death file. 
 %%DAMIAN- but for mothers who died, if we record a birth, would we still have a record of the mothers health characteristics even though she died (because the charac were presumably noted during her antenatal visits before birth. if yes then we can claim that there is no selection problem in our US estimates.
-\item We (over-)correct for this \hyperlink{MMRselec}{\beamergotobutton{Procedure}} 
+\item We (over-)correct for this
+\item Basic idea: assume that all women with poor health stocks who died would have had twins, and add these back into the sample to see if this alters substantive findings. \hyperlink{MMRselec}{\beamergotobutton{Full procedure description}} 
 \item There is no evidence that selection drives our findings.
 \end{itemize}
-}
+\end{frame}
 
 \begin{frame}
 \frametitle{Height and Selective Survival}
@@ -420,6 +425,10 @@ This relationship holds across countries with very different levels of income.
 \centering
   \includegraphics[scale=0.75]{./figures/MMRcuts.eps}
 \end{figure}
+\end{frame}
+
+\begin{frame}[label=surv]
+\input{./tables/Alderman.tex}
 \hyperlink{robust}{\beamergotobutton{Back}}
 \end{frame}
 
@@ -581,7 +590,11 @@ educ = \beta fert + X\delta + e
   %\label{TWINfig:famsize}
   \includegraphics[scale=0.75]{./figures/famsize.eps}
 \end{figure}
-\hyperlink{Fstage}{\beamergotobutton{Regression}}
+\end{frame}
+
+\begin{frame}[label=Fstage]
+\frametitle{First Stage: Twins Increase Family Size by $\sim$0.8}
+\input{./tables/firstStage.tex}
 \end{frame}
 
 
@@ -591,7 +604,6 @@ educ = \beta fert + X\delta + e
 
 \begin{frame}[label=IV]
 \input{./tables/IVTogether.tex}
-\hyperlink{Fstage2}{\beamergotobutton{First stage}}
 \end{frame}
 
 
@@ -729,17 +741,30 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \end{center}
 }
 
-\begin{frame}[label=Fstage]
-\frametitle{First Stage: Twins Increase Family Size by $\sim$0.8}
-\input{./tables/firstStage.tex}
-\hyperlink{FS1}{\beamergotobutton{Back}}
+
+\begin{frame}[label=USA1]
+\input{./tables/USBirths.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
 
-\begin{frame}[label=Fstage2]
-\frametitle{First Stage: Twins Increase Family Size by $\sim$0.8}
-\input{./tables/firstStage.tex}
-\hyperlink{IV}{\beamergotobutton{Back}}
+
+\begin{frame}[label=Scotland]
+\input{./tables/ScotlandTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
+
+
+
+\begin{frame}[label=Chile]
+\input{./tables/ChileTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=UK]
+ \input{./tables/UKTwin.tex}
+\hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
 
  \begin{frame}[label=Spain1]
 \input{./tables/SpainTwin.tex}
@@ -756,9 +781,9 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[label=TwinDeathSpain]
 \input{./tables/SpainLFD.tex}
-\hyperlink{c}{\beamergotobutton{Back}}
+\hyperlink{mech}{\beamergotobutton{Back}}
 \end{frame}
 
 \begin{frame}[label=MMRselec]
@@ -770,6 +795,7 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \item First, we expand our sample to include $N_u + N_h$ women, choosing them randomly from within our file, based upon their `health'.
 \item We use different measures of `health' to check sensitivity of results to this. We use different thresholds and combine being short and being underweight.
 \end{itemize}
+\hyperlink{selectest}{\beamergotobutton{Back}}
 \end{frame}
 
 \begin{frame}
@@ -781,13 +807,9 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \item We continue to find significant impacts of maternal health on twinning probabilities. So selection is not driving our results.
 \item We should note how much the coef on maternal health change so that we can say something about the size of the selection effect.
 \end{itemize}
+\hyperlink{selectest}{\beamergotobutton{Back}}
 \end{frame}
 	
-
-\begin{frame}[label=surv]
-\input{./tables/Alderman.tex}
-\hyperlink{robust}{\beamergotobutton{Back}}
-\end{frame}
 
 \frame{
 \begin{center}
@@ -822,7 +844,6 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \hyperlink{HealthGDP}{\beamergotobutton{Back}}
 \end{frame}
 
-
 \frame{
 \begin{figure}[htpb!]
 \centering
@@ -831,6 +852,27 @@ Conley et al. 2012 present four complementary inference strategies that use prio
   \label{TWINfig:height}
 \end{figure}
 }
+
+\begin{frame}[label=fdgraph]
+  \begin{figure}[htpb!]
+    \caption{Rates of Miscarriage are higher for twins with unhealthy mothers}
+      \begin{subfigure}{.5\textwidth}
+      \includegraphics[scale=0.39]{./figures/Deathssmokes_Uncond.eps}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+      \includegraphics[scale=0.39]{./figures/Deathsdrinks_Uncond.eps}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+      \includegraphics[scale=0.39]{./figures/DeathsnoCollege_Uncond.eps}
+    \end{subfigure}%
+    \begin{subfigure}{.5\textwidth}
+      \includegraphics[scale=0.39]{./figures/Deathsanemic_Uncond.eps}
+    \end{subfigure}
+    \label{fig:mech}
+  \end{figure}
+\hyperlink{mech}{\beamergotobutton{Back}}
+\end{frame}
+
 
 \begin{frame}[label=two]
 \frametitle{Estimates (2+) Assuming that $\gamma \sim U(0,\delta)$}
