@@ -184,16 +184,20 @@
 %================================================================================
 \section{Data}
 
-\frame{\frametitle{Data}
+\begin{frame}[label=data]
+  \frametitle{Data}
 \begin{itemize}
 \item Large samples are useful given twins are rare (around 2\%) 
 \item This said, twins are not as rare as we may think: 1 in 80 livebirths, so 1 in 40 babies is a twin.
 \item Comparable cross-country micro-data for developing countries
-\item Surveys conducted 1991-2013: sample of ~3m. children born in 68 countries. Birth cohorts 1971-2012 (condition on country and birth cohort FE)\\ \vspace{5mm}
-\item American National Health Interview Surveys conducted 1997-2013 \\ \vspace{5mm}
+\item Surveys conducted 1991-2013: sample of $\sim$3m.\ children born in 68 countries. Birth cohorts 1971-2012 (condition on country and birth cohort FE)
+\item American National Health Interview Surveys conducted 1997-2013 
 \item Administrative birth registries and surveys from the USA, UK, Scotland, Sweden, Chile, Spain.
 \end{itemize}
-}
+\vspace{8mm}
+\hyperlink{DHSStats}{\beamergotobutton{DHS Summary Statistics}}
+\hyperlink{NHISStats}{\beamergotobutton{NHIS Summary Statistics}}
+\end{frame}
 
 \frame{
 \begin{center}
@@ -236,6 +240,7 @@
 
 \frame{\frametitle{Women with healthier initial births are more likely to subsequently produce twins}
 \input{./tables/IMRtest.tex}
+\texttt{Damian: Ideally update this table for Baseline, then add H, then add S+H}
 }
 
 
@@ -357,6 +362,7 @@ This relationship holds across countries with very different levels of income.
 %%Damian we need to update the statements below to indicate at least the DHS and USA results i think they are currently just the dhs figures and not sure if they are consistent with latest tables.
   \item $\Delta^+$ 1 s.d.\ height of mother $\rightarrow$ $\Delta^+$ twin 0.44\% (22\% of mean)
   \item $\Delta^+$ 1 s.d.\ BMI of mother \ \ $\rightarrow$ $\Delta^+$ twin 0.20\% (10\% of mean)
+  \item \texttt{Damian: Add updated effect size discussion}
 \end{itemize}
 \end{frame}
 
@@ -379,7 +385,7 @@ This relationship holds across countries with very different levels of income.
 \frametitle{Mechanisms -- Miscarriage}
 \begin{itemize}
 \item It is hard to find data on twin conceptions and on miscarriage. 
-\item We found relevant data from \hyperlink{TwinDeathUSA}{\textcolor{blue}{USA}} and \hyperlink{TwinDeathSpain}{\textcolor{blue}{Spain}} which establish that:
+\item We found relevant data from \hyperlink{TwinDeathUSA}{USA} and \hyperlink{TwinDeathSpain}{\textcolor{blue}{Spain}} which establish that:
 \begin{enumerate}
 \item[(i)] Miscarriage is more frequent among less healthy women (health indicated by under-weight, short, hypertension, etc.)
 \item[(ii)] Miscarriage is more frequent among twins
@@ -389,9 +395,9 @@ This relationship holds across countries with very different levels of income.
 \end{frame}
 
 \begin{frame}[label=TwinDeathUSA]
-  \frametitle{Fetal Deaths, Twinning and Health Behaviours}
+  \frametitle{Fetal Deaths, Twinning and Health Behaviours (USA)}
 \input{./tables/FDeath_Uncond.tex}
-\hyperlink{mech}{\beamergotobutton{Back}} \hyperlink{fdgraph}{\beamergotobutton{Graphical Results}}
+\hyperlink{fdgraph}{\beamergotobutton{Graphical Results}}
 \end{frame}
 
 
@@ -429,7 +435,6 @@ This relationship holds across countries with very different levels of income.
 
 \begin{frame}[label=surv]
 \input{./tables/Alderman.tex}
-\hyperlink{robust}{\beamergotobutton{Back}}
 \end{frame}
 
 
@@ -554,6 +559,11 @@ Adding controls for predictors of twin birth diminishes the estimated trade-off
 \input{./tables/OLS.tex}
 }
 
+\frame{\frametitle{OLS Estimates (USA)}
+\input{./tables/NHISols.tex}
+}
+
+
 \frame{\frametitle{Altonji, Elder, Taber 2005, extension in Bellows and Miguel 2009}
 \[
 educ = \beta fert + X\delta + e
@@ -583,7 +593,7 @@ educ = \beta fert + X\delta + e
 
 
 \begin{frame}[label=FS1]
-\frametitle{First Stage: Twins Shift the Distribution of Family Size}
+\frametitle{First Stage (Developing Countries): Twins Shift the Distribution of Family Size}
 \begin{figure}[htpb!]
 \centering
   %\caption{Total births in families with and without a twin birth}
@@ -592,9 +602,15 @@ educ = \beta fert + X\delta + e
 \end{figure}
 \end{frame}
 
+
 \begin{frame}[label=Fstage]
-\frametitle{First Stage: Twins Increase Family Size by $\sim$0.8}
+\frametitle{First Stage (Developing Countries): Twins Increase Family Size by $\sim$0.8}
 \input{./tables/firstStage.tex}
+\end{frame}
+
+\begin{frame}[label=Fstage]
+\frametitle{First Stage (USA): Twins Increase Family Size by $\sim$0.7}
+\input{./tables/NHIS_fs.tex}
 \end{frame}
 
 
@@ -603,18 +619,17 @@ educ = \beta fert + X\delta + e
 %================================================================================
 
 \begin{frame}[label=IV]
+\frametitle{IV Results (Developing Countries)}
 \input{./tables/IVTogether.tex}
+\hyperlink{DHSGender}{\beamergotobutton{Trade-off is more acute for girl children}}
 \end{frame}
-
-
-\frame{\frametitle{IV Results by Gender}
-\input{./tables/Gender.tex}
-}
 
 
 %%Damian can you bring NHIS IV results here for 2nd stage (with the 1st stage and OLS removed into separate tables please?)
 \begin{frame}[label=USAIV]
-\input{./tables/AllNHIS.tex}
+\frametitle{IV Results (USA)}
+\input{./tables/NHIS_iv.tex}
+\hyperlink{USAGender}{\beamergotobutton{Trade-off is more acute for boy children}}
 \end{frame}
 
 %% Damian could you add a nicer, systematic discussion of Conley's method and our approach to estimation of gamma in USA and Nigeria somewhere here.
@@ -648,7 +663,7 @@ educ = \beta fert + X\delta + e
 
 \frame{
 \begin{center}
-\Large Estimating Bounds on the IV Estimates
+\Large \textcolor{blue}{Estimating Bounds on the IV Estimates}
 \end{center}
 }
 
@@ -691,16 +706,31 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 
 %%Damian to add results not only on bounds as below but also on the 2 components of gamma, the plot of the distribution.. maybe with hyperlinks going fwd and back.
 
-\frame{\frametitle{Estimates of bounds: UCI and LTZ Approaches}
-\input{./tables/Conley.tex}
-}
-
 \frame{\frametitle{Estimates (3+) Assuming that $\gamma \sim U(0,\delta)$}
 \begin{figure}[htpb!]
 \centering
   \includegraphics[scale=0.75]{./figures/LTZ_three.eps}
 \end{figure}
 \hyperlink{2+}{\beamergotobutton{two}}\ \hyperlink{4+}{\beamergotobutton{four}}
+}
+
+\begin{frame}[label=gammaDiscuss]
+  \frametitle{The Procedure}
+  What's more, we \emph{are} able to causally estimate $\gamma=\frac{\partial educ}{\partial twin}$ from the structural equation.
+  \vspace{4mm}
+  \begin{itemize}
+  \item The exclusion restriction fails because twin mothers are healthier than non-twin mothers
+  \item We use a well known historical reform (sulfa drugs) to causally estimate the effect of mother's
+    health on child outcomes ($\partial educ/\partial health$)
+  \item This is scaled by the degree to which twin mothers are healthier than non-twin mothers
+    ($health_{twin=1}-health_{twin=0}=\partial health/\partial twin$)
+  \item The product of these gives $\hat\gamma$ (\hyperlink{gammaEst}{\textcolor{blue}{estimates}})
+  \item We then use resampling methods to \hyperlink{gammaResamp}{\textcolor{blue}{calculate}} the full distribution for $\gamma$
+  \end{itemize}
+\end{frame}
+
+\frame{\frametitle{Estimates of bounds: UCI and LTZ Approaches}
+\input{./tables/Conley.tex}
 }
 
 
@@ -716,15 +746,13 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \item Significantly larger trade-off for middle income countries and for female children\\ \vspace{5mm}
 \item Ignoring the twin bias will similarly tend to lead to under-estimation of the trade-off between fertility and women's labour force participation.
 \end{itemize}
+\texttt{Damian: Check all effect sizes, update.}
 }
 
 
 % Summary stats for DHS
 % Damian can you add under this the summ stats table for NHIS we have in the paper
 %%RESPONSE: Yes, I will bring in the NHIS results.
-\frame{
-\input{./tables/Summarymin.tex}
-}
 
 
 
@@ -735,11 +763,48 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \end{center}
 }
 
+
+\begin{frame}[label=MMRselec]
+\frametitle{Height and Selective Maternal Survival (1)} 
+\begin{itemize}
+\item We use unique data on maternal mortality rates of sisters of female respondents in the DHS.
+\item We count the number of `unhealthy' women whose sisters died ($N_u$) and the number of `healthy' women whose sisters died ($N_h$).
+\item We assume $N_u > N_h$ given that our data show that maternal mortality (of sisters) depends upon height (assumes height correlated across sisters).
+\item First, we expand our sample to include $N_u + N_h$ women, choosing them randomly from within our file, based upon their `health'.
+\item We use different measures of `health' to check sensitivity of results to this. We use different thresholds and combine being short and being underweight.
+\end{itemize}
+\hyperlink{selectest}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Height and Selective Maternal Survival (2)}
+\begin{itemize}
+\item Second, we assume that the unhealthy women who died in childbirth were all carrying twins and that the healthy women who died in childbirth were all carrying singletons. 
+\item This is an extreme assumption intended to produce a severe test of selection.
+\item We then re-estimate the regression of prob(twin) on indicators of mother's health using the simulated sample.
+\item We continue to find significant impacts of maternal health on twinning probabilities. So selection is not driving our results.
+\item We should note how much the coef on maternal health change so that we can say something about the size of the selection effect.
+\end{itemize}
+\hyperlink{selectest}{\beamergotobutton{Back}}
+\end{frame}
+
 \frame{
 \begin{center}
 \Large \textcolor{blue}{Appendix Tables}
 \end{center}
 }
+
+\setcounter{table}{0}
+\renewcommand{\thetable}{A\arabic{table}}
+\begin{frame}[label=DHSStats]
+\input{./tables/Summarymin.tex}
+\hyperlink{data}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=NHISStats]
+\input{./tables/NHISstats.tex}
+\hyperlink{data}{\beamergotobutton{Back}}
+\end{frame}
 
 
 \begin{frame}[label=USA1]
@@ -786,30 +851,24 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \hyperlink{mech}{\beamergotobutton{Back}}
 \end{frame}
 
-\begin{frame}[label=MMRselec]
-\frametitle{Height and Selective Maternal Survival (1)} 
-\begin{itemize}
-\item We use unique data on maternal mortality rates of sisters of female respondents in the DHS.
-\item We count the number of `unhealthy' women whose sisters died ($N_u$) and the number of `healthy' women whose sisters died ($N_h$).
-\item We assume $N_u > N_h$ given that our data show that maternal mortality (of sisters) depends upon height (assumes height correlated across sisters).
-\item First, we expand our sample to include $N_u + N_h$ women, choosing them randomly from within our file, based upon their `health'.
-\item We use different measures of `health' to check sensitivity of results to this. We use different thresholds and combine being short and being underweight.
-\end{itemize}
-\hyperlink{selectest}{\beamergotobutton{Back}}
+\begin{frame}[label=DHSGender]
+  \frametitle{IV Results by Gender (DHS)}
+\input{./tables/Gender.tex}
+\hyperlink{IV}{\beamergotobutton{Back}}
 \end{frame}
 
-\begin{frame}
-\frametitle{Height and Selective Maternal Survival (2)}
-\begin{itemize}
-\item Second, we assume that the unhealthy women who died in childbirth were all carrying twins and that the healthy women who died in childbirth were all carrying singletons. 
-\item This is an extreme assumption intended to produce a severe test of selection.
-\item We then re-estimate the regression of prob(twin) on indicators of mother's health using the simulated sample.
-\item We continue to find significant impacts of maternal health on twinning probabilities. So selection is not driving our results.
-\item We should note how much the coef on maternal health change so that we can say something about the size of the selection effect.
-\end{itemize}
-\hyperlink{selectest}{\beamergotobutton{Back}}
+\begin{frame}[label=USAGender]
+  \frametitle{IV Results by Gender (USA)}
+\input{./tables/GenderUSA.tex}
+\hyperlink{USAIV}{\beamergotobutton{Back}}
 \end{frame}
-	
+
+
+\begin{frame}[label=gammaEst]
+  \frametitle{Estimated $\gamma$ from Sulfonamide Introduction}
+\input{./tables/gamma.tex}
+\hyperlink{gammaDiscuss}{\beamergotobutton{Back}}
+\end{frame}
 
 \frame{
 \begin{center}
@@ -892,6 +951,14 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \hyperlink{Conley}{\beamergotobutton{Back}}
 \end{frame}
 
+\begin{frame}[label=gammaResamp]
+  \frametitle{Bootstrap Estimates of $\hat\gamma$}
+  \begin{figure}[htpb!]
+    \centering
+    \includegraphics[scale=0.7]{./figures/gammaResamp.eps}
+  \end{figure}
+  \hyperlink{gammaDiscuss}{\beamergotobutton{Back}}
+  \end{frame}
 \end{document}
 
 %********************************************************************************
