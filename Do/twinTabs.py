@@ -14,8 +14,8 @@ print('\n\nHey DCC. The script %s is making %s files \n' %(script, ftype))
 #==============================================================================
 #== (1a) File names (comes from Twin_Regressions.do)
 #==============================================================================
-Results  = "/home/damiancclarke/investigacion/Activa/Twins/Results/Outreg/"
-Tables   = "/home/damiancclarke/investigacion/Activa/Twins/Tables/"
+Results  = "/home/damian/investigacion/Activa/Twins/Results/Outreg/"
+Tables   = "/home/damian/investigacion/Activa/Twins/Tables/"
 
 base = 'All.xls'
 lowi = 'LowIncome.xls'
@@ -331,6 +331,9 @@ TwiN = []
 AdjB = []
 AdjS = []
 AdjN = []
+FirB = []
+FirS = []
+FirN = []
 
 for num in [1,5,9]:
     BB, BS, BN    = plustable(base, num, num+3,'fert','normal',1000)
@@ -338,6 +341,7 @@ for num in [1,5,9]:
     MB, MS, MN    = plustable(midi, num, num+3,'fert','normal',1000)
     TB, TS, TN    = plustable(twIV, num, num+3,'fert','normal',1000)
     AB, AS, AN    = plustable(adjf, num, num+3,'ADJfert','normal',1000)
+    FB, FS, FN    = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000)
     
     AllB.append(dd + BB[0][0] + dd + BB[0][1] + dd + BB[0][2])
     AllS.append(dd + BS[0][0] + dd + BS[0][1] + dd + BS[0][2])
@@ -354,6 +358,9 @@ for num in [1,5,9]:
     AdjB.append(dd + AB[0][0] + dd + AB[0][1] + dd + AB[0][2])
     AdjS.append(dd + AS[0][0] + dd + AS[0][1] + dd + AS[0][2])
     AdjN.append(dd + AN[0][0] + dd + AN[0][1] + dd + AN[0][2])
+    FirB.append(dd + FB[0][0] + dd + FB[0][1] + dd + FB[0][2])
+    FirS.append(dd + FS[0][0] + dd + FS[0][1] + dd + FS[0][2])
+    FirN.append(dd + FN[0][0] + dd + FN[0][1] + dd + FN[0][2])
 
 
 IV2.write(mc1+twid[10]+mcbf+"All"+mc2+ls+" \n"
