@@ -32,7 +32,7 @@ global REG "~/investigacion/Activa/Twins/Results/World"
 log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
-local statform cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
+local statform cells("count(fmt(%12.0gc)) mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
 
 ********************************************************************************
 *** (2a) DHS Setup
@@ -48,7 +48,8 @@ replace height = . if height<70
 replace bmi    = . if bmi > 50
 replace educf  = . if educf >27
 keep if height !=. & bmi!=.
-gen underweight = bmi <= 18.5
+cap drop underweight
+gen underweight = bmi < 18.5
 gen obese       = bmi > 30 if bmi!=.
 
 tab twind if educf!=.
@@ -59,19 +60,32 @@ replace twind100 = twind*100
 bys v001 _year: egen prenateDoctorC = mean(prenate_doc)
 bys v001 _year: egen prenateNurseC  = mean(prenate_nurse)
 bys v001 _year: egen prenateNoneC   = mean(prenate_none)
+gen prenateAnyC = 1 - prenateNoneC
 
 lab var height    "Mother's Height (cm)"
 lab var bmi       "Mother's BMI"
+lab var underweig "Mother is underweight"
+lab var obese     "Mother is obese"
 lab var educf     "Mother's Education"
 lab var twind100  "Percent Twin Births"
 lab var prenateD  "Attended Births in Area (\% Doctor)"
 lab var prenateNu "Attended Births in Area (\% Nurse)"
-lab var prenateNo "Attended Births in Area (\% None)"
+lab var prenateAn "Attended Births in Area (\% Any)"
+
+gen noObese   = obese == 0 if obese!= .
+gen noUweight = underweight == 0 if underweight != .
+
+factor height noObese noUweight prenateD prenateNu prenateAn 
+predict healthMom
+egen healthMomZ = std(healthMom)
+
+regress healthMomZ twind i._cou
 
 ********************************************************************************
 *** (2b) DHS Sum Stats
 ********************************************************************************
 local ovar height bmi educf prenateDoctorC prenateNurseC prenateNoneC
+local ovar height underweight obese educf prenateDoctorC prenateNurseC prenateAnyC
 gen a=1
 
 estpost sum `ovar' twind100 agemay a, casewise
@@ -80,7 +94,8 @@ estout using "$OUT/DHSSum.tex", replace label style(tex) `statform'
 ********************************************************************************
 *** (2c) DHS Regressions: Conditional and Unconditional, Standardised and Not
 ********************************************************************************
-local Zvar Z_heigh Z_bmi Z_educf Z_prenateDoctorC Z_prenateNurseC Z_prenateNoneC
+local Zvar Z_heigh Z_underweight Z_obese Z_educf Z_prenateDoctorC  /*
+*/         Z_prenateNurseC Z_prenateAnyC
 local cs      i.agemay 
 local regopts abs(country) cluster(id)
 
@@ -193,7 +208,7 @@ foreach var of varlist `Zvar' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/DHS_est_std_ucond.csv", delimit(";") replace
 
-exit
+
 
 ********************************************************************************
 *** (2d) DHS Regressions: 1 per country
@@ -280,16 +295,18 @@ foreach year of numlist 2009(1)2013 {
     gen birthweight = dbwt if dbwt<6500&dbwt>500
     gen year = `year'
     gen nonmissing = smoke1!=.&hypertens!=.&heightcm!=.&meduc!=.
+    gen underweight = bmi<18.5 if bmi<99
+    gen obese       = bmi>30 if bmi<99
     
     keep if infert==0
     tempfile t`year'
     gen bin=runiform()
     tab twin if ART==0&nonmissing==1
-    *keep if bin>0.90
+    keep if bin>0.90
     *keep if bin>0.5
     save `t`year''
 }
-exit
+
 clear
 append using `t2009' `t2010' `t2011' `t2012' `t2013'
 
@@ -306,13 +323,26 @@ lab var gestDia  "Mother had gestational diabetes"
 lab var hyperten "Mother had pre-pregnancy hypertension"
 lab var pregHyp  "Mother had pregnancy-associated hypertension"
 lab var married  "Mother is married"
+lab var obese    "Mother is obese (pre-pregnancy)"
+lab var underwei "Mother is underweight (pre-pregnancy)"
 lab var mager    "Mother's Age in years"
 lab var twin100  "Percent Twin Births"
 
+foreach v of varlist smoke0 smoke1 smoke2 smoke3 diabet hyperten obese underw {
+    gen INV_`v'=`v'==0 if `v'!=.
+}
+    
+factor heightcm INV_*
+predict healthMom
+egen healthMomZ = std(healthMom)
+
+regress healthMomZ twin
+exit
 ********************************************************************************
 *** (3b) USA Sum Stats
 ********************************************************************************
-local usv heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes hypertens
+local usv heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes hypertens /*
+*/        underweight obese
 gen a=1
 
 estpost sum `usv' twin100 mager a, casewise
@@ -321,7 +351,8 @@ estout using "$OUT/USASum.tex", replace label style(tex) `statform'
 ********************************************************************************
 *** (3c) USA Regressions: Conditional and Unconditional, Standardised and Not
 ********************************************************************************
-local Zusv Z_heightcm Z_meduc Z_smoke0 Z_smoke1 Z_smoke2 Z_smoke3 Z_diab Z_hyper
+local Zusv Z_heightcm Z_meduc Z_smoke0 Z_smoke1 Z_smoke2 Z_smoke3 Z_diab  /*
+*/         Z_hyper Z_underweight Z_obese
 local FEs i.mbrace i.lbo_rec i.year i.gestation married
 local regopts abs(mager) robust
 
@@ -485,7 +516,7 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimatesUSA.csv", comma replace
 
-exit
+
 
 ********************************************************************************
 *** (4a) Chile Setup
@@ -523,11 +554,20 @@ lab var meduc         "Mother's Education in Years"
 *** (4b) Chile Sum Stats
 ********************************************************************************
 gen a=1
-estpost sum `pregS' `prePreg' twind m_age_birth a, listwise
+estpost sum `pregS' `prePreg' twind m_age_birth a if `cond', listwise
 estout using "$OUT/ChileSum.tex", replace label style(tex) `statform'
 
 
+foreach v of varlist `pregS' lowWeightPre obesePre {
+    gen INV_`v'=`v'==0 if `v'!=.
+}
+    
+factor INV_*
+predict healthMom
+egen healthMomZ = std(healthMom)
 
+regress healthMomZ twin
+exit
 ********************************************************************************
 *** (4c) Chile Regressions
 ********************************************************************************
