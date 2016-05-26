@@ -44,7 +44,7 @@ log using "$OUT/ALSPACtest.txt", text replace
 #delimit ;
 local y_var   twin100;
 local health  underweight obese height diabetes hypertension infections preDrugs 
-              preAlcohol preSmoke freqHealthFoods freqFreshFruit alcoholPreg
+              preAlcohol freqHealthFoods freqFreshFruit alcoholPreg
               alcoholPregHigh passiveSmoke smokePreg meduc;
 local FEs     i.motherAge i.fertility i.gestation educM;
 local statform cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))");
@@ -72,12 +72,12 @@ gen preDrugs         = d167==1|d167==2 if d167!=-1&d167<99
 gen preAlcohol       = d168==1|d168==2 if d168!=-1&d168<99
 gen preSmoke         = b650==1&b658>=10 
 gen freqHealthFoods  = c223>3|c224>3|c225>3 if c223!=.
-gen freqFreshFruit   = c229==5
+gen freqFreshFruit   = c229>=5
 gen beerDrink        = c363>0&c363<5 
 gen beerDrinkHigh    = c363>=5 & c363<99
 gen wineDrink        = c366>0&c366<5 
 gen wineDrinkHigh    = c366>=5 & c366<99
-gen alcoholPreg      = c373>0&c373<6 
+gen alcoholPreg      = c373>0&c373<99 
 gen alcoholPregHigh  = c373>=6 & c373<99
 gen passiveSmoke     = c481a==3 
 gen smokePreg        = c482>0 & c482<99
@@ -93,6 +93,19 @@ replace meduc = 16 if k6292 == 1
 replace meduc = 13 if k6295 == 1
 replace meduc = 10 if meduc== .
 gen educM = meduc==10
+
+
+foreach v of varlist underweight obese hypertension infections preDrugs /*
+*/ diabetes preAlcohol alcoholPreg alcoholPregHigh passiveSmoke smokePreg {
+    gen INV_`v'=`v'==0 if `v'!=.
+}
+
+factor INV_* height freqHealthFoods freqFreshFruit
+predict healthMom
+egen healthMomZ = std(healthMom)
+
+regress healthMomZ twin
+
 
 ********************************************************************************
 *** (3) Sum stats
