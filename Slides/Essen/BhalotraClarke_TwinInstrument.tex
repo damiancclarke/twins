@@ -240,7 +240,7 @@
 
 \frame{\frametitle{Women with healthier initial births are more likely to subsequently produce twins}
 \input{./tables/IMRtest.tex}
-\texttt{Damian: Ideally update this table for Baseline, then add H, then add S+H}
+%\texttt{Damian: Ideally update this table for Baseline, then add H, then add S+H}
 }
 
 
@@ -360,9 +360,11 @@ This relationship holds across countries with very different levels of income.
 \item But our findings are in line with maternal health and behaviours affecting other birth outcomes e.g. birth weight or Pr(boys) 
 \item Mazumder and Seeskin, 2014; Black et al.\ 2014;  Bhalotra and Rawlings 2013; Almond et al.\ 2011; Barker 1995.
 %%Damian we need to update the statements below to indicate at least the DHS and USA results i think they are currently just the dhs figures and not sure if they are consistent with latest tables.
-  \item $\Delta^+$ 1 s.d.\ height of mother $\rightarrow$ $\Delta^+$ twin 0.44\% (22\% of mean)
-  \item $\Delta^+$ 1 s.d.\ BMI of mother \ \ $\rightarrow$ $\Delta^+$ twin 0.20\% (10\% of mean)
-  \item \texttt{Damian: Add updated effect size discussion}
+  \item $\Delta^+$ 1 s.d.\ height of mother $\rightarrow$ $\Delta^+$ twin 0.2-0.6\% 
+  \item $\Delta^-$ 1 s.d.\ proportion of underweight mothers $\rightarrow$ $\Delta^+$ twin 0.10-0.20\%
+  \item $\Delta^-$ 1 s.d.\ proportion of mothers smoking $\rightarrow$ $\Delta^+$ twin 0.20-0.35\%
+  \item $\Delta^-$ 1 s.d.\ proportion of chronic disease $\rightarrow$ $\Delta^+$ twin 0.02-0.38\%
+  \item All of these effects are based on a baseline rate of twins of about 2-3\%
 \end{itemize}
 \end{frame}
 
@@ -553,8 +555,7 @@ In order to put limits on the inconsistency, we use partial identification and b
 %==OLS  Estimates
 %================================================================================
 
-
-\frame{\frametitle{OLS Estimates (and Bounds)}
+\frame{\frametitle{OLS Estimates and Bounds (Developing Countries)}
 Adding controls for predictors of twin birth diminishes the estimated trade-off
 \input{./tables/OLS.tex}
 }
@@ -640,18 +641,21 @@ educ = \beta fert + X\delta + e
 %================================================================================
 
 \frame{\frametitle{Summary: OLS and\ IV}
-\begin{itemize}
-\item Education, developing countries: OLS $-0.08^{*}$ (parity pooled), smaller conditional on mother characteristics. 
-\item IV $-0.04^{*}$ (3+, all) to $-0.06^{*}$ (3+, middle income), larger conditional on mother characteristics. 
+\textbf{Developing Countries}
+  \begin{itemize}
+\item Education: OLS $-0.1^{*}$ (parity pooled), smaller conditional on mother characteristics. 
+\item IV $-0.04^{*}$ (3+, all) to $-0.07^{*}$ (3+, middle income), larger conditional on mother characteristics. 
 \end{itemize}       
-
+ \vspace{5mm}
+  
 %%Damian we need to add the effect sizes here, if in paper i will add in next round. Need to be sure i know the units/ if standardized
+\textbf{United States}
 \begin{itemize}
-\item Education, USA: OLS xxxx estimates with/without conditioning 
-\item IV xxxx estimates with/without conditioning
-\item Health, USA OLS xxxx estimates with/without conditioning
-\item IV xxxx estimates with/without conditioning
-\item First stage indicates twin birth is a powerful instrument, coefficient 0.8 in developing countries, 0.xx in USA. 
+\item Education: OLS $-0.03^{*}$ estimates with/without conditioning 
+\item IV (3+, all) estimates $-0.005/0.01$ with/without conditioning
+\item Health: OLS $-0.001/-0.005^{*}$ estimates with/without conditioning
+\item IV (3+, all) estimates $-0.04/-0.06^{*}$ with/without conditioning
+\item First stage indicates twin birth is a powerful instrument, coefficient 0.8 in developing countries, 0.7 in USA. 
 \end{itemize}
 }
 
@@ -706,14 +710,6 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 
 %%Damian to add results not only on bounds as below but also on the 2 components of gamma, the plot of the distribution.. maybe with hyperlinks going fwd and back.
 
-\frame{\frametitle{Estimates (3+) Assuming that $\gamma \sim U(0,\delta)$}
-\begin{figure}[htpb!]
-\centering
-  \includegraphics[scale=0.75]{./figures/LTZ_three.eps}
-\end{figure}
-\hyperlink{2+}{\beamergotobutton{two}}\ \hyperlink{4+}{\beamergotobutton{four}}
-}
-
 \begin{frame}[label=gammaDiscuss]
   \frametitle{The Procedure}
   What's more, we \emph{are} able to causally estimate $\gamma=\frac{\partial educ}{\partial twin}$ from the structural equation.
@@ -729,6 +725,14 @@ Conley et al. 2012 present four complementary inference strategies that use prio
   \end{itemize}
 \end{frame}
 
+\frame{\frametitle{Estimates (3+) Assuming that $\gamma \sim U(0,\delta)$}
+\begin{figure}[htpb!]
+\centering
+  \includegraphics[scale=0.75]{./figures/LTZ_three.eps}
+\end{figure}
+\hyperlink{2+}{\beamergotobutton{two}}\ \hyperlink{4+}{\beamergotobutton{four}}
+}
+
 \frame{\frametitle{Estimates of bounds: UCI and LTZ Approaches}
 \input{./tables/Conley.tex}
 }
@@ -741,12 +745,11 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \frame{\frametitle{Conclusions}
 \begin{itemize}
 \item Indicators of mother's health and pregnancy behaviours are significant predictors of twin birth.\\ \vspace{5mm}
-\item Conditioning upon available twin predictors produces evidence of a trade-off in IV ($\sim -0.04$ s.d.) and RF estimates.\\ \vspace{5mm}
+\item Conditioning upon available twin predictors produces evidence of a trade-off in IV ($\sim -0.04$ s.d.).\\ \vspace{5mm}
 \item Recognizing that twins are at best plausibly exogenous results in a QQ parameter interval with an upper bound of $\sim -0.15$ s.d. \\ \vspace{5mm}
-\item Significantly larger trade-off for middle income countries and for female children\\ \vspace{5mm}
+\item In some cases, bounds can be estimated quite tightly: bounded to within 0.06 of a s.d.\ in developing countries, 0.08 of a s.d.\ in USA \\ \vspace{5mm}
 \item Ignoring the twin bias will similarly tend to lead to under-estimation of the trade-off between fertility and women's labour force participation.
 \end{itemize}
-\texttt{Damian: Check all effect sizes, update.}
 }
 
 
