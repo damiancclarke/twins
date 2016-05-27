@@ -121,7 +121,12 @@
 \begin{itemize}
 \item Maternal health and pregnancy behaviours are multidimensional and at best partially observed.
 \item Therefore impossible to adjust for them and restore validity of the twin instrument.
-\item Examples of unobservables include stress, sleep, breakfast-skipping, folic acid supplementation, pollution exposure.\\ \vspace{3mm}
+\item Examples of unobservables include stress, sleep, breakfast-skipping, folic acid supplementation, pollution exposure.
+\end{itemize}
+}
+
+\frame{\frametitle{Maternal Health -- Multidimensional, Unobservable}
+\begin{itemize}
 \item Another critique argues twin-IV incurs bias by failing to account for reinforcing investments and scale-economies- Rosenzweig \& Zhang 2009, but see Angrist et al. 2010
 \item It is also recognized that selection into IVF can lead to selection into twins. Our critique is independent of these other considerations.
 
@@ -169,7 +174,7 @@
 \item Demonstrate that twin births are correlated with maternal health using cross-sectional and within-mother variation in microdata from many countries.
 \item Provide evidence of the driving mechanism i.e. that twin births are more likely to miscarry, and especially among less healthy women. \vspace{3mm}
  
-\item Present OLS \& IV estimates. The true estimate will lie between the OLS and IV estimates.
+\item Present OLS \& IV estimates. The true estimate will lie between the OLS and IV estimates if fertility is negatively selected.
 \item Demonstrate (partial) bias-correction following (partial) adjustment for maternal health and other characteristics.
 %\item Adjustment for maternal characteristics will narrow the gap [bounds] between the OLS and IV estimates.
 \item Estimate bounds on the IV estimates on premise that twins are plausibly (rather than strictly) exogenous (Conley et al. 2012).
@@ -252,7 +257,7 @@
 
 \begin{enumerate}
 %\item Cross-sectional microdata evidence from many rich and poor countries.
-\item Regress twin birth on indicators of maternal health, $\bm{H}$ (height, BMI during pregnancy, antenatal care availability, smoking/drinking/drugs and medical problems during pregnancy)  
+\item Regress twin birth on indicators of maternal health, $\bm{H}$ (height, BMI during pregnancy, antenatal care availability, smoking/drinking/drugs and medical problems prior to pregnancy)  
 \item Condition upon $\bm{X}$ -- age, parity, race, ethnicity -- which geneticists have associated with twinning.    \vspace{3mm}
 \end{enumerate}
 
@@ -351,7 +356,7 @@ P(twin_{j})=\gamma_0 + \bm{X}\bm{\gamma}_1 + \bm{H}\bm{\gamma}_2 + \varepsilon_{
 %% Damian would be good to add a few other effect sizes below esp for smoking, drinking, maybe antental care. If we can do the Pietro index then that too, maybe on a new slide including method.
 %%RESPONSE: Yes, good point.  I will make some notes.  We have all the standardised effect sizes in various Nature tables now (Extended Data tables 3-6), so shouldn't take long to focus on the ones we want.
 
-\begin{frame}[label=robust]
+\begin{frame}[label=effects]
 \frametitle{Effect Sizes}
 We find substantial marginal effects of observed indicators of mother’s health on the probability of twin births (mean$\approx$2\%)
 This relationship holds across countries with very different levels of income.
@@ -365,6 +370,7 @@ This relationship holds across countries with very different levels of income.
   \item $\Delta^-$ 1 s.d.\ proportion of mothers smoking $\rightarrow$ $\Delta^+$ twin 0.20-0.35\%
   \item $\Delta^-$ 1 s.d.\ proportion of chronic disease $\rightarrow$ $\Delta^+$ twin 0.02-0.38\%
   \item All of these effects are based on a baseline rate of twins of about 2-3\%
+  \item Twin mothers are \hyperlink{factors}{\textcolor{blue}{3-16\% of a s.d.\ healthier}} than non-twin mothers 
 \end{itemize}
 \end{frame}
 
@@ -520,7 +526,7 @@ In order to put limits on the inconsistency, we use partial identification and b
 \end{spacing}
 \vspace{2mm}
 \begin{itemize}
-\item Bound between (upward biased) OLS and (downward biased) IV
+\item With some conditions, bound between (upward biased) OLS and (downward biased) IV
 \item Combine IV with Conley et al 2012 bounds (similar to Rosen and Nevo 2012)
 \end{itemize}
 }
@@ -623,6 +629,7 @@ educ = \beta fert + X\delta + e
 \frametitle{IV Results (Developing Countries)}
 \input{./tables/IVTogether.tex}
 \hyperlink{DHSGender}{\beamergotobutton{Trade-off is more acute for girl children}}
+\hyperlink{IVFees}{\beamergotobutton{Trade-off is more acute with no free education}}
 \end{frame}
 
 
@@ -674,12 +681,14 @@ educ = \beta fert + X\delta + e
 \frame{\frametitle{Plausible exogeneity}
 An approach to inference for IV models with instruments whose validity is debatable.
 \[
-schooling = \beta fertility + \textcolor{red}{\gamma twins} + X\delta+ e
+quality = \beta fertility + \textcolor{red}{\gamma twins} + X\delta+ e
 \]
 \begin{itemize}
 \item Relax the exclusion restriction that $\gamma=0$.
-\item Plausible exogeneity corresponds to having prior information that $\gamma$ is near 0 but not exactly 0 (Conley et al.\ 2012)
-\item The 2SLS estimator is less sensitive to violations of the exclusion restriction when the instrument is strong (related, Bound, Jaeger, Baker 1995). \ Ours is such a case.
+\item Plausible exogeneity corresponds to having prior information that $\gamma$ is near 0 but not exactly 0 (Conley et al.\ 2012).
+\item \emph{If} we are able to say something about $\gamma$, this allows for valid inference even when traditional IV assumptions fail.
+\item This is akin to pushing off identification by one stage: when exclusion restriction fails, we need to know how it fails.
+\item This strategy works particularly well when the instrument is strong, so 2SLS is less sensitive to violations (related, Bound, Jaeger, Baker 1995). Ours is such a case.
 \item Similar strategy in Nevo and Rosen (2012).
 \end{itemize}
 }
@@ -691,16 +700,29 @@ schooling = \beta fertility + \textcolor{red}{\gamma twins} + X\delta+ e
 %%Damian is going to rewrite the next few slides and add one each on the procedures for estimating gamma from nigeria and usasulfa data.
 
 \frame{\frametitle{Procedures}
-Conley et al. 2012 present four complementary inference strategies that use prior information about $\gamma$ to different extents. We implement two of these: union of confidence interval (UCI) and the local to zero approach (LTZ)
-\vspace{4mm}
+Conley et al. 2012 present four complementary inference strategies that use prior information about $\gamma$ to different extents. We implement two of these: union of confidence interval (UCI) and the local to zero approach (LTZ).
+\vspace{6mm} \\
+\textbf{Union of Confidence Intervals}
 \begin{itemize}
-\item Specify a set of plausible values for $\gamma$ and obtain interval estimates for $\beta$ conditional upon each.  Grid over 0 to 2$\hat\gamma$.
+\item Specify a set of plausible values for $\gamma$ and obtain interval estimates for $\beta$ conditional upon each.
 \item Taking the union of these interval estimates across values of $\gamma$ provides a conservative interval estimate for $\beta$.
 \begin{itemize}
-\item The plus is that we don’t need to specify a prior distribution for $\gamma$, just a range of plausible values.
+\item The plus is that we don't need to specify a prior distribution for $\gamma$, just a range of plausible values.
 \item The minus is that the estimated interval around $\beta$ may be wide
+\item Also, the union for $\gamma$ may be ad-hoc (see also discussion in Nevo and Rosen)
 \end{itemize}
+\end{itemize}
+}
+
+\frame{\frametitle{Procedures}
+Conley et al. 2012 present four complementary inference strategies that use prior information about $\gamma$ to different extents. We implement two of these: union of confidence interval (UCI) and the local to zero approach (LTZ).
+\vspace{4mm} \\
+\textbf{Local to Zero Approach}
+\begin{itemize}
 \item The LTZ approach views prior probabilities for $\gamma$ as analogous to objective probabilities in a 2-step DGP.  Here we must specificy a prior distribution.
+\item Essentially, we must posit a distribution for $\gamma$ which describes the real world.  ``Nature'' draws from this distribution, and the remainder of the DGP follows from the value drawn.
+\item This leaves much more space for violation of the exclusion restriction
+\item And if we know the true distribution of $\gamma$, this buys us consistent estimates of $\beta$
 \end{itemize}
 }
 
@@ -711,27 +733,56 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 %%Damian to add results not only on bounds as below but also on the 2 components of gamma, the plot of the distribution.. maybe with hyperlinks going fwd and back.
 
 \begin{frame}[label=gammaDiscuss]
-  \frametitle{The Procedure}
-  What's more, we \emph{are} able to causally estimate $\gamma=\frac{\partial educ}{\partial twin}$ from the structural equation.
-  \vspace{4mm}
+  \frametitle{Estimating $\gamma$}
+From the structural equation, we know that $\gamma=\frac{\partial quality}{\partial twins}$.  The exclusion restriction fails because twin mothers are healthier than non-twin mothers, and the additional maternal health leads to greater child quality outcomes.
+\vspace{4mm} \\
+
+\textbf{How can we estimate $\gamma$?}
   \begin{itemize}
-  \item The exclusion restriction fails because twin mothers are healthier than non-twin mothers
-  \item We use a well known historical reform (sulfa drugs) to causally estimate the effect of mother's
-    health on child outcomes ($\partial educ/\partial health$)
-  \item This is scaled by the degree to which twin mothers are healthier than non-twin mothers
-    ($health_{twin=1}-health_{twin=0}=\partial health/\partial twin$)
-  \item The product of these gives $\hat\gamma$ (\hyperlink{gammaEst}{\textcolor{blue}{estimates}})
-  \item We then use resampling methods to \hyperlink{gammaResamp}{\textcolor{blue}{calculate}} the full distribution for $\gamma$
+  \item We use a well known historical reform (sulfa drugs) to causally estimate the effect of mother's health on child outcomes ($\partial quality/\partial health$)
+  \item Sulfonamide drugs reduced morbidity/mortality due to infectious diseases
+  \item This is scaled by the degree to which twin mothers are healthier than non-twin mothers when considering \emph{the same} health measure ($health_{twin=1}-health_{twin=0}=\partial health/\partial twin$)
+  \item The product of these estimates gives $\hat\gamma$ %(\hyperlink{gammaEst}{\textcolor{blue}{estimates}})
+  \item We then use resampling methods to calculate the full distribution for $\gamma$
   \end{itemize}
 \end{frame}
 
-\frame{\frametitle{Estimates (3+) Assuming that $\gamma \sim U(0,\delta)$}
-\begin{figure}[htpb!]
-\centering
-  \includegraphics[scale=0.75]{./figures/LTZ_three.eps}
-\end{figure}
-\hyperlink{2+}{\beamergotobutton{two}}\ \hyperlink{4+}{\beamergotobutton{four}}
-}
+\begin{frame}[label=gammaEst1]
+  \frametitle{Estimated $\gamma$ from Sulfonamide Introduction}
+  Using census data from the USA, follow Bhalotra and Venkataramani and estimate:
+  \[
+  quality^k_{st} = \alpha + \phi(Post_t\times Pneumonia_s^m)+\lambda_s+\eta_t + \varepsilon_{st}
+  \]
+  \begin{itemize}
+  \item Here $quality^k$ is outcome for children ($k$), and $Pneumonia^m$ captures exogenous decreases of rates of pneumonia reduction when the mother ($m$) was exposed in her life
+  \item Difference-in-difference estimates of $\hat\phi$ thus quantify how an exogenous increase in health (lower morbidity from pneumonia in mother's life) affects her childrens' health
+  \item Finally, we must estimate the difference in rates of pneumonia exposure between twin and non-twin mothers.
+  \item This scales the parameter $\hat\phi$ to give the change in quality due to the health advantage enjoyed by twin mothers
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[label=gammaEst]
+  \frametitle{Estimated $\gamma$ from Sulfonamide Introduction}
+  \input{./tables/gamma.tex}
+  \begin{itemize}
+  \item We estimate that $\gamma$ is quite small: less than 1\% of 1 standard deviation
+  \item This is considerably smaller than point estimates of the Q--Q trade-off from earlier
+  \item We can observe the entire distribution of $\gamma$ using \hyperlink{gammaResamp}{\textcolor{blue}{resampling methods}}
+  \item Note that we take the absolute value of $\gamma$ as increasing health is \emph{reduction} in pneumonia, so column 2 should be expressed in terms of \emph{not} having suffered the condition 
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[label=Conley3]
+  \frametitle{Estimates (3+) Assuming that $\gamma \sim U(0,\delta)$}
+  \begin{figure}[htpb!]
+    \centering
+    \includegraphics[scale=0.7]{./figures/LTZ_three.eps}
+  \end{figure}
+  {\footnotesize Graph displays upper and lower bound (dotted lines) over an arbitrary range of values for $\gamma$ (0-0.1).  Red line is $2\times$ estimated $\gamma$, so that estimate falls at mean of distribution.}\\
+  \hyperlink{Conley2}{\beamergotobutton{2+}}\ \hyperlink{Conley4}{\beamergotobutton{4+}}
+\end{frame}
 
 \frame{\frametitle{Estimates of bounds: UCI and LTZ Approaches}
 \input{./tables/Conley.tex}
@@ -744,10 +795,10 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \section{Conclusions}
 \frame{\frametitle{Conclusions}
 \begin{itemize}
-\item Indicators of mother's health and pregnancy behaviours are significant predictors of twin birth.\\ \vspace{5mm}
-\item Conditioning upon available twin predictors produces evidence of a trade-off in IV ($\sim -0.04$ s.d.).\\ \vspace{5mm}
-\item Recognizing that twins are at best plausibly exogenous results in a QQ parameter interval with an upper bound of $\sim -0.15$ s.d. \\ \vspace{5mm}
-\item In some cases, bounds can be estimated quite tightly: bounded to within 0.06 of a s.d.\ in developing countries, 0.08 of a s.d.\ in USA \\ \vspace{5mm}
+\item Indicators of mother's health and pregnancy behaviours are significant predictors of twin birth.
+\item Conditioning upon available twin predictors produces evidence of a trade-off in IV ($\sim -0.04$ s.d.\ education in developing countries, 0.06 s.d.\ health in USA).
+\item Recognizing that twins are at best plausibly exogenous results in a QQ parameter interval with an upper bound of $\sim -0.08$ s.d.\ (developing) $\sim -0.15$ s.d.\ (USA) 
+\item In some cases, bounds can be estimated quite tightly and are informative: bounded to within 0.06 of a s.d.\ in developing countries, 0.08 of a s.d.\ in USA 
 \item Ignoring the twin bias will similarly tend to lead to under-estimation of the trade-off between fertility and women's labour force participation.
 \end{itemize}
 }
@@ -815,13 +866,10 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
 
-
 \begin{frame}[label=Scotland]
 \input{./tables/ScotlandTwin.tex}
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
-
-
 
 \begin{frame}[label=Chile]
 \input{./tables/ChileTwin.tex}
@@ -833,13 +881,12 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
 
-
- \begin{frame}[label=Spain1]
+\begin{frame}[label=Spain1]
 \input{./tables/SpainTwin.tex}
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
 
- \begin{frame}[label=Brazil]
+\begin{frame}[label=Brazil]
 \input{./tables/BrazilTwin.tex}
 \hyperlink{c}{\beamergotobutton{Back}}
 \end{frame}
@@ -847,6 +894,32 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \begin{frame}[label=Sweden]
 \input{./tables/SwedenTwin.tex}
 \hyperlink{c}{\beamergotobutton{Back}}
+\end{frame}
+
+\begin{frame}[label=factors]
+\frametitle{Aggregate Differences in Twin and non-Twin Mother Health}
+  \begin{table}
+  \caption{Difference in Aggregate Health Between Twin and non-Twin Mothers}
+  \scalebox{0.88}{
+  \begin{tabular}{lcccc}
+    \toprule
+                   & DHS     & UK      &   USA   & Chile   \\ 
+\textsc{Aggregate Health}&&&&\\ \midrule
+Twin$-$Non-twin    &  0.163  &  0.128  &  0.031  &  0.111  \\
+                   & (0.005) & (0.059) & (0.001) & (0.034) \\ \bottomrule
+                      
+  \end{tabular}}
+\end{table}
+\begin{itemize}
+\item We use the principal factor method to estimate factor loadings of all health
+  measures available in each country (follow Biroli, 2015)
+\item Based on factor loadings and individual health measures, we calculate each mother's latent health, $\hat\theta^H$
+\item $\hat\theta^H = f(height,weight,smoking,conditions,\ldots)$
+\item We can then compare aggregate measures of health based on all variables in one summary value by regressing the $\hat\theta^H$ on twin status.
+\end{itemize}
+
+  
+\hyperlink{effects}{\beamergotobutton{Back}}
 \end{frame}
 
 \begin{frame}[label=TwinDeathSpain]
@@ -860,17 +933,16 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \hyperlink{IV}{\beamergotobutton{Back}}
 \end{frame}
 
+\begin{frame}[label=IVFees]
+  \frametitle{IV Results by Country Fee Status (DHS)}
+\input{./tables/IVFees.tex}
+\hyperlink{IV}{\beamergotobutton{Back}}
+\end{frame}
+
 \begin{frame}[label=USAGender]
   \frametitle{IV Results by Gender (USA)}
 \input{./tables/GenderUSA.tex}
 \hyperlink{USAIV}{\beamergotobutton{Back}}
-\end{frame}
-
-
-\begin{frame}[label=gammaEst]
-  \frametitle{Estimated $\gamma$ from Sulfonamide Introduction}
-\input{./tables/gamma.tex}
-\hyperlink{gammaDiscuss}{\beamergotobutton{Back}}
 \end{frame}
 
 \frame{
@@ -936,22 +1008,22 @@ Conley et al. 2012 present four complementary inference strategies that use prio
 \end{frame}
 
 
-\begin{frame}[label=two]
+\begin{frame}[label=Conley2]
 \frametitle{Estimates (2+) Assuming that $\gamma \sim U(0,\delta)$}
 \begin{figure}[htpb!]
 \centering
   \includegraphics[scale=0.75]{./figures/LTZ_two.eps}
 \end{figure}
-\hyperlink{Conley}{\beamergotobutton{Back}}
+\hyperlink{Conley3}{\beamergotobutton{Back}}
 \end{frame}
 
-\begin{frame}[label=four]
+\begin{frame}[label=Conley4]
 \frametitle{Estimates (4+) Assuming that $\gamma \sim U(0,\delta)$}
 \begin{figure}[htpb!]
 \centering
   \includegraphics[scale=0.75]{./figures/LTZ_four.eps}
 \end{figure}
-\hyperlink{Conley}{\beamergotobutton{Back}}
+\hyperlink{Conley3}{\beamergotobutton{Back}}
 \end{frame}
 
 \begin{frame}[label=gammaResamp]
@@ -960,7 +1032,7 @@ Conley et al. 2012 present four complementary inference strategies that use prio
     \centering
     \includegraphics[scale=0.7]{./figures/gammaResamp.eps}
   \end{figure}
-  \hyperlink{gammaDiscuss}{\beamergotobutton{Back}}
+  \hyperlink{gammaEst}{\beamergotobutton{Back}}
   \end{frame}
 \end{document}
 
