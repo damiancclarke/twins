@@ -53,7 +53,7 @@ noteE3 = ('\\textbf{Effect of Maternal Health on Twinning (Unstandardised   ' +
 'variable construction are available in Supplementary Information.}')
 noteS1 = ('\\textbf{Summary Statistics: All Samples (Panels A-C)} {         ' +
 '\\footnotesize Each panel presents descriptive statistics of data from each' +
-'context examined. Panel A comes from the United States Vital Statistics    ' +
+' context examined. Panel A comes from the United States Vital Statistics   ' +
 'System for all non-ART users from 2009-2013, Panel B consists of all births' +
 ' from the Swedish Medical Birth Register from 1990-2011, and Panel C comes ' +
 'Avon Longitudinal Study of Parents and Children.  Full data collection     ' +
@@ -111,7 +111,7 @@ tabl = open(OUT + 'summaryStatsWorld.tex', 'w')
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n'
            '\\caption{' + noteS1 + '}\n'
-           '\\begin{tabular}{lccccc}\n \\toprule \n'
+           '\\scalebox{0.94}{\\begin{tabular}{lccccc}\n \\toprule \n'
            '&N&Mean&Std.Dev.&Min&Max \\\\ \n'
            '\\midrule \n'
            '\\rowcolor{LightCyan} \\multicolumn{6}{c}'
@@ -131,7 +131,7 @@ tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
 for i,line in enumerate(UKAs):
     if i>0:
         tabl.write(line)
-tabl.write('\\bottomrule \n \\end{tabular} \n \\end{center} \\end{table} \n'
+tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
            '\n \\end{spacing}')
 
 tabl.close()
@@ -141,7 +141,7 @@ tabl = open(OUT + 'summaryStatsWorld_DE.tex', 'w')
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n'
            '\\caption{' + noteS2 + '}\n'
-           '\\begin{tabular}{lccccc}\n \\toprule \n'
+           '\\scalebox{0.94}{\\begin{tabular}{lccccc}\n \\toprule \n'
            '&N&Mean&Std.Dev.&Min&Max \\\\ \n'
            '\\midrule \n'
            '\\rowcolor{LightCyan} \\multicolumn{6}{c}'
@@ -156,7 +156,7 @@ for i,line in enumerate(DHSs):
         tabl.write(line)
 
         
-tabl.write('\\bottomrule \n \\end{tabular} \n \\end{center} \\end{table} \n'
+tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
            '\n \\end{spacing}')
 
 tabl.close()
@@ -175,8 +175,10 @@ tabl = open(OUT + 'twinEffectsUncond.tex', 'w')
 nameUSA = ['Height','Education', 'Smoked Before Pregnancy','Smoked Trimester 1',
            'Smoked Trimester 2', 'Smoked Trimester 3','Diabetes','Hypertension',
            'Underweight','Obese']
-nameUKA = ['BMI','Height','Diabetes','Hypertension','Infections',
-           'Drug Addiction','Alcoholism','Healthy Foods','Fresh Fruit']
+nameUKA = ['Underweight','Obese','Height','Diabetes','Hypertension','Infections',
+           'Healthy Foods','Fresh Fruit','Alcohol (Infrequently)',
+           'Alcohol (Frequently)','Passive Smoke','Smoked during Pregnancy',
+           'Education']
 nameSWE = ['Asthma','Diabetes','Kidney Disease','Hypertension','Smoked (12 weeks)',
            'Smoked (30-32 weeks)','Height','Underweight','Obese']
 nameCHI = ['Smoked during Pregnancy','Drugs (Infrequently)','Drugs (Frequently)',
@@ -193,7 +195,7 @@ lineDHS = []
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n\\caption{' + noteE1 + '}\n'
-           '\scalebox{0.92}{'
+           '\scalebox{0.90}{'
            '\\begin{tabular}{llcllc}\n \\toprule'
            '\\multicolumn{3}{c}{Health Behaviours / Access} &'
            '\\multicolumn{3}{c}{Health Stocks and Conditions } \\\\ \n'
@@ -235,15 +237,17 @@ tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: United Kingdom (Avon)}} \\\\ \n')
 for i,line in enumerate(UKAi):
     line = formatLine(line,1)
-    for j in range(0,9):
+    for j in range(0,13):
         if i==j:
             lineUKA.append(nameUKA[j]+'&'+line)
 
-tabl.write(lineUKA[7]+'&'+lineUKA[1]+'\\\\' +
-           lineUKA[8]+'&'+lineUKA[0]+'\\\\' +
-           lineUKA[5]+'&'+lineUKA[2]+'\\\\' +
-           lineUKA[6]+'&'+lineUKA[3]+'\\\\' +
-           '&&&'         +lineUKA[4]+'\\\\' )            
+tabl.write(lineUKA[6] +'&'+lineUKA[2]+'\\\\' +
+           lineUKA[7] +'&'+lineUKA[0]+'\\\\' +
+           lineUKA[8] +'&'+lineUKA[1]+'\\\\' +
+           lineUKA[9] +'&'+lineUKA[3]+'\\\\' +
+           lineUKA[10]+'&'+lineUKA[4]+'\\\\' +
+           lineUKA[11]+'&&&\\\\'             +
+           lineUKA[12]+'&&&\\\\'             )            
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chile}} \\\\ \n')
@@ -298,7 +302,7 @@ lineDHS = []
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n\\caption{' + noteE3 + '}\n'
-           '\scalebox{0.92}{'
+           '\scalebox{0.90}{'
            '\\begin{tabular}{llcllc}\n \\toprule'
            '\\multicolumn{3}{c}{Health Behaviours / Access} &'
            '\\multicolumn{3}{c}{Health Conditions } \\\\ \n'
@@ -336,19 +340,22 @@ tabl.write(lineSWE[4]+'&'+lineSWE[6]+'\\\\' +
            '&&&'         +lineSWE[2]+'\\\\' +            
            '&&&'         +lineSWE[3]+'\\\\' )
 
+
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: United Kingdom (Avon)}} \\\\ \n')
 for i,line in enumerate(UKAi):
     line = formatLine(line,1)
-    for j in range(0,9):
+    for j in range(0,13):
         if i==j:
             lineUKA.append(nameUKA[j]+'&'+line)
 
-tabl.write(lineUKA[7]+'&'+lineUKA[1]+'\\\\' +
-           lineUKA[8]+'&'+lineUKA[0]+'\\\\' +
-           lineUKA[5]+'&'+lineUKA[2]+'\\\\' +
-           lineUKA[6]+'&'+lineUKA[3]+'\\\\' +
-           '&&&'         +lineUKA[4]+'\\\\' )            
+tabl.write(lineUKA[6] +'&'+lineUKA[2]+'\\\\' +
+           lineUKA[7] +'&'+lineUKA[0]+'\\\\' +
+           lineUKA[8] +'&'+lineUKA[1]+'\\\\' +
+           lineUKA[9] +'&'+lineUKA[3]+'\\\\' +
+           lineUKA[10]+'&'+lineUKA[4]+'\\\\' +
+           lineUKA[11]+'&&&\\\\'             +
+           lineUKA[12]+'&&&\\\\'             )            
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chile}} \\\\ \n')
@@ -403,7 +410,7 @@ lineDHS = []
 
 tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            '\\begin{center}\n\\caption{' + noteE2 + '}\n'
-           '\scalebox{0.92}{'
+           '\scalebox{0.90}{'
            '\\begin{tabular}{llcllc}\n \\toprule'
            '\\multicolumn{3}{c}{Health Behaviours / Access} &'
            '\\multicolumn{3}{c}{Health Conditions } \\\\ \n'
@@ -445,15 +452,17 @@ tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel C: United Kingdom (Avon)}} \\\\ \n')
 for i,line in enumerate(UKAi):
     line = formatLine(line,1)
-    for j in range(0,9):
+    for j in range(0,13):
         if i==j:
             lineUKA.append(nameUKA[j]+'&'+line)
 
-tabl.write(lineUKA[7]+'&'+lineUKA[1]+'\\\\' +
-           lineUKA[8]+'&'+lineUKA[0]+'\\\\' +
-           lineUKA[5]+'&'+lineUKA[2]+'\\\\' +
-           lineUKA[6]+'&'+lineUKA[3]+'\\\\' +
-           '&&&'         +lineUKA[4]+'\\\\' )            
+tabl.write(lineUKA[6] +'&'+lineUKA[2]+'\\\\' +
+           lineUKA[7] +'&'+lineUKA[0]+'\\\\' +
+           lineUKA[8] +'&'+lineUKA[1]+'\\\\' +
+           lineUKA[9] +'&'+lineUKA[3]+'\\\\' +
+           lineUKA[10]+'&'+lineUKA[4]+'\\\\' +
+           lineUKA[11]+'&&&\\\\'             +
+           lineUKA[12]+'&&&\\\\'             )            
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
            '{\\textbf{Panel D: Chile}} \\\\ \n')
