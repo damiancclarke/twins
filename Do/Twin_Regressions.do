@@ -1194,29 +1194,70 @@ if `IVnl'==1 {
 if `IVfee'==1 {
 
     #delimit ;
-    gen free= (country=="Albania"        &child_yob>=1985)|
-              (country=="Armenia"        &child_yob>=1984)|
-              (country=="Bangladesh"     &child_yob>=1994)|
-              (country=="Cameroon"       &child_yob>=1994)|
-              (country=="Egypt"          &child_yob>=1993)|
-              (country=="Ethiopia"       &child_yob>=1988)|
-              (country=="Ghana"          &child_yob>=1999)|
-              (country=="Guyana"         &child_yob>=1982)|
-              (country=="India"          &child_yob>=2000)|
-              (country=="Kenya"          &child_yob>=1997)|
-              (country=="Kyrgyz-Republic"&child_yob>=1983)|
-              (country=="Lesotho"        &child_yob>=1993)|
-              (country=="Madagascar"     &child_yob>=1996)|
-              (country=="Malawi"         &child_yob>=1988)|
-              (country=="Morocco"        &child_yob>=1957)|
-              (country=="Mozambique"     &child_yob>=1998)|
-              (country=="Nigeria"        &child_yob>=1993)|
-              (country=="Rwanda"         &child_yob>=1996)|
-              (country=="Swaziland"      &child_yob>=2004)|
-              (country=="Tanzania"       &child_yob>=1994)|
-              (country=="Uganda"         &child_yob>=1990)|
-              (country=="Zambia"         &child_yob>=1996);
+    gen free= (country=="Albania"        &child_yob>=1986)|
+              (country=="Armenia"        &child_yob>=1985)|
+              (country=="Bangladesh"     &child_yob>=1995)|
+              (country=="Cameroon"       &child_yob>=1995)|
+              (country=="Egypt"          &child_yob>=1994)|
+              (country=="Ethiopia"       &child_yob>=1989)|
+              (country=="Ghana"          &child_yob>=2000)|
+              (country=="Guyana"         &child_yob>=1983)|
+              (country=="India"          &child_yob>=2001)|
+              (country=="Kenya"          &child_yob>=1998)|
+              (country=="Kyrgyz-Republic"&child_yob>=1984)|
+              (country=="Lesotho"        &child_yob>=1994)|
+              (country=="Madagascar"     &child_yob>=1997)|
+              (country=="Malawi"         &child_yob>=1989)|
+              (country=="Morocco"        &child_yob>=1958)|
+              (country=="Mozambique"     &child_yob>=1999)|
+              (country=="Nigeria"        &child_yob>=1994)|
+              (country=="Rwanda"         &child_yob>=1997)|
+              (country=="Swaziland"      &child_yob>=2005)|
+              (country=="Tanzania"       &child_yob>=1995)|
+              (country=="Uganda"         &child_yob>=1991)|
+              (country=="Zambia"         &child_yob>=1997);
     #delimit cr
+
+    gen twin_two_famFree   = twin_two_fam*free
+    gen twin_three_famFree = twin_three_fam*free
+    gen twin_four_famFree  = twin_four_fam*free
+    gen fertFree           = fert*free
+
+    local n1=1
+    local n2=2
+    local n3=3
+    local n4=4
+    local estimates
+    local fstage
+
+    local OUT "$Tables/IV/FeeInteraction"
+    foreach n in `gplus' {
+        preserve
+        keep `cond'&`n'_plus==1
+        
+        foreach y in $outcomes {
+            #delimit ;
+            eststo: ivreg2 `y' `base' $age $S $HP (fert fertFree=twin_`n'_fam*)       
+            `wt', `se' partial(`base');
+            eststo: ivreg2 `y' `base' $age $S $H  (fert fertFree=twin_`n'_fam*)        
+            `wt', `se' partial(`base');
+            eststo: ivreg2 `y' `base' $age $H     (fert fertFree=twin_`n'_fam*) 
+            `wt' if e(sample), `se' partial(`base');
+            eststo: ivreg2 `y' `base'             (fert fertFree=twin_`n'_fam*)
+            `wt' if e(sample), `se' partial(`base');
+            #delimit cr
+            
+            local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
+            local n1=`n1'+4
+            local n2=`n2'+4
+            local n3=`n3'+4
+            local n4=`n4'+4				
+        }
+        restore
+    }
+    estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
+    */ keep(fert fertFree $age $S $H $HP)
+    exit
 
     local feetype fees no-fees
     local feecond free==0 free==1
@@ -1266,7 +1307,7 @@ if `IVfee'==1 {
     }
 }
 
-exit
+
 ********************************************************************************
 **** (7) IV including twins and pre-twins
 ********************************************************************************
@@ -1490,76 +1531,75 @@ if `twinoccur_iv'==1 {
 ***  information that implies that gamma is near 0 but perhaps not exactly 0".
 ********************************************************************************
 if `conley'==1 {
-  mat cbounds1 = J(3,4,.)
-  local ii = 1
-  foreach n in two three four {
-		local c `cond'&`n'_plus==1
-    preserve
-    keep `c'
+    mat cbounds1 = J(3,4,.)
+    local ii = 1
+    foreach n in two three four {
+        local c `cond'&`n'_plus==1
+        preserve
+        keep `c'
 
-    qui reg school_zscore `base' $age
-    predict Ey, resid
-    qui reg fert          `base' $age
-    predict Ex, resid
-    qui reg twin_`n'_fam  `base' $age
-    predict Ez, resid
-    local ESH
-    foreach var of varlist $S $H {
-        qui reg `var' `base' $age
-        predict E`var', resid
-        local ESH `ESH' E`var'
-    }
+        qui reg school_zscore `base' $age
+        predict Ey, resid
+        qui reg fert          `base' $age
+        predict Ex, resid
+        qui reg twin_`n'_fam  `base' $age
+        predict Ez, resid
+        local ESH
+        foreach var of varlist $S $H {
+            qui reg `var' `base' $age
+            predict E`var', resid
+            local ESH `ESH' E`var'
+        }
  
-    *------    UCI     ---------------------------------------------------------
-    plausexog uci school_zscore `base' $age $S $H (fert = twin_`n'_fam), /*
-    */ gmin(0) gmax(0.0182) grid(2) level(.90) vce(robust)
-    local c1 = e(lb_fert)
-    local c2 = e(ub_fert)
-    dis "lower bound = `c1', upper bound=`c2'"
+        *------    UCI     -----------------------------------------------------
+        plausexog uci school_zscore `base' $age $S $H (fert = twin_`n'_fam), /*
+        */ gmin(0) gmax(0.0182) grid(2) level(.90) vce(robust)
+        local c1 = e(lb_fert)
+        local c2 = e(ub_fert)
+        dis "lower bound = `c1', upper bound=`c2'"
     
-    *------    LTZ     ---------------------------------------------------------
-		local items = 6
-		matrix omega_eta = J(`items',`items',0)
-		matrix omega_eta[1,1] = 0.00265^2
-		matrix mu_eta = J(`items',1,0)
-		matrix mu_eta[1,1] = 0.0091448
+        *------    LTZ     -----------------------------------------------------
+        local items = 6
+        matrix omega_eta = J(`items',`items',0)
+        matrix omega_eta[1,1] = 0.0008^2
+        matrix mu_eta = J(`items',1,0)
+        matrix mu_eta[1,1] = 0.0015
 
-    plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta)
-    local c3 = _b[Ex]-1.65*_se[Ex]
-    local c4 = _b[Ex]+1.65*_se[Ex]
-    dis "lower bound = `c3', upper bound=`c4'"
+        plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta)
+        local c3 = _b[Ex]-1.65*_se[Ex]
+        local c4 = _b[Ex]+1.65*_se[Ex]
+        dis "lower bound = `c3', upper bound=`c4'"
 
 
-    *------  GRAPHING   ---------------------------------------------------------
-		foreach num of numlist 0(1)10 {
-			matrix om`num'=J(`items', `items', 0)
-			matrix om`num'[1,1] = ((`num'/10)*0.1/sqrt(12))^2
-			matrix mu`num'=J(`items', 1, 0)
-			matrix mu`num'[1,1]= (`num'/10)*0.1/2
-      local d`num' = (`num'/10)*0.1
-		}
+        *------  GRAPHING   -----------------------------------------------------
+        foreach num of numlist 0(1)10 {
+            matrix om`num'=J(`items', `items', 0)
+            matrix om`num'[1,1] = ((`num'/10)*0.02/sqrt(12))^2
+            matrix mu`num'=J(`items', 1, 0)
+            matrix mu`num'[1,1]= (`num'/10)*0.02/2
+            local d`num' = (`num'/10)*0.02
+        }
 
-    #delimit ;
-		plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta) level(0.95)
-    graph(Ex) graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10)
-    graphmu(mu0 mu1 mu2 mu3 mu4 mu5 mu6 mu7 mu8 mu9 mu10)
-    graphdelta(`d0' `d1' `d2' `d3' `d4' `d5' `d6' `d7' `d8' `d9' `d10');
-		graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace;
-    #delimit cr
+        #delimit ;
+        plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta) level(0.95)
+        graph(Ex) graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10)
+        graphmu(mu0 mu1 mu2 mu3 mu4 mu5 mu6 mu7 mu8 mu9 mu10)
+        graphdelta(`d0' `d1' `d2' `d3' `d4' `d5' `d6' `d7' `d8' `d9' `d10');
+        graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace;
+        #delimit cr
 
-    restore
-    
-		mat cbounds1[`ii',1]=`=`c1''
-		mat cbounds1[`ii',2]=`=`c2''
-		mat cbounds1[`ii',3]=`=`c3''
-		mat cbounds1[`ii',4]=`=`c4''
-
-    local ++ii
-  }
-	mat colnames cbounds1 = LowerBound UpperBound LowerBound UpperBound
-	mat rownames cbounds1 = TwoPlus ThreePlus FourPlus
-	mat2txt, matrix(cbounds1) saving("$Tables/Conley/ConleyGamma.txt") /*
-		*/ format(%6.4f) replace
+        restore
+        mat cbounds1[`ii',1]=`=`c1''
+        mat cbounds1[`ii',2]=`=`c2''
+        mat cbounds1[`ii',3]=`=`c3''
+        mat cbounds1[`ii',4]=`=`c4''
+        
+        local ++ii
+    }
+    mat colnames cbounds1 = LowerBound UpperBound LowerBound UpperBound
+    mat rownames cbounds1 = TwoPlus ThreePlus FourPlus
+    mat2txt, matrix(cbounds1) saving("$Tables/Conley/ConleyGamma.txt") /*
+    */ format(%6.4f) replace
 }
 
 ********************************************************************************
