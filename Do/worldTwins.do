@@ -33,7 +33,7 @@ log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
 local statform cells("count(fmt(%12.0gc)) mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
-
+/*
 ********************************************************************************
 *** (2a) DHS Setup
 ********************************************************************************
@@ -79,7 +79,7 @@ factor height noObese noUweight prenateD prenateNu prenateAn
 predict healthMom
 egen healthMomZ = std(healthMom)
 
-regress healthMomZ twind i._cou
+regress healthMomZ twind
 
 ********************************************************************************
 *** (2b) DHS Sum Stats
@@ -266,7 +266,7 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
 */ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimatesDHS.csv", comma replace
-
+*/
 
 ********************************************************************************
 *** (3a) USA Setup
@@ -328,7 +328,7 @@ lab var underwei "Mother is underweight (pre-pregnancy)"
 lab var mager    "Mother's Age in years"
 lab var twin100  "Percent Twin Births"
 
-foreach v of varlist smoke0 smoke1 smoke2 smoke3 diabet hyperten obese underw {
+foreach v of varlist smoke* diabet hyperten obese underw gestDia pregHyp {
     gen INV_`v'=`v'==0 if `v'!=.
 }
     
@@ -943,10 +943,9 @@ legend(label(6 "Birth Records (No Health Information)"))
 legend(label(7 "Survey Data (No Health Information)"));
 
 graph export "$GRA/coverage.eps", as(eps) replace;
-
-
 #delimit cr
 
-
-
-
+********************************************************************************
+*** (X) Close
+********************************************************************************
+cap log close

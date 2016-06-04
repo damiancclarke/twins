@@ -1,19 +1,23 @@
-********************************************************************************
-* Twin Project
-* Data: MFR, medicinska födelseregistret and LISA.
-* Author: Hanna Mühlrad
-* Date (created): 2015-07-24
-* Date (altered): 2015-07-29 
-* Previous versions: 
-********************************************************************************
+/* TwinSweden.do v1.00          Clarke/Bhalotra            yyyy-mm-dd:2015-07-24
+----|----1----|----2----|----3----|----4----|----5----|----6----|----7----|----8
 
+  This file uses all births from Sweden's Medical Birth Registry to run tests of
+twinning on maternal characteristics. The use of Sweden's Medical Birth Registry
+data requries previous approval. Once this approval has been sought, the below c
+an be run. The only locations that need to be set are the globals in lines xx-xx
+which are currently set relative to this code directory.  The local "data" on li
+ne xx refers to the name of the Medical Birth Registry file saved in dta format.
+
+*/
+
+vers 11
 clear all
 set more off
-set memory 11000
 cap log close
 
+
 ********************************************************************************
-*Globals and locals
+*** (1) Globals and locals
 ********************************************************************************
 global DAT \\micro.intra\projekt\P0471$\P0471_Gem\Health
 global OUT \\micro.intra\projekt\P0471$\P0471_Gem\Twin\output\regressions\testDCC
@@ -63,6 +67,8 @@ gen diabetis		=diabetes=="1"|diabetes=="2"
 gen kidney		=njursjuk=="1"|njursjuk=="2"
 gen hypertensia		=hyperton=="1"|hyperton=="2"
 gen BMI                 = (motherWeight/1000)/((motherHeight*100)^2)
+gen underweight         = BMI<18.5 if BMI<99
+gen obese               = BMI>=30 if BMI<99
 
 **** Smoking   
 gen smoke_3tri		=ROK2=="2"|ROK2=="3"
@@ -103,7 +109,8 @@ gen twin100 = TwinBirthP
 ********************************************************************************
 * (2) Variable lists 
 ********************************************************************************
-local health asthma diabetis kidney hypertensia smoke_1tri smoke_3tri motherHeight BMI
+local health asthma diabetis kidney hypertensia smoke_1tri smoke_3tri /*
+*/           motherHeight underweight obese
 local FEs     i.year i.birthOrder i.motherAge
 
 local tvars `health' `smoke' 
@@ -290,4 +297,5 @@ keep countryName heightEst heightLB heightUB          /*
 */ height_stdEst height_stdLB height_stdUB            /*
 */ twinProp surveyYear
 outsheet using "$OUT/countryEstimatesSWE.csv", comma replace
+
 
