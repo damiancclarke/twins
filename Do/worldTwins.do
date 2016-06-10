@@ -325,6 +325,8 @@ append using `t2009' `t2010' `t2011' `t2012' `t2013'
 
 tab twin
 
+
+
 lab var heightcm "Mother's height (cm)"
 lab var meduc    "Mother's education (years)"
 lab var smoke0   "Mother Smoked Before Pregnancy"
@@ -353,7 +355,7 @@ lab var INV_hyperten "Mother Didn't have pre-pregnancy hypertension"
 lab var INV_obese    "Mother was not obese (pre-pregnancy)"
 lab var INV_underwei "Mother was not underweight (pre-pregnancy)"
 
-
+/*
 factor heightcm INV_*, ml factor(3)
 #delimit ;
 esttab using "$OUT/factorsUSA.tex", booktabs label noobs nonumber nomtitle
@@ -366,7 +368,7 @@ egen healthMomZ = std(healthMom)
 gen twind=twin
 regress healthMomZ twind
 outreg2 using "$OUT/factorResults.xls", append
-
+*/
 
 
 
@@ -405,6 +407,26 @@ foreach estimand in beta se uCI lCI obs {
     gen `estimand'_non_ucond = .
 }
 
+egen allsmoke = rownonmiss(smoke0 smoke1 smoke2 smoke3)
+areg birthweight smoke0 `FEs' if allsmoke==1, `regopts'
+outreg2 using "$REG/bwtSmoke.xls", keep(smoke0) replace
+areg birthweight smoke1 `FEs' if allsmoke==1, `regopts'
+outreg2 using "$REG/bwtSmoke.xls", keep(smoke1) append
+areg birthweight smoke2 `FEs' if allsmoke==1, `regopts'
+outreg2 using "$REG/bwtSmoke.xls", keep(smoke2) append
+areg birthweight smoke3 `FEs' if allsmoke==1, `regopts'
+outreg2 using "$REG/bwtSmoke.xls", keep(smoke3) append
+foreach num of numlist 0 1 {
+    areg birthweight smoke0 `FEs' if twin==`num'&allsmoke==1, `regopts'
+    outreg2 using "$REG/bwtSmoke_twin`num'.xls", keep(smoke0) append
+    areg birthweight smoke1 `FEs' if twin==`num'&allsmoke==1, `regopts'
+    outreg2 using "$REG/bwtSmoke_twin`num'.xls", keep(smoke1) append
+    areg birthweight smoke2 `FEs' if twin==`num'&allsmoke==1, `regopts'
+    outreg2 using "$REG/bwtSmoke_twin`num'.xls", keep(smoke2) append
+    areg birthweight smoke3 `FEs' if twin==`num'&allsmoke==1, `regopts'
+    outreg2 using "$REG/bwtSmoke_twin`num'.xls", keep(smoke3) append
+}
+exit
 
 areg twin100 `usv' `FEs', `regopts'
 keep if e(sample)
