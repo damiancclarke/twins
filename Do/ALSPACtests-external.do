@@ -43,8 +43,8 @@ log using "$OUT/ALSPACtest.txt", text replace
 ********************************************************************************
 #delimit ;
 local y_var   twin100;
-local health  underweight obese height diabetes hypertension infections preDrugs 
-              preAlcohol freqHealthFoods freqFreshFruit alcoholPreg
+local health  underweight obese height diabetes hypertension infections 
+              freqHealthFoods freqFreshFruit alcoholPreg
               alcoholPregHigh passiveSmoke smokePreg meduc;
 local FEs     i.motherAge i.fertility i.gestation educM;
 local statform cells("count mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))");
@@ -93,19 +93,25 @@ replace meduc = 16 if k6292 == 1
 replace meduc = 13 if k6295 == 1
 replace meduc = 10 if meduc== .
 gen educM = meduc==10
-
+keep if motherAge>=18&motherAge<=49
 
 foreach v of varlist underweight obese hypertension infections preDrugs /*
 */ diabetes preAlcohol alcoholPreg alcoholPregHigh passiveSmoke smokePreg {
     gen INV_`v'=`v'==0 if `v'!=.
 }
 
-factor INV_* height freqHealthFoods freqFreshFruit
+factor INV_* height freqHealthFoods freqFreshFruit, factor(3)
 predict healthMom
 egen healthMomZ = std(healthMom)
+#delimit ;
+esttab using "$OUT/factorsUK.tex", booktabs label noobs nonumber nomtitle
+cells("L[Factor1](t) L[Factor2](t) L[Factor3](t) Psi[Uniqueness]") nogap replace; 
+#delimit cr
 
-regress healthMomZ twin
-
+gen twind=twin*100
+regress healthMomZ twind
+outreg2 using "$OUT/../Sum/factorResults.xls", append 
+exit
 
 ********************************************************************************
 *** (3) Sum stats

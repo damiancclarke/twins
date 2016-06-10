@@ -23,7 +23,7 @@ set maxvar 20000
 *** (1) globals
 ********************************************************************************
 global DAT "~/investigacion/Activa/Twins/Data"
-global USA "~/database/NVSS/Births/dta"
+global USA "/media/damian/Impar/database/NVSS/Births/dta"
 global GRA "~/investigacion/Activa/Twins/Figures"
 global LOG "~/investigacion/Activa/Twins/Log"
 global OUT "~/investigacion/Activa/Twins/Results/Sum"
@@ -33,6 +33,7 @@ log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
 local statform cells("count(fmt(%12.0gc)) mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
+
 /*
 ********************************************************************************
 *** (2a) DHS Setup
@@ -61,6 +62,8 @@ bys v001 _year: egen prenateDoctorC = mean(prenate_doc)
 bys v001 _year: egen prenateNurseC  = mean(prenate_nurse)
 bys v001 _year: egen prenateNoneC   = mean(prenate_none)
 gen prenateAnyC = 1 - prenateNoneC
+gen noObese   = obese == 0 if obese!= .
+gen noUweight = underweight == 0 if underweight != .
 
 lab var height    "Mother's Height (cm)"
 lab var bmi       "Mother's BMI"
@@ -71,15 +74,20 @@ lab var twind100  "Percent Twin Births"
 lab var prenateD  "Attended Births in Area (\% Doctor)"
 lab var prenateNu "Attended Births in Area (\% Nurse)"
 lab var prenateAn "Attended Births in Area (\% Any)"
+lab var noObese   "Mother is not obese"
+lab var noUweight "Mother is not underweight"
 
-gen noObese   = obese == 0 if obese!= .
-gen noUweight = underweight == 0 if underweight != .
-
-factor height noObese noUweight prenateD prenateNu prenateAn 
+factor height noObese noUweight prenateD prenateNu prenateAn, ml
 predict healthMom
+#delimit ;
+esttab using "$OUT/factorsDHS.tex", booktabs label  noobs nonumber nomtitle
+cells("L[Factor1](t) L[Factor2](t) L[Factor3](t) Psi[Uniqueness]") nogap replace;
+#delimit cr
 egen healthMomZ = std(healthMom)
 
 regress healthMomZ twind
+outreg2 using "$OUT/factorResults.xls", replace
+
 
 ********************************************************************************
 *** (2b) DHS Sum Stats
@@ -297,13 +305,18 @@ foreach year of numlist 2009(1)2013 {
     gen nonmissing = smoke1!=.&hypertens!=.&heightcm!=.&meduc!=.
     gen underweight = bmi<18.5 if bmi<99
     gen obese       = bmi>30 if bmi<99
+
+    preserve
+    keep if infert==1
+    tempfile i`year'
+    save `i`year''
+    restore
     
     keep if infert==0
     tempfile t`year'
     gen bin=runiform()
     tab twin if ART==0&nonmissing==1
     keep if bin>0.90
-    *keep if bin>0.5
     save `t`year''
 }
 
@@ -328,16 +341,35 @@ lab var underwei "Mother is underweight (pre-pregnancy)"
 lab var mager    "Mother's Age in years"
 lab var twin100  "Percent Twin Births"
 
-foreach v of varlist smoke* diabet hyperten obese underw gestDia pregHyp {
+foreach v of varlist smoke* diabet hyperten obese underw {
     gen INV_`v'=`v'==0 if `v'!=.
 }
-    
-factor heightcm INV_*
+lab var INV_smoke0   "Mother Didn't Smoke Before Pregnancy"
+lab var INV_smoke1   "Mother Didn't Smoke in Trimester 1" 
+lab var INV_smoke2   "Mother Didn't Smoke in Trimester 2"  
+lab var INV_smoke3   "Mother Didn't Smoke in Trimester 3" 
+lab var INV_diabet   "Mother Didn't have pre-pregnancy diabetes"
+lab var INV_hyperten "Mother Didn't have pre-pregnancy hypertension"
+lab var INV_obese    "Mother was not obese (pre-pregnancy)"
+lab var INV_underwei "Mother was not underweight (pre-pregnancy)"
+
+
+factor heightcm INV_*, ml factor(3)
+#delimit ;
+esttab using "$OUT/factorsUSA.tex", booktabs label noobs nonumber nomtitle
+cells("L[Factor1](t) L[Factor2](t) L[Factor3](t) Psi[Uniqueness]") nogap replace;
+#delimit cr
+
 predict healthMom
 egen healthMomZ = std(healthMom)
 
-regress healthMomZ twin
-exit
+gen twind=twin
+regress healthMomZ twind
+outreg2 using "$OUT/factorResults.xls", append
+
+
+
+
 ********************************************************************************
 *** (3b) USA Sum Stats
 ********************************************************************************
@@ -516,8 +548,103 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimatesUSA.csv", comma replace
 
+********************************************************************************
+*** (3e) USA Regressions for IVF users
+********************************************************************************
+clear
+append using `i2009' `i2010' `i2011' `i2012' `i2013'
+
+tab twin
+
+lab var heightcm "Mother's height (cm)"
+lab var meduc    "Mother's education (years)"
+lab var smoke0   "Mother Smoked Before Pregnancy"
+lab var smoke1   "Mother Smoked in 1st Trimester" 
+lab var smoke2   "Mother Smoked in 2nd Trimester" 
+lab var smoke3   "Mother Smoked in 3rd Trimester" 
+lab var diabet   "Mother had pre-pregnancy diabetes"
+lab var gestDia  "Mother had gestational diabetes"
+lab var hyperten "Mother had pre-pregnancy hypertension"
+lab var pregHyp  "Mother had pregnancy-associated hypertension"
+lab var married  "Mother is married"
+lab var obese    "Mother is obese (pre-pregnancy)"
+lab var underwei "Mother is underweight (pre-pregnancy)"
+lab var mager    "Mother's Age in years"
+lab var twin100  "Percent Twin Births"
 
 
+local usv heightcm meduc smoke0 smoke1 smoke2 smoke3 diabetes hypertens /*
+*/        underweight obese
+local Zusv Z_heightcm Z_meduc Z_smoke0 Z_smoke1 Z_smoke2 Z_smoke3 Z_diab  /*
+*/         Z_hyper Z_underweight Z_obese
+local FEs i.mbrace i.lbo_rec i.year i.gestation married
+local regopts abs(mager) robust
+
+
+foreach var of varlist `usv' {
+    egen mean_`var' = mean(`var')
+    egen sd_`var'   = sd(`var')
+                 
+    gen Z_`var' = (`var' - mean_`var')/sd_`var'
+    drop mean_`var' sd_`var'
+}
+
+gen varname = ""
+foreach estimand in beta se uCI lCI obs {
+    gen `estimand'_std_cond  = .
+    gen `estimand'_non_cond  = .
+    gen `estimand'_std_ucond = .
+    gen `estimand'_non_ucond = .
+}
+
+areg twin100 `usv' `FEs', `regopts'
+keep if e(sample)
+local counter = 1
+foreach var of varlist `usv' {
+    qui replace varname     = "`var'" in `counter'
+
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_non_cond = `nobs' in `counter'
+    qui replace beta_non_cond = `beta' in `counter'
+    qui replace   se_non_cond = `se'   in `counter'
+    qui replace  uCI_non_cond = `uCI'  in `counter'
+    qui replace  lCI_non_cond = `lCI'  in `counter'
+
+    local ++counter
+}
+outsheet varname beta_non_cond se_non_cond uCI_non_cond lCI_non_cond    /*
+*/ in 1/`counter' using "$REG/USA_est_non_cond_IVF.csv", delimit(";") replace
+
+
+local counter = 1
+dis "Standardised Unconditional"
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `Zusv' {
+    qui areg twin100 `var' `FEs', `regopts'
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+
+    qui replace  obs_std_ucond = `nobs' in `counter'
+    qui replace beta_std_ucond = `beta' in `counter'
+    qui replace   se_std_ucond = `se'   in `counter'
+    qui replace  uCI_std_ucond = `uCI'  in `counter'
+    qui replace  lCI_std_ucond = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"        
+    local ++counter
+}
+outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
+*/ in 1/`counter' using "$REG/USA_est_std_ucond_IVF.csv", delimit(";") replace
+
+*/
 ********************************************************************************
 *** (4a) Chile Setup
 ********************************************************************************
@@ -562,12 +689,19 @@ foreach v of varlist `pregS' lowWeightPre obesePre {
     gen INV_`v'=`v'==0 if `v'!=.
 }
     
-factor INV_*
+factor INV_*, factor(3)
+#delimit ;
+esttab using "$OUT/factorsChile.tex", booktabs label noobs nonumber nomtitle
+cells("L[Factor1](t) L[Factor2](t) L[Factor3](t) Psi[Uniqueness]") nogap replace;
+#delimit cr
+
 predict healthMom
 egen healthMomZ = std(healthMom)
 
-regress healthMomZ twin
-exit
+regress healthMomZ twind
+outreg2 using "$OUT/factorResults.xls", append
+
+
 ********************************************************************************
 *** (4c) Chile Regressions
 ********************************************************************************
