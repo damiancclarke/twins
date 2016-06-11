@@ -77,7 +77,7 @@ lab var prenateAn "Attended Births in Area (\% Any)"
 lab var noObese   "Mother is not obese"
 lab var noUweight "Mother is not underweight"
 
-factor height noObese noUweight prenateD prenateNu prenateAn, ml
+factor height noObese noUweight prenateD prenateNu prenateAn, factor(3)
 predict healthMom
 #delimit ;
 esttab using "$OUT/factorsDHS.tex", booktabs label  noobs nonumber nomtitle
@@ -87,7 +87,7 @@ egen healthMomZ = std(healthMom)
 
 regress healthMomZ twind
 outreg2 using "$OUT/factorResults.xls", replace
-
+exit
 
 ********************************************************************************
 *** (2b) DHS Sum Stats
@@ -355,8 +355,8 @@ lab var INV_hyperten "Mother Didn't have pre-pregnancy hypertension"
 lab var INV_obese    "Mother was not obese (pre-pregnancy)"
 lab var INV_underwei "Mother was not underweight (pre-pregnancy)"
 
-/*
-factor heightcm INV_*, ml factor(3)
+
+factor heightcm INV_*, factor(3)
 #delimit ;
 esttab using "$OUT/factorsUSA.tex", booktabs label noobs nonumber nomtitle
 cells("L[Factor1](t) L[Factor2](t) L[Factor3](t) Psi[Uniqueness]") nogap replace;
@@ -367,8 +367,9 @@ egen healthMomZ = std(healthMom)
 
 gen twind=twin
 regress healthMomZ twind
+exit
 outreg2 using "$OUT/factorResults.xls", append
-*/
+
 
 
 
@@ -408,22 +409,22 @@ foreach estimand in beta se uCI lCI obs {
 }
 
 egen allsmoke = rownonmiss(smoke0 smoke1 smoke2 smoke3)
-areg birthweight smoke0 `FEs' if allsmoke==1, `regopts'
+areg birthweight smoke0 `FEs' if allsmoke==4, `regopts'
 outreg2 using "$REG/bwtSmoke.xls", keep(smoke0) replace
-areg birthweight smoke1 `FEs' if allsmoke==1, `regopts'
+areg birthweight smoke1 `FEs' if allsmoke==4, `regopts'
 outreg2 using "$REG/bwtSmoke.xls", keep(smoke1) append
-areg birthweight smoke2 `FEs' if allsmoke==1, `regopts'
+areg birthweight smoke2 `FEs' if allsmoke==4, `regopts'
 outreg2 using "$REG/bwtSmoke.xls", keep(smoke2) append
-areg birthweight smoke3 `FEs' if allsmoke==1, `regopts'
+areg birthweight smoke3 `FEs' if allsmoke==4, `regopts'
 outreg2 using "$REG/bwtSmoke.xls", keep(smoke3) append
 foreach num of numlist 0 1 {
-    areg birthweight smoke0 `FEs' if twin==`num'&allsmoke==1, `regopts'
+    areg birthweight smoke0 `FEs' if twin==`num'&allsmoke==4, `regopts'
     outreg2 using "$REG/bwtSmoke_twin`num'.xls", keep(smoke0) append
-    areg birthweight smoke1 `FEs' if twin==`num'&allsmoke==1, `regopts'
+    areg birthweight smoke1 `FEs' if twin==`num'&allsmoke==4, `regopts'
     outreg2 using "$REG/bwtSmoke_twin`num'.xls", keep(smoke1) append
-    areg birthweight smoke2 `FEs' if twin==`num'&allsmoke==1, `regopts'
+    areg birthweight smoke2 `FEs' if twin==`num'&allsmoke==4, `regopts'
     outreg2 using "$REG/bwtSmoke_twin`num'.xls", keep(smoke2) append
-    areg birthweight smoke3 `FEs' if twin==`num'&allsmoke==1, `regopts'
+    areg birthweight smoke3 `FEs' if twin==`num'&allsmoke==4, `regopts'
     outreg2 using "$REG/bwtSmoke_twin`num'.xls", keep(smoke3) append
 }
 exit
@@ -577,7 +578,7 @@ clear
 append using `i2009' `i2010' `i2011' `i2012' `i2013'
 
 tab twin
-
+exit
 lab var heightcm "Mother's height (cm)"
 lab var meduc    "Mother's education (years)"
 lab var smoke0   "Mother Smoked Before Pregnancy"
@@ -666,7 +667,7 @@ foreach var of varlist `Zusv' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/USA_est_std_ucond_IVF.csv", delimit(";") replace
 
-*/
+
 ********************************************************************************
 *** (4a) Chile Setup
 ********************************************************************************
