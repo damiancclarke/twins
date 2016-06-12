@@ -94,9 +94,11 @@ replace meduc = 13 if k6295 == 1
 replace meduc = 10 if meduc== .
 gen educM = meduc==10
 keep if motherAge>=18&motherAge<=49
+gen twind=twin
 
-foreach v of varlist underweight obese hypertension infections preDrugs /*
-*/ diabetes preAlcohol alcoholPreg alcoholPregHigh passiveSmoke smokePreg {
+/*
+foreach v of varlist underweight obese hypertension infections /*
+*/ diabetes alcoholPreg alcoholPregHigh passiveSmoke smokePreg {
     gen INV_`v'=`v'==0 if `v'!=.
 }
 
@@ -108,7 +110,7 @@ esttab using "$OUT/factorsUK.tex", booktabs label noobs nonumber nomtitle
 cells("L[Factor1](t) L[Factor2](t) L[Factor3](t) Psi[Uniqueness]") nogap replace; 
 #delimit cr
 
-gen twind=twin*100
+
 regress healthMomZ twind
 outreg2 using "$OUT/../Sum/factorResults.xls", append 
 exit
@@ -146,7 +148,7 @@ foreach estimand in beta se uCI lCI obs {
 reg twin100 `health' `FEs'
 keep if e(sample)
 local counter = 1
-foreach var of varlist `health' {
+3Dforeach var of varlist `health' {
     qui replace varname     = "`var'" in `counter'
 
     local nobs = e(N)
@@ -237,6 +239,56 @@ outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$OUT/UKA_est_std_ucond.csv", delimit(";") replace
 
 restore
+
+*/
+********************************************************************************
+*** (4) UK Regressions: Twin Dif
+********************************************************************************
+gen countryName = "United Kingdom"
+gen surveyYear  = 1990
+rename meduc    educf
+
+foreach var in height educf {
+    gen `var'Est     = .
+    gen `var'LB      = .
+    gen `var'UB      = .
+
+    egen Mean = mean(`var')
+    egen SDev = sd(`var')
+    gen `var'_std = (`var'-Mean)/SDev
+    drop Mean SDev
+}
+foreach var in height_std educf_std {
+    gen `var'Est     = .
+    gen `var'LB      = .
+    gen `var'UB      = .
+}
+gen twinProp = .
+
+gen yearint = 1990
+
+sum twind
+replace twinProp = `r(mean)'
+gen fert = fertility
+foreach var in height educf height_std educf_std {
+    qui areg `var' twind i.fert, abs(motherAge)
+    local nobs  = e(N)
+    local estl `=_b[twind]-invttail(`nobs',0.025)*_se[twind]'
+    local estu `=_b[twind]+invttail(`nobs',0.025)*_se[twind]'
+    dis "95% CI for `var' is [`estl',`estu']"
+
+    qui replace `var'Est   = _b[twind] in 1
+    qui replace `var'LB    = `estl'    in 1
+    qui replace `var'UB    = `estu'    in 1
+}
+
+keep in 1
+keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
+*/ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
+*/ educf_stdUB twinProp surveyYear
+outsheet using "$OUT/countryEstimatesUK.csv", comma replace
+
+
 ********************************************************************************
 *** (5) Close
 ********************************************************************************

@@ -20,6 +20,7 @@ cap log close
 *--- (1) globals
 *-------------------------------------------------------------------------------
 global DAT "~/database/NVSS/"
+global DAT "/media/damian/Impar/database/NVSS/"
 global OUT "~/investigacion/Activa/Twins/Figures"
 global LOG "~/investigacion/Activa/Twins/Log"
 global TAB "~/investigacion/Activa/Twins/Results/World/"
@@ -30,6 +31,8 @@ log using "$LOG/fetalDeathGraphs.txt", text replace
 local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par([ ]) )) stats
              (N, fmt(%12.2gc) label(Observations))
              starlevel ("*" 0.10 "**" 0.05 "***" 0.01) collabels(none) label;
+local statform cells("count(fmt(%12.2gc)) mean(fmt(2)) sd(fmt(2)) min(fmt(2))
+               max(fmt(2))");
 #delimit cr
 *-------------------------------------------------------------------------------
 *--- (2) Import
@@ -101,6 +104,15 @@ gen     hvar      = .
 local   se robust
 local   abs abs(motherAge)
 
+local usv smokes drinks noCollege anemic cigarettes numdrinks yrsEduc
+gen a=1
+estpost sum `usv' death twin motherAge a, casewise
+estout using "$TAB/USADeathSum.tex", replace label style(tex) `statform'
+
+foreach v of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEduc {
+    egen Z_`v'=std(`v')
+}
+/*
 local j = 1
 foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEduc {
     replace hvar = `var' 
@@ -168,6 +180,75 @@ foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEd
     local ++j
 }
 
+*/
+local j = 1
+foreach var of varlist Z_smokes Z_drinks Z_noCollege Z_anemic {
+    replace hvar = `var' 
+    if `j'==1 local l1 "Smoked"
+    if `j'==1 local l2 "Did Not Smoke"
+    if `j'==2 local l1 "Consumed Alcohol"
+    if `j'==2 local l2 "Did Not Consume Alcohol"
+    if `j'==3 local l1 "No College"
+    if `j'==3 local l2 "At Least Some College"
+    if `j'==4 local l1 "Anemic"
+    if `j'==4 local l2 "Not Anemic"
+        
+    replace twinInt = twin*hvar
+    areg death twin hvar twinInt i.birthOrder i.year, `abs' `se'
+
+    replace outcome = _b[_cons] in 1
+    replace outcome = _b[_cons]+_b[hvar] in 2
+    replace outcome = _b[_cons]          +_b[twin] in 3
+    replace outcome = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt] in 4
+    local   min = _b[_cons]-1
+    local   max = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   twinDif  = string(_b[hvar]+_b[twinInt], "%5.3f")
+    local   singDif  = string(_b[hvar]              , "%5.3f")
+    local   twinNote = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   singNote = _b[_cons]+_b[hvar]+1
+    
+    if `j'<5 {
+        #delimit ;
+        twoway bar  outcome barposition  if behaviour==0, color(red)  
+            || bar  outcome barposition  if behaviour==1, color(blue)
+        xscale(range(0 6)) yscale(range(0 `max'))
+        xlabel( 1.5 "Singleton" 4.5 "Twins") scheme(s1mono)
+        legend(lab(1 "`l2'") lab(2 "`l1'"))
+        xtitle(" ") ytitle("Fetal Deaths Per 1,000 Births")
+        text(`twinNote' 4.5 "{&beta}{subscript:twin}=`twinDif'")
+        text(`singNote' 1.5 "{&beta}{subscript:single}=`singDif'");
+        graph export "$OUT/Deaths`var'_cond.eps", as(eps) replace;
+        #delimit cr
+    }
+        
+    reg death twin hvar twinInt
+    replace outcome = _b[_cons] in 1
+    replace outcome = _b[_cons]+_b[hvar] in 2
+    replace outcome = _b[_cons]          +_b[twin] in 3
+    replace outcome = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt] in 4
+    local   min = _b[_cons]-1
+    local   max = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   twinDif  = string(_b[hvar]+_b[twinInt], "%5.3f")
+    local   singDif  = string(_b[hvar]              , "%5.3f")
+    local   twinNote = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   singNote = _b[_cons]+_b[hvar]+1        
+    if `j'<5 {
+        #delimit ;
+        twoway bar  outcome barposition  if behaviour==0, color(red)  
+            || bar  outcome barposition  if behaviour==1, color(blue)
+        xscale(range(0 6)) yscale(range(0 `max'))
+        xlabel( 1.5 "Singleton" 4.5 "Twins") scheme(s1mono)
+        legend(lab(1 "`l2'") lab(2 "`l1'"))
+        xtitle(" ") ytitle("Fetal Deaths Per 1,000 Births")
+        text(`twinNote' 4.5 "{&beta}{subscript:twin}=`twinDif'")
+        text(`singNote' 1.5 "{&beta}{subscript:single}=`singDif'");
+        graph export "$OUT/Deaths`var'_Uncond.eps", as(eps) replace;
+        #delimit cr
+    }
+    local ++j
+}
+
+exit
 *-------------------------------------------------------------------------------
 *--- (4) Export regression results
 *-------------------------------------------------------------------------------
