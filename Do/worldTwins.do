@@ -274,7 +274,7 @@ keep countryName heightEst heightLB heightUB educfEst educfLB educfUB         /*
 */ height_stdEst height_stdLB height_stdUB educf_stdEst educf_stdLB           /*
 */ educf_stdUB twinProp surveyYear
 outsheet using "$OUT/countryEstimatesDHS.csv", comma replace
-*/
+
 
 ********************************************************************************
 *** (3a) USA Setup
@@ -843,7 +843,7 @@ foreach var of varlist `Zchi' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/CHI_est_std_ucond.csv", delimit(";") replace
 
-exit
+
 ********************************************************************************
 *** (5) Figures
 ********************************************************************************
@@ -856,8 +856,12 @@ insheet using "$OUT/countryEstimatesUSA.csv", comma names clear
 tempfile USA
 save `USA', replace
 
-insheet using "$OUT/countryEstimatesDHS.csv", comma names clear
-append  using  `USA'
+insheet using "$OUT/countryEstimatesSWE.csv", comma names clear
+tempfile SWE
+save `SWE', replace
+
+insheet using "$OUT/countryEstimates.csv", comma names clear
+append  using  `USA' `SWE'
 
 gsort -heightest
 gen numb = _n
@@ -872,6 +876,8 @@ replace countryname= "Cote d'Ivoire"    if countryname == "Cote d Ivoire"
 replace countryname= "Egypt, Arab Rep." if countryname == "Egypt"
 merge 1:1 countryname using `GDP'
 keep if _merge==3
+
+
 gen logGDP = log(ny_gdp_pcap_cd)
 encode regioncode, gen(rc)
 gen rcode = rc
@@ -895,18 +901,22 @@ format logGDP         %9.2f
 eclplot heightEst heightlb heightub numb, scheme(s1mono) estopts(mcolor(black))
 ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
 ytitle("Height Difference (cm)" "twin - non-twin")
-xlabel(1 "Guyana" 2 "Brazil" 3 "Maldives" 4 "Sao Tome" 5 "Azerbaijan" 6 "CAR"
-       7 "Albania" 8 "Guatemala" 9 "Dom. Rep." 10 "Ghana" 11 "USA" 12 "Mozambique"
-       13 "Kyrgyz Rep." 14 "Colombia" 15 "Honduras" 16 "Burundi" 17 "Sierra Leone"
-       18 "DRC" 19 "Gabon" 20 "Ethiopia" 21 "Namibia" 22 "Jordan" 23 "Nepal" 24
-       "Lesotho" 25 "Peru" 26 "Bolivia" 27 "Malawi" 28 "Togo" 29 "Turkey" 30
-       "Uganda" 31 "Moldova" 32 "Congo Brazzaville" 33 "Kazakhstan" 34 "Rwanda"
-       35 "Senegal" 36 "Swaziland" 37 "Cameroon" 38 "Kenya" 39 "Morocco" 40
-       "Egypt" 41 "Armenia" 42 "Nicaragua" 43 "Burkina Faso" 44 "India" 45
-       "Nigeria" 46 "Haiti" 47 "Mali" 48 "Tanzania" 49 "Niger" 50 "Madagascar"
-       51 "Cote D'Ivoire" 52 "Bangladesh" 53 "Comoros" 54 "Zambia" 55 "Chad"
-       56 "Liberia" 57 "Guinea" 58 "Zimbabwe" 59 "Benin" 60 "Cambodia" 61
-       "Uzbekistan",angle(65) labsize(vsmall));
+xlabel(1  "Guyana"            2  "Brazil"      3  "Maldives"      4  "Sierra Leone"
+       5  "Azerbaijan"        6  "Sao Tome"    7  "Albania"       8  "CAR"
+       9  "Guatemala"         10 "Ghana"       11 "Dom. Rep."     12 "Mozambique"
+       13 "USA"               14 "Kyrgyz Rep." 15 "Colombia"      16 "Honduras"
+       17 "Burundi"           18 "DRC"         19 "Gabon"         20 "Ethiopia"
+       21 "Jordan"            22 "Namibia"     23 "Nepal"         24 "Peru"
+       25 "Lesotho"           26 "Sweden"      27 "Bolivia"       28 "Malawi"
+       29 "Nicaragua"         30 "Togo"        31 "Moldova"       32 "Turkey"
+       33 "Congo Brazzaville" 34 "Uganda"      35 "Kazakhstan"    36 "Comoros"
+       37 "Rwanda"            38 "Swaziland"   39 "Cote D'Ivoire" 40 "Mali"
+       41 "Egypt"             42 "Morocco"     43 "Cameroon"      44 "India"
+       45 "Haiti"             46 "Tanzania"    47 "Armenia"       48 "Burkina Faso"
+       49 "Nigeria"           50 "Madagascar"  51 "Niger"         52 "Kenya"
+       53 "Bangladesh"        54 "Zambia"      55 "Senegal"       56 "Chad"
+       57 "Liberia"           58 "Guinea"      59 "Zimbabwe"      60 "Benin"
+       61 "Cambodia"          62 "Uzbekistan",angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/HeightDif.eps", as(eps) replace
 
@@ -918,22 +928,22 @@ eclplot height_stdEst height_stdlb height_stdub numb, scheme(s1mono)
 estopts(mcolor(black)) ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
 ylabel(-0.2(0.2)0.4)
 ytitle("Standardised Height Difference (cm)" "twin - non-twin")
-xlabel(1  "        Brazil" 2  "Guyana"         3  "Maldives"     4  "Azerbaijan"
-       5  "Guatemala"    6  "CAR"            7  "Kyrgyz Rep."  8  "Albania"   
-       9  "Dom. Rep."    10 "Mozambique"     11 "Sao Tome"     12 "Ghana"  
-       13 "Colombia"     14 "Honduras"       15 "USA"          16 "Burundi" 
-       17 "Nepal"        18 "Gabon"          19 "Peru"         20 "Ethiopia"
-       21 "Jordan"       22 "Bolivia"        23 "DRC"          24 "Turkey"    
-       25 "Malawi"       26 "Lesotho"        27 "Togo"         28 "Namibia"
-       29 "Moldova"      30 "Kazakhstan"     31 "Uganda"       32 "Rwanda"
-       33 "Swaziland"    34 "Congo Rep."     35 "Armenia"      36 "Egypt"    
-       37 "Morocco"      38 "Cameroon"       39 "Sierra Leone" 40 "India"
-       41 "Nicaragua"    42 "Burkina Faso"   43 "Haiti"        44 "Kenya"  
-       45 "Senegal"      46 "Mali"           47 "Niger"        48 "Tanzania"
-       49 "Madagascar"   50 "Bangladesh"    51 "Cote D'Ivoire" 52 "Nigeria"
-       53 "Comoros"      54 "Zambia"         55 "Chad"         56 "Liberia"
-       57 "Guinea"       58 "Zimbabwe"       59 "Benin" 
-       60 "Cambodia"     61 "Uzbekistan",angle(65) labsize(vsmall));
+xlabel(1  "        Brazil" 2  "Guyana"        3  "Maldives"     4 "Azerbaijan"
+       5  "Guatemala"      6 "Kyrgyz Rep."    7  "Albania"      8 "CAR"  
+       9  "Dom. Rep."     10 "Mozambique"    11 "Ghana"        12 "Colombia"
+       13 "Sao Tome"      14 "Honduras"      15 "Burundi"      16 "USA" 
+       17 "Nepal"         18 "Gabon"         19 "Jordan"       20 "Ethiopia"
+       21 "Peru"          22 "Sierra Leone"  23 "Bolivia"      24 "DRC"
+       25 "Turkey"        26 "Malawi"        27 "Namibia"      28 "Sweden"
+       29 "Nicaragua"     30 "Lesotho"       31 "Togo"         32 "Moldova"
+       33 "Kazakhstan"    34 "Comoros"       35 "Uganda"       36 "Swaziland"
+       37 "Cote D'Ivoire" 38  "Rwanda"       39 "Egypt"        40 "Congo Rep."
+       41 "Morocco"       42 "Mali"          43 "India"        44 "Armenia"
+       45 "Cameroon"      46 "Haiti"         47 "Tanzania"     48 "Burkina Faso"
+       49 "Madagascar"    50 "Bangladesh"    51 "Niger"        52 "Kenya"  
+       53 "Zambia"        54 "Nigeria"       55 "Senegal"      56 "Chad"
+       57 "Liberia"       58 "Guinea"        59 "Zimbabwe"     60 "Benin"
+       61 "Cambodia"      62 "Uzbekistan",angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/HeightStdDif.eps", as(eps) replace
 
@@ -945,19 +955,22 @@ gen numb = _n
 eclplot educfEst educflb educfub numb, scheme(s1mono) estopts(mcolor(black))
 ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
 ytitle("Education Difference (years)" "twin - non-twin")
-xlabel(1 "Cameroon" 2 "Nigeria" 3 "India" 4 "Ghana" 5 "Peru" 6 "Bolivia"
-       7 "Burundi" 8 "Egypt" 9 "Guyana" 10 "Jordan" 11 "Kenya" 12 "Colombia"
-       13 "Dom. Rep." 14 "Malawi" 15 "Gabon" 16 "Tanzania" 17 "Maldives" 18
-       "Honduras" 19 "Bangladesh" 20 "Turkey" 21 "Nepal" 22 "Zimbabwe" 23
-       "Azerbaijan" 24 "Moldova" 25 "Albania" 26 "Armenia" 27 "Uganda" 28
-       "Nicaragua" 29 "CAR" 30 "Madagascar" 31 "Mozambique" 32 "Haiti" 33
-       "Uzbekistan" 34 "Brazil" 35 "Sao Tome" 36 "Togo" 37 "Cambodia" 38
-       "Zambia" 39 "Congo Brazzaville" 40 "USA" 41 "Guatemala" 42 "Ethiopia"
-       43 "Benin" 44 "Comoros" 45 "DRC" 46 "Rwanda" 47 "Namibia" 48
-       "Cote D'Ivoire" 49 "Senegal" 50 "Niger" 51 "Mali" 52 "Kazakhstan" 53
-       "Burkina Faso" 54 "Liberia" 55 "Chad" 56 "Morocco" 57 "Swaziland" 58
-       "Lesotho" 59 "Guinea" 60 "Sierra Leone" 61 "Kyrgyz Rep."    
-       ,angle(65) labsize(vsmall));
+xlabel(1  "Cameroon"    2  "Nigeria"           3  "Burundi"      4  "Ghana"
+       5  "India"       6  "Peru"              7  "Dom. Rep."    8  "Bolivia"
+       9  "Kenya"       10 "Egypt"             11 "Colombia"     12 "Brazil"
+       13 "Maldives"    14 "Jordan"            15 "Malawi"       16 "Tanzania"
+       17 "Azerbaijan"  18 "Guyana"            19 "Bangladesh"   20 "Honduras"
+       21 "Turkey"      22 "Zimbabwe"          23 "Albania"      24 "Moldova"
+       25 "Nepal"       26 "Gabon"             27 "Cambodia"     28 "Comoros"
+       29 "Nicaragua"   30 "Mozambique"        31 "Armenia"      32 "CAR"
+       33 "Madagascar"  34 "Congo Brazzaville" 35 "Zambia"       36 "Sao Tome"
+       37 "Uzbekistan"  38 "Ethiopia"          39 "USA"          40 "Haiti"
+       41 "Benin"       42 "Rwanda"            43 "Uganda"       44 "Togo"
+       45 "Kazakhstan"  46 "Chad"              47 "Niger"        48 "Mali" 
+       49 "Senegal"     50 "Cote D'Ivoire"     51 "Guatemala"    52 "Liberia"
+       53 "DRC"         54 "Morocco"           55 "Burkina Faso" 56 "Namibia"
+       57 "Guinea"      58 "Sierra Leone"      59 "Lesotho"      60 "Swaziland"
+       61 "Kyrgyz Rep.",angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/EducDif.eps", as(eps) replace
 
@@ -968,50 +981,25 @@ gen numb = _n
 eclplot educf_stdEst educf_stdlb educf_stdub numb, scheme(s1mono)
 estopts(mcolor(black)) ciopts(lcolor(black)) yline(0, lcolor(red)) xtitle(" ")
 ytitle("Standardised Education Difference (years)" "twin - non-twin")
-xlabel(1  "Cameroon"     2  "Burundi"        3  "Nigeria"    4  "Guyana"
-       5  "Peru"         6  "India"          7  "Moldova"    8  "Azerbaijan"
-       9  "Ghana"        10 "Albania"        11 "Kenya"      12 "Bolivia"
-       13 "Uzbekistan"   14 "Armenia"        15 "Malawi"     16 "Gabon"
-       17 "Colombia"     18  "Nepal"         19 "USA"        20 "Tanzania"
-       21 "Jordan"       22 "Turkey"         23 "Bangladesh" 24 "Dom. Rep."
-       25 "Honduras"     26 "Zimbabwe"       27 "Maldives"   28 "Egypt"
-       29 "CAR"          30 "Sao Tome"       31 "Mozambique" 32 "Togo"
-       33 "Uganda"       34 "Cambodia"       35 "Madagascar" 36 "Nicaragua"
-       37 "Ethiopia"     38 "Benin"          39 "Haiti"      40 "Zambia"
-       41 "Guatemala"    42 "Congo Republic" 43 "Comoros"    44 "Brazil"
-       45 "Rwanda"       46 "Kazakhstan"     47 "Mali"       48 "Niger"
-       49 "DRC"          50 "Cote D'Ivoire"  51 "Senegal"    52 "Namibia"
-       53 "Burkina Faso" 54 "Chad"           55 "Liberia"    56 "Morocco"
-       57 "Swaziland"    58 "Lesotho"        59 "Guinea"
-       60 "Sierra Leone" 61 "Kyrgyz Rep."     
-       ,angle(65) labsize(vsmall));
+xlabel(1  "Cameroon"  2  "Burundi"        3  "Nigeria"       4  "Azerbaijan"
+       5  "Ghana"     6  "Kenya"          7  "Peru"          8  "Moldova"   
+       9  "Brazil"    10 "India"          11 "Dom. Rep."     12 "Bolivia"
+       13 "Guyana"    14 "Malawi"         15 "Colombia"      16 "Albania"
+       17 "Maldives"  18 "Uzbekistan"     19 "Tanzania"      20 "USA"
+       21 "Nepal"     22 "Cambodia"       23 "Bangladesh"    24 "Armenia" 
+       25 "Egypt"     26 "Jordan"         27 "Gabon"         28 "Honduras"
+       29 "Zimbabwe"  30 "Turkey"         31 "Comoros"       32 "Mozambique"
+       33 "CAR"       34 "Sao Tome"       35 "Ethiopia"      36 "Nicaragua"
+       37 "Zambia"    38 "Congo Republic" 39 "Benin"         40 "Madagascar"
+       41 "Togo"      42 "Kazakhstan"     43 "Chad"          44 "Haiti" 
+       45 "Rwanda"    46 "Niger"          47 "Uganda"        48 "Mali" 
+       49 "Senegal"   50 "Guatemala"      51 "Cote D'Ivoire" 52 "Morocco"
+       53 "Liberia"   54 "DRC"            55 "Burkina Faso"  56 "Namibia"
+       57 "Guinea"    58 "Sierra Leone"   59 "Swaziland"     60 "Lesotho"
+       61 "Kyrgyz Rep.",angle(65) labsize(vsmall));
 #delimit cr
 graph export "$GRA/EducStdDif.eps", as(eps) replace
 
-
-#delimit ;
-scatter heightEst logGDP  [w=twinProp], msymbol(circle_hollow)
-scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
-ytitle("Height Difference (cm)" "twin - non-twin");
-graph export "$GRA/HeightGDP.eps", as(eps) replace;
-
-scatter educfEst logGDP  [w=twinProp], msymbol(circle_hollow)
-scheme(lean1) yline(0, lcolor(red)) xtitle("log(GDP per capita)")
-ytitle("Education Difference (years)" "twin - non-twin");
-graph export "$GRA/EducGDP.eps", as(eps) replace;
-
-scatter heightE logG [w=twinP] if regionc=="EAS", msymbol(O) mcolor(lavender) ||
-scatter heightE logG [w=twinP] if regionc=="ECS", msymbol(O) mcolor(sandb)    ||
-scatter heightE logG [w=twinP] if regionc=="LCN", msymbol(O) mcolor(mint)     ||
-scatter heightE logG [w=twinP] if regionc=="MEA", msymbol(O) mcolor(navy)     ||
-scatter heightE logG [w=twinP] if regionc=="SAS", msymbol(O) mcolor(magenta)  ||
-scatter heightE logG [w=twinP] if regionc=="SSF", msymbol(O) mcolor(ebblue)
-legend(lab(1 "East Asia") lab(2 "Europe") lab(3 "Lat Am") lab(4 "MENA")
-       lab(5 "South Asia") lab(6 "Sub Saharan Africa"))
-ytitle("Height Difference (cm)" "twin - non-twin")
-xtitle("log(GDP per capita)");
-graph export "$GRA/HeightGDPregion.eps", as(eps) replace;
-#delimit cr
 
 reg educfEst i.rcode
 predict eResid, resid
@@ -1033,9 +1021,9 @@ exit
 reg educfEst  logGDP i.rcode, robust
 reg heightEst logGDP i.rcode, robust
 reg educf_sdEst  logGDP i.rcode, robust
-reg heigh_sdtEst logGDP i.rcode, robust
+reg height_sdtEst logGDP i.rcode, robust
 
-
+*/
 ********************************************************************************
 *** (6) Coverage
 ********************************************************************************
@@ -1092,12 +1080,14 @@ replace coverage=6 if NAME=="Romania";
 
 spmap coverage using "$DAT/world/world_coords" , id(_ID) osize(vvthin)
 fcolor(Rainbow) clmethod(unique) clbreaks(0 1 2 3 4 5 6)
-legend(title("Twin Coverage", size(*0.5) bexpand justification(left)))
+legend(title("Twin Coverage", size(*1.45) bexpand justification(left)))
 legend(label(1 "No Surveys")) legend(label(2 "Full Birth Records"))
 legend(label(3 "Surveys (Regional)")) legend(label(4 "Surveys (Demographic)"))
 legend(label(5 "Surveys (Early Life)"))
 legend(label(6 "Birth Records (No Health Information)"))
-legend(label(7 "Survey Data (No Health Information)"));
+legend(label(7 "Survey Data (No Health Information)"))
+legend(symy(*1.45) symx(*1.45) size(*1.98))
+;
 
 graph export "$GRA/coverage.eps", as(eps) replace;
 #delimit cr
