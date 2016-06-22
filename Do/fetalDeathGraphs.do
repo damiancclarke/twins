@@ -20,7 +20,6 @@ cap log close
 *--- (1) globals
 *-------------------------------------------------------------------------------
 global DAT "~/database/NVSS/"
-global DAT "/media/damian/Impar/database/NVSS/"
 global OUT "~/investigacion/Activa/Twins/Figures"
 global LOG "~/investigacion/Activa/Twins/Log"
 global TAB "~/investigacion/Activa/Twins/Results/World/"
@@ -87,7 +86,7 @@ clear
 append using `f1999' `f2000' `f2001' `f2002'
 
 *-------------------------------------------------------------------------------
-*--- (3) Graphs
+*--- (3a) Graphs by Birth Type
 *-------------------------------------------------------------------------------
 replace death = death*1000
 gen noCollege = yrsEduc <13 if yrsEduc!=.
@@ -98,9 +97,12 @@ replace behaviour = 1 in 2
 replace behaviour = 0 in 3
 replace behaviour = 1 in 4
 gen     outcome   = .
+gen     CI_high   = .
+gen     CI_low    = .
 gen     barposition = cond(birthType=="Singleton", _n, _n+1)
 gen     twinInt   = .
 gen     hvar      = .
+gen cons = 1
 local   se robust
 local   abs abs(motherAge)
 
@@ -112,7 +114,7 @@ estout using "$TAB/USADeathSum.tex", replace label style(tex) `statform'
 foreach v of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEduc {
     egen Z_`v'=std(`v')
 }
-/*
+
 local j = 1
 foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEduc {
     replace hvar = `var' 
@@ -124,28 +126,61 @@ foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEd
     if `j'==3 local l2 "At Least Some College"
     if `j'==4 local l1 "Anemic"
     if `j'==4 local l2 "Not Anemic"
-        
-    replace twinInt = twin*hvar
-    eststo: areg death twin hvar twinInt i.birthOrder i.year, `abs' `se'
 
-    replace outcome = _b[_cons] in 1
-    replace outcome = _b[_cons]+_b[hvar] in 2
-    replace outcome = _b[_cons]          +_b[twin] in 3
+    replace twinInt = twin*hvar
+    eststo: areg death twin hvar twinInt i.birthOrder i.year, `abs' `se' 
+    matrix vcov   = e(V)
+    matrix Nrows  = rowsof(vcov)
+    local locCons = Nrows[1,1]
+    dis "here1"
+    foreach n1 of numlist 1 2 3 4 {
+        foreach n2 of numlist 1 2 3 4 {
+            local p1=`n1'
+            local p2=`n2'
+            if `n1'==1 local p1=`locCons'
+            if `n2'==1 local p2=`locCons'
+            local s`n1'`n2'=vcov[`p1',`p2']
+        }
+    }
+    dis "here2"
+    local se1 = sqrt(`s11')
+    dis `se1'
+    local se2 = sqrt(`s11'+`s33'+`s13'+`s31')
+    dis `se2'
+    local se3 = sqrt(`s11'+`s22'+`s12'+`s21')
+    dis `se3'
+    local se4 = sqrt(`s11'+`s22'+`s33'+`s44'+2*`s12'+2*`s13'+2*`s14'+2*`s23'+2*`s24'+2*`s34')
+    dis `se4'
+    dis "here3"
+
+    replace outcome = _b[_cons]                               in 1
+    replace outcome = _b[_cons]+_b[hvar]                      in 2
+    replace outcome = _b[_cons]         +_b[twin]             in 3
     replace outcome = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt] in 4
+    replace CI_high = _b[_cons]+1.96*_se[_cons]               in 1
+    replace CI_low  = _b[_cons]-1.96*_se[_cons]               in 1
+    foreach nn of numlist 2(1)4 {
+        replace CI_high = outcome+1.96*`se`nn''              in `nn'
+        replace CI_low  = outcome-1.96*`se`nn''              in `nn'
+    }
+    
     local   min = _b[_cons]-1
     local   max = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
     local   twinDif  = string(_b[hvar]+_b[twinInt], "%5.3f")
-    local   singDif  = string(_b[hvar]              , "%5.3f")
+    local   singDif  = string(_b[hvar]            , "%5.3f")
     local   twinNote = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
     local   singNote = _b[_cons]+_b[hvar]+1
+    local   lstyles  lcolor(black) 
     
-    if `j'<5 {
+    if `j'<5 {        
         #delimit ;
-        twoway bar  outcome barposition  if behaviour==0, color(red)  
-            || bar  outcome barposition  if behaviour==1, color(blue)
+        twoway bar  outcome barposition  if behaviour==0, color(red)  ||
+        rcap CI_high CI_low barposition  if behaviour==0, `lstyles'   ||
+               bar  outcome barposition  if behaviour==1, color(blue) ||
+        rcap CI_high CI_low barposition  if behaviour==1, `lstyles'
         xscale(range(0 6)) yscale(range(0 `max'))
         xlabel( 1.5 "Singleton" 4.5 "Twins") scheme(s1mono)
-        legend(lab(1 "`l2'") lab(2 "`l1'"))
+        legend(order(1 "`l2'" 3 "`l1'") rows(1))
         xtitle(" ") ytitle("Fetal Deaths Per 1,000 Births")
         text(`twinNote' 4.5 "{&beta}{subscript:twin}=`twinDif'")
         text(`singNote' 1.5 "{&beta}{subscript:single}=`singDif'");
@@ -153,24 +188,46 @@ foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEd
         #delimit cr
     }
         
-    eststo: reg death twin hvar twinInt
-    replace outcome = _b[_cons] in 1
-    replace outcome = _b[_cons]+_b[hvar] in 2
-    replace outcome = _b[_cons]          +_b[twin] in 3
-    replace outcome = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt] in 4
-    local   min = _b[_cons]-1
-    local   max = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    eststo: reg death cons twin hvar twinInt, nocons
+    matrix vcov = e(V)
+    foreach n1 of numlist 1(1)4 {
+        foreach n2 of numlist 1(1)4 {
+            local s`n1'`n2'=vcov[`n1',`n2']
+        }
+    }
+    local se1 = `s11'^0.5
+    local se2 = (`s11'+`s33'+`s13'+`s31')^0.5
+    local se3 = (`s11'+`s22'+`s12'+`s21')^0.5
+    local se4 = (`s11'+`s22'+`s33'+`s44'+2*`s12'+2*`s13'+2*`s14'+2*`s23'+2*`s24'+2*`s34')^0.5
+
+    replace outcome = _b[cons]                               in 1
+    replace outcome = _b[cons]+_b[hvar]                      in 2
+    replace outcome = _b[cons]         +_b[twin]             in 3
+    replace outcome = _b[cons]+_b[hvar]+_b[twin]+_b[twinInt] in 4
+    replace CI_high = _b[cons]+1.96*_se[cons]                in 1
+    replace CI_low  = _b[cons]-1.96*_se[cons]                in 1
+    foreach nn of numlist 2(1)4 {
+        replace CI_high = outcome+1.96*`se`nn''              in `nn'
+        replace CI_low  = outcome-1.96*`se`nn''              in `nn'
+    }
+    
+    local   min = _b[cons]-1
+    local   max = _b[cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
     local   twinDif  = string(_b[hvar]+_b[twinInt], "%5.3f")
     local   singDif  = string(_b[hvar]              , "%5.3f")
-    local   twinNote = _b[_cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
-    local   singNote = _b[_cons]+_b[hvar]+1        
-    if `j'<5 {
+    local   twinNote = _b[cons]+_b[hvar]+_b[twin]+_b[twinInt]+1
+    local   singNote = _b[cons]+_b[hvar]+1        
+    local   lstyles  lcolor(black) 
+    
+    if `j'<5 {        
         #delimit ;
-        twoway bar  outcome barposition  if behaviour==0, color(red)  
-            || bar  outcome barposition  if behaviour==1, color(blue)
+        twoway bar  outcome barposition  if behaviour==0, color(red)  ||
+        rcap CI_high CI_low barposition  if behaviour==0, `lstyles'   ||
+               bar  outcome barposition  if behaviour==1, color(blue) ||
+        rcap CI_high CI_low barposition  if behaviour==1, `lstyles'
         xscale(range(0 6)) yscale(range(0 `max'))
         xlabel( 1.5 "Singleton" 4.5 "Twins") scheme(s1mono)
-        legend(lab(1 "`l2'") lab(2 "`l1'"))
+        legend(order(1 "`l2'" 3 "`l1'") rows(1))
         xtitle(" ") ytitle("Fetal Deaths Per 1,000 Births")
         text(`twinNote' 4.5 "{&beta}{subscript:twin}=`twinDif'")
         text(`singNote' 1.5 "{&beta}{subscript:single}=`singDif'");
@@ -179,8 +236,8 @@ foreach var of varlist smokes drinks noCollege anemic cigarettes numdrinks yrsEd
     }
     local ++j
 }
+exit
 
-*/
 local j = 1
 foreach var of varlist Z_smokes Z_drinks Z_noCollege Z_anemic {
     replace hvar = `var' 
@@ -248,7 +305,7 @@ foreach var of varlist Z_smokes Z_drinks Z_noCollege Z_anemic {
     local ++j
 }
 
-exit
+
 *-------------------------------------------------------------------------------
 *--- (4) Export regression results
 *-------------------------------------------------------------------------------
