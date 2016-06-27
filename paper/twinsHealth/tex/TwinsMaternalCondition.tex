@@ -1,0 +1,525 @@
+\documentclass{nature}
+\bibliographystyle{naturemag}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[capposition=bottom]{floatrow}
+\usepackage{subfloat}
+\usepackage{subcaption}
+\usepackage{lineno}
+\usepackage{longtable}
+\usepackage{lscape}
+\usepackage{colortbl}
+
+
+\definecolor{LightCyan}{rgb}{0.7,0.9,1}
+
+
+\title{Twin Births and Maternal Condition}
+\author{Removed for blind submission}
+
+
+\begin{document}
+
+\maketitle
+\vspace{8mm}
+%\begin{affiliations}
+% \item Department of Economics and Institute for Social and Economic Research, University of Essex, Essex, United Kingdom.
+% \item Department of Economics, The University of Oxford, Manor Road, Oxford, United Kingdom.
+%\end{affiliations}
+
+\begin{linenumbers}  
+\begin{abstract}
+%Damian below where i say half a million are twins is this half a million deliveries or half a million twin babies (the diff is mother level vs child level counts); the latter is always double the former; i think it must be the latter but just confirming. 
+%%%%% Sonia: You are correct -- it is the latter.
+%Damian let me know if you know offhand the word count for abstracts sorry if it is already in an earlier em i can look it up if you dont remember
+  %%%%% Sonia: Below:
+  %%%%%Abstract: they state ``approximately 200 but certainly no more than 300''
+  %%%%%Main text: 1,500
+  %%%%%Methods: Up to 3,000 
+  
+Twin births are often construed as a natural experiment in the social and natural sciences on the premise that the occurrence of twins is quasi-random.\cite{Thorndike1905,Boomsmaetal2002,Poldermanetal2015,Phillips1993,BouchardPropping1993,McClearnetal1997,Nisen2013,WolpinRosenzweig2000,RosenzweigWolpin1980,BronarsGrogger1994} We present new population-level evidence that challenges this premise. Using individual data for more than 18 million births (of which more than half a million are twins) in 72 countries, we demonstrate that mother's health is systematically positively associated with the probability of a twin birth. This holds for many indicators of mother's health including not only height and weight but also anemia, hypertension, diabetes, asthma, diet, smoking and the consumption of alcohol and drugs during pregnancy, and indicators of prenatal care availability. We are agnostic on the question of whether twin conceptions are random, our hypothesis being that carrying twins to term is particularly demanding, so stressors of maternal health lead to selective miscarriage of twins. We establish this using US vital statistics data on foetal death. The estimated associations of maternal health and twin births are sizeable, evident in richer and poorer countries, evident even when we use a sample of women who do not use IVF, and they hold conditional upon mother's age and parity. The findings are of significance given that social and environmental factors that modify maternal health are correlated with socio-economic status and preferences, implying re-assessment of research seeking to understand child development, career costs of children and the role of nature vs nurture.
+\end{abstract}
+
+%for example i wrote "`not only height and weight"' to allow that scientists have already identified these 2 determinants. And above i wrote "`a new reason"' to acknowledge that biology research has already shown that twin studies may have limited external validity. it is our internal validity point and the soc science reserach that will be new to this audience and that we could play up even more.
+
+%Damian I have added the TW 1973 ref below without the latek syntax. This is it:  Trivers, R. L.; Willard, D. E. (1973). "Natural selection of parental ability to vary the sex ratio of offspring". Science 179 (4068): 90–92. doi:10.1126/science.179.4068.90. PMID 4682135
+% this is the ref for Bulmer MG. The Biology of Twinning in Man. Oxford, UK: Oxford Clarendon PressOxford, UK, 1970.
+%%%%% Sonia: Thanks.
+
+
+%DD is 2.89% the percent of birth-events (mother level statistic) or the percent of births (child level stat). strictly speaking for former i'd use the language ```twin births''' and for latter i'd use ```twins'''. i am changing below to twins but we need to correct that dep how 2.89 is defined.
+In behavioural genetics, demography and psychology, monozygotic twins are studied to assess the importance of nurture relative to nature\cite{Thorndike1905,Boomsmaetal2002,Poldermanetal2015,Phillips1993,BouchardPropping1993,McClearnetal1997,Nisen2013}. In the social sciences, twin births are also used to denote an unexpected increase in family size which assists causal identification of the impact of fertility on investments in children and on women's labour market participation\cite{WolpinRosenzweig2000,RosenzweigWolpin1980,BronarsGrogger1994}.
+  %DD i have dropped AngristEvans1988 as this paper does not use twins but same-sex so we cannot have it here. But as both the remaining refs are for inv in children we need a study that uses twins for women's LFP and if we cannot find another more recent we can use Rosenz-Wolpin 1980b
+A premise of these studies is that twin births are quasi-random, or independent of characteristics of the mother that influence the environment in which children are reared, or the mother's preferences over labour supply.
+  %i tried not to use the word random because we may be rejected outright since papers like Hall and Hoekstraetal have shown that twins are not strictly random.
+To investigate this, we collected data on 18,652,028 births, of which 539,544 (2.89\%) are twins. We accessed data that contain indicators of maternal health in addition to age, parity, race and ethnicity, which are known determinants of twin birth\cite{Bulmer1970}. Geographic coverage of the data is presented in extended data figure \ref{fig:twincoverage}, data sources are described in the Methods section and summary statistics are in extended data table E1. Table 1 presents evidence from four rich countries and 68 developing countries that twin births occur disproportionately among healthier mothers, where health refers to health stocks prior to pregnancy and health-seeking and risk-avoiding behaviours during pregnancy. %Every coefficient in the table is estimated from a separate regression of the twin status of each birth is regressed separately on measures of maternal behaviour and health indicators observed entirely before the twin birth occurs---conditional on age, parity and race--- i think this is best said in Notes to T1. %Available health measures and their descriptive statistics are presented in extended data tables 1 and 2.
+
+
+
+%i am not changing yet the 1 sigma change. waiting to discuss further.
+The displayed coefficients express the effect of a 1 standard deviation ($\sigma$) increase in an indicator of maternal health on the change in the likelihood, in percentage points (pp), of a mother giving (live) birth to twins (unstandardised estimates are in table E2). For every reported indicator, p$<$0.01 unless otherwise stated. %The percentage of twins in the population with which these marginal effects should be compared ranges from 2.10 to 2.84. i think this is clear in tables and global share was indicated before %Damian: For every rep. indicator p<0.001 unless stated % (unstd are in TES record?)
+We observe that being underweight, having morbidities prior to conception (hypertension, diabetes, kidney disease), smoking, and drug or alcohol consumption during pregnancy, all significantly reduce the probability of a twin birth. On the other hand, a healthy diet in pregnancy, height (an indicator of stock of health\cite{Silventoinen2003,BhalotraRawlings2013}) and greater access to prenatal and medical care raise the likelihood of giving birth to twins. Maternal education is also a significant predictor of twins, consistent with education promoting health, for example by increasing the ease with which individuals acquire and process health-related information\cite{Kenkel1991,CutlerLlerasMuney2010}. % In addition to reinforcing the relevance of health-related behaviours in modifying birth outcomes, the estimates for education can be used to benchmark effect sizes for multiple indicators of health.
+Statistical significance of the health indicators in Table 1 is robust to running multivariate regressions which condition on all available indicators of the mother's health, including education (supplementary information S2).  Across samples and health indicators, a 1$\sigma$ improvement in the indicator increases the likelihood of twinning by between 0.24 and 22.0 percent.
+
+Previous research has documented that twins have different endowments from singleton children, for example, twins are more likely to have low birth weight and congenital anomalies\cite{Hall2003}. We focus not on differences between twins and singletons but rather on differences between mothers of twins and singletons, which indicate whether occurrence of twin births is quasi-random. We now elaborate the evidence in Table 1 and then provide evidence of the hypothesized mechanism of selective miscarriage.
+% Damian i added this ref below Bernstein IM1, Mongeon JA, Badger GJ, Solomon L, Heil SH, Higgins ST. Maternal smoking and its association with birth weight.Obstet Gynecol. 2005 Nov;106(5 Pt 1):986-91.
+
+There is a documented positive association of Artificial Reproductive Technology (ART) with the likelihood of twin births\cite{Vitthalaetal2009}, and a positive socioeconomic gradient in selection into ART. To demonstrate that our hypothesis holds independently of ART use we provide estimates for the USA using the universe of mothers giving birth between 2009-2013, excluding women who reported using ART. A 1$\sigma$ increase in rates of smoking in each trimester is associated with a 0.20-0.25 pp reduction in the risk of a twin birth (p$<$0.001 in each case). Smoking in the third trimester imposes the largest reduction, consistent with evidence that adverse effects of smoking on birth weight (a marker of foetal health) are largest in the third trimester\cite{Bernsteinetal2005}; also see supplementary information S4.  %Damian this is the new table regressing birthweight on smoking.
+These effects of smoking are sizeable, being about 10\% of the mean rate of twinning. 
+%DD there are xx in the para above.
+%Since birth weight is a commonly used measure of foetal health, we regressed birth weight on smoking by trimester to identify whether foetal health is more sensitive to smoking in a particular trimester. We find that the adverse effect of smoking on birth weight is increasing in trimester, consistent with and with our findings for the impacts of smoking by semester on the chances of a twin birth.
+
+%DD i was curious that they have pre-preg info in birth certificates- it would be more normal to ask Q about health when a woman attends her first antenatal visit. is it definitely a retrospective Q about her condition before preg?
+Diabetes or hypertension prior to pregnancy has similar standardized effects, reducing the likelihood of twin birth by between 0.2 and 0.3 pp. Height and education have larger standardized effects, of 0.63 and 0.81 pp respectively, and being underweight is associated with a 0.15 pp decrease in the probability of twins. Estimates for the 1.6 percent of women using ART are in supplementary information S5 and are, with the exception of being underweight, larger and statistically significant for every indicator, underlining the additional sensitivity of birth outcomes in this group.
+%%DD if we really have to cut i suppose we could cut the ref to non ART results or just cut the long bit of sentence after xx above.
+
+%Damian this is the new table on ART women  %DD there is xx above
+
+%DD i can check too when home, on train now with restricted movement space but we need to check if the RANKING of effects eg. height is more important than smoking or hypertension is maintained if we do not standardize.
+
+
+%For instance, the standardized effects of smoking and diabetes are about four times as large as among the general population that do not use ART, while the effects of hypertension are seven times as large and the effects of height and education about three times as large.
+%i wrote but then commented out the above sentence where i mention size of the diff in coef - we can consider putting it in
+
+%Damian i took out the sentence about UK and Chile being smaller samples cos the Avon sample is larger than the Sweden sample- which surprised me?) the coefs for smoking diab height are almost identical in sweden and america, interesting.
+%For consistency i am adding years for which we have births in the other countries. 
+%%%%% Sonia: Thanks, this has all been updated now.  The confusion about the Avon sample is also cleared up I think.  I had mislabelled it so it had the DHS sample size, but now correctly indicates that the sample is the smallest, at about 11,000
+Analysis of birth registers from Sweden for years 1993-2012 indicates similar standardised effect sizes for smoking, diabetes, height and underweight to those for US women. The effect of hypertension is smaller, at close to 0.10 pp. These data additionally record asthma, which reduces the risk of twin births by 0.015 pp. %(for every reported indicator, p$<$0.01 unless otherwise stated). 
+
+
+Survey data from Avon county UK 1991-1992, Chile 2006-2009 and 68 developing countries in 1961-2012 exhibit similar patterns for anthropometric indicators of health, risky behaviours and pre-pregnancy illnesses (see Table 1). Here we report estimates for indicators specific to these additional data sets. %where the indicators overlap and broadly similar effect sizes for underweight but the standardized effects of height are smaller, 0.40 in the UK and 0.28 in developing countries, as are the effects of education, at 0.42 in the UK, 0.47 in Chile and 0.15 in developing countries. Hypertension in the UK sample has a larger impact than in any other sample we analyse, of 0.48 pp.
+The UK data indicate that the standardised effect of eating healthily during pregnancy is a 0.54 pp increase in the likelihood of having twins,
+%that women who frequently consumed alcohol during pregnancy are 0.17 pp less likely to have twins but while the estimated impact of smoking is negative and close to the impact in the US and Sweden (0.16 pp), it is not statistically significant.
+and the Chilean data indicate that frequent drug use during pregnancy reduces the probability of twins by 0.17 pp, an estimate similar to that for frequent alcohol consumption in this sample. In the developing country sample we observe availability of medical facilities and prenatal care at the geographic cluster level, which is pertinent since health service coverage in low-income countries is far from universal. We estimate that a 1$\sigma$ increase in  availability of doctors or nurses is associated with a 0.092 pp and 0.065 pp increase in the likelihood of twins respectively. % while availability of any type of medical care during pregnancy is associated with a 0.11 pp increase in the likelihood of twinning (all p$<$0.01). % We focus on medical availability rather than medical use as the mother's decision to seek medical care is likely endogenous to her conception status (twin or singleton), while medical availability in her area of residence is not.
+
+%A maternal-health twin birth gradient exists when considering diet and height in the UK, and alcohol and drug consumption and body mass prior to pregnancy (as well as height and education) in Chile.  While coefficients are estimated with less precision, with the exception of second-hand smoke in the UK, point estimates always suggest that healthier behaviours are associated with higher rates of twinning.  Finally, for the DHS (developing) countries, taller mothers and mothers with higher BMI are observed to be significantly more likely to twin (p$<$0.001).  
+
+%Damian here is the ref- Akresh, Richard, Sonia Bhalotra, Marinella Leone, and Una Osili. War and Stature: Growing Up During the Nigerian Civil War, American Economic Review (Papers & Proceedings), 2012, 102(3): 273-277.
+%Damian here is hte ref -Carlos Bozzoli,  Angus Deaton & Climent Quintana-Domeque, 2009. "Adult height and childhood disease," Demography, Population Association of America (PAA), vol. 46(4), pages 647-669, November.
+% damian- Wang Y , Wang X, Kong Y, Zhang JH, Zeng Q. The Great Chinese Famine leads to shorter and overweight females in Chongqing Chinese population after 50 years. Obesity (Silver Spring). 2010 Mar;18(3):58892. doi: 10.1038/oby.2009.296. Epub 2009 Sep 24.
+In figure \ref{fig:countryEsts} we display estimates for height for every country for which heights data are available, unravelling countries in the developing world sample. Height is the indicator of health most widely measured in birth and demographic data and several studies show that it responds to infection and nutritional scarcity in the growing years, for instance individuals exposed to famine and war have been shown to have lower stature in adulthood, other things equal\cite{Silventoinen2003,Bozzolietal2009,Wangetal2010,Akreshetal2012}. Moreover, previous research has shown widespread associations of short stature among mothers with the risk of low birth weight and infant mortality among their children\cite{BhalotraRawlings2013}.  Figure \ref{fig:countryEsts} shows that in 68 of 70 countries, twin mothers are on average significantly taller than non-twin mothers. As the comparison is within country, it nets out country differences including differences in the genetic pool. A similar result obtains for mother's education\cite{Kenkel1991,CutlerLlerasMuney2010} (see figure \ref{fig:educAll}).
+
+Since many women in poorer countries are under-nourished, it seems plausible that their resources are particularly challenged in carrying twins to term. As a result, we may expect that income growth and poverty reduction attenuate the association of mother's health and twin births. To assess this, we need a comparable index of mother's health for countries that span a range of income levels. As height is widely available, we plot the point estimates from figure \ref{fig:countryEsts} against GDP per capita in figure \ref{fig:GDPEsts}. The estimates lie above the zero line, indicating that the relationship persists in high income countries. There are no comparable data for other indicators but while nutritional status of women is worse in poorer countries, it is unclear that risky behaviours in pregnancy are. %If anything there appears to be a weakly positive gradient between selection and income, with the difference in height between non-twin mothers and twin mothers growing as GDP per capita rises (correlation coefficient = 0.259, p-value = 0.055). Damian i commented this out because it is controversial. i felt that with a science audience unknown to us it may be better be better to be risk averse.
+%This result is consistent with the finding that height is a better indicator of health in high income countries than in low income countries\cite{Deaton2007}. Damian this is a good point but (a) Silventoinen2003 argues that the environmental-component of height is larger and more variable in poor countries given the larger SES differences there and (b) although SSAfrica is as Deaton says a (big!) outlier, since we compare women with and without twins within each country we take care of that. so i added a remark in discussion of T-1 about the within country diffs.
+Figure \ref{fig:educAll} shows that the positive association of education with twinning is also evident across income levels. 
+
+%Damian i removed this but please could you add it to Notes to Fig E5 for now; if we have space we can put it back in here----  As in figure \ref{fig:GDPEsts}, the estimates for most countries lie above the zero line and, overall, there is a slight positive association of the education difference with country income, consistent with studies showing that education is most likely to benefit health when medical technology is changing quickly\cite{LlerasMuneyGlied2008}.
+%%%%% Sonia: This has been added in.
+
+%Damian for now i am dropping the Biroli index below. let's assess our word count and a semi final version and then discuss whether to include this or not
+%Since most of the data we use contain multiple measurements of latent health, we estimated an index using factor analysis, see supplementary data xx and methods xx (Biroli, 2015 xx). The twin index suggests that twin mothers are 3 to 16\% of a s.d. healthier than mothers of singletons. The difference is largest in developing countries (compared with Figure 2 where we saw no attenuation of the relationship with income, note that Figure 2 uses height alone and here we use every health indicator available in each data sample).
+%Damian i wonder about reconciling the fact that the factor index shows a bigger health diff in poor countries but Fig 2 does not. maybe if fig 2 were collapsed to 5 data samples like in T-1 and in the Biroli index table we would see this pattern?  
+%%%%% Sonia: Yes, this seems reasonable.  I guess we can drop for space, as we're already at a bit more than the word count...  We can always add it in if we decide later, as it's all here.  One thing to also note about the comparison of the values is that they are each based on a different set of underlying variables, so I'm not sure how much stock we should take in them as being strictly comparable, though of course they do give *some* idea.
+
+
+%Damian here is the ref  Bocklage, C. E. 1990. Survival probability of human conceptions from fertilization to term. Internat. J. Fertil. 35: 75-94.
+%Damian for miscarriage do we use smoking 1/0 for any time during pregnancy (rather than a particular trimester); same for alcohol; and when is anemia measured- need to clarify below
+%%%%% Sonia: Both smoking and alcohol are as you say (a one time measure) as this is how they are recorded in the pre 2003 data (more discussion on this below in extended data).  Anemia is pre-pregnancy.  I have added these notes to Methods.
+
+We hypothesize that the process by which the association of a woman's health and her likelihood of a twin birth emerges is selective miscarriage. It has been documented that the biological demands of twin pregnancies are higher than the demands of non-twin pregnancies\cite{Shinagawaetal2005,Kahnetal2003} and also that, in general, healthier mothers are less likely to miscarry\cite{Garciaetal2002}. Using the vital statistics data for the United States we present new evidence on the interaction of these two effects, summarized in figure \ref{fig:mech}, with full results in tables E3. %Damian- is there a clear separation of supplementary vs extended data tables?
+%%%%% Sonia: Will reply on this in email.  In short, extended data is preferred, but only allowed up to 10 figures and tables.
+%%DD we can drop Ref numbered 22 if we want.
+The evidence confirms previous research showing that the spontaneous abortion rate among twins is about three times that among singletons\cite{Boklage1990}. It adds new evidence of steeper gradients in indicators of mother's health for twins than for singletons. For example, a 1$\sigma$ increase in rates of smoking during pregnancy whilst carrying a singleton elevates the risk of miscarriage by 0.431 fetal deaths per 1,000 live births.
+The corresponding risk elevation among mothers pregnant with twins is an increase of 0.787 fetal deaths, which is almost twice the risk.
+%Damian in an email between us you clarified that this was not exactly per 1000 births, maybe rephrase to reflect exactly what it is.
+%%%%% Sonia: I have added the note in the methodology section.  If you think that I should also rephrase here I can definitely also add the note in here.  At least in methods it's now explicit how the data is put together, and so that we actually mean a regression on foetal death or not, where foetal death is multiplied by 1000.
+%Damian after standardization of fig in Fig3 we need to change the #s of foetal deaths here.
+%Damian after standardization of fig in Fig3 we need to change the #s of fetal deaths here.
+Alcohol consumption in pregnancy is similarly almost twice as risky for women carrying twins, and the risks associated with anemia are about three times as high. We also show that a college education modifies the difference in miscarriage probabilities more than three times as much when the mother is carrying twins than when she is carrying a singleton.  Unstandardised results are reported in figure E3.
+
+
+Importantly, these results establish a plausible mechanism for the associations that we document in Table 1. %If pre-pregnancy indicators of maternal health such as diet and height are positively correlated with the chances of a twin conception, then some part of the associations for the pre-pregnancy indicators may reflect differences in conception.
+As miscarriage is conditional upon conception, figure \ref{fig:mech} demonstrates the empirical relevance of health and health-related behaviours that modify the probability of taking twins to term. %Need to insert after confirming that coef are comparable- For instance, if the conception is twin and the mother smokes there are 1.2 additional foetal deaths per 1000 live births (or 0.12 per 100 births), which suggests that about half of the effect of smoking on the probability of a twin live birth (reported in Table 1) can be attributed to miscarriage.
+%I have taken out this mechanism-accounting as after standardizing the miscarriage table results the contribution of miscarriage looks small.
+%Damian is it not possible to have a pre-preg var like height in the miscarriage eqs.?
+%it is observed that insults to health \emph{in utero} are magnified for twin pregnancies.
+%%%%% Sonia: The foetal death data unfortunately isn't so extensive as the data on live births...  We've taken more or less all we can I think.
+We are agnostic on the question of whether maternal health modifies the probability of a twin conception.
+
+
+%Damian here is the ref -Climent Q-D... and Pedro Ródenas-Serrano  The Hidden Costs of Terrorism: The Effects on Human Capital at Birth March 2016
+%Damian the Bernstein ref is above; the other is Janet Currie and Enrico Moretti. Biology as Destiny? Short- and Long-Run Determinants of Intergenerational Transmission of Birth Weight. Journal of Labor Economics 25(2), pp. 231–264.
+Our research relates to a vast literature documenting that a mother's health and her environmental exposure to nutritional or other stresses during pregnancy influence birth outcomes, with many studies documenting lower birth weight\cite{CurrieMoretti2007,Bernsteinetal2005,SerranoDomeque2014}. If birth weight is the intensive margin, we may think of miscarriage as the extensive margin response, or the limiting case of low birth weight. %The reason we see the consistent pattern that women who successfully take twins to term are either inherently healthier or have had a healthier pregnancy is that a given stressor more readily leads to miscarriage among twins.
+%%DD i think you had put in refs like Climent and Currie after i entered them above but as they show xx above i think i am editing an older ver of the file but this is the latest on dropbox or email so maybe i missed something..
+Trivers and Willard (1973) made an argument similar to ours but pertaining to the distribution of sons across women. They observed that since the male foetus is more vulnerable to adverse health conditions, sons are more likely to be born of healthy mothers. As for twins, so for sons, selective miscarriage is the suggested mechanism.
+  %(and they also reconciled this pattern with evolutionary biology).
+  %Our hypothesis is similar in spirit as both hypotheses are about maternal condition and fetal miscarriage, but TW focused on sex of birth while we focus on twins at birth. Damian- see if you want to keep this commented out sentence.
+
+
+%Our findings suggest that estimates using twins to identify impacts of additional children on family behaviours will tend to be biased. They also suggest a new reason why twin studies will tend to have limited external validity.
+While other critiques have been directed at twin studies, the systematic tendency for maternal health and pregnancy behaviours to influence the distribution of twins across families appears not to have been previously documented using population-level data. Since health and healthy behaviours are positively associated with socioeconomic status, our results imply that twin births are more prevalent among women of high socio-economic status, and we have demonstrated this using education as a marker. Moreover, we show that this is a widespread association, independent of the positive association of IVF use and twin births with socioeconomic status.
+
+Studies using twin births can adjust for demographic determinants but it is virtually impossible to fully adjust for the range of potential indicators of maternal health since factors like anxiety, detailed diet or pollution exposure, to take a few examples, are not commonly recorded. This limits the extent to which the findings of twin studies can be generalised, for example studies of `nature versus nurture' should be interpreted as illustrating the influence of nurture in selectively healthy environments. Social science studies that deploy the occurrence of twin births as an exogenous shock to family size will tend to under-estimate the effects of additional births on sibling outcomes resulting from potentially diluted parental investment and similarly under-estimate the impact of additional children on women's careers if, as is common, mother's health and health-related behaviours are correlated with these outcomes. This is relevant, amongst other things, to understanding the full import of policies designed to incentivize increased fertility in Europe, and policies such as the One Child Policy in China that penalized fertility.
+%The non-randomness of twins has been long-recognised\cite{Recordetal1970}, and, as such, the interpretation of twin studies must be made with respects to the population from which twins are drawn.
+
+%%DD Refs numbered 28-31 are not in the text but in methods, just checking they should be in main bibliography, i guess you know and then it is fine.
+
+%Damian: Table 1 Notes: Add after ``....conditions are displayed"', "`for women age 18-49."'
+%Damian- replace percentage with percentage points ?
+ %Damian line 6 ``FE for age and bord and where possible .. gestation. better to say precisely which countries (i think US, Sweden) you control for gestation.
+%%%%% Sonia: Updated.
+
+
+%%DC T1 Notes: change title to Effects of maternal health on twin births (changes are effect**s** and twin **births**). At end of Notes we state Years for US but not other countries. We should be consistent either stating years for all samples or none. Both options are fine; Since years are in the main text it is ok to drop them here.
+%%%%DONE.  Years removed.
+%%DC T1 Notes: to remove repetition of the percentage point explanation drop this phrase that appears just after "`multiplied by 100!": Phrase to drop = , so all coefficients are expressed in terms of the percent poin incr in twinning"'  (because this is stated in the following sentence).
+%%%%DONE.
+\clearpage
+\thispagestyle{empty}
+\input{twinEffectsUncond.tex}
+\clearpage
+
+\begin{spacing}{1}
+\begin{figure}[htpb!]
+%\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=1.1]{./HeightDif.eps}
+%\end{subfigure}%
+%\begin{subfigure}{.5\textwidth}
+%  \includegraphics[scale=0.6]{./smokeCoefs.eps}
+%\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{Positive association of mother's height with the probability of a twin birth}: {\footnotesize Point estimates of the average difference in height between mothers of twin and singleton births are presented along with the 95\% confidence intervals for each country for which the required microdata are available. Sources of data and estimation techniques are described in the Methods section. When based on survey data, each point is weighted to be nationally representative, and if based on vital statistics data, the universe of births is included. The estimates are conditioned upon total fertility, mother's age and child year of birth using multivariate regression. Height is measured in centimetres and in the 68 developing countries it is measured by surveyors using similar tools across countries. Extended data figure \ref{fig:educAll} presents a similar plot replacing height with the education of the mother.}}
+\label{fig:countryEsts}
+\end{figure}
+%Damian : Are UK and Chile in Fig 1? I could only spot US and Sweden.
+%%%%% Sonia: In Chile we unfortunately don't have height.  In UK I didn't include it as it's non-representative of the country. In general, the  figure has a very wide confidence 
+
+
+\begin{figure}[htpb!]
+%\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.85]{./heightGDP.png}
+%\end{subfigure}%
+%\begin{subfigure}{.5\textwidth}
+%  \includegraphics[scale=0.45]{./educGDP.png}
+%\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{The positive association of mother's height and twin birth is evident at all income levels}: {\footnotesize The correlation of the average height differential between twin and singleton mothers in a country with the country's log GDP per capita is plotted.  Estimates for the height differential are calculated using the same controls and methodology as in figure 1.
+%Damian The log of GDP per capita comes from the World Bank Data Bank (indicator NY.GDP.PCAP.PP.KD), and is expressed at Purchasing Power Parity. I took this out, it can go in Methods/data.  
+Each circle represents a country and the size of the circle indicates the proportion of births in the country that are twins. Circles above the horizontal dotted line imply that mothers of twins are taller on average. The global correlation between the height difference and GDP conditional on continent fixed effects is 0.259 (t-statistic 1.95).}} %Extended data figure 4 replicates these figures using standardized (Z-scores) in each country.}}
+\label{fig:GDPEsts}
+\end{figure}
+
+%Damain: In Fig 2, Notes to do not mention conditioning vars but in fig 1 they mention fertlity and age so I assume these controls are same? Should state them. 
+%%%%% Sonia: Thanks, I have added this.
+
+\begin{figure}[htpb!]
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_smokes_Uncond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_drinks_Uncond.eps}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_noCollege_Uncond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_anemic_Uncond.eps}
+\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{Rates of miscarriage are increasing in poor maternal health and risky pregnancy behaviours and more so for twins than singletons (standardised effects)}: {\footnotesize Each plot displays rates of miscarriage (recorded foetal deaths occurring at or after 20 weeks of gestation per 1,000 live births) for twin and singleton births partitioned by whether the mother has a particular condition or health-related behaviour. Coefficients on health behaviours are standardised to represent the effect of a $1\sigma$ change in the behaviour for ease of comparison with table 1 (unstandardised results are presented in figure \ref{fig:miscarriageUnstand}). Data consist of all births and foetal deaths recorded in the National Vital Statistics System (USA) for the four years preceding the changed reporting on birth and foetal death certificates (1999-2002) in which information on health behaviours is available for births alongside information on foetal deaths. Further information on the data is in the Methods section. Each panel presents the unadjusted rate of miscarriage for the specified groups. $\beta_{single}$ refers to the standardised difference in miscarriage rates between singleton mothers who smoke and singleton mothers who do not smoke (top left panel). $\beta_{twin}$ refers to the same standardised difference (smokers$-$non-smokers) for twin mothers.  Black error bars represent 95\% confidence intervals. In each case the difference in miscarriage rates associated with a particular behaviour is statistically larger for twin mothers.  Estimated regression-adjusted coefficients along with their statistical significance are reported in extended data table E3. A similar plot with coefficients obtained after adjustment for mother's age, total fertility, and child's year of birth are presented in extended data figure \ref{fig:miscarriageCond}.}}
+\label{fig:mech}
+\end{figure}
+\end{spacing}
+
+
+\clearpage
+% damian : discuss methods versus data
+% damian: less line-spacing? is there no word limit to Methods, Supplem etc? 
+% damian: is it clear what goes in Supplemen vs Extended data etc. if you know it is fine but let me know if you want to discuss.
+%%%%% Sonia: Line spacing has been changed a so now less white space between bullets.  I have responded on sectioning in the email.
+
+\section{Methods}
+\subsection{Data Collection}
+We collect microdata from multiple sources seeking data that %of publicly available data (either freely or by application) 
+contain measures of a woman's fertility history 
+%Damian not always?
+%%%%% Sonia: At least it always contains a record of total number of live births and prior children who died in all cases (though not always with full details of these children).
+and measures of her health stocks before pregnancy and/or health behaviors during or prior to pregnancy.  %These data consist of both nationally representative household surveys, as well as national vital statistics data. %which records the characteristics of all births occurring in a country.  As discussed in the body of the paper 
+The data sources in table 1 are as follows: \vspace{3mm} \\
+%Damian: add years and whether census vs survey in list below?
+%%%%% Sonia: Have done this.
+\textsc{Complete National Vital Statistics} \vspace{-10mm}
+\begin{itemize}
+\item United States Vital Statistics Data (``National Vital Statistics System''), 2009-2013 \vspace{-4mm}
+\item Swedish Medical Birth Register, 1993-2012 \vspace{-8mm}
+\end{itemize}
+\textsc{Survey Data} \vspace{-10mm}
+\begin{itemize}
+\item Demographic and Health Surveys (DHS) for all countries, 1961-2012 \vspace{-4mm}
+\item Chilean Survey of Early Infancy (ELPI), 2006-2009 \vspace{-4mm}
+\item Avon Longitudinal Study of Parents and Children (ALSPAC, United Kingdom), 1991-1992 \vspace{-4mm}
+\end{itemize}
+Many other %We considered using alternative 
+publicly available vital statistics data including from Mexico, Spain, and India, do not contain  measures of mother's health.  The geographic distribution and availability of birth records linked to maternal health measures is described in extended data figure \ref{fig:twincoverage}. In all cases we retain mothers who are aged 18-49 years at time of birth, and remove births with multiplicity of three or above.  Where women's anthropometric measures are included, we trim the sample to exclude women with reported heights of less than 70cm or greater than 240cm, or BMI of greater than 50.  Conditional regressions are always estimated controlling for fixed effects for mother's age, completed fertility, and child's year of birth. Further information relating to each data set is provided in Supplementary Information along with this paper and summary statistics are in extended data Tables E1 and E4.   %Each source and its coverage is described below. 
+%Damian: data is plural
+
+
+
+%%DC in the USA and DHS descriptions we mention dropping triplets/quadruplets but not in the other countries. In most cases we end by saying "`in the conditional regs we control for age, fert"' but not necessarily in every case. In DHS we describe how we trim to remove outliers in height and BMI but was this outlier removal not done for other countries or were there no outliers.. not all v important but important to be clean and consistent.
+%DC So as to (a) improve consistency of presentation across data sets and (b) shorten and clean up this section, i suggest having an over-arching few statements saying that, for all samples, we (1) Present unconditional estimates in T1 and estimates conditional on XYZ in Supplementary/extended data table ABC. When we condition, we condition on fixed effects for age, fertility. (2) We always drop multiple births>2. (3) We always retain mothers age 18-49 at birth. Once this is done we double check the sample descriptions below to remove any repetition.
+%%%%DONE.  Quite briefly written above.
+
+%%DC One possibility is to bring Methods from below up here and then detail these data sets a bit more. I have cut out a lot from the data desc below focusing on cutting what the reader knows from the main paper for eg T1 lists all health indic so i removed lists of them below. I would prefer to remove more- we have #births and #twins in T1, we have Years of Survey in Text (and Notes to table 1 and above in the Listing of Data sets; there is hardly anything else the readers needs to know. I am happy to do the cuttting to create an even shorter data description that can be inserted in Supplemen. ; just let me know- What we do need is the odd definition that is not self-evident e.g. what exactly is "`Nurse availability "` under DHS in T1 needs defining; see below). As the important info is in the Paper i would actually vote to put the data sample descriptions below into the Supplementary Info. Even if we are within word limits, we want the Methods sec to look professional and interesting- no repetition of text and no need to show results that are effectively carrying the same info as Main Tables or Fig--- so for instance i would put all the conditional and unstandardized results in Supplementary info.
+%%DC I wonder if the section below should come before the data sec. or as discussed we move the data sec above to Supplemen material leaving only the list of data in this sec.
+%%%%DONE.  This has all been moved to supplmentary.
+
+\subsection{Modelling Twin Predictors}
+
+
+In Table 1 for each of the countries for which we have measures of twin birth and maternal health, we estimate the following regression using ordinary least squares:
+\begin{equation}
+  twin_{ijt}=\alpha_0 + \alpha_1 Health_j + \phi_t + f(age_j) + b(order_i) + \varepsilon_{ijt}
+\end{equation}
+For each birth $i$ occurring to mother $j$ in year $t$, we regress the twin status of the birth (100 if birth $i$ is a twin, 0 otherwise), on the mother's health indicator $Health_j$. We estimate separate regressions for each available health measure $Health_j$. Fixed effects are included for mother's age at birth and the birth order of the child, denoted $f(\cdot)$ and $b(\cdot)$ respectively, to take into account the well-known established biological relationships of twinning with maternal age, and birth order. In US and Swedish data where gestational length is reported, we control for it given that twin gestation is on average shorter, and potentially correlated with maternal health condition\cite{Morrison2005}.  
+%Damian: can we be precise - replacing- ``Where possible''
+%%%%% Sonia: Have edited to say "in conditional regressions"
+
+Standard errors are clustered at the level of the mother to allow for arbitrary correlations of stochastic elements ($\varepsilon_{ijt}$) across children born to the same mother. In cases where survey data are used, weighted least squares regressions based on inverse probability weighting are used to ensure that the sample is representative of the population from which it is drawn. If twins are random (conditional on the well known  hormonal predictors which are correlated with age, race and completed fertility\cite{Hall2003}), then once conditioning on these variables, the probability of twin birth should be uncorrelated with maternal health. For each of the $Health_j$ measures used we are thus interested in testing the null hypothesis: $H_0: \alpha_1=0$ versus the alternative $H_1: \alpha_1\neq0$.  We present each of these point estimates and 95\% confidence intervals in extended data figure \ref{fig:fullEsts} which constitutes a summary representation of Table 1. %Rejection of the null implies that twin mothers look different (either more or less healthy) than non-twin mothers, and casts doubt on the assumption that twin births occur (conditionally) randomly in the population.  These results are presented in the body of the letter.
+
+As a supplementary test, we present a table which displays \emph{conditional} results, where a child's twin status is simultaneously regressed upon all maternal health conditions or behaviours.  In this case, the estimated equations are:
+\begin{equation}
+  \label{reg:twincond}
+  twin_{ijt}=\alpha'_0 + \bm{\alpha'_1} \bm{Behaviours}_j + \bm{\alpha'_2} \bm{Conditions}_j + \phi_t + f(age_j) + b(order_i) + \varepsilon'_{ijt}.
+\end{equation}
+The vectors of variables $\bm{Behaviours}_j$ and $\bm{Conditions}_j$ refer to all available health variables, and now, along with tests for the significance of each variable separately, we are interested in the joint (F-)test that $H_0:\bm{\alpha'_1}=\bm{\alpha'_2}=0$.  As before, rejection of the null casts doubt on the veracity of the ``as good as random'' assumption regarding twin births.
+
+
+\subsection{Mother's height (Figure 1 and Figure 2)}
+In comparing twin mothers to non-twin mothers (figure \ref{fig:countryEsts}), for each country the following multivariate regressions are run:
+\begin{eqnarray}
+  Height_{jt}&=&\beta'_0 + \beta'_1 Twin_{jt} + f(age_j) + b(fertility_j) + \varepsilon_{jt}.\\
+  Education_{jt}&=&\beta_0 + \beta_1 Twin_{jt} + f(age_j) + b(fertility_j) + \varepsilon_{ijt} 
+\end{eqnarray}
+% Damian why not parity/order of twins? 
+%%%%% Sonia: I could add parity controls...  I hadn't done this as I'd imagined that being at the mother level (not the child level), that fertility would capture most of what parity would be capturing.  I just quickly looked and running with or without the control doesn't seem to affect anything qualitative.  I can re-run and edit if we like.
+The mother's height in centimeters ($Height_{jt}$) is regressed on an indicator of whether she has ever given birth to a twin.  Once again, controls for mother's average age at time of birth, and total completed fertility are included.  For each country a separate coefficient and confidence interval is produced.  The coefficient is interpreted as the conditional difference in mother's outcomes between twin and non-twin mothers:
+\[
+\hat\beta_1 = E(Height_{jt}| Twin_{jt}=1) - E(Height_{jt}| Twin_{jt}=0),
+\]
+ If mothers who give birth to twins have similar health stocks to mothers who do not give birth to twins, in each case we should fail to reject the null hypothesis: $H_0: \beta_1=0$.  The estimates are displayed in figure \ref{fig:countryEsts}, and plotted against each country's PPP adjusted GDP per capita in figure \ref{fig:GDPEsts}.  Similar plots for education are in Extended Data figure \ref{fig:educAll}.% and XX and plots in which education and height are standardised (Z-score) are presented in extended data table/fig XX.
+%%Damian see XX above
+
+\subsection{Modelling Selective Miscarriage by Birth Type}
+To test whether twin  pregnancies are more likely to terminate in foetal death then singleton pregnancies when subject to similar stresses, we estimate the following regression model by ordinary least squares using United States Vital Statistics data.  The data used combine all live births from the vital statistics with all observed foetal deaths (occurring at 20 weeks or greater of gestation).  We estimate:
+\begin{eqnarray}
+  FoetalDeath_{ijt} &=& \gamma_0 + \gamma_1 Twin_{ijt} + \gamma_2 Health_{jt} + \gamma_3 Twin\times Health_{ijt} + \nonumber \\ && \phi_t + f(age_j) + b(fertility_j) + \nu_{ijt}.
+\end{eqnarray}
+
+%%DC for consistency with previous eq labelled 3 & 4, display controls for age and fertility in eq above. 
+%%DC we need to define subscripts i and t.
+%%%%DONE
+$FoetalDeath_{ijt}$ is a binary variable (multiplied by 1,000) indicating whether a birth was taken to term (coded as 0) or resulted in a miscarriage (coded as 1).  As above, $i$ indicates a conception leading to birth or fetal death, $j$ a mother, and $t$ the time period. This is then regressed on the twin status of the pregancy (1 if twins, 0 if singleton), a variable recording an indicator of maternal health and an interaction between twins and mother's health. The interaction term is the focus of our interest and this what there is relatively scarce evidence on. 
+
+Estimated coefficients represent the average rate of observed miscarriage (per 1,000 live births registered in US Vital Statistics) for each of the four groups: twins and singletons whose mothers do and do not engage in health behaviour or have the stated health characteristic. The coefficient $\gamma_3$ is the differential effect of the variable $Health_{jt}$ on twin conceptions. The measures of health are behaviours observed entirely before birth (eg smoking or drinking) or health conditions observed entirely before conception (eg anemia). If $\gamma_3=0$, this suggests that twin fetuses are as likely to miscarry as singleton fetuses when exposed to health (dis)amenity $Health_{jt}$.  This then leads to the null hypothesis that $H_0: \gamma_3=0$. Full regression results are presented in extended table E4, and average rates of miscarriage for each of the four groups (healthy singleton mothers, unhealthy singleton mothers, healthy twin mothers, and unhealthy twin mothers) are displayed in figure 4 of the text. %%DC If you agree to the move we need to change above sentence to point to miscarriage results in ext data.
+%%%%DONE
+Extended data figure \ref{fig:miscarriageCond} replicates these results, conditioning on fixed effects for mother's age, total fertility and child year of birth.
+%%DC - i would put the above conditional-fig in supplementary material- it is a check but it adds no new info for the reader looking for substantive results.
+%%%%THIS IS ONE THING NOT DONE.  In theory Nature does not allow figures in Supplementary Information and states that they should be included in Extended Data.
+
+\subsection{Code Availability}
+Custom computer code to generate all results from raw data is publicly available. The code and data is available at \texttt{http://dx.doi.org/10.7910/DVN/KH06MG} on the Harvard Dataverse, including documentation describing the code and its usage. Two of the data sources used (The Swedish Medical Birth Registry and the UK ALSPAC sample) need to be applied for. In these cases we provide all generating and estimation code which can be run once the data are available. Along with this source code, we provide log files documenting analysis with the original data.  The rest of the data sources are publicly available, and as such our files are freely available for download without restriction from the project repository.
+
+%%DC I think we can/should drop ref #24 which is Fretts et al, please check you agree.
+%%%%DONE
+
+%$E[FoetalDeathRate|Twin=0,Health=0]=\hat\gamma_0$ \\
+%$E[FoetalDeathRate|Twin=0,Health=1]=\hat\gamma_0+\hat\gamma_2$ \\
+%$E[FoetalDeathRate|Twin=1,Health=0]=\hat\gamma_0+\hat\gamma_1$ \\
+%$E[FoetalDeathRate|Twin=1,Health=1]=\hat\gamma_0+\hat\gamma_1+\hat\gamma_2+\hat\gamma_3$ \\
+
+%%For singleton births, the effect of $Health$ is $E[FD|T=0,H=1]-E[FD|T=0,H=0]=\hat\gamma_2$.  For twin births the effect of $Health$ is $E[FD|T=1,H=1]-E[FD|T=1,H=0]=\hat\gamma_2+\hat\gamma_3$.  We are interested in the ``double-difference'' of whether $Health$ affects the likelihood that a twin miscarries, which is just the difference between these two: $\bigg\{\bigg[E(FD|T=1,H=1)-E(FD|T=1,H=0)\bigg]-\bigg[E(FD|T=0,H=1)-E(FD|T=0,H=0)\bigg]\bigg\}$
+
+%Damian: need to check each and cut back to 30
+%%%%% Sonia: I think we are perfect.  We have 31, but only 27 are from the text itself.
+\clearpage
+\bibliography{refs}
+%Note: references 29-32 are for Methods only.
+
+%Damian  i added Fenske and Atheen
+\clearpage
+\begin{addendum}
+ \item[Supplementary Information] is submitted along with this manuscript.
+ \item Removed for submission. %We thank Judith Hall, Paul Devereux, James Fenske, Atheendar Venkataramani for comments, and Pietro Biroli and Hanna M\"uhlrad for assistance.  Clarke acknowledges financial support received from CONICYT of the Government of Chile.
+ \item[Author Contributions]  Removed for submission. %All authors contributed equally to this paper.
+ \item[Author Information] No competing interests are declared.  Removed for submission. %Corresponding author: Professor Sonia Bhalotra, Department of Economics and ISER, University of Essex, Essex, United Kingdom.
+\end{addendum}
+
+\clearpage
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\renewcommand{\tablename}{Extended Data Table}
+\renewcommand{\thetable}{E\arabic{table}}
+\renewcommand{\figurename}{Extended Data Figure}
+\renewcommand{\thefigure}{E\arabic{figure}}
+\section{Extended Data}
+\begin{spacing}{1}
+
+\begin{figure}[htpb!]
+\includegraphics[width=0.9\textwidth]{coverage.eps}
+\caption{\textbf{Coverage of data containing indicators of twin births and maternal health by country and data type}. {\footnotesize  Different colours represent different types of data (surveys, national vital statistics, or no data collected).  Each data type is described in the figure legend.}}
+\label{fig:twincoverage}
+\end{figure}
+
+  
+\begin{figure}[htpb!]
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./EducDif.eps}
+\end{subfigure}%
+%\begin{subfigure}{.5\textwidth}
+%  \includegraphics[scale=0.59]{./EducStdDif.eps}
+%\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.45]{./educGDP.png}
+\end{subfigure}%
+%\begin{subfigure}{.5\textwidth}
+%  \includegraphics[scale=0.45]{./educGDPsd.png}
+%\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{Twin mothers are more educated than non-twin mothers}: {\footnotesize The left-hand plot replicates figure 1, however comparing the education of twin mothers with the education of non-twin mothers.  Each plot displays the difference in completed education between twin and non-twin mothers along with their 95\% confidence intervals for each country in which this microdata is available.  All estimates are conditional on total fertility, mother's age and child year of birth.  The right-hand panel plots this differences against log GDP per capita, where log GDP per capita data comes from the World Bank Data Bank (indicator NY.GDP.PCAP.PP.KD), and is expressed at Purchasing Power Parity.  Each circle represents a particular country. The global correlation between the education difference and GDP conditional on continent fixed effects is 0.198 (t-statistic 1.47). Figures 1 and 2 in the text document these findings with maternal health as proxied by mother's height. As in figure \ref{fig:GDPEsts}, the estimates for most countries lie above the zero line and, overall, there is a slight positive association of the education difference with country income, consistent with studies showing that education is most likely to benefit health when medical technology is changing quickly\cite{LlerasMuneyGlied2008}.}}
+\label{fig:educAll}
+\end{figure}
+
+\begin{figure}[htpb!]
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./Deathssmokes_Uncond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./Deathsdrinks_Uncond.eps}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsnoCollege_Uncond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./Deathsanemic_Uncond.eps}
+\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{Rates of miscarriage are higher for twins with unhealthy mothers (Unstandardised Estimates)}: {\footnotesize Unstandardised estimates in each column presents the difference in rates of miscarriage based on whether the mother engages in a particular health behaviour, or has a particular health stock.  All coefficients are unstandardised, so are interpreted as the effect of moving from not engaging in the particular behaviour to engaging in the behaviour in question. Figure \ref{fig:mech} presents the baseline (standardised) results, along with further notes.}}
+\label{fig:miscarriageUnstand}
+\end{figure}
+
+\begin{figure}[htpb!]
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_smokes_cond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_drinks_cond.eps}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_noCollege_cond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_anemic_cond.eps}
+\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{Rates of miscarriage are higher for twins with unhealthy mothers (conditional estimates)}: {\footnotesize Conditional estimates in each column present the difference in rates of miscarriage based on whether the mother engages in a particular health behaviour, or has a particular health stock.  Each value is conditional on mother age fixed effects, total fertility fixed effects, and year of birth fixed effects. Coefficients are standardised as in figure 3. For the unconditional results and further notes, refer to figure \ref{fig:mech} of the paper.}}
+\label{fig:miscarriageCond}
+\end{figure}
+
+  \clearpage
+\thispagestyle{empty}
+\begin{figure}
+\begin{center}
+  \includegraphics[scale=0.8]{./forest/forestCrop}
+\end{center}
+\caption{\textbf{Effects of mother's health on twinning} {\footnotesize Each point with confidence interval displays results from an OLS regression of a child's twin status on the mother's health behaviours and conditions. Each variable represents a separate regression, where only the variable of interest and fixed effects for control variables listed below are included. The outcome variable is a binary variable for twin (=1) or singleton (=0) multiplied by 100, so all coefficients are expressed in terms of the percentage point increase in twinning.  All independent variables are expressed as standardised Z-scores, so can be interpreted as the effect of a $\Delta 1\sigma$ movement in the independent variable. All models include fixed effects for mother's age, child's birth year, birth order, and where possible, for gestation of the birth in weeks (USA and Sweden).  Full details regarding estimation samples, sample sizes, and variable definitions can be found in the online Methods section.}}
+%USA data is the full sample of non-ART births from the National Vital Statistics System from 2009-2013 (all years for which ART is recorded).  Swedish data comes from the Swedish Medical Birth Registry, United Kingdom data is from the ALSPAC (Avon Longitudinal Survey of Parents and Children) panel survey, Chilean data is from the ELPI (Early Life Longitudinal Survey), and Developing Country Data is from the pooled Demographic and Health Surveys. Further details regarding estimation samples, sample sizes, and variable definitions can be found in the online Methods section.}}
+\label{fig:fullEsts}
+\end{figure}
+  \clearpage
+\thispagestyle{empty}
+\input{summaryStatsWorld.tex}
+\addtocounter{table}{-1}
+\input{summaryStatsWorld_DE.tex}
+%Damian is this same as additional results?
+%%%%% Sonia: I will reply about the sections and Nature definitions on email.
+%Damian the legend on census survey etc is v hard to read.
+%%%%% Sonia: Updated (also next comment).
+%Damian legend hard to read
+\clearpage
+\input{twinEffectsUncondUnstand.tex}
+
+%%%%Damian: discuss dropping Ext Data Fig 2 i am not sure what it adds
+%%%%% Sonia: Yes, fair point.  I have removed now.  We actually weren't even referring to it in the text, and we need to refer to all things that are included, so good to remove.
+
+%%%\begin{figure}[htpb!]
+%%%\begin{subfigure}{.5\textwidth}
+%%%  \includegraphics[scale=0.6]{./TwinsSSA_AllIncome_smooth.eps}
+%%%   \caption{Sub-Saharan Africa}
+%%%\end{subfigure}%
+%%%\begin{subfigure}{.5\textwidth}
+%%%  \includegraphics[scale=0.6]{./USTwinFLE.eps}
+%%%  \caption{United States of America}
+%%%\end{subfigure}
+%%%%\captionsetup{labelformat=empty}
+%%%\caption{\textbf{Descriptive Trends of Twinning over Time}: {\footnotesize Each plot presents the proprtion of
+%%%twins of all births in a given year, and the average life expectancy of women in that year. In
+%%%both cases, life expectancy data comes from the World Bank Data Bank (indiciator SP.DYN.LE00.FE.IN) and refers to the life expectancy at birth for a female infant born in that year if the prevailing mortality rates remained unchanged throughout her life.  For Sub-Saharan Africa, twin proportions ar calculated based on all births in these countries from DHS data (see Supplementary Information for more information).  The plot begins in 1975 and ends in 2010, in line with the range of availaibility of birth information from the sample of DHS countries.  A 3 year moving average is plotted.  In the United States, twin proportions are determined from full birth certficate data in each year.  The graph begins at 1971 as before this year the birth type variable was not recorded.  The vertical dotted line represents the first successful case of IVF in the country.}}
+%%%\end{figure}
+
+
+%Damian the Summary stats table ext data table 1 should come here, i cannot see it. In the Notes to this table i wanted to make this edit: replace "`context examined"' with "`sample analysed in table 1 of the paper"'
+%%%%% Sonia: Updated.
+%\input{twinEffectsCond.tex}
+\begin{landscape}
+\input{FDeath_Uncond.tex}
+\end{landscape}
+\input{USADeathSumTab.tex}
+
+%%Damian - edits to put in to Notes to the CHile and LDC Summ Stats table- replace "`each context examined"' with "`samples analysed in Table 1 in the paper"' Drop "` All Samples Panels D and E from title of table
+%%%%% Sonia: Updated.
+%%Damian - edits to notes to Ext Data Table 3. Replace existing sentence with this one: Specifications are identical to those in Table 1 in the paper, however now all independent variables are included together. Asterisks.."'    In title replace Effect with Effects
+%%%%% Sonia: Updated.
+%%Damian - edits to notes to Ext Data Table 4. After "` a 1 unit increase in the independent variable"' could you add "`For indicators like smoking this is a switch from not smoking to smoking. In title replace Effect with Effects
+%%%%% Sonia: Updated.
+%%Damian - Ext Data Table 5: In this table and in main analysis Fig 3, is it worth replacing numbers conditional upon non-zero, so we capture the intensive margin, otherwise probably dominated by zero mass.
+%%%%% Sonia: I may be misunderstanding, but at least in figure 3 of the text we need the 0s, as it is a simple comparison between 0 and 1, twin and non-twin (eg there are four cells, twin non-smokers, twin smokers, singleton non-smokers and singleton smokers, and this is who the four bars correspond to).
+%%Damian - Ext Data Fig 4- Make title consistently lower case or consistently upper case and in title add "`Standardized Estimates"'? I wonder if we should drop this Fig?
+%%%%% Sonia: Have checked Nature requirements, and all titles are now starting with capital and then lower case.  Have dropped extended data figure 4 and 5 as suggested.
+%%Damian - Ext Data Fig 5 -similar';' and most important the reader should see at a glance how this figure differs so indicate `Standardized Estimates" or Unstandardized
+%%Damian - Ext Data Fig 6_ title should incldue "`Conditional Estimates"'
+%%%%% Sonia: Done.
+
+%NOTE FOR SUM TALBE: FOETAL DEATHS & BIRTHS FROM NVSS:
+%%\\textbf{Summary Statistics: Births and Foetal Deaths 1999-2002 (USA)}
+%% {\\footnotesize Descriptive statistics are presented for all births
+%% and foetal deaths recorded in USA National Vital Statistics Data prior
+%% to the birth and death certificate reorganisation in 2003. Full data
+%% collection details are avilable in supplementary methods. All variables
+%% are either binary measures, or with units indicated in the variable
+%% name.}
+
+%%%\begin{figure}[htpb!]
+%%%\begin{subfigure}{.5\textwidth}
+%%%  \includegraphics[scale=0.59]{./HeightStdDif.eps}
+%%%\end{subfigure}%
+%%%%\begin{subfigure}{.5\textwidth}
+%%%%  \includegraphics[scale=0.59]{./EducStdDif.eps}
+%%%%\end{subfigure}
+%%%\begin{subfigure}{.5\textwidth}
+%%%  \includegraphics[scale=0.45]{./heightGDPsd.png}
+%%%\end{subfigure}%
+%%%%\begin{subfigure}{.5\textwidth}
+%%%%  \includegraphics[scale=0.45]{./educGDPsd.png}
+%%%%\end{subfigure}
+%%%%\captionsetup{labelformat=empty}
+%%%\vspace{5mm}
+%%%\caption{\textbf{Twin Effects exist at all income levels}: {\footnotesize Each plot displays the difference in standardised Z-scores of height between twin and non-twin mothers. Z-scores compare each mother's outcome to the mean and standard deviation in her country.  The left-hand panel present multivariate regression estimates of the difference between twin and non-twin mothers along with their 95\% confidence intervals for each country in which this microdata is available (replicating the unstandardised figure 1).  All estimates are conditional on total fertility and mother's age.  The right-hand panel plot these differences against log GDP per capita, where log GDP per capita data comes from the World Bank Data Bank (indicator NY.GDP.PCAP.PP.KD), and is expressed at Purchasing Power Parity.  Each circle represents a particular country.  Circles above the horizontal dotted line imply that twin mothers are taller than non-twin mothers. The size of the circle indicates the proportion of all births in the country which are twins, with larger points implying a larger proportion of twins. The global correlation between standardized height difference and GDP conditional on continent fixed effects is 0.265 (t-statistic 1.83). Figures 1 and 2 in the text replicate these figures using unstandardized values for mother's height.}}
+%%%\end{figure}
+
+%Damian: Discuss dropping the figire abora 
+%%%%% Sonia: Has been dropped.
+
+
+\end{spacing}
+
+
+
+\end{linenumbers}
+\end{document}
