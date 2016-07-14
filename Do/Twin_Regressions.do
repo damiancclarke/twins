@@ -62,6 +62,7 @@ global Source  "~/investigacion/Activa/Twins/Do"
 global Log     "~/investigacion/Activa/Twins/Log"
 global Graphs  "~/investigacion/Activa/Twins/Results/Graphs"
 global Tables  "~/investigacion/Activa/Twins/Results/Outreg"
+global TAB     "~/investigacion/Activa/Twins/Results/Outreg"
 
 foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 	cap mkdir "$Tables/`dirname'"
@@ -81,12 +82,10 @@ local trends        0
 local graphsMB      0
 local graphsSW      0
 local twin          0
-local OLS           0
-local Oster         0
 local RF            0
 local IV            0
 local IVnl          0
-local IVfee         1
+local IVfee         0
 local IVtwin        0
 local desire        0
 local compl_fert    0
@@ -125,7 +124,7 @@ global bal1 fert idealnumkids agefirstbirth educf educp height underweight
 global balance $bal1 prenate* motherage childmortality infantmortal 
 
 * ECONOMETRIC SPECIFICATIONS
-local se   cluster(id)
+local se   vce(cluster id)
 local wt   [pw=sweight]
 local cond if age<19
 
@@ -992,82 +991,94 @@ if `twin'== 1 {
 	estimates clear
   */
 }
+/*
+********************************************************************************
+**** (4a) OLS Pooled Regressions (plus Altonji and Oster bounds)
+********************************************************************************
+local out "$TAB/OLS/QQ_ols.xls"
+cap rm `out'
+cap rm "$TAB/OLS/QQ_ols.txt"
+
+local y     school_zscore
+local conds ALL==1 income=="low" income=="mid"
+local names all low mid
+tokenize `names'
+
+
+foreach inc of local conds {
+    preserve
+    keep `cond'&`inc'
+
+    qui reg `y' fert `base' $age $S $H, `se'
+    reg `y' fert `base' $age               `wt' if e(sample)
+    outreg2 fert $age       using `out', excel append
+        
+    reg `y' fert `base' $age $H            `wt' if e(sample)
+    outreg2 fert $age $H    using `out', excel append
+    local maxR = e(r2)*2
+    psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+    local OsterH_`1' = string(`r(output)', "%5.3f")
+    
+    reg `y' fert `base' $age $S $H         `wt' 
+    outreg2 fert $age $S $H using `out', excel append
+    local maxR = e(r2)*2
+    psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+    local OsterSH_`1' = string(`r(output)', "%5.3f")
+
+    reg `y' fert `base' $age $S $H i.bord `wt'
+    outreg2 fert $age $S $H using `out', excel append
+    
+    restore
+    macro shift
+}
+file open  Oster using "$TAB/OLS/OsterValues.txt", write replace
+file write Oster "`OsterH_all',`OsterSH_all'" _n
+file write Oster "`OsterH_low',`OsterSH_low'" _n
+file write Oster "`OsterH_mid',`OsterSH_mid'" _n
+file close Oster
+*/
 
 ********************************************************************************
-**** (4) Simple OLS of Q-Q (can then apply Altonji)
+**** (4b) OLS n+ Regressions (plus Altonji and Oster bounds)
 ********************************************************************************
-if `OLS'==1 {
-	local out "$Tables/OLS/QQ_ols.xls"
-	cap rm `out'
-	cap rm "$Tables/OLS/QQ_ols.txt"
-	
-	gen desiredbirth=bord<=idealnumkids
-	gen fertXdesired=fert*desiredbirth
+local out "$Tables/OLS/QQ_plusgroups.xls"
+cap rm `out'
+cap rm "$Tables/OLS/QQ_plusgroups.txt"
 
-	foreach inc in ALL==1 income=="low" income=="mid" {
-		preserve
-		keep `cond'&`inc'
-		foreach y of varlist $outcomes {
-			qui reg `y' fert `base' $age $S $H, `se'
+local y  school_zscore
 
-			reg `y' fert `base' $age `wt' if e(sample), `se'
-			outreg2 fert $age using `out', excel append
-			reg `y' fert `base' $age $H `wt' if e(sample), `se'
-			outreg2 fert $age $H using `out', excel append
-			reg `y' fert `base' $age $S $H `wt', `se'
-			outreg2 fert $age $S $H using `out', excel append
-			reg `y' fert `base' $age $S $H i.bord `wt', `se'
-			outreg2 fert $age $S $H using `out', excel append
-			reg `y' fert fertXdesired `base' $age $S $H `wt', `se'
-			outreg2 fert* $age $S $H using `out', excel append
-		}
-		restore
-	}
-	local out "$Tables/OLS/QQ_plusgroups.xls"
-	cap rm `out'
-	cap rm "$Tables/OLS/QQ_plusgroups.txt"
-	foreach n in `gplus' {
-		preserve
-		keep `cond'&`n'_plus==1			
-		foreach y of varlist $outcomes {
-			qui reg `y' fert `base' $age $S $HP, `se'
-			reg `y' fert `base' $age `wt' if e(sample), `se'
-			outreg2 fert $age using `out', excel append
-			reg `y' fert `base' $age $S `wt' if e(sample), `se'
-			outreg2 fert $age $S using `out', excel append
-			reg `y' fert `base' $age $S $H `wt', `se'
-			outreg2 fert $age $S $H using `out', excel append
-			reg `y' fert `base' $age $S $HP `wt', `se'
-			outreg2 fert $age $S $HP using `out', excel append
-		}
-		restore
-	}
+foreach n in `gplus' {
+    preserve
+    keep `cond'&`n'_plus==1			
+
+    qui reg `y' fert `base' $age $S $HP, `se'
+
+    reg `y' fert `base' $age       `wt' if e(sample)
+    outreg2 fert $age        using `out', excel append
+    reg `y' fert `base' $age $H    `wt' if e(sample)
+    outreg2 fert $age $H     using `out', excel append
+    local maxR = e(r2)*2
+    psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+    local OsterH_`n' = string(`r(output)', "%5.3f")
+
+    reg `y' fert `base' $age $S $H `wt'
+    outreg2 fert $age $S $H  using `out', excel append
+    local maxR = e(r2)*2
+    psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+    local OsterSH_`1' = string(`r(output)', "%5.3f")
+
+    reg `y' fert `base' $age $S $HP `wt'
+    outreg2 fert $age $S $HP using `out', excel append
+    restore
 }
+file open  Oster using "$TAB/OLS/OsterValues_nPlus.txt", write replace
+file write Oster "`OsterH_two'  ,`OsterSH_two'  " _n
+file write Oster "`OsterH_three',`OsterSH_three'" _n
+file write Oster "`OsterH_four' ,`OsterSH_four' " _n
+file close Oster
 
-if `Oster'==1 {
-	local pp=1
-	foreach inc in ALL==1 income=="low" income=="mid" {
-		preserve
-		keep `cond'&`inc'
 
-		foreach y of varlist $outcomes {
-			reg `y' fert `base' $age $S $H
-			gen Osample=e(sample)
-			psacalc fert delta, mcontrol(`base' $age) rmax(0.55)
-			local OsterSH`pp'=`r(output)'
-		
-			reg `y' fert `base' $age $H if Osample==1
-			psacalc fert delta, mcontrol(`base' $age) rmax(0.55)
-			local OsterH`pp'=`r(output)'
-		}
-		restore
-		local ++pp
-	}
-	dis "Oster coefs (All): `OsterH1' `OsterSH1'"
-	dis "Oster coefs (Low inc): `OsterH2' `OsterSH2'"
-	dis "Oster coefs (Mid inc): `OsterH3' `OsterSH3'"
-}
-
+exit
 ********************************************************************************
 **** (5) Reduced form using twins at birth order N
 ********************************************************************************
@@ -1194,28 +1205,29 @@ if `IVnl'==1 {
 if `IVfee'==1 {
 
     #delimit ;
-    gen free= (country=="Albania"        &child_yob>=1986)|
-              (country=="Armenia"        &child_yob>=1985)|
-              (country=="Bangladesh"     &child_yob>=1995)|
-              (country=="Cameroon"       &child_yob>=1995)|
-              (country=="Egypt"          &child_yob>=1994)|
-              (country=="Ethiopia"       &child_yob>=1989)|
-              (country=="Ghana"          &child_yob>=2000)|
-              (country=="Guyana"         &child_yob>=1983)|
-              (country=="India"          &child_yob>=2001)|
-              (country=="Kenya"          &child_yob>=1998)|
-              (country=="Kyrgyz-Republic"&child_yob>=1984)|
-              (country=="Lesotho"        &child_yob>=1994)|
-              (country=="Madagascar"     &child_yob>=1997)|
-              (country=="Malawi"         &child_yob>=1989)|
-              (country=="Morocco"        &child_yob>=1958)|
-              (country=="Mozambique"     &child_yob>=1999)|
-              (country=="Nigeria"        &child_yob>=1994)|
-              (country=="Rwanda"         &child_yob>=1997)|
-              (country=="Swaziland"      &child_yob>=2005)|
-              (country=="Tanzania"       &child_yob>=1995)|
-              (country=="Uganda"         &child_yob>=1991)|
-              (country=="Zambia"         &child_yob>=1997);
+    generat free = min(5,child_yob-1980) if country=="Albania";
+    replace free = min(4,child_yob-1980) if country=="Armenia";
+    replace free = min(6,child_yob-1988) if country=="Bangladesh";
+    replace free = min(7,child_yob-1988) if country=="Cameroon";
+    replace free = min(7,child_yob-1986) if country=="Egypt";         
+    replace free = min(7,child_yob-1981) if country=="Ethiopia";      
+    replace free = min(7,child_yob-1992) if country=="Ghana";         
+    replace free = min(7,child_yob-1975) if country=="Guyana";        
+    replace free = min(7,child_yob-1993) if country=="India";         
+    replace free = min(7,child_yob-1990) if country=="Kenya";         
+    replace free = min(5,child_yob-1978) if country=="Kyrgyz-Republic";
+    replace free = min(8,child_yob-1985) if country=="Lesotho";       
+    replace free = min(6,child_yob-1990) if country=="Madagascar";    
+    replace free = min(7,child_yob-1981) if country=="Malawi";        
+    replace free = min(7,child_yob-1949) if country=="Morocco";       
+    replace free = min(8,child_yob-1990) if country=="Mozambique";    
+    replace free = min(7,child_yob-1986) if country=="Nigeria";       
+    replace free = min(6,child_yob-1989) if country=="Rwanda";
+    replace free = min(8,child_yob-1996) if country=="Swaziland";     
+    replace free = min(8,child_yob-1982) if country=="Uganda";        
+    replace free = min(8,child_yob-1986) if country=="Tanzania";      
+    replace free = min(8,child_yob-1986) if country=="Zambia";
+    replace free = 0 if free<0|free==.;
     #delimit cr
 
     gen twin_two_famFree   = twin_two_fam*free
@@ -1237,13 +1249,13 @@ if `IVfee'==1 {
         
         foreach y in $outcomes {
             #delimit ;
-            eststo: ivreg2 `y' `base' $age $S $HP (fert fertFree=twin_`n'_fam*)       
+            eststo: ivreg2 `y' `base' $S $HP i.agemay free (fert fertF=twin_`n'_fam*)       
             `wt', `se' partial(`base');
-            eststo: ivreg2 `y' `base' $age $S $H  (fert fertFree=twin_`n'_fam*)        
+            eststo: ivreg2 `y' `base' $S $H  i.agemay free (fert fertF=twin_`n'_fam*)        
             `wt', `se' partial(`base');
-            eststo: ivreg2 `y' `base' $age $H     (fert fertFree=twin_`n'_fam*) 
+            eststo: ivreg2 `y' `base' $H     i.agemay free (fert fertF=twin_`n'_fam*) 
             `wt' if e(sample), `se' partial(`base');
-            eststo: ivreg2 `y' `base'             (fert fertFree=twin_`n'_fam*)
+            eststo: ivreg2 `y' `base'             free (fert fertF=twin_`n'_fam*)
             `wt' if e(sample), `se' partial(`base');
             #delimit cr
             
@@ -1256,11 +1268,11 @@ if `IVfee'==1 {
         restore
     }
     estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
-    */ keep(fert fertFree $age $S $H $HP)
-    exit
+    */ keep(fert fertFree free)
+    estimates clear
 
     local feetype fees no-fees
-    local feecond free==0 free==1
+    local feecond free==0 free>0
     tokenize `feetype'
     foreach condition of local feecond {
         local n1=1
@@ -1531,6 +1543,9 @@ if `twinoccur_iv'==1 {
 ***  information that implies that gamma is near 0 but perhaps not exactly 0".
 ********************************************************************************
 if `conley'==1 {
+    gen j = _n
+    merge 1:1 j using "../Results/gamma/gammasNigeria", gen(_mergeGamma)
+
     mat cbounds1 = J(3,4,.)
     local ii = 1
     foreach n in two three four {
@@ -1553,7 +1568,7 @@ if `conley'==1 {
  
         *------    UCI     -----------------------------------------------------
         plausexog uci school_zscore `base' $age $S $H (fert = twin_`n'_fam), /*
-        */ gmin(0) gmax(0.0182) grid(2) level(.90) vce(robust)
+        */ gmin(0) gmax(0.008) grid(2) level(.90) vce(robust)
         local c1 = e(lb_fert)
         local c2 = e(ub_fert)
         dis "lower bound = `c1', upper bound=`c2'"
@@ -1561,23 +1576,26 @@ if `conley'==1 {
         *------    LTZ     -----------------------------------------------------
         local items = 6
         matrix omega_eta = J(`items',`items',0)
-        matrix omega_eta[1,1] = 0.0008^2
+        matrix omega_eta[1,1] = 0.0022^2
         matrix mu_eta = J(`items',1,0)
-        matrix mu_eta[1,1] = 0.0015
+        matrix mu_eta[1,1] = 0.00404
 
-        plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta)
-        local c3 = _b[Ex]-1.65*_se[Ex]
-        local c4 = _b[Ex]+1.65*_se[Ex]
+        plausexog ltz Ey `ESH' (Ex = Ez), distribution(special, gamma) seed(19)
+        local c3 = e(lb_Ex)
+        local c4 = e(ub_Ex)
         dis "lower bound = `c3', upper bound=`c4'"
+        *local c3 = _b[Ex]-1.65*_se[Ex]
+        *local c4 = _b[Ex]+1.65*_se[Ex]
+        *dis "lower bound = `c3', upper bound=`c4'"
 
-
+        
         *------  GRAPHING   -----------------------------------------------------
         foreach num of numlist 0(1)10 {
             matrix om`num'=J(`items', `items', 0)
-            matrix om`num'[1,1] = ((`num'/10)*0.02/sqrt(12))^2
+            matrix om`num'[1,1] = ((`num'/10)*0.06/sqrt(12))^2
             matrix mu`num'=J(`items', 1, 0)
-            matrix mu`num'[1,1]= (`num'/10)*0.02/2
-            local d`num' = (`num'/10)*0.02
+            matrix mu`num'[1,1]= (`num'/10)*0.06/2
+            local d`num' = (`num'/10)*0.06
         }
 
         #delimit ;
