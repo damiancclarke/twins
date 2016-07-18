@@ -17,12 +17,14 @@ print('\n\nHey DCC. The script %s is making %s files \n' %(script, ftype))
 Results  = "/home/damian/investigacion/Activa/Twins/Results/Outreg/"
 Tables   = "/home/damian/investigacion/Activa/Twins/Tables/"
 
-base = 'All.xls'
+base = 'All.txt'
 lowi = 'LowIncome.xls'
 midi = 'MidIncome.xls'
 thre = 'Desire_IV_reg_all.xls'
 twIV = 'Base_IV_twins.xls'
 adjf = 'ADJAll.xls'
+feei = 'fees.xls'
+nfei = 'no-fees.xls'
 
 gend = ['Girls.xls','Boys.xls']
 genl = ['gendFLow.xls','gendMLow.xls']
@@ -40,6 +42,10 @@ fadj = 'ADJAll_first.xls'
 fdes = 'Desire_IV_firststage_reg_all.xls'
 
 ols  = "QQ_ols.txt"
+ost  = "OsterValues.txt"
+olsn = "QQ_plusgroups.txt"
+ostn = "OsterValues_nPlus.txt"
+
 bala = "Balance_mother.tex"
 twin = "Twin_Predict.xls"
 twiP = "Twin_PredictProbit.xls"
@@ -55,6 +61,7 @@ conU = "ConleyGammaNHIS.txt"
 imrt = "PreTwinTest.xls"
 
 gamT = "gammaEstimates.txt"
+gamN = "gammaEstNigeria.txt"
 os.chdir(Results+'IV/')
 
 #==============================================================================
@@ -76,8 +83,8 @@ if ftype=='tex':
     mcsc = '}{l}{\\textsc{'
     mcbf = '}{l}{\\textbf{'    
     mc2  = '}}'
-    twid = ['5','8','4','5','9','9','4','6','10','7','12','6','12','5','10']
-    tcm  = ['}{p{10.0cm}}','}{p{17.8cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
+    twid = ['5','4','4','5','9','9','4','6','10','7','12','6','12','5','10']
+    tcm  = ['}{p{10.0cm}}','}{p{9.2cm}}','}{p{10.4cm}}','}{p{11.6cm}}',
             '}{p{13.8cm}}','}{p{14.2cm}}','}{p{12.1cm}}','}{p{13.8cm}}',
             '}{p{18.0cm}}','}{p{12.8cm}}','}{p{18cm  }}','}{p{10.0cm}}',
             '}{p{18.8cm}}','}{p{10.6cm}}','}{p{20.2cm}}']
@@ -155,7 +162,8 @@ def plustable(ffile,n1,n2,searchterm,alt,n3):
     beta = []
     se   = []
     N    = []
-
+    R    = []
+    
     f = open(ffile, 'r').readlines()
 
     for i, line in enumerate(f):
@@ -164,10 +172,13 @@ def plustable(ffile,n1,n2,searchterm,alt,n3):
             se.append(i+1)
         if re.match("N", line):
             N.append(i)
+        if re.match("r2", line):
+            R.append(i)
     
     TB = []
     TS = []
     TN = []
+    TR = []
     if alt=='alt':
         for i,n in enumerate(beta):
             if i==0:
@@ -186,8 +197,10 @@ def plustable(ffile,n1,n2,searchterm,alt,n3):
             TS.append(f[n].split()[n1-1:n2-1])
     for n in N:
         TN.append(f[n].split()[n1:n2])
+    for n in R:
+        TR.append(f[n].split()[n1:n2])
 
-    return TB, TS, TN
+    return TB, TS, TN, TR
 
 
 #==============================================================================
@@ -196,20 +209,20 @@ def plustable(ffile,n1,n2,searchterm,alt,n3):
 #can add Five in without problems
 for i in ['Two', 'Three', 'Four']:
     if i=="Two":
-        num1=1
-        num2=4
+        num1=2
+        num2=5
         t='two'
         des='first-born children' 
         IVf   = open(Tables+'TwoPlusIV.'+end, 'w')
     elif i=="Three":
-        num1=4
-        num2=7
+        num1=6
+        num2=9
         t='three'
         des='first- and second-born children' 
         IVf = open(Tables+'ThreePlusIV.'+end, 'w')
     elif i=="Four":
-        num1=7
-        num2=10
+        num1=10
+        num2=13
         t='four'
         des='first- to third-born children' 
         IVf = open(Tables+'FourPlusIV.'+end, 'w')
@@ -220,14 +233,14 @@ for i in ['Two', 'Three', 'Four']:
         des='first- to fourth-born children' 
         IVf = open(Tables+'FivePlusIV.'+end, 'w')
 
-    TB1, TS1, TN1 = plustable(base, num1, num2,"fert",'normal',1000)
-    TB3, TS3, TN3 = plustable(lowi, num1, num2,"fert",'normal',1000)
-    TB4, TS4, TN4 = plustable(midi, num1, num2,"fert",'normal',1000)
-    TB5, TS5, TN5 = plustable(thre, num1, num2,"fert",'normal',1000)
+    TB1, TS1, TN1, TR1 = plustable(base, num1, num2,"fert",'normal',1000)
+    TB3, TS3, TN3, TR3 = plustable(lowi, num1, num2,"fert",'normal',1000)
+    TB4, TS4, TN4, TR4 = plustable(midi, num1, num2,"fert",'normal',1000)
+    TB5, TS5, TN5, TR5 = plustable(thre, num1, num2,"fert",'normal',1000)
     
-    TB6, TS6, TN6 = plustable(twIV, num1, num2,"fert",'normal',1000)
+    TB6, TS6, TN6, TR6 = plustable(twIV, num1, num2,"fert",'normal',1000)
 
-    FB, FS, FN    = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000)
+    FB, FS, FN, FR    = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000)
 
     print "Table for " + i + " Plus:"
     print ""
@@ -325,23 +338,11 @@ LowN = []
 MidB = []
 MidS = []
 MidN = []
-TwiB = []
-TwiS = []
-TwiN = []
-AdjB = []
-AdjS = []
-AdjN = []
-FirB = []
-FirS = []
-FirN = []
 
-for num in [1,5,9]:
-    BB, BS, BN    = plustable(base, num, num+3,'fert','normal',1000)
-    LB, LS, LN    = plustable(lowi, num, num+3,'fert','normal',1000)
-    MB, MS, MN    = plustable(midi, num, num+3,'fert','normal',1000)
-    TB, TS, TN    = plustable(twIV, num, num+3,'fert','normal',1000)
-    AB, AS, AN    = plustable(adjf, num, num+3,'ADJfert','normal',1000)
-    FB, FS, FN    = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000)
+for num in [2,6,10]:
+    BB, BS, BN, BR    = plustable(base, num, num+3,'fert','normal',1000)
+    LB, LS, LN, LR    = plustable(lowi, num, num+3,'fert','normal',1000)
+    MB, MS, MN, MR    = plustable(midi, num, num+3,'fert','normal',1000)
     
     AllB.append(dd + BB[0][0] + dd + BB[0][1] + dd + BB[0][2])
     AllS.append(dd + BS[0][0] + dd + BS[0][1] + dd + BS[0][2])
@@ -352,15 +353,6 @@ for num in [1,5,9]:
     MidB.append(dd + MB[0][0] + dd + MB[0][1] + dd + MB[0][2])
     MidS.append(dd + MS[0][0] + dd + MS[0][1] + dd + MS[0][2])
     MidN.append(dd + MN[0][0] + dd + MN[0][1] + dd + MN[0][2])
-    TwiB.append(dd + TB[0][0] + dd + TB[0][1] + dd + TB[0][2])
-    TwiS.append(dd + TS[0][0] + dd + TS[0][1] + dd + TS[0][2])
-    TwiN.append(dd + TN[0][0] + dd + TN[0][1] + dd + TN[0][2])
-    AdjB.append(dd + AB[0][0] + dd + AB[0][1] + dd + AB[0][2])
-    AdjS.append(dd + AS[0][0] + dd + AS[0][1] + dd + AS[0][2])
-    AdjN.append(dd + AN[0][0] + dd + AN[0][1] + dd + AN[0][2])
-    FirB.append(dd + FB[0][0] + dd + FB[0][1] + dd + FB[0][2])
-    FirS.append(dd + FS[0][0] + dd + FS[0][1] + dd + FS[0][2])
-    FirN.append(dd + FN[0][0] + dd + FN[0][1] + dd + FN[0][2])
 
 
 IV2.write(mc1+twid[10]+mcbf+"All"+mc2+ls+" \n"
@@ -377,16 +369,6 @@ mc1+twid[10]+mcbf+"Middle-Income"+mc2+ls+" \n"
 "Fertility"+MidB[0]+dd+MidB[1]+dd+MidB[2]+ls+'\n'
 +MidS[0]+dd+MidS[1]+dd+MidS[2]+ls+'\n'+lA+
 "Observations"+MidN[0]+dd+MidN[1]+dd+MidN[2]+ls+'\n')
-
-#mc1+twid[10]+mcbf+"Adjusted Fertility"+mc2+ls+" \n"
-#"Fertility"+AdjB[0]+dd+AdjB[1]+dd+AdjB[2]+ls+'\n'
-#+AdjS[0]+dd+AdjS[1]+dd+AdjS[2]+ls+'\n'+lA+
-#"Observations"+AdjN[0]+dd+AdjN[1]+dd+AdjN[2]+ls+'\n'+
-
-#mc1+twid[10]+mcbf+"Twins and Pre-Twins"+mc2+ls+" \n"
-#"Fertility"+TwiB[0]+dd+TwiB[1]+dd+TwiB[2]+ls+'\n'
-#+TwiS[0]+dd+TwiS[1]+dd+TwiS[2]+ls+'\n'+lA+
-#"Observations"+TwiN[0]+dd+TwiN[1]+dd+TwiN[2]+ls+'\n')
 
 IV2.write('\n'+mr+mc1+twid[10]+tcm[10]+mc3+
 "The two plus subsample refers to all first born children in families with "
@@ -410,21 +392,110 @@ if ftype=='tex':
     "\\end{tabular}\\end{center}\\end{table}\\end{landscape}")
 
 IV2.close()
+"""
+#==============================================================================
+#== (3bii) IV results by fees
+#==============================================================================
+IV2 = open(Tables+"IVFees."+end, 'w')
 
+os.chdir(Results+'IV')
+
+if ftype=='tex':
+    IV2.write("\\begin{landscape}\\begin{table}[htpb!]"
+              "\\caption{IV Estimates by Country Fee Status (DHS)}\n"
+              "\\label{TWINtab:IVFee}\n\\begin{center}"
+    "\\begin{tabular}{lcccp{2mm}cccp{2mm}ccc}\n\\toprule \\toprule \n"
+    "&\\multicolumn{3}{c}{2+}&&\\multicolumn{3}{c}{3+}&&\\multicolumn{3}{c}{4+}"
+    "\\\\ \\cmidrule(r){2-4} \\cmidrule(r){6-8} \\cmidrule(r){10-12} \n"
+    "\\textsc{School Z-Score}&Base&+H&+S\&H&&Base&+H&+S\&H&&Base&+H&+S\&H"
+    "\\\\ \\midrule \n"
+    +"\\begin{footnotesize}\\end{footnotesize}& \n"*11+
+    "\\begin{footnotesize}\\end{footnotesize}\\\\ \n")
+elif ftype=='csv':
+    IV2.write(";2+;;;;3+;;;;4+;;;\n"
+    "FERTILITY;Base;+H;+S&H;;Base;+H;+S&H;;Base;+S;+S&H \n")
+
+AllB = []
+AllS = []
+AllN = []
+LowB = []
+LowS = []
+LowN = []
+MidB = []
+MidS = []
+MidN = []
+
+for num in [1,5,9]:
+    BB, BS, BN    = plustable(base, num, num+3,'fert','normal',1000)
+    LB, LS, LN    = plustable(nfei, num, num+3,'fert','normal',1000)
+    MB, MS, MN    = plustable(feei, num, num+3,'fert','normal',1000)
+    
+    AllB.append(dd + BB[0][0] + dd + BB[0][1] + dd + BB[0][2])
+    AllS.append(dd + BS[0][0] + dd + BS[0][1] + dd + BS[0][2])
+    AllN.append(dd + BN[0][0] + dd + BN[0][1] + dd + BN[0][2])
+    LowB.append(dd + LB[0][0] + dd + LB[0][1] + dd + LB[0][2])
+    LowS.append(dd + LS[0][0] + dd + LS[0][1] + dd + LS[0][2])
+    LowN.append(dd + LN[0][0] + dd + LN[0][1] + dd + LN[0][2])
+    MidB.append(dd + MB[0][0] + dd + MB[0][1] + dd + MB[0][2])
+    MidS.append(dd + MS[0][0] + dd + MS[0][1] + dd + MS[0][2])
+    MidN.append(dd + MN[0][0] + dd + MN[0][1] + dd + MN[0][2])
+
+
+IV2.write(mc1+twid[10]+mcbf+"All"+mc2+ls+" \n"
+"Fertility"+AllB[0]+dd+AllB[1]+dd+AllB[2]+ls+'\n'
++AllS[0]+dd+AllS[1]+dd+AllS[2]+ls+'\n'+lA2+
+"Observations"+AllN[0]+dd+AllN[1]+dd+AllN[2]+ls+'\n'+
+
+mc1+twid[10]+mcbf+"Free Schooling"+mc2+ls+" \n"
+"Fertility"+LowB[0]+dd+LowB[1]+dd+LowB[2]+ls+'\n'
++LowS[0]+dd+LowS[1]+dd+LowS[2]+ls+'\n'+lA+
+"Observations"+LowN[0]+dd+LowN[1]+dd+LowN[2]+ls+'\n'+
+
+mc1+twid[10]+mcbf+"No Free Schooling"+mc2+ls+" \n"
+"Fertility"+MidB[0]+dd+MidB[1]+dd+MidB[2]+ls+'\n'
++MidS[0]+dd+MidS[1]+dd+MidS[2]+ls+'\n'+lA+
+"Observations"+MidN[0]+dd+MidN[1]+dd+MidN[2]+ls+'\n')
+
+IV2.write('\n'+mr+mc1+twid[10]+tcm[10]+mc3+
+"The two plus subsample refers to all first born children in families with "
+"at least two births.  Three plus refers to first- and second-borns in families "
+"with at least three births, and four plus refers to first- to third-borns in "
+"families with at least four births.  Each cell presents the coefficient of a "
+"2SLS regression where fertility is instrumented by twinning at birth order "
+"two, three or four (for 2+, 3+ and 4+ respectively).  Different rows of the "
+"table correspond to different sub-groups or specifications. In order these "
+"correspond to: all children, grouped by country income status, adjusting "
+"fertility to correct exclude children who did not survive to one year, and "
+"including both pre-twins \emph{and} twins in the regression. Base controls include "
+"child age, mother's age, and mother's age at birth fixed effects plus country "
+"and year-of-birth FEs.  In each case the sample is made up of all children aged "
+"between 6-18 years from families in the DHS who fulfill 2+ to 4+ requirements. "
+"First-stage results in the final panel correspond to the second stage in row 1. " 
+"Full first stage results for each row are available in table "+rFSt+". Standard "
+"errors are clustered by mother."+foot+" \n")
+if ftype=='tex':
+    IV2.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
+    "\\end{tabular}\\end{center}\\end{table}\\end{landscape}")
+
+IV2.close()
+"""
 
 #==============================================================================
 #== (4) Function to return fertilility beta and SE for OLS tables
 #==============================================================================
 os.chdir(Results+'OLS/')
 
-def olstable(ffile,n1,n2,n3):
-    beta = []
-    se   = []
-    N    = []
-    R    = []
-
+def olstable(ffile,ofile,n1,n2,n3):
+    beta    = []
+    se      = []
+    N       = []
+    R       = []
+    Altonji = []
+    Oster   = []
+    
     f = open(ffile, 'r').readlines()
-
+    o = open(ofile, 'r').readlines()
+    
     for i, line in enumerate(f):
         if re.match("fert", line):
             beta.append(i)
@@ -454,19 +525,193 @@ def olstable(ffile,n1,n2,n3):
     for n in R:
         TR.append(f[n].split()[n1:n2])
 
+    betas = '&'.join(TB[0])
+    ses   = '&'.join(TS[0])
+    Ns    = '&'.join(TN[0])
+    Rs    = '&'.join(TR[0])
+    ost   = o[n3-1].replace(",","&")
+    
     A1 = float(re.search("-\d*\.\d*", TB[0][0]).group(0))
     A2 = float(re.search("-\d*\.\d*", TB[0][1]).group(0))
     A3 = float(re.search("-\d*\.\d*", TB[0][2]).group(0))
     AR1 = str(round(A2/(A1-A2), 3))
     AR2 = str(round(A3/(A1-A3), 3))
+    Alts  = '&&'+AR1+'&'+AR2
+    Osts  = '&&'+ost
 
-    return TB, TS, TN, TR, AR1, AR2
+    return betas, ses, Ns, Rs, Alts, Osts, 
 
 
-TBa, TSa, TNa, TRa, A1a, A2a = olstable(ols, 1, 6, 1)
-TBl, TSl, TNl, TRl, A1l, A2l = olstable(ols, 6, 11, 2)
-TBm, TSm, TNm, TRm, A1m, A2m = olstable(ols, 11, 16, 3)
+TBa, TSa, TNa, TRa, A1a, A2a = olstable(ols, ost, 1, 4, 1)
+TBl, TSl, TNl, TRl, A1l, A2l = olstable(ols, ost, 5, 8, 2)
+TBm, TSm, TNm, TRm, A1m, A2m = olstable(ols, ost, 9, 12, 3)
 
+TB2, TS2, TN2, TR2, Al2, Os2 = olstable(olsn, ostn, 1, 4, 1)
+TB3, TS3, TN3, TR3, Al3, Os3 = olstable(olsn, ostn, 5, 8, 2)
+TB4, TS4, TN4, TR4, Al4, Os4 = olstable(olsn, ostn, 9, 12, 3)
+
+OLSf = open(Tables+'OLS_bounds.'+end, 'w')
+OLSf.write("\\begin{table}[!htbp] \\centering \n"
+           "\\caption{OLS Estimates of the Q-Q Trade-off (Developing Countries)} \n "
+           "\\label{TWINtab:OLS} \n"
+           "\\begin{tabular}{lccc} \\toprule \n"
+           "& (1) & (2) & (3) \\\\  \n "
+           "& Base & +H & + S\&H \\\\ \\midrule \n ")
+
+OLSf.write("\\textbf{Panel A: All Countries}&&& \\\\ \n"
+           "Fertility&"+TBa+"\\\\ \n"
+           "&"+TSa+"\\\\ \n"
+           "&&& \\\\ \n"
+           "Observations &"+TNa+"\\\\ \n"
+           "R-squared &"+TRa+"\\\\ \n"           
+           "Altonji et al.\ Ratio"+A1a+"\\\\ \n"
+           "Oster Ratio"+A2a+"\\\\ \\midrule \n")
+OLSf.write("\\textbf{Panel B: Low Income}&&& \\\\ \n"
+           "Fertility&"+TBl+"\\\\ \n"
+           "&"+TSl+"\\\\ \n"
+           "&&& \\\\ \n"
+           "Observations &"+TNl+"\\\\ \n"
+           "R-squared &"+TRl+"\\\\ \n"           
+           "Altonji et al.\ Ratio"+A1l+"\\\\ \n"
+           "Oster Ratio"+A2l+"\\\\ \\midrule \n")
+OLSf.write("\\textbf{Panel C: Middle Income}&&& \\\\ \n"
+           "Fertility&"+TBm+"\\\\ \n"
+           "&"+TSm+"\\\\ \n"
+           "&&& \\\\ \n"
+           "Observations &"+TNm+"\\\\ \n"
+           "R-squared &"+TRm+"\\\\ \n"           
+           "Altonji et al.\ Ratio"+A1m+"\\\\ \n"
+           "Oster Ratio"+A2m+"\\\\ \n")
+OLSf.write("\\midrule \\multicolumn{4}{p{11cm}}{{\\footnotesize         "
+           "Base controls consist of child gender, mother's age and age "
+           "squared, mother's age at first birth, child age, country,   "
+           "and year of birth fixed effects. The +H controls augment    "
+           "`Base' to include mother's height and BMI, and +S\&H        "
+           "additionally includes a quadratic for mother's education.   "
+           "The \\citet{Altonjietal2005} ratio determines how important "
+           "unobservable factors must be compared with included         "
+           "observables to imply that the true effect of fertilty on    "
+           "educational attainment is equal to zero.  The Oster ratio   "
+           "extends the Altonji et al.\\ ratio to take into account     "
+           "maximum R-squared in the underlying equation.  We defined   "
+           "Oster's maximum R-squared as 2 times the observed R-squared."
+           " The ratio in each column is with respects to the baseline  "
+           "regression in column (1). Standard errors in parentheses are"
+           " clustered at the level of the mother.\n" + foot +" }} \\\\")
+OLSf.write("\\bottomrule \\end{tabular}\\end{table} \n")
+
+OLSf.close()
+
+
+
+#==============================================================================
+#== (5b) DHS IV, bounds, and OLS
+#==============================================================================
+DHSa = open(Tables+'DHS-together.tex', 'w')
+
+
+
+DHSa.write('\\begin{landscape}\\begin{table}[htpb!] \n'
+            '\\caption{Developing Country Estimates: OLS, Bounds, and IV}'
+            '\\label{TWINtab:DHSall}\n'
+            '\\begin{center}\\begin{tabular}{lccccccccc}\n'
+            '\\toprule \\toprule\n' 
+            '&\\multicolumn{3}{c}{2+}&\\multicolumn{3}{c}{3+}&'
+            '\\multicolumn{3}{c}{4+}\\\\ \\cmidrule(r){2-4}'
+            '\\cmidrule(r){5-7} \\cmidrule(r){8-10}\n' 
+            '&Base&+H&+S\\&H&Base&+H&+S\\&H&Base&+H&+S\\&H\\\\ \\midrule\n')
+DHSa.write('\\multicolumn{10}{l}{\\textsc{Panel A: OLS Results}}\\\\'
+           "Fertility&"           +TB2+"&"+TB3+"&"+TB4+"\\\\ \n"
+           "&"                    +TS2+"&"+TS3+"&"+TS4+"\\\\ \n"
+           "&&&&&&&&& \\\\ \n"
+           "Observations &"       +TN2+"&"+TN3+"&"+TN4+"\\\\ \n"
+           "R-squared &"          +TR2+"&"+TR3+"&"+TR4+"\\\\ \n"
+           "Altonji et al.\ Ratio"+Al2+Al3+Al4+"\\\\ \n"
+           "Oster Ratio"          +Os2+Os3+Os4+"\\\\ \\midrule \n")
+
+os.chdir(Results+'IV')
+AllB = []
+AllS = []
+AllN = []
+AllR = []
+for num in [2,6,10]:
+    BB, BS, BN, BR    = plustable(base, num, num+3,'fert','normal',1000)
+    LB, LS, LN, LR    = plustable(lowi, num, num+3,'fert','normal',1000)
+    MB, MS, MN, MR    = plustable(midi, num, num+3,'fert','normal',1000)
+    print BR
+    
+    AllB.append(dd + BB[0][0] + dd + BB[0][1] + dd + BB[0][2])
+    AllS.append(dd + BS[0][0] + dd + BS[0][1] + dd + BS[0][2])
+    AllN.append(dd + BN[0][0] + dd + BN[0][1] + dd + BN[0][2])
+    AllR.append(dd + BR[0][0] + dd + BR[0][1] + dd + BR[0][2])
+
+DHSa.write('\\multicolumn{10}{l}{\\textsc{Panel B: IV Results}}\\\\'
+           "Fertility"           +AllB[0]+AllB[1]+AllB[2]+"\\\\ \n"
+           ""                    +AllS[0]+AllS[1]+AllS[2]+"\\\\ \n"
+           "&&&&&&&&& \\\\ \n"
+           "Observations "        +AllN[0]+AllN[1]+AllN[2]+"\\\\ \n"
+           "R-Squared "           +AllR[0]+AllR[1]+AllR[2]+"\\\\ \\midrule \n")
+
+
+AllB = []
+AllS = []
+AllN = []
+AllR = []
+for num in ['two','three','four']:
+    FB, FS, FN, FR    = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000)
+    AllB.append(dd + FB[0][0] + dd + FB[0][1] + dd + FB[0][2])
+    AllS.append(dd + FS[0][0] + dd + FS[0][1] + dd + FS[0][2])
+    AllN.append(dd + FN[0][0] + dd + FN[0][1] + dd + FN[0][2])
+    AllR.append(dd + FR[0][0] + dd + FR[0][1] + dd + FR[0][2])
+
+
+
+DHSa.write('\\multicolumn{10}{l}{\\textsc{Panel C: First Stage}}\\\\'
+           "Twins"               +AllB[0]+AllB[1]+AllB[2]+"\\\\ \n"
+           ""                    +AllS[0]+AllS[1]+AllS[2]+"\\\\ \n"
+           "&&&&&&&&& \\\\ \n"
+           "Observations "        +AllN[0]+AllN[1]+AllN[2]+"\\\\ \n"
+           "R-Squared &&&&&&&&&\\\\ \n"
+           "$F$-test on excluded instruments &&&&&&&&&\\\\ \n"
+           #"R-Squared "           +AllR[0]+AllR[1]+AllR[2]+"\\\\
+           "\\midrule \n")
+
+DHSa.write("\\multicolumn{10}{p{22.0cm}}{{\\footnotesize Panels A and B present"
+           " coefficients and standard errors for a regression of fertility   "
+           "on each child's schooling z-score (using OLS and IV respectively)."
+           "The two plus subsample refers to all first born children in       "
+           "families with at least two births.  Three plus refers to first-   "
+           "and second-borns in families with at least three births, and four "
+           "plus refers to first- to third-borns in families with at least    "
+           "four births.  In panel B Each cell presents the coefficient of a  "
+           "2SLS regression where fertility is instrumented by twinning at    "
+           "birth order two, three or four (for 2+, 3+ and 4+ groups respectively).  "
+           "Panel C presents the first-stage coefficients of twinning on      "
+           "fertility for each group. Base controls consist of child age,        "
+           "mother's age, and mother's age at birth fixed effects plus country"
+           "and year-of-birth FEs.  In each case the sample is made up of all "
+           "children aged between 6-18 years from families in the DHS who     "
+           "fulfill 2+ to 4+ requirements. The \\citet{Altonjietal2005} ratio "
+           "determines how important unobservable factors must be compared    "
+           "with included observables to imply that the true effect of        "
+           "fertilty on educational attainment is equal to zero.  The Oster   "
+           "ratio extends the Altonji et al.\\ ratio to take into account     "
+           "maximum R-squared in the theoretical equation which includes both "
+           "observables and unobservables.  We defined         "
+           "Oster's maximum R-squared as 2 times the observed R-squared.      "
+           " The ratio in each column is with respects to the baseline        "
+           "regression in column (1) and quantifies how important unobservables "
+           "would have to be compared with observables for the true coefficient "
+           "from OLS regression to be equal to zero. Standard errors are clustered by mother."
+           +foot+" \n}} \\\\")
+
+DHSa.write("\\bottomrule \\end{tabular} \\end{center} \n"
+           "\\end{table} \\end{landscape} \n")
+
+
+
+
+sys.exit()
 #==============================================================================
 #== (5) Write OLS table
 #==============================================================================
@@ -474,54 +719,33 @@ OLSf = open(Tables+'OLS.'+end, 'w')
 
 if ftype=='tex':
     OLSf.write("\\begin{landscape}\\begin{table}[!htbp] \\centering \n"
-    "\\caption{OLS Estimates of the Q-Q Trade-off} \n "
+    "\\caption{OLS Estimates of the Q-Q Trade-off (Developing Countries)} \n "
     "\\label{TWINtab:OLS} \n"
-    "\\begin{tabular}{lccccccc} \\toprule \\toprule \n")
+    "\\begin{tabular}{lccccc} \\toprule \\toprule \n")
 
-OLSf.write(dd+"Base"+dd+"+"+dd+"+Health"+dd+"Bord"+dd+"Desired"+dd+"Altonji"+
-dd+"Altonji"+ls+"\n"
-+dd+"Controls"+dd+"Health"+dd+"\&Socioec"+dd+"Controls"+dd+dd+"Ratio 1"+
-dd+"Ratio 2"+ls+mr+"\n"
-+tsc+"Panel A: All Countries"+ebr+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
+OLSf.write(dd+"Base"+dd+"+"+dd+"+Health"+dd+"Altonji"+dd+"Altonji"+ls+"\n"
++dd+"Controls"+dd+"Health"+dd+"\&Socioec"+dd+"Ratio 1"+dd+"Ratio 2"+ls+mr+"\n"
++tsc+"Panel A: All Countries"+ebr+dd+dd+dd+dd+dd+ls+"\n"
 
-"Fertility "+dd+TBa[0][0]+dd+TBa[0][1]+dd+TBa[0][2]+dd+TBa[0][3]+dd
-+            TBa[0][4]+dd+A1a+dd+A2a+ls+"\n"
-+            dd+TSa[0][0]+dd+TSa[0][1]+dd+TSa[0][2]+dd+TSa[0][3]+dd
-+            TSa[0][4]+dd+dd+ls+  "\n"
-+lname+dd+dd+dd+dd+dd+TBa[1][0]+dd+dd+ls+"\n"
-+            dd+dd+dd+dd+dd+TSa[1][0]+dd+dd+ls+  "\n"
-+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
-"Observations "+dd+str(TNa[0][0])+dd+str(TNa[0][1])+dd+str(TNa[0][2])+dd
-+            str(TNa[0][3])+dd+str(TNa[0][4])+dd+dd+ls+"\n"
-+R2+dd+str(TRa[0][0])+dd+ str(TRa[0][1])+dd+str(TRa[0][2])+dd
-+            str(TRa[0][3])+dd+str(TRa[0][4])+dd+dd+ls+mr+"\n"
+"Fertility "+dd+TBa[0][0]+dd+TBa[0][1]+dd+TBa[0][2]+dd+A1a+dd+A2a+ls+"\n"
++            dd+TSa[0][0]+dd+TSa[0][1]+dd+TSa[0][2]+dd+dd+ls+        "\n"
++dd+dd+dd+dd+dd+ls+"\n"
+"Observations "+dd+str(TNa[0][0])+dd+str(TNa[0][1])+dd+str(TNa[0][2])+dd+dd+ls+"\n"
++R2+dd+str(TRa[0][0])+dd+ str(TRa[0][1])+dd+str(TRa[0][2])+dd+dd+ls+mr+"\n"
 
++tsc+"Panel B: Low Income"+ebr+dd+dd+dd+dd+dd+ls+"\n"
+"Fertility "+dd+TBl[0][0]+dd+TBl[0][1]+dd+TBl[0][2]+dd+A1l+dd+A2l+ls+"\n"
++            dd+TSl[0][0]+dd+TSl[0][1]+dd+TSl[0][2]+dd+dd+ls+        "\n"
++dd+dd+dd+dd+dd+ls+"\n"
+"Observations "+dd+str(TNl[0][0])+dd+str(TNl[0][1])+dd+str(TNl[0][2])+dd+dd+ls+"\n"
++R2+dd+str(TRl[0][0])+dd+ str(TRl[0][1])+dd+str(TRl[0][2])+dd+dd+ls+mr+"\n"
 
-+tsc+"Panel B: Low Income"+ebr+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
-"Fertility "+dd+TBl[0][0]+dd+TBl[0][1]+dd+TBl[0][2]+dd+TBl[0][3]+dd
-+            TBl[0][4]+dd+A1l+dd+A2l+ls+"\n"
-+            dd+TSl[0][0]+dd+TSl[0][1]+dd+TSl[0][2]+dd+TSl[0][3]+dd
-+            TSl[0][4]+dd+dd+ls+  "\n"
-+lname+dd+dd+dd+dd+dd+TBl[1][0]+dd+dd+ls+"\n"
-+            dd+dd+dd+dd+dd+TSl[1][0]+dd+dd+ls+  "\n"
-+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
-"Observations "+dd+str(TNl[0][0])+dd+str(TNl[0][1])+dd+str(TNl[0][2])+dd
-+str(TNl[0][3])+dd+str(TNl[0][4])+dd+dd+ls+"\n"
-+R2+dd+str(TRl[0][0])+dd+ str(TRl[0][1])+dd+str(TRl[0][2])+dd
-+            str(TRl[0][3])+dd+str(TRl[0][4])+dd+dd+ls+mr+"\n"
-
-+tsc+"Panel C: Middle Income"+ebr+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
-"Fertility "+dd+TBm[0][0]+dd+TBm[0][1]+dd+TBm[0][2]+dd+TBm[0][3]+dd
-+            TBm[0][4]+dd+A1m+dd+A2m+ls+"\n"
-+            dd+TSm[0][0]+dd+TSm[0][1]+dd+TSm[0][2]+dd+TSm[0][3]+dd
-+            TSm[0][4]+dd+dd+ls+  "\n"
-+lname+dd+dd+dd+dd+dd+TBm[1][0]+dd+dd+ls+"\n"
-+            dd+dd+dd+dd+dd+TSm[1][0]+dd+dd+ls+  "\n"
-+dd+dd+dd+dd+dd+dd+dd+ls+"\n"
-"Observations "+dd+str(TNm[0][0])+dd+str(TNm[0][1])+dd+str(TNm[0][2])+dd
-+str(TNm[0][3])+dd+str(TNm[0][4])+dd+dd+ls+"\n"
-+R2+dd+str(TRm[0][0])+dd+ str(TRm[0][1])+dd+str(TRm[0][2])+dd
-+            str(TRm[0][3])+dd+str(TRm[0][4])+dd+dd+ls+hr+hr+"\n"
++tsc+"Panel C: Middle Income"+ebr+dd+dd+dd+dd+dd+ls+"\n"
+"Fertility "+dd+TBm[0][0]+dd+TBm[0][1]+dd+TBm[0][2]+dd+A1m+dd+A2m+ls+"\n"
++            dd+TSm[0][0]+dd+TSm[0][1]+dd+TSm[0][2]+dd+dd+ls+  "      \n"
++dd+dd+dd+dd+dd+ls+"\n"
+"Observations "+dd+str(TNm[0][0])+dd+str(TNm[0][1])+dd+str(TNm[0][2])+dd+dd+ls+"\n"
++R2+dd+str(TRm[0][0])+dd+ str(TRm[0][1])+dd+str(TRm[0][2])+dd+dd+ls+hr+hr+"\n"
 +mc1+twid[1]+tcm[1]+mc3+
 "Base controls consist of child gender, mother's age and age squared "
 "mother's age at first birth, child age, country, and year of birth "
@@ -541,6 +765,8 @@ if ftype=='tex':
     "\\bottomrule \\normalsize\\end{tabular}\\end{table}\\end{landscape} \n")
 
 OLSf.close()
+
+
 
 
 #==============================================================================
@@ -955,8 +1181,8 @@ if ftype=='tex':
     "\\label{TWINtab:gend}\\begin{center}\\begin{tabular}{lcccccccc}\n"
     "\\toprule \\toprule \n"
     "&\\multicolumn{4}{c}{Females}""&\\multicolumn{4}{c}{Males}\\\\ \n" 
-    "\\cmidrule(r){2-5} \\cmidrule(r){6-9} \n" 
-    "&Base&Socioec&Health&Obs.&Base&Socioec&Health&Obs. \\\\ \\midrule \n"+lineadd)
+    "\\cmidrule(r){2-5} \\cmidrule(r){6-9} \n"
+    "&Base&+Health&+H\\&S&Obs.&Base&+Health&+H\\&S&Obs. \\\\ \\midrule \n"+lineadd)
 elif ftype=='csv':
     gendo.write(";Females;;;Males;; \n"  
     ";Base;Socioec;Health;Obs.;Base;Socioec;Health;Obs. \n")
@@ -1006,7 +1232,7 @@ if ftype=='tex':
     "\\toprule \\toprule \n"
     "&\\multicolumn{4}{c}{Females}""&\\multicolumn{4}{c}{Males}\\\\ \n" 
     "\\cmidrule(r){2-5} \\cmidrule(r){6-9} \n" 
-    "&Base&Socioec&Health&Obs.&Base&Socioec&Health&Obs. \\\\ \\midrule \n"+lineadd)
+    "&Base&+Health&+H\\&S&Obs.&Base&+Health&+H\\&S&Obs. \\\\ \\midrule \n"+lineadd)
 elif ftype=='csv':
     gendo.write(";Females;;;Males;; \n"  
     ";Base;Socioec;Health;Obs.;Base;Socioec;Health;Obs. \n")
@@ -1051,7 +1277,7 @@ gendo.write(
 "Female or male refers to the gender of the index child of the regression. \n"
 "All regressions include full controls including socioeconomic and maternal "
 "health variables.  The full list of controls are available in the \n"
-"notes to table \\ref{TWINtab:NHISAll}. Standard errors are clustered by mother."
+    "notes to table \\ref{TWINtab:NHISIV}. Standard errors are clustered by mother."
 +foot+"\n")
 if ftype=='tex':
     gendo.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
@@ -1397,16 +1623,17 @@ sampo.close()
 #== (16) Gamma table
 #==============================================================================
 gammi = open(Results+"../gamma/"+gamT, 'r')
+gammn = open(Results+"../gamma/"+gamN, 'r')
 gammo = open(Tables+'gamma.'+end, 'w')
 
 if ftype=='tex':
     gammo.write("\\begin{table}[!htbp] \\begin{center} \n"
-    "\\caption{Consistent Estimates of $\\gamma$ Using a Maternal Health Shock} \n "
+    "\\caption{Estimates of $\\gamma$ Using Maternal Health Shocks}\n "
     "\\label{TWINtab:gamma} \n"
     "\\begin{tabular}{lcccc} \\toprule \\toprule \n"
     "&$\\frac{\\partial Educ}{\\partial Health}$ "
     "&$\\frac{\\partial Health}{\\partial Twin}$ "
-    "&$\\gamma=-\\frac{\\partial Educ}{\\partial Twin}$" 
+    "&$\\gamma=\\frac{\\partial Educ}{\\partial Twin}$" 
     "&$\\gamma$ (bootstrap) \\\\ \\midrule \n")
 
 
@@ -1417,12 +1644,26 @@ for i,line in enumerate(gammi):
     if i==6: SeB  = line.split()[0]
     if i==10: obs = line.replace('\t','&')
     if i==11: rsq = line.replace('\t','&')
+for i,line in enumerate(gammn):
+    if i==3: EstAN= line.split()[1]
+    if i==4: SeAN = line.split()[0]
+    if i==5: EstBN= line.split()[1]
+    if i==6: SeBN = line.split()[0]
+    if i==10: obsN= line.replace('\t','&')
+    if i==11: rsqN= line.replace('\t','&')
 
-gammaEst = str(float(EstA[0:6])*abs(float(EstB[0:6])))[0:6]
 
-gammo.write('Estimate &'+EstA+'&'+EstB+'&'+gammaEst+'&'+gammaEst+'\\\\ \n'
+gammaEst  = str(float(EstA[0:6])*abs(float(EstB[0:6])))[0:6]
+gammaEstN = str(float(EstAN[0:6])*(float(EstBN[0:6])))[0:6]
+
+gammo.write('\\textbf{Panel A: United States} &&&& \\\\ \n'
+            'Estimate &-'+EstA+'&'+EstB+'&'+gammaEst+'&'+gammaEst+'\\\\ \n'
             '&'+SeA+'&'+SeA+'&&(0.0027)\\\\  \n'
-            '&&&&\\\\ \n'+obs+'&&\\\\ \n'+rsq+'&&\\\\ \\midrule \n')
+            '&&&&\\\\ \n'+obs+'&&\\\\ \n'+rsq+'&&\\\\ \\midrule')
+gammo.write('\\textbf{Panel B: Nigeria} &&&& \\\\ \n'
+            'Estimate &'+EstAN+'&'+EstBN+'&'+gammaEstN+'&'+gammaEstN+'\\\\ \n'
+            '&'+SeAN+'&'+SeAN+'&&(0.0022)\\\\  \n'
+            '&&&&\\\\ \n'+obsN+'&&\\\\ \n'+rsqN+'&&\\\\ \n')
 
 gammo.write('\n'+mr+mc1+twid[13]+tcm[13]+mc3+
 "Regression results for (\\ref{TWINeqn:BV1}) and (\\ref{TWINeqn:BV2}) "
@@ -1443,112 +1684,190 @@ gammo.close()
 #==============================================================================
 #== (17) NHIS Results
 #==============================================================================
-NHISo = open(Tables+'AllNHIS.'+end, 'w')
-
+NHISo = open(Tables+'NHISols.'+end, 'w')
+NHISf = open(Tables+'NHIS_fs.'+end, 'w')
+NHISi = open(Tables+'NHIS_iv.'+end, 'w')
 
 if ftype=='tex':
     NHISo.write('\\begin{landscape}\\begin{table}[htpb!] \n'
-                '\\caption{NHIS Estimates: Education and Health}'
-                '\\label{TWINtab:NHISAll}\n'
-                '\\begin{center}\\begin{tabular}{lccccccccc}\n'
+                '\\caption{OLS Estimates of the Q--Q Trade-off (USA)}'
+                '\\label{TWINtab:NHISOLS}\n'
+                '\\begin{center}\\begin{tabular}{lccc}\n'
                 '\\toprule \\toprule\n' 
-                '&\\multicolumn{3}{c}{2+}&\\multicolumn{3}{c}{3+}&'
-                '\\multicolumn{3}{c}{4+}\\\\ \\cmidrule(r){2-4}'
-                '\\cmidrule(r){5-7} \\cmidrule(r){8-10}\n' 
-                '&Base&+H&+S\\&H&Base&+H&+S\\&H&Base&+H&+S\\&H\\\\ \\midrule\n' 
-                +'\\begin{footnotesize}\\end{footnotesize}&'*9+
-                '\\begin{footnotesize}\\end{footnotesize}\\\\' 
-                '\\multicolumn{10}{l}{\\textbf{OLS}}\\\\')
+                '&Base & + & + Health \\\\'
+                '&Controls& Health &\&Socioec \\\\ \\midrule \n'
+                +tsc+'Panel A: Education \\ \\ \\ '+ebr+dd+dd+dd+ls+'\n')
 
-wT = open(Results+"NHIS/OLSFertEducationZscore.xls", 'r')
+wT = open(Results+"NHIS/OLSAllEducationZscore.xls", 'r')
 for i, line in enumerate(wT):
-    if i==2 or i==3:   
-        line = line.replace('fert','School Z-Score')
+    if i==8 or i==9:   
+        #if i==8:
+            #print 
+            #A1 = float(re.search("-\d*\.\d*", line.split('\t')[1]).group(0))
+            #A2 = float(re.search("-\d*\.\d*", line.split('\t')[2]).group(0))
+            #A3 = float(re.search("-\d*\.\d*", line.split('\t')[3]).group(0))
+            #AR1 = str(round(A2/(A1-A2), 3))
+            #AR2 = str(round(A3/(A1-A3), 3))
+        line = line.replace('fert','Fertility')
         line = line.replace('\t', '&')
         NHISo.write(line+'\\\\ \n')
-wT = open(Results+"NHIS/OLSFertexcellentHealth.xls", 'r')
-for i, line in enumerate(wT):
-    if i==2 or i==3:   
-        line = line.replace('fert','Excellent Health')
+    if i==34 or i==35:   
+        line = line.replace('r2','R$^2$')
+        line = line.replace('N','Observations')
         line = line.replace('\t', '&')
         NHISo.write(line+'\\\\ \n')
 
-if ftype=='tex':
-    NHISo.write('\\begin{footnotesize}\\end{footnotesize}&'*9+
-                '\\begin{footnotesize}\\end{footnotesize}\\\\ \n' 
-                '\\multicolumn{10}{l}{\\textbf{IV}}\\\\ \n') 
-wT = open(Results+"NHIS/IVFertEducationZscore.xls", 'r')
+NHISo.write(tsc+'Panel B: Health'+ebr+dd+dd+dd+ls+'\n')
+wT = open(Results+"NHIS/OLSAllexcellentHealth.xls", 'r')
 for i, line in enumerate(wT):
-    if i==2 or i==3:   
-        line = line.replace('fert','School Z-Score')
+    if i==8 or i==9:   
+        line = line.replace('fert','Fertility')
         line = line.replace('\t', '&')
         NHISo.write(line+'\\\\ \n')
-wT = open(Results+"NHIS/IVFertexcellentHealth.xls", 'r')
-for i, line in enumerate(wT):
-    if i==2 or i==3:   
-        line = line.replace('fert','Excellent Heatlth')
+    if i==34 or i==35:   
+        line = line.replace('r2','R$^2$')
+        line = line.replace('N','Observations')
         line = line.replace('\t', '&')
         NHISo.write(line+'\\\\ \n')
-    if i==35:
-        line    = line.replace('N','Observations')
-        ObsNHIS = line.replace('\t','&')
-
-if ftype=='tex':
-    NHISo.write('\\begin{footnotesize}\\end{footnotesize}&'*9+
-                '\\begin{footnotesize}\\end{footnotesize}\\\\ \n' 
-                '\\multicolumn{10}{l}{\\textbf{First Stage}}\\\\ \n') 
-
-for var in ['EducationZscore','excellentHealth']:
-    wT = open(Results+"NHIS/IVFert"+var+"1.xls", 'r')
-    if var=='EducationZscore': vname = 'School Z-Score'
-    if var=='excellentHealth': vname = 'Excellent Health'
-
-    for i, line in enumerate(wT):
-        if i==2:   
-            line = line.replace('twin_two_fam',vname)
-            line1 = line.replace('\t', '&')
-            line1 = line1[:-7]
-        if i==34:
-            line = line.replace('twin_three_fam',' ')
-            line2 = line.replace('\t', '&')
-            line2 = line2[4:-4]
-        if i==36:
-            line = line.replace('twin_four_fam',' ')
-            line3 = line.replace('\t', '&')
-            line3 = line3[7:]
-            NHISo.write(line1+line2+line3+'\\\\ \n')
-        if i==3:   
-            line4 = line.replace('\t', '&')
-            line4 = line4[:-7]
-        if i==35:
-            line5 = line.replace('\t', '&')
-            line5 = line5[4:-4]
-        if i==37:
-            line6 = line.replace('\t', '&')
-            line6 = line6[7:]
-            NHISo.write(line4+'&'+line5+'&'+line6+'\\\\ \n')
-
-NHISo.write('&&&&&&&&&\\\\\n&&&&&&&&&\\\\\n'+ObsNHIS+'\\\\ \n'
-            'Joint F-test Educ (IV)'
-            '&&164.5&64.7&&101.3&39.6&&38.0&7.7\\\\\n'
-            'Joint F-test Health (IV)'
-            '&&34469.6&163.9&&15335.6&28.4&&5276.4&17.1\\\\')
-
-NHISo.write('\n'+mr+mc1+twid[14]+tcm[14]+mc3+
+    
+NHISo.write('\n'+mr+mc1+twid[2]+tcm[2]+mc3+
 "Each cell presents the coefficient of interest from a regression "
 "using NHIS survey data (2004-2014).  Base controls include child "
 "age FE (in months), mother's age, and mother's age at first birth" 
-" plus race dummies for child and mother.  In each case the sample"
-" is made up of all children aged between 6-18 years from families"
-" in the NHIS who fulfill 2+ to 4+ requirements.  Descriptive stat"
-"istics for each variable can be found in table                   "
-"\\ref{TWINtab:NHISstats}. Standard errors are clustered by mother.")
+" plus race dummies for child and mother. Educational measures are"
+" available for all children aged between 6-18 years, and health  "
+"measures are available for all children. Descriptive statistics  "
+"for each variable can be found in table \\ref{TWINtab:NHISstats}."
+" Standard errors are clustered by mother.")
 
 if ftype=='tex':
     NHISo.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
                 "\\end{tabular}\\end{center}\\end{table}\\end{landscape}")
-
 NHISo.close()
+
+
+NHISi.write('\\begin{landscape}\\begin{table}[htpb!] \n'
+            '\\caption{IV Estimates of the Q--Q Trade-off (USA)}'
+            '\\label{TWINtab:NHISIV}\n'
+            '\\begin{center}\\begin{tabular}{lccccccccc}\n'
+            '\\toprule \\toprule\n' 
+            '&\\multicolumn{3}{c}{2+}&\\multicolumn{3}{c}{3+}&'
+            '\\multicolumn{3}{c}{4+}\\\\ \\cmidrule(r){2-4}'
+            '\\cmidrule(r){5-7} \\cmidrule(r){8-10}\n' 
+            '&Base&+H&+S\\&H&Base&+H&+S\\&H&Base&+H&+S\\&H\\\\ \\midrule\n' 
+            +'\\begin{footnotesize}\\end{footnotesize}&'*9+
+            '\\begin{footnotesize}\\end{footnotesize}\\\\' 
+            '\\multicolumn{10}{l}{\\textsc{Panel A: Education Z-Score}}\\\\')
+wT = open(Results+"NHIS/IVFertEducationZscore.xls", 'r')
+for i, line in enumerate(wT):
+    if i==2 or i==3:
+        line = line.replace('fert','Fertility')
+        line = line.replace('\t', '&')
+        NHISi.write(line+'\\\\ \n')
+    if i==35:
+        line = line.replace('N','Observations')
+        line = line.replace('\t', '&')
+        NHISi.write(line+'\\\\ \n')
+
+NHISi.write(tsc+'Panel B: Health'+ebr+dd+dd+dd+dd+dd+dd+dd+dd+dd+ls+'\n')
+wT = open(Results+"NHIS/IVFertexcellentHealth.xls", 'r')
+for i, line in enumerate(wT):
+    if i==2 or i==3:
+        line = line.replace('fert','Fertility')
+        line = line.replace('\t', '&')
+        NHISi.write(line+'\\\\ \n')
+    if i==35:
+        line = line.replace('N','Observations')
+        line = line.replace('\t', '&')
+        NHISi.write(line+'\\\\ \n')
+
+NHISi.write('\n'+mr+mc1+twid[14]+tcm[14]+mc3+
+"Each cell presents the coefficient of interest from a regression "
+"using NHIS survey data (2004-2014).  Base controls include child "
+"age FE (in months), mother's age, and mother's age at first birth"
+" plus race dummies for child and mother. Educational measures are"
+" available for all children aged between 6-18 years, and health  "
+"measures are available for all children. Descriptive statistics  "
+"for each variable can be found in table \\ref{TWINtab:NHISstats}."
+" Standard errors are clustered by mother.")
+if ftype=='tex':
+    NHISi.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
+                "\\end{tabular}\\end{center}\\end{table}\\end{landscape}")
+
+NHISi.close()
+
+
+NHISf.write('\\begin{landscape}\\begin{table}[htpb!] \n'
+            '\\caption{First Stage Estimates Twins and Fertility (USA)}'
+            '\\label{TWINtab:NHISFS}\n'
+            '\\begin{center}\\begin{tabular}{lccccccccc}\n'
+            '\\toprule \\toprule\n' 
+            '&\\multicolumn{3}{c}{2+}&\\multicolumn{3}{c}{3+}&'
+            '\\multicolumn{3}{c}{4+}\\\\ \\cmidrule(r){2-4}'
+            '\\cmidrule(r){5-7} \\cmidrule(r){8-10}\n' 
+            '&Base&+H&+S\\&H&Base&+H&+S\\&H&Base&+H&+S\\&H\\\\ \\midrule\n' 
+            +'\\begin{footnotesize}\\end{footnotesize}&'*9+
+            '\\begin{footnotesize}\\end{footnotesize}\\\\' 
+            '\\multicolumn{10}{l}{\\textsc{Panel A: Education Sample}}\\\\')
+for ttab in ['EducationZscore','excellentHealth']:
+    wT = open(Results+'NHIS/IVFert'+ttab+'1.xls', 'r')
+    for i, line in enumerate(wT):
+        if i==2:
+            line = line.replace('twin_two_fam','Twin')
+            line = line.replace('\t\t\t\t\t\t','\t')
+            line = line.replace('\t', '&')
+            line = line.replace('\n', '')
+            lEst1= line
+        if i==3:
+            line = line.replace('\t\t\t\t\t\t','\t')
+            line = line.replace('\t', '&')
+            line = line.replace('\n', '')
+            lSEs1= line
+        if i==34:   
+            line = line.replace('twin_three_fam\t\t\t\t','')
+            line = line.replace('\n', '')
+            line = line.replace('\t\t\t','\t')
+            line = line.replace('\t', '&')
+            lEst2= line
+        if i==35:
+            line = line.replace('\t\t\t\t','')
+            line = line.replace('\t\t\t','\t')
+            line = line.replace('\n', '')
+            line = line.replace('\t', '&')
+            lSEs2= line
+        if i==36:   
+            line = line.replace('twin_four_fam\t\t\t\t\t\t\t','')
+            line = line.replace('\t', '&')
+            lEst3= line
+        if i==37:
+            line = line.replace('\t\t\t\t\t\t\t','')
+            line = line.replace('\t', '&')
+            lSEs3= line
+        if i==39:
+            line = line.replace('N','Observations')
+            lObs = line.replace('\t', '&')
+    NHISf.write(lEst1+lEst2+lEst3 +'\\\\ \n')
+    NHISf.write(lSEs1+lSEs2+lSEs3 + '\\\\ \n &&&&&&&&& \\\\ \n')
+    NHISf.write(lObs +'\\\\ \n')
+    if ttab=='EducationZscore':
+        NHISf.write('&&&&&&&&&\\\\ \\multicolumn{10}{l}{'
+                    '\\textsc{Panel B: Health Sample}}\\\\')
+NHISf.write('\n'+mr+mc1+twid[14]+tcm[14]+mc3+
+"Each cell presents the coefficient of interest from the first    "
+"stage regression of twins on fertility using NHIS survey data    "
+"(2004-2014).  Base controls include child age FE (in months),    "
+"mother's age, and mother's age at first birth plus race dummies  "
+"for child and mother. Educational measures are available for all "
+"children aged between 6-18 years, and health measures are        "
+"available for all children. Descriptive statistics for each      "
+"variable can be found in table \\ref{TWINtab:NHISstats}. Standard"
+" errors are clustered by mother.")
+if ftype=='tex':
+    NHISf.write("\\end{footnotesize}} \\\\ \\bottomrule \n"
+                "\\end{tabular}\\end{center}\\end{table}\\end{landscape}")
+
+NHISf.close()
+
 
 
 #==============================================================================

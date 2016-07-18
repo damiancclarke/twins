@@ -83,7 +83,6 @@ local graphsMB      0
 local graphsSW      0
 local twin          0
 local RF            0
-local IV            0
 local IVnl          0
 local IVfee         0
 local IVtwin        0
@@ -117,14 +116,14 @@ global twinpredict $twinpred height bmi i.child_yob i._cou
 global twinout motherage motheragesq agefirstbirth educf educfyrs_sq height bmi
 global base malec i._cou i.year_birth i.age i.contracep_intent 
 global age motherage motheragesq motheragecub agefirstbirth 
-global S educf educfyrs_sq
-global H height bmi 
+global S i.educf 
+global H height bmi preClustD preClustN preClustZ
 global HP height bmi prenateCluster
 global bal1 fert idealnumkids agefirstbirth educf educp height underweight
 global balance $bal1 prenate* motherage childmortality infantmortal 
 
 * ECONOMETRIC SPECIFICATIONS
-local se   vce(cluster id)
+local se   cluster(id)
 local wt   [pw=sweight]
 local cond if age<19
 
@@ -224,6 +223,10 @@ if `samp5'==1 {
 *	keep if sampler>0.9
 	use "$Data/DHS_twins10samp"
 }
+bys _cou v001: egen preClustD = mean(prenate_doc)
+bys _cou v001: egen preClustN = mean(prenate_nurse)
+bys _cou v001: egen preClustZ = mean(prenate_none)
+
 
 *******************************************************************************
 *** (1b) Check match rates
@@ -1008,25 +1011,26 @@ tokenize `names'
 foreach inc of local conds {
     preserve
     keep `cond'&`inc'
+    egen keeper = rowmiss(fert `base' $age educf $H)
+    keep if keeper == 0
 
-    qui reg `y' fert `base' $age $S $H, `se'
-    reg `y' fert `base' $age               `wt' if e(sample)
-    outreg2 fert $age       using `out', excel append
-        
-    reg `y' fert `base' $age $H            `wt' if e(sample)
-    outreg2 fert $age $H    using `out', excel append
+    reg `y' fert `base' $age               `wt' 
+    outreg2 using `out', excel append keep(fert $age)
+
+    reg `y' fert `base' $age $H            `wt' 
+    outreg2 using `out', excel append keep(fert $age $H)
     local maxR = e(r2)*2
     psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
     local OsterH_`1' = string(`r(output)', "%5.3f")
     
     reg `y' fert `base' $age $S $H         `wt' 
-    outreg2 fert $age $S $H using `out', excel append
+    outreg2 using `out', excel append keep(fert $age $S $H)
     local maxR = e(r2)*2
     psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
     local OsterSH_`1' = string(`r(output)', "%5.3f")
 
     reg `y' fert `base' $age $S $H i.bord `wt'
-    outreg2 fert $age $S $H using `out', excel append
+    outreg2 using `out', excel append keep(fert $age $S $H)
     
     restore
     macro shift
@@ -1036,7 +1040,7 @@ file write Oster "`OsterH_all',`OsterSH_all'" _n
 file write Oster "`OsterH_low',`OsterSH_low'" _n
 file write Oster "`OsterH_mid',`OsterSH_mid'" _n
 file close Oster
-*/
+
 
 ********************************************************************************
 **** (4b) OLS n+ Regressions (plus Altonji and Oster bounds)
@@ -1050,12 +1054,13 @@ local y  school_zscore
 foreach n in `gplus' {
     preserve
     keep `cond'&`n'_plus==1			
+    egen keeper = rowmiss(fert `base' $age educf $H)
+    keep if keeper == 0
 
-    qui reg `y' fert `base' $age $S $HP, `se'
-
-    reg `y' fert `base' $age       `wt' if e(sample)
+    reg `y' fert `base' $age       `wt' 
     outreg2 fert $age        using `out', excel append
-    reg `y' fert `base' $age $H    `wt' if e(sample)
+
+    reg `y' fert `base' $age $H    `wt' 
     outreg2 fert $age $H     using `out', excel append
     local maxR = e(r2)*2
     psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
@@ -1065,9 +1070,9 @@ foreach n in `gplus' {
     outreg2 fert $age $S $H  using `out', excel append
     local maxR = e(r2)*2
     psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
-    local OsterSH_`1' = string(`r(output)', "%5.3f")
+    local OsterSH_`n' = string(`r(output)', "%5.3f")
 
-    reg `y' fert `base' $age $S $HP `wt'
+    reg `y' fert `base' $age $S $H i.bord `wt'
     outreg2 fert $age $S $HP using `out', excel append
     restore
 }
@@ -1076,9 +1081,8 @@ file write Oster "`OsterH_two'  ,`OsterSH_two'  " _n
 file write Oster "`OsterH_three',`OsterSH_three'" _n
 file write Oster "`OsterH_four' ,`OsterSH_four' " _n
 file close Oster
+*/
 
-
-exit
 ********************************************************************************
 **** (5) Reduced form using twins at birth order N
 ********************************************************************************
@@ -1120,55 +1124,49 @@ if `RF'==1 {
 ********************************************************************************
 **** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
 ********************************************************************************
-if `IV'==1 {
-    tokenize `fnames'
-    foreach condition of local conditions {
-        local n1=1
-	local n2=2
-	local n3=3
-	local n4=4
-	local estimates
-	local fstage
+local c1 `base'
+local c2 `base' $age
+local c3 `base' $age $H
+local c4 `base' $age $S $H
+local y  school_zscore
+local x  fert
 
-	local OUT "$Tables/IV/`1'"
-        local ll=3
+    
+tokenize `fnames'
+foreach condition of local conditions {
 
-        foreach n in `gplus' {
-            preserve
-            keep `cond'&`condition'&`n'_plus==1
-            
-            foreach y in $outcomes {
-                *`y'`ll'p
-                eststo: ivreg2 `y' `base' $age $S $HP (fert=twin_`n'_fam) `wt',      /*
-                */ `se' savefirst savefp(f`n4') partial(`base')
-                eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt',       /*
-                */ `se' savefirst savefp(f`n3') partial(`base')
-                eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'           /*
-		*/ if e(sample), `se' savefirst savefp(f`n2') partial(`base')
-                eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample),     /*
-		*/ `se' savefirst savefp(f`n1') partial(`base')
+    local ests1
+    local ests2
+    local ecnt 1
+    local OUT "$Tables/IV/`1'"
 
-                local estimates `estimates' est`n4' est`n3' est`n2' est`n1' 
-                local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert f`n4'fert
-                local n1=`n1'+4
-                local n2=`n2'+4
-                local n3=`n3'+4
-                local n4=`n4'+4				
-            }
-            restore
-            local ++ll
+    foreach n in `gplus' {
+        preserve
+        keep `cond'&`condition'&`n'_plus==1
+        egen keeper = rowmiss(`y' `base' $age $H educf fert)
+        keep if keeper == 0
+        
+        
+        local p partial(`base') savefirst 
+        local z twin_`n'_fam
+
+        foreach e of numlist 1(1)4{
+            eststo: ivreg2 `y' `c`e'' (`x'=`z') `wt', `se' `p' savefp(fst`ecnt')
+            local ests2 `ests2' est`ecnt'
+            local ests1 `ests1' fst`ecnt'fert
+            local ++ecnt
         }
-        
-        estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
-        */ keep(fert $age $S $H $HP)
-        estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-        */ keep(twin_* $age $S $H $HP)
-        
-        estimates clear
-        macro shift
+        restore
     }
-}
 
+    local expv $age $H
+    estout `ests2' using "`OUT'.txt", replace `estopt'       
+    estout `ests1' using "`OUT'_first.txt", replace `estopt' 
+        
+    estimates clear
+    macro shift
+}
+exit
 ********************************************************************************
 **** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
 ********************************************************************************
