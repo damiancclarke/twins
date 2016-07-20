@@ -65,7 +65,7 @@ global Tables  "~/investigacion/Activa/Twins/Results/Outreg"
 global TAB     "~/investigacion/Activa/Twins/Results/Outreg"
 
 foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
-	cap mkdir "$Tables/`dirname'"
+	cap mkdir "$TAB/`dirname'"
 }
 
 
@@ -85,12 +85,9 @@ local twin          0
 local RF            0
 local IVnl          0
 local IVfee         0
-local IVtwin        0
-local desire        0
 local compl_fert    0
 local twinoccur_ols 0
 local twinoccur_iv  0
-local conley        0
 local thresholdtest 0
 local balance       0
 local country       0
@@ -98,9 +95,7 @@ local adj_fert      0
   local ADJIV       0
   local ADJtwin     0
   local ADJdesire   0
-local gender        0
 local overID        0
-local ConGamma      0
 local MMR           0
 local select        0
 local pool          0
@@ -116,7 +111,7 @@ global twinpredict $twinpred height bmi i.child_yob i._cou
 global twinout motherage motheragesq agefirstbirth educf educfyrs_sq height bmi
 global base malec i._cou i.year_birth i.age i.contracep_intent 
 global age motherage motheragesq motheragecub agefirstbirth 
-global S i.educf 
+global S _educf* _wealth*
 global H height bmi preClustD preClustN preClustZ
 global HP height bmi prenateCluster
 global bal1 fert idealnumkids agefirstbirth educf educp height underweight
@@ -171,7 +166,9 @@ local conditions
   child_yob<=1984
   child_yob>1984
 ;
-
+local conditions
+  ALL==1
+;
 local fnames
   All
   Girls
@@ -180,6 +177,9 @@ local fnames
   MidIncome
   BornPre1985
   BornPost1984
+;
+local fnames
+  All
 ;
 #delimit cr
 
@@ -226,7 +226,9 @@ if `samp5'==1 {
 bys _cou v001: egen preClustD = mean(prenate_doc)
 bys _cou v001: egen preClustN = mean(prenate_nurse)
 bys _cou v001: egen preClustZ = mean(prenate_none)
-
+replace wealth = 6 if wealth == .
+tab wealth, gen(_wealth)
+tab educf , gen(_educf)
 
 *******************************************************************************
 *** (1b) Check match rates
@@ -1081,7 +1083,7 @@ file write Oster "`OsterH_two'  ,`OsterSH_two'  " _n
 file write Oster "`OsterH_three',`OsterSH_three'" _n
 file write Oster "`OsterH_four' ,`OsterSH_four' " _n
 file close Oster
-*/
+
 
 ********************************************************************************
 **** (5) Reduced form using twins at birth order N
@@ -1127,7 +1129,7 @@ if `RF'==1 {
 local c1 `base'
 local c2 `base' $age
 local c3 `base' $age $H
-local c4 `base' $age $S $H
+local c4 `base' $age $S $H i.bord
 local y  school_zscore
 local x  fert
 
@@ -1154,19 +1156,27 @@ foreach condition of local conditions {
             eststo: ivreg2 `y' `c`e'' (`x'=`z') `wt', `se' `p' savefp(fst`ecnt')
             local ests2 `ests2' est`ecnt'
             local ests1 `ests1' fst`ecnt'fert
+            mat first=e(first)
+            estadd scalar KPF=first[8,1]: fst`ecnt'fert
+            estadd scalar KPp=first[7,1]: fst`ecnt'fert
             local ++ecnt
         }
         restore
     }
 
     local expv $age $H
-    estout `ests2' using "`OUT'.txt", replace `estopt'       
-    estout `ests1' using "`OUT'_first.txt", replace `estopt' 
-        
+    estout `ests2' using "`OUT'.txt", replace `estopt'
+    #delimit ;
+    estout `ests1' using "`OUT'_first.txt", replace
+    cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par))
+    stats (N KPF KPp, fmt(%9.0g %9.2f %9.3f))
+    starlevel ("*" 0.10 "**" 0.05 "***" 0.01);
+    #delimit cr
     estimates clear
     macro shift
 }
 exit
+*/
 ********************************************************************************
 **** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
 ********************************************************************************
@@ -1319,103 +1329,6 @@ if `IVfee'==1 {
 
 
 ********************************************************************************
-**** (7) IV including twins and pre-twins
-********************************************************************************
-if `IVtwin'==1 {
-	local n1=1
-	local n2=2
-	local n3=3
-	local estimates
-	local firststage
-
-	foreach n in `gplus' {
-		preserve
-		keep `cond'&`n'_plus_twins==1
-
-		foreach y of varlist $outcomes {
-			eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt', /*
-			*/ `se' savefirst savefp(f`n3')
-			eststo: ivreg2 `y' `base' $age $S (fert=twin_`n'_fam) `wt' if e(sample), /*
-			*/ `se' savefirst savefp(f`n2')
-			eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt' if e(sample), /*
-			*/ `se' savefirst savefp(f`n1')
-
-			local estimates `estimates' est`n3' est`n2' est`n1' 
-			local firststage `firststage' f`n1'fert f`n2'fert f`n3'fert
-			local n1=`n1'+3
-			local n2=`n2'+3
-			local n3=`n3'+3
-		}
-		restore
-	}
-
-	estout `estimates' using "$Tables/IV/`IVt'.xls", replace ///
-	keep(fert malec $age $S $H) `estopt' `varlab'
-
-	estout `firststage' using "$Tables/IV/`IVt1'.xls", replace ///
-	keep(twin_* malec $age $S $H) `estopt' `varlab' 
-	
-	estimates clear
-}
-
-
-********************************************************************************
-**** (8) IV with twin threshold
-********************************************************************************
-if `desire'==1 {
-	foreach inc in all /*low mid*/ F M {
-		if "`inc'"=="all" local cex
-		else if "`inc'"=="low"|"`inc'"=="mid" local cex &income=="`inc'"
-		else if "`inc'"=="F"|"`inc'"=="M" local cex &gender=="`inc'"
-		local estimates
-		local firststage
-		local t1=1
-
-		foreach desvar of varlist regionDesiredLeaveOut educDesiredLeaveOut {
-			local t2=2
-			foreach n in `gplus' {
-				dis "In this loop we're looking at the `n' plus group"
-				dis "Twins in families which wanted `t2' are thus the true shock."
-
-				preserve
-				keep `cond'&`n'_plus==1 `cex'
-
-				gen threshold=(twin_`n'_fam==1 & idealnumkids==`t2')
-				gen postdesired=bord>`desvar'
-				gen fertXpostdesired=fert*postdesired
-				cap gen twin`n'Xthreshold = twin_`n'_fam*threshold
-*				sum `desvar' postdesired threshold fertXpostdesired
-
-			
-				local endog fert fertXpostdesired
-				local insts twin_`n'_fam twin`n'Xthreshold 
-
-				foreach y of varlist $outcomes {
-					eststo: ivreg2 `y' `base' $age $S $H /*postdesired*/ (`endog' = `insts') `wt', /*
-					*/ `se' savefirst savefp(f`t1')
-
-					local estimates `estimates' est`t1'
-					local firststage `firststage' f`t1'fert
-					local ++t1
-				}
-				local ++t2
-				drop threshold postdesired fertXpostdesired
-				restore
-			}
-		}
-		
-		estout `estimates' using "$Tables/IV/`IVdes'_`inc'1.xls", replace ///
-		 keep(fert fertXpostdesired $age $S $H) `estopt' `varlab'
-
-		estout `firststage' using "$Tables/IV/`IVdes1'_`inc'1.xls", replace ///
-		 keep(twin* $age $S $H) `estopt' `varlab'
-	
-		estimates clear
-	}
-}
-
-*NOTE: for coefficients estimated separately by desire, roll back and see here.
-********************************************************************************
 **** (9) New results 04/01/2013.  This first section is a quick look at whether
 ***  truncated and non truncated fertility look similar in terms of 1st stage.
 ***  Also, the IMR test (pre-twins) is included as `twinoccur'
@@ -1449,44 +1362,32 @@ if `compl_fert'==1 {
 	estimates clear
 }
 
-if `twinoccur_ols'==1 {
-  preserve
-	use "$Data/DHS_twins_mortality", clear
+preserve
+use "$Data/DHS_twins_mortality", clear
 	
-	gen tta=age if twind==1
-	bys id: egen twinage=min(tta)
-	gen twinagedif=twinage-age
+gen tta=age if twind==1
+bys id: egen twinage=min(tta)
+gen twinagedif=twinage-age
 	
-	gen treated=twinfamily>=1&twinagedif>1&twinagedif!=.
-	replace treated=. if twinfamily>=1&twinagedif<1
-	tab treated
+gen treated=twinfamily>=1&twinagedif>1&twinagedif!=.
+replace treated=. if twinfamily>=1&twinagedif<1
+tab treated
 
-	local n1=1
-	local n2=2
-	local n3=3
-	local estimates
-
-	replace infantmortality=infantmortality*100
-	foreach n in `gplus' {
-		local c  `cond'&`n'_plus==1
-		local ce `cond'&`n'_plus==1&e(sample)
- 		eststo: reg infantmortality `base' $age $S $H treated `wt' `c', `se'
-		eststo: reg infantmortality `base' $age $S treated `wt' `ce', `se'
-		eststo: reg infantmortality `base' $age treated `wt' `ce', `se'
-
-		local estimates `estimates' est`n3' est`n2' est`n1' 
-		local n1=`n1'+3
-		local n2=`n2'+3
-		local n3=`n3'+3
-	}
-	
-		
-	estout `estimates' using "$Tables/New/PreTwinTest.xls", replace ///
-	keep(treated malec $age $S $H) `estopt'	
-	estimates clear
-
-	restore
+replace infantmortality=infantmortality*100
+foreach n in `gplus' {
+    local c  `cond'&`n'_plus==1
+    local ce `cond'&`n'_plus==1&e(sample)
+    eststo: reg infantmortality treated `base' $age $S $H `wt' `c', `se'
+    eststo: reg infantmortality treated `base' $age $S    `wt' `ce', `se'
+    eststo: reg infantmortality treated `base' $age       `wt' `ce', `se'
 }
+	
+local estimates est3 est2 est1 est6 est5 est4 est9 est8 est7		
+estout `estimates' using "$TAB/IMRTest.xls", replace ///
+    keep(treated malec $age $S $H) `estopt'	
+estimates clear
+restore
+exit
 
 if `twinoccur_iv'==1 {
 	preserve
@@ -1540,83 +1441,86 @@ if `twinoccur_iv'==1 {
 ***  this so that gamma can be a small effect, or as they say, we have "prior
 ***  information that implies that gamma is near 0 but perhaps not exactly 0".
 ********************************************************************************
-if `conley'==1 {
+
+mat cbounds1 = J(3,4,.)
+local ii = 1
+foreach n in two three four {
+    local c `cond'&`n'_plus==1
+    preserve
+    keep `c'
     gen j = _n
     merge 1:1 j using "../Results/gamma/gammasNigeria", gen(_mergeGamma)
 
-    mat cbounds1 = J(3,4,.)
-    local ii = 1
-    foreach n in two three four {
-        local c `cond'&`n'_plus==1
-        preserve
-        keep `c'
-
-        qui reg school_zscore `base' $age
-        predict Ey, resid
-        qui reg fert          `base' $age
-        predict Ex, resid
-        qui reg twin_`n'_fam  `base' $age
-        predict Ez, resid
-        local ESH
-        foreach var of varlist $S $H {
-            qui reg `var' `base' $age
-            predict E`var', resid
-            local ESH `ESH' E`var'
-        }
- 
-        *------    UCI     -----------------------------------------------------
-        plausexog uci school_zscore `base' $age $S $H (fert = twin_`n'_fam), /*
-        */ gmin(0) gmax(0.008) grid(2) level(.90) vce(robust)
-        local c1 = e(lb_fert)
-        local c2 = e(ub_fert)
-        dis "lower bound = `c1', upper bound=`c2'"
-    
-        *------    LTZ     -----------------------------------------------------
-        local items = 6
-        matrix omega_eta = J(`items',`items',0)
-        matrix omega_eta[1,1] = 0.0022^2
-        matrix mu_eta = J(`items',1,0)
-        matrix mu_eta[1,1] = 0.00404
-
-        plausexog ltz Ey `ESH' (Ex = Ez), distribution(special, gamma) seed(19)
-        local c3 = e(lb_Ex)
-        local c4 = e(ub_Ex)
-        dis "lower bound = `c3', upper bound=`c4'"
-        *local c3 = _b[Ex]-1.65*_se[Ex]
-        *local c4 = _b[Ex]+1.65*_se[Ex]
-        *dis "lower bound = `c3', upper bound=`c4'"
-
-        
-        *------  GRAPHING   -----------------------------------------------------
-        foreach num of numlist 0(1)10 {
-            matrix om`num'=J(`items', `items', 0)
-            matrix om`num'[1,1] = ((`num'/10)*0.06/sqrt(12))^2
-            matrix mu`num'=J(`items', 1, 0)
-            matrix mu`num'[1,1]= (`num'/10)*0.06/2
-            local d`num' = (`num'/10)*0.06
-        }
-
-        #delimit ;
-        plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta) level(0.95)
-        graph(Ex) graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10)
-        graphmu(mu0 mu1 mu2 mu3 mu4 mu5 mu6 mu7 mu8 mu9 mu10)
-        graphdelta(`d0' `d1' `d2' `d3' `d4' `d5' `d6' `d7' `d8' `d9' `d10');
-        graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace;
-        #delimit cr
-
-        restore
-        mat cbounds1[`ii',1]=`=`c1''
-        mat cbounds1[`ii',2]=`=`c2''
-        mat cbounds1[`ii',3]=`=`c3''
-        mat cbounds1[`ii',4]=`=`c4''
-        
-        local ++ii
+    qui reg school_zscore `base' $age
+    predict Ey, resid
+    qui reg fert          `base' $age
+    predict Ex, resid
+    qui reg twin_`n'_fam  `base' $age
+    predict Ez, resid
+    local ESH
+    local items = 2
+    drop _educf1
+    drop _wealth1
+    foreach var of varlist $S $H {
+        qui reg `var' `base' $age
+        predict E`var', resid
+        local ESH `ESH' E`var'
+        local ++items
     }
-    mat colnames cbounds1 = LowerBound UpperBound LowerBound UpperBound
-    mat rownames cbounds1 = TwoPlus ThreePlus FourPlus
-    mat2txt, matrix(cbounds1) saving("$Tables/Conley/ConleyGamma.txt") /*
-    */ format(%6.4f) replace
+ 
+    *------    UCI     -----------------------------------------------------
+    plausexog uci school_zscore `base' $age $S $H (fert = twin_`n'_fam), /*
+    */ gmin(0) gmax(0.008) grid(2) level(.90) vce(robust)
+    local c1 = e(lb_fert)
+    local c2 = e(ub_fert)
+    dis "lower bound = `c1', upper bound=`c2'"
+    
+    *------    LTZ     -----------------------------------------------------
+    matrix omega_eta = J(`items',`items',0)
+    sum gamma
+    local gmean = r(mean)
+    local gvar  = r(sd)^2
+    matrix omega_eta[1,1] = `gvar'
+    matrix mu_eta = J(`items',1,0)
+    matrix mu_eta[1,1] = `gmean'
+
+    plausexog ltz Ey `ESH' (Ex = Ez), distribution(special, gamma) seed(19)
+    local c3 = e(lb_Ex)
+    local c4 = e(ub_Ex)
+    dis "lower bound = `c3', upper bound=`c4'"
+
+    
+    *------  GRAPHING   -----------------------------------------------------
+    foreach num of numlist 0(1)10 {
+        matrix om`num'=J(`items', `items', 0)
+        matrix om`num'[1,1] = ((`num'/10)*0.1/sqrt(12))^2
+        matrix mu`num'=J(`items', 1, 0)
+        matrix mu`num'[1,1]= (`num'/10)*0.1/2
+        local d`num' = (`num'/10)*0.1
+    }
+
+    #delimit ;
+    plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta) level(0.95)
+    graph(Ex) graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10)
+    graphmu(mu0 mu1 mu2 mu3 mu4 mu5 mu6 mu7 mu8 mu9 mu10)
+    graphdelta(`d0' `d1' `d2' `d3' `d4' `d5' `d6' `d7' `d8' `d9' `d10');
+    graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace;
+    #delimit cr
+
+    restore
+    mat cbounds1[`ii',1]=`=`c1''
+    mat cbounds1[`ii',2]=`=`c2''
+    mat cbounds1[`ii',3]=`=`c3''
+    mat cbounds1[`ii',4]=`=`c4''
+    
+    local ++ii
 }
+mat colnames cbounds1 = LowerBound UpperBound LowerBound UpperBound
+mat rownames cbounds1 = TwoPlus ThreePlus FourPlus
+mat2txt, matrix(cbounds1) saving("$TAB/Conley/ConleyGamma.txt") /*
+*/ format(%6.4f) replace
+
+exit
 
 ********************************************************************************
 *** (11) Is twins crossing desired threshold related to family characteristics?
@@ -1816,47 +1720,47 @@ if `balance'==1 {
 **** (14) Run for each country
 ********************************************************************************
 if `country'==1 {
-	levelsof country
-	local countries = `"`r(levels)'"'
+    levelsof country
+    local countries = `"`r(levels)'"'
 
-	local n1=1
-	local estimates
-	local firststage
-	local colnames
+    local n1=1
+    local estimates
+    local firststage
+    local colnames
+    
+    local base malec _yb* _age* _contracep* `add'
+    
+    foreach cc of local countries {
+        preserve
+        keep if country=="`cc'"
+        count
+        if `r(N)'== 0 {
+            restore
+            exit
+        }
 
-	local base malec _yb* _age* _contracep* `add'
+        foreach n in `gplus' {
+            local c  `cond'&`n'_plus==1
+            foreach y of varlist $outcomes {
+                 eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
+                 */ `se' savefirst savefp(f`n1')
+
+                 local estimates `estimates' est`n1' 
+                 local firststage `firststage' f`n1'fert
+	         local colnames `cc'
+	         local ++n1
+  	    }
+        }
+        restore	
+    }	
+
+    estout `estimates' using "$Tables/IV/Countries.xls", replace ///
+    keep(fert malec $age $S $H) mlabels(`colnames') `estopt' `varlab'
+
+    estout `firststage' using "$Tables/IV/Countries_f.xls", replace ///
+    keep(twin_* malec $age $S $H) mlabels(`colnames') `estopt' `varlab' 
 	
-	foreach cc of local countries {
-		preserve
-		keep if country=="`cc'"
-		count
-		if `r(N)'== 0 {
-			restore
-			exit
-		}
-
-		foreach n in `gplus' {
-			local c  `cond'&`n'_plus==1
-			foreach y of varlist $outcomes {
-				eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt' `c', /*
-				*/ `se' savefirst savefp(f`n1')
-
-				local estimates `estimates' est`n1' 
-				local firststage `firststage' f`n1'fert
-				local colnames `cc'
-				local ++n1
-			}
-		}
-		restore	
-	}	
-
-	estout `estimates' using "$Tables/IV/Countries.xls", replace ///
-	keep(fert malec $age $S $H) mlabels(`colnames') `estopt' `varlab'
-
-	estout `firststage' using "$Tables/IV/Countries_f.xls", replace ///
-	keep(twin_* malec $age $S $H) mlabels(`colnames') `estopt' `varlab' 
-	
-	estimates clear	
+    estimates clear	
 }
 
 ********************************************************************************
@@ -2006,62 +1910,6 @@ if `adj_fert'==1&`ADJdesire'==1 {
 }
 
 ********************************************************************************
-**** (16) Remaining regs by gender
-********************************************************************************
-local ii=1
-if `gender'==1 {
-	foreach g1 in F M {
-		foreach c1 in income=="low" income=="mid" withtwin {
-			if `ii'==1 {
-				local ++ii
-				continue
-			}
-			if `ii'==1|`ii'==4 local name Low
-			else if `ii'==2|`ii'==5 local name Mid
-			else if `ii'==3|`ii'==6 local name WithTwin
-			dis "not skipping `ii' (`g1', `name')"
-						
-			local n1=1
-			local n2=2
-			local n3=3
-			local estimates
-			local fstage
-			local OUT "$Tables/IV/gend`g1'`name'"
-			
-			foreach n in `gplus' {				
-				preserve
-				if `ii'==3|`ii'==6 keep `cond'&gender=="`g1'"&`n'_plus_twins==1
-				else keep `cond'&gender=="`g1'"&`c1'&`n'_plus==1 
-
-				foreach y of varlist $outcomes {
-					eststo: ivreg2 `y' `base' $age $S $H (fert=twin_`n'_fam) `wt', /*
-					*/ `se' savefirst savefp(f`n3')
-					eststo: ivreg2 `y' `base' $age $H (fert=twin_`n'_fam) `wt'     /*
-					*/ if e(sample), `se' savefirst savefp(f`n2')
-					eststo: ivreg2 `y' `base' (fert=twin_`n'_fam) `wt'             /*
-					*/ if e(sample), `se' savefirst savefp(f`n1')
-
-					local estimates `estimates'  est`n3' est`n2' est`n1' 
-					local fstage `fstage' f`n1'fert f`n2'fert f`n3'fert
-					local n1=`n1'+3
-					local n2=`n2'+3
-					local n3=`n3'+3
-				}
-				restore
-			}
-			
-			estout `estimates' using "`OUT'.xls", replace `estopt' `varlab' /*
-			*/ keep(fert $age $S $H)
-			estout `fstage' using "`OUT'_first.xls", replace `estopt' `varlab' /*
-			*/ keep(twin_* $age $S $H)
-		
-			estimates clear
-			local ++ii
-		}
-	}
-}
-
-********************************************************************************
 **** (17) Program same sex IV estimates to have an over-identifying test
 ********************************************************************************
 if `overID'==1 {
@@ -2155,50 +2003,6 @@ if `overID'==1 {
 
 	estimates clear
 	local base malec _country* _yb* _age* _contracep* `add'
-}
-
-********************************************************************************
-*** (18) Conley gamma estimates via IV using same sex...
-***  Think about this code: here confounding gamma with extra birth due to smpl
-********************************************************************************
-if `ConGamma'==1 {
-
-	cap gen int3  = (1-smix12)*boy3
-	cap gen int4a = (1-smix123)*boy3
-	cap gen int4b = (1-smix123)*boy4
-
-	preserve
-	keep `cond'&two_plus==1
-	eststo: ivreg2 school_zscore `base' boy1 boy2 twin_two_fam     /*
-	*/ (fert = smix12) `wt', `se' savefirst savefp(f2)
-	local et2 = _b[twin_two_fam]
-	restore
-	dis "twin two: `et2'"
-	
-	preserve
-	keep `cond'&three_plus==1
-	eststo: ivreg2 school_zscore `base' boy1 boy2 boy3 boy12 girl12 /*
-	*/ int3 twin_three_fam (fert=smix123) `wt', `se' savefirst savefp(f3)
-	local et3 = _b[twin_three_fam]
-	restore
-	dis "twin three: `et3'"
-
-	preserve	
-	keep `cond'&four_plus==1
-	eststo: ivreg2 school_zscore `base' boy1 boy2 boy3 boy4 boy12  /*
-	*/ girl12 boy123 girl123 int3 int4* twin_four_fam  (fert=smix1234) `wt',  /*
-	*/ `se' savefirst savefp(f4)
-	local et4 = _b[twin_four_fam]
-	restore
-	dis "twin four: `et4'"
-
-	estout est1 est2 est3 using "$Tables/Conley/GammaEst.xls", replace  /*
-	*/ `estopt' `varlab' keep(fert twin_*)
-	estout f2fert f3fert f4fert using "$Tables/Conley/GammaEst_first.xls", /*
-	*/ replace `estopt' `varlab' keep(smix* twin_*)
-
-	dis "twin estimates: `et2, `et3', `et4'"
-
 }
 
 ********************************************************************************

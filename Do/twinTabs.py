@@ -34,7 +34,7 @@ gena = ['ADJGirls.xls','ADJBoys.xls']
 fgen = ['Girls_first.xls','Boys_first.xls']
 fgna = ['ADJGirls_first.xls','ADJBoys_first.xls']
 
-firs = 'All_first.xls'
+firs = 'All_first.txt'
 flow = 'LowIncome_first.xls'
 fmid = 'MidIncome_first.xls'
 ftwi = 'Base_IV_twins_firststage.xls'
@@ -158,11 +158,13 @@ elif ftype=='csv':
 #==============================================================================
 #== (2) Function to return fertility beta and SE for IV tables
 #==============================================================================
-def plustable(ffile,n1,n2,searchterm,alt,n3):
+def plustable(ffile,n1,n2,searchterm,alt,n3,mult):
     beta = []
     se   = []
     N    = []
     R    = []
+    FF   = []
+    Fp   = []
     
     f = open(ffile, 'r').readlines()
 
@@ -174,11 +176,18 @@ def plustable(ffile,n1,n2,searchterm,alt,n3):
             N.append(i)
         if re.match("r2", line):
             R.append(i)
+        if re.match("KPF", line):
+            FF.append(i)
+        if re.match("KPp", line):
+            Fp.append(i)
     
     TB = []
     TS = []
     TN = []
     TR = []
+    FSF = []
+    FSp = []    
+    
     if alt=='alt':
         for i,n in enumerate(beta):
             if i==0:
@@ -195,18 +204,26 @@ def plustable(ffile,n1,n2,searchterm,alt,n3):
             TB.append(f[n].split()[n1:n2])
         for n in se:
             TS.append(f[n].split()[n1-1:n2-1])
+
+    n1=n1+(mult-1)*4
+    n2=n2+(mult-1)*4
     for n in N:
         TN.append(f[n].split()[n1:n2])
     for n in R:
         TR.append(f[n].split()[n1:n2])
+    for n in FF:
+        FSF.append(f[n].split()[n1:n2])
+    for n in Fp:
+        FSp.append(f[n].split()[n1:n2])
 
-    return TB, TS, TN, TR
+    return TB, TS, TN, TR, FSF, FSp
 
 
 #==============================================================================
 #== (3) Call functions, print table for plus groups
 #==============================================================================
 #can add Five in without problems
+m=1
 for i in ['Two', 'Three', 'Four']:
     if i=="Two":
         num1=2
@@ -233,14 +250,15 @@ for i in ['Two', 'Three', 'Four']:
         des='first- to fourth-born children' 
         IVf = open(Tables+'FivePlusIV.'+end, 'w')
 
-    TB1, TS1, TN1, TR1 = plustable(base, num1, num2,"fert",'normal',1000)
-    TB3, TS3, TN3, TR3 = plustable(lowi, num1, num2,"fert",'normal',1000)
-    TB4, TS4, TN4, TR4 = plustable(midi, num1, num2,"fert",'normal',1000)
-    TB5, TS5, TN5, TR5 = plustable(thre, num1, num2,"fert",'normal',1000)
+    TB1, TS1, TN1, TR1,xx,yy = plustable(base, num1, num2,"fert",'normal',1000,1)
+    TB3, TS3, TN3, TR3,xx,yy = plustable(lowi, num1, num2,"fert",'normal',1000,1)
+    TB4, TS4, TN4, TR4,xx,yy = plustable(midi, num1, num2,"fert",'normal',1000,1)
+    TB5, TS5, TN5, TR5,xx,yy = plustable(thre, num1, num2,"fert",'normal',1000,1)
     
-    TB6, TS6, TN6, TR6 = plustable(twIV, num1, num2,"fert",'normal',1000)
+    TB6, TS6, TN6, TR6,xx,yy = plustable(twIV, num1, num2,"fert",'normal',1000,1)
 
-    FB, FS, FN, FR    = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000)
+    FB, FS, FN, FR,xx,yy = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000,m)
+    m = m+1
 
     print "Table for " + i + " Plus:"
     print ""
@@ -340,9 +358,9 @@ MidS = []
 MidN = []
 
 for num in [2,6,10]:
-    BB, BS, BN, BR    = plustable(base, num, num+3,'fert','normal',1000)
-    LB, LS, LN, LR    = plustable(lowi, num, num+3,'fert','normal',1000)
-    MB, MS, MN, MR    = plustable(midi, num, num+3,'fert','normal',1000)
+    BB, BS, BN, BR,xx,yy = plustable(base, num, num+3,'fert','normal',1000,1)
+    LB, LS, LN, LR,xx,yy = plustable(lowi, num, num+3,'fert','normal',1000,1)
+    MB, MS, MN, MR,xx,yy = plustable(midi, num, num+3,'fert','normal',1000,1)
     
     AllB.append(dd + BB[0][0] + dd + BB[0][1] + dd + BB[0][2])
     AllS.append(dd + BS[0][0] + dd + BS[0][1] + dd + BS[0][2])
@@ -635,9 +653,9 @@ AllS = []
 AllN = []
 AllR = []
 for num in [2,6,10]:
-    BB, BS, BN, BR    = plustable(base, num, num+3,'fert','normal',1000)
-    LB, LS, LN, LR    = plustable(lowi, num, num+3,'fert','normal',1000)
-    MB, MS, MN, MR    = plustable(midi, num, num+3,'fert','normal',1000)
+    BB, BS, BN, BR,xx,yy = plustable(base, num, num+3,'fert','normal',1000,1)
+    LB, LS, LN, LR,xx,yy = plustable(lowi, num, num+3,'fert','normal',1000,1)
+    MB, MS, MN, MR,xx,yy = plustable(midi, num, num+3,'fert','normal',1000,1)
     print BR
     
     AllB.append(dd + BB[0][0] + dd + BB[0][1] + dd + BB[0][2])
@@ -656,14 +674,17 @@ DHSa.write('\\multicolumn{10}{l}{\\textsc{Panel B: IV Results}}\\\\'
 AllB = []
 AllS = []
 AllN = []
-AllR = []
+AllF = []
+Allp = []
+m=1
 for num in ['two','three','four']:
-    FB, FS, FN, FR    = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000)
+    FB,FS,FN,FR,FF,Fp = plustable(firs, 1, 4,'twin\_'+t+'\_fam','normal',1000,m)
+    m = m+1
     AllB.append(dd + FB[0][0] + dd + FB[0][1] + dd + FB[0][2])
     AllS.append(dd + FS[0][0] + dd + FS[0][1] + dd + FS[0][2])
     AllN.append(dd + FN[0][0] + dd + FN[0][1] + dd + FN[0][2])
-    AllR.append(dd + FR[0][0] + dd + FR[0][1] + dd + FR[0][2])
-
+    AllF.append(dd + FF[0][0] + dd + FF[0][1] + dd + FF[0][2])
+    Allp.append(dd + Fp[0][0] + dd + Fp[0][1] + dd + Fp[0][2])
 
 
 DHSa.write('\\multicolumn{10}{l}{\\textsc{Panel C: First Stage}}\\\\'
@@ -671,8 +692,8 @@ DHSa.write('\\multicolumn{10}{l}{\\textsc{Panel C: First Stage}}\\\\'
            ""                    +AllS[0]+AllS[1]+AllS[2]+"\\\\ \n"
            "&&&&&&&&& \\\\ \n"
            "Observations "        +AllN[0]+AllN[1]+AllN[2]+"\\\\ \n"
-           "R-Squared &&&&&&&&&\\\\ \n"
-           "$F$-test on excluded instruments &&&&&&&&&\\\\ \n"
+           "Kleibergen-Paap rk statistic" +AllF[0]+AllF[1]+AllF[2]+"\\\\ \n"
+           "$p$-value of rk statistic" +Allp[0]+Allp[1]+Allp[2]+"\\\\ \n"
            #"R-Squared "           +AllR[0]+AllR[1]+AllR[2]+"\\\\
            "\\midrule \n")
 
@@ -688,7 +709,7 @@ DHSa.write("\\multicolumn{10}{p{22.0cm}}{{\\footnotesize Panels A and B present"
            "birth order two, three or four (for 2+, 3+ and 4+ groups respectively).  "
            "Panel C presents the first-stage coefficients of twinning on      "
            "fertility for each group. Base controls consist of child age,        "
-           "mother's age, and mother's age at birth fixed effects plus country"
+           "mother's age, and mother's age at birth fixed effects plus country "
            "and year-of-birth FEs.  In each case the sample is made up of all "
            "children aged between 6-18 years from families in the DHS who     "
            "fulfill 2+ to 4+ requirements. The \\citet{Altonjietal2005} ratio "

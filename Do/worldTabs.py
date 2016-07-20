@@ -20,37 +20,44 @@ OUT  = "/home/damian/investigacion/Activa/Twins/paper/twinsHealth/tex/"
 noteE1 = ('\\textbf{Effect of Maternal Health on Twinning} {\\footnotesize  ' +
 'Results from OLS regressions of a child\'s birth type (twin or singleton)  ' +
 'on the mother\'s health behaviours and conditions are displayed. These     ' +
-'results accompany figure 1 in the main text.  The outcome variable is a    ' +
-'binary variable for a twin (=1) or singleton (=0) birth, multiplied by 100,' +
-' so all coefficients are expressed in terms of the percent increase in     ' +
+'results are summarised in figure 1 of extended data. The outcome variable  ' +
+'is binary variable for a twin (=1) or singleton (=0) birth, multiplied by  ' +
+'100, so all coefficients are expressed in terms of the percent increase in ' +
 'twinning. Dependent variables are standardised so coefficients can be      ' +
 'interpreted as the percent change in twin births associated with a 1       ' +
 'standard deviation (1 $\\sigma$) increase in the variable of interest. All ' +
 'models include fixed effects for age and birth order, and where possible,  ' +
 'for gestation of the birth in weeks (panels A and C). Asterisks indicate   ' +
 'significance levels of p-values, with: *p$<$0.1  **p$<$0.05  ***p$<$0.01.  ' +
-'95\% confidence intervals are displayed in parentheses. Further details    ' +
+'95\% confidence intervals are displayed in parentheses. USA data is the    ' +
+'full sample of non-ART births from the National Vital Statistics System    ' +
+'from 2009-2013 (all years for which ART is recorded).  Swedish data comes  ' +
+'from the Swedish Medical Birth Registry, United Kingdom data is  from the  ' +
+'ALSPAC (Avon Longitudinal Survey of Parents and Children) panel study,     ' +
+'Chilean data is from the ELPI (Early Life Longitudinal Survey), and        ' +
+'Developing Country Data is from the pooled Demographic and Health Surveys. ' +
+'Further details    ' +
 'regarding estimation samples and variable construction are available in    '
-'Supplementary Information.}')
+'Methods.}')
 noteE2 = ('\\textbf{Effect of Maternal Health on Twinning (Conditional      ' +
 'Results)} \\footnotesize{ Results from OLS regressions of a child\'s birth ' +
 'type (twin or singleton) on the mother\'s health behaviours and conditions ' +
-'are displayed.  Specifications are identical to those in extended data     ' +
-'table 5, however each variable ubdependent variable is included together   ' +
-'in estimated regression. Asterisks indicate significance levels of p-values,'+
+'are displayed.  Specifications are identical to those in table 1, however  ' +
+'each independent variable is included together in  ' +
+'estimated regression. Asterisks indicate significance levels of p-values,  ' +
 'with: *p$<$0.1  **p$<$0.05  ***p$<$0.01. 95\% confidence intervals are     ' +
 'displayed in parentheses. Further details regarding estimation samples and ' +
-'variable construction are available in Supplementary Information.}')
+'variable construction are available in Methods.}')
 noteE3 = ('\\textbf{Effect of Maternal Health on Twinning (Unstandardised   ' +
 'Variables)} \\footnotesize{ Results from OLS regressions of a child\'s     ' +
 'birth type (twin or singleton) on the mother\'s health behaviours and      ' +
-'conditions are displayed. Specifications are identical to those in extended' +
-' data table 5, however each independent variable is unstandardised, so     ' +
+'conditions are displayed. Specifications are identical to those in table 1,' +
+'however each independent variable is unstandardised, so                    ' +
 'all coefficients are interpreted as the effect of a 1 unit increase in the ' +
-'indepdent variable. Asterisks indicate significance levels of p-values,    ' +
+'independent variable. Asterisks indicate significance levels of p-values,  ' +
 'with: *p$<$0.1  **p$<$0.05  ***p$<$0.01. 95\% confidence intervals are     ' +
 'displayed in parentheses. Further details regarding estimation samples and ' +
-'variable construction are available in Supplementary Information.}')
+'variable construction are available in Methods.}')
 noteS1 = ('\\textbf{Summary Statistics: All Samples (Panels A-C)} {         ' +
 '\\footnotesize Each panel presents descriptive statistics of data from each' +
 ' context examined. Panel A comes from the United States Vital Statistics   ' +
@@ -203,7 +210,7 @@ tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
            'Variable & Estimate & [95\\% CI] &Variable & Estimate & [95\\% CI]'
            '\\\\ \\midrule \n'
            '\\rowcolor{LightCyan} \\multicolumn{6}{c}'
-           '{\\textbf{Panel A: United States}} \\\\ \n')
+           '{\\textbf{Panel A: United States} [N =13,962,330, \% Twin = 2.84]} \\\\ \n')
 
 for i,line in enumerate(USAi):
     line = formatLine(line,1)
@@ -218,7 +225,7 @@ tabl.write(lineUSA[2]+'&'+lineUSA[0]+'\\\\' +
            lineUSA[1]+'&'+lineUSA[7]+'\\\\' )
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
-           '{\\textbf{Panel B: Sweden}} \\\\ \n')
+           '{\\textbf{Panel B: Sweden} [N =1,240,621, \% Twin = 2.55]} \\\\ \n')
 for i,line in enumerate(SWEi):
     line = formatLine(line,1)
     for j in range(0,9):
@@ -234,7 +241,7 @@ tabl.write(lineSWE[4]+'&'+lineSWE[6]+'\\\\' +
            '&&&'         +lineSWE[3]+'\\\\' )
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
-           '{\\textbf{Panel C: United Kingdom (Avon)}} \\\\ \n')
+           '{\\textbf{Panel C: United Kingdom (Avon)} [N =10,463, \% Twin = 2.37]} \\\\ \n')
 for i,line in enumerate(UKAi):
     line = formatLine(line,1)
     for j in range(0,13):
@@ -250,7 +257,7 @@ tabl.write(lineUKA[6] +'&'+lineUKA[2]+'\\\\' +
            lineUKA[12]+'&&&\\\\'             )            
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
-           '{\\textbf{Panel D: Chile}} \\\\ \n')
+           '{\\textbf{Panel D: Chile} [N =26,527, \% Twin = 2.55]} \\\\ \n')
 for i,line in enumerate(CHIi):
     line = formatLine(line,1)
     for j in range(0,9):
@@ -265,7 +272,7 @@ tabl.write(lineCHI[0]+'&'+lineCHI[6]+'\\\\' +
            lineCHI[7]+'&&&\\\\' )            
 
 tabl.write('\\rowcolor{LightCyan} \\multicolumn{6}{c}'
-           '{\\textbf{Panel D: Developing Countries}} \\\\ \n')
+           '{\\textbf{Panel D: Developing Countries} [N =2,052,338, \% Twin = 2.10]} \\\\ \n')
 for i,line in enumerate(DHSi):
     line = formatLine(line,1)
     for j in range(0,7):
@@ -497,6 +504,49 @@ tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
 
 tabl.close()
 
+
+#==============================================================================
+#== (3) IVF (USA Only)
+#==============================================================================
+noteI1 = ('\\textbf{Effect of Maternal Health on Twinning (ART Only)}       ' +
+'{\\footnotesize  Results are reported following the specifications in table' +
+' 1, for USA only (where ART usage is observed for all births). The sample  ' +
+'period and specification is identical to those in table 1, however now only' +
+'Artificial Reproductive Technology users are included in the regression.}')
+
+tabl = open(OUT + 'twinEffectsIVF.tex', 'w')
+USAi = open(RIN + 'USA_est_std_ucond_IVF.csv').readlines()[1:-1]
+lineUSA = []
+
+
+
+tabl.write('\\begin{spacing}{1}\n\n \\begin{table}[htpb!]\n'
+           '\\begin{center}\n\\caption{' + noteI1 + '}\n'
+           '\scalebox{0.90}{'
+           '\\begin{tabular}{llcllc}\n \\toprule'
+           '\\multicolumn{3}{c}{Health Behaviours / Access} &'
+           '\\multicolumn{3}{c}{Health Conditions } \\\\ \n'
+           '\\cmidrule(r){1-3} \\cmidrule(r){4-6} \n'
+           'Variable & Estimate & [95\\% CI] &Variable & Estimate & [95\\% CI]'
+           '\\\\ \\midrule \n'
+           '\\rowcolor{LightCyan} \\multicolumn{6}{c}'
+           '{\\textbf{United States: ART Only [N =217,703, \% Twin = 35.39]}} \\\\ \n')
+
+for i,line in enumerate(USAi):
+    line = formatLine(line,1)
+    for j in range(0,10):
+        if i==j:
+            lineUSA.append(nameUSA[j]+'&'+line)
+
+tabl.write(lineUSA[2]+'&'+lineUSA[0]+'\\\\' +
+           lineUSA[3]+'&'+lineUSA[8]+'\\\\' +
+           lineUSA[4]+'&'+lineUSA[9]+'\\\\' +
+           lineUSA[5]+'&'+lineUSA[6]+'\\\\' +
+           lineUSA[1]+'&'+lineUSA[7]+'\\\\' )            
+tabl.write('\\bottomrule \n \\end{tabular}} \n \\end{center} \\end{table} \n'
+           '\n \\end{spacing}')
+
+tabl.close()
 
 
 print "Terminated Correctly."
