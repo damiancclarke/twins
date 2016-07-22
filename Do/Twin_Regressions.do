@@ -169,6 +169,12 @@ local conditions
 local conditions
   ALL==1
 ;
+local conditions
+  gender=="F"
+  gender=="M"
+  income=="low"
+  income=="mid"
+;
 local fnames
   All
   Girls
@@ -181,6 +187,12 @@ local fnames
 local fnames
   All
 ;
+local fnames
+  Girls
+  Boys
+  LowIncome
+  MidIncome
+;
 #delimit cr
 
 *******************************************************************************
@@ -189,44 +201,49 @@ local fnames
 log using "$Log/Twin_Regressions.txt", text replace
 
 if `samp5'!=1 {
-	use "$Data/DHS_twins", clear
-	replace bmi=. if bmi>50
-	replace height=. if height>240
-	replace height=. if height<80
-	replace educ=. if age<6
-	replace educ=. if educ>25
-	replace educf=. if educf>25
-	replace birthspacing=. if birthspacing<8|birthspacing==999
-
-	tab _cou, gen(_country)
-	tab year_birth, gen(_yb)
-	tab age, gen(_age)
-	tab contracep_intent, gen(_contracep)
-	tab bord, gen(_bord)
-	local base malec _country* _yb* _age* _contracep* `add'
-	drop if twinfamily>2
-
-	gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
-	replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
-	replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
-	replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
-	encode cat, gen(catnum)
-	egen category=concat(income twindfamily)
-	egen nonmiss = rowmiss(educf height bmi motherage malec)
-
-	if `resave'==1 save "$Data/DHS_twins_mortality", replace
+    use "$Data/DHS_twins", clear
+    replace bmi=. if bmi>50
+    replace height=. if height>240
+    replace height=. if height<80
+    replace educ=. if age<6
+    replace educ=. if educ>25
+    replace educf=. if educf>25
+    replace birthspacing=. if birthspacing<8|birthspacing==999
+    
+    tab _cou, gen(_country)
+    tab year_birth, gen(_yb)
+    tab age, gen(_age)
+    tab contracep_intent, gen(_contracep)
+    tab bord, gen(_bord)
+    local base malec _country* _yb* _age* _contracep* `add'
+    drop if twinfamily>2
+    
+    gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
+    replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
+    replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
+    replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
+    encode cat, gen(catnum)
+    egen category=concat(income twindfamily)
+    egen nonmiss = rowmiss(educf height bmi motherage malec)
+    bys _cou v001: egen preClustD = mean(prenate_doc)
+    bys _cou v001: egen preClustN = mean(prenate_nurse)
+    bys _cou v001: egen preClustZ = mean(prenate_none)
+    replace wealth = 6 if wealth == .
+    
+    
+    if `resave'==1 save "$Data/DHS_twins_mortality", replace
 }
 
 if `samp5'==1 {
-*	set seed 2727
-*	gen sampler=runiform()
-*	keep if sampler>0.9
-	use "$Data/DHS_twins10samp"
+*   set seed 2727
+*   gen sampler=runiform()
+*   keep if sampler>0.9
+    use "$Data/DHS_twins10samp"
+    bys _cou v001: egen preClustD = mean(prenate_doc)
+    bys _cou v001: egen preClustN = mean(prenate_nurse)
+    bys _cou v001: egen preClustZ = mean(prenate_none)
+    replace wealth = 6 if wealth == .
 }
-bys _cou v001: egen preClustD = mean(prenate_doc)
-bys _cou v001: egen preClustN = mean(prenate_nurse)
-bys _cou v001: egen preClustZ = mean(prenate_none)
-replace wealth = 6 if wealth == .
 tab wealth, gen(_wealth)
 tab educf , gen(_educf)
 
@@ -1044,15 +1061,60 @@ file write Oster "`OsterH_mid',`OsterSH_mid'" _n
 file close Oster
 
 
+
 ********************************************************************************
 **** (4b) OLS n+ Regressions (plus Altonji and Oster bounds)
 ********************************************************************************
+local c1 `base' $age
+local c2 `base' $age $H
+local c3 `base' $age $S $H 
+local c4 `base' $age $S $H i.bord
+local y  school_zscore
+local x  fert
+
+    
+tokenize `fnames'
+foreach condition of local conditions {
+
+    local ests
+    local ecnt 1
+    local OUT "$Tables/OLS/`1'"
+
+    foreach n in `gplus' {
+        preserve
+        keep `cond'&`condition'&`n'_plus==1
+        egen keeper = rowmiss(`y' `base' $age $H educf fert)
+        keep if keeper == 0
+        
+        foreach e of numlist 1(1)4 {
+            eststo: reg school_zscore fert `c`e'' `wt'
+            local ests `ests' est`ecnt'
+            local maxR = e(r2)*2
+            if `e'>1 {
+                psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+                estadd scalar Oster=r(output): est`ecnt'
+            }
+            local ++ecnt
+        }
+        restore
+    }
+
+    #delimit ;
+    estout `ests' using "`OUT'.txt", replace
+    cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par))
+    stats (N r2 Oster, fmt(%9.0g %9.2f %9.3f))
+    starlevel ("*" 0.10 "**" 0.05 "***" 0.01);
+    #delimit cr
+    estimates clear
+    macro shift
+}
+
+
+
+
 local out "$Tables/OLS/QQ_plusgroups.xls"
 cap rm `out'
 cap rm "$Tables/OLS/QQ_plusgroups.txt"
-
-local y  school_zscore
-
 foreach n in `gplus' {
     preserve
     keep `cond'&`n'_plus==1			
@@ -1089,8 +1151,8 @@ file close Oster
 **** (5) Reduced form using twins at birth order N
 ********************************************************************************
 if `RF'==1 {
-	tokenize `fnames'
-	foreach condition of local conditions {
+    tokenize `fnames'
+    foreach condition of local conditions {
 		
 		local n1=1
 		local n2=2
@@ -1175,8 +1237,8 @@ foreach condition of local conditions {
     estimates clear
     macro shift
 }
-exit
 */
+
 ********************************************************************************
 **** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
 ********************************************************************************
@@ -1361,10 +1423,12 @@ if `compl_fert'==1 {
 	
 	estimates clear
 }
-
+/*
 preserve
 use "$Data/DHS_twins_mortality", clear
-	
+tab wealth, gen(_wealth)
+tab educf , gen(_educf)
+
 gen tta=age if twind==1
 bys id: egen twinage=min(tta)
 gen twinagedif=twinage-age
@@ -1374,20 +1438,22 @@ replace treated=. if twinfamily>=1&twinagedif<1
 tab treated
 
 replace infantmortality=infantmortality*100
+local bvar $age i._cou i.year_birth twind
 foreach n in `gplus' {
-    local c  `cond'&`n'_plus==1
+    local c  if age>=1&age<16&`n'_plus==1
     local ce `cond'&`n'_plus==1&e(sample)
-    eststo: reg infantmortality treated `base' $age $S $H `wt' `c', `se'
-    eststo: reg infantmortality treated `base' $age $S    `wt' `ce', `se'
-    eststo: reg infantmortality treated `base' $age       `wt' `ce', `se'
+    eststo: reg infantmortality treated `bvar' $S $H `wt' `c', `se'
+    eststo: reg infantmortality treated `bvar' $S    `wt' `ce', `se'
+    eststo: reg infantmortality treated `bvar'       `wt' `ce', `se'
+    eststo: reg infantmortality treated $age         `wt' `ce', `se'
 }
 	
-local estimates est3 est2 est1 est6 est5 est4 est9 est8 est7		
-estout `estimates' using "$TAB/IMRTest.xls", replace ///
-    keep(treated malec $age $S $H) `estopt'	
+local estimates est4 est3 est2 est1 est8 est7 est6 est5 est12 est11 est10 est9
+estout `estimates' using "$TAB/IMRTest.txt", replace ///
+    keep(treated $S $H) `estopt'	
 estimates clear
 restore
-exit
+*/
 
 if `twinoccur_iv'==1 {
 	preserve
@@ -1441,7 +1507,6 @@ if `twinoccur_iv'==1 {
 ***  this so that gamma can be a small effect, or as they say, we have "prior
 ***  information that implies that gamma is near 0 but perhaps not exactly 0".
 ********************************************************************************
-
 mat cbounds1 = J(3,4,.)
 local ii = 1
 foreach n in two three four {
@@ -1476,6 +1541,7 @@ foreach n in two three four {
     dis "lower bound = `c1', upper bound=`c2'"
     
     *------    LTZ     -----------------------------------------------------
+    if `"`n'"'=="four" local --items
     matrix omega_eta = J(`items',`items',0)
     sum gamma
     local gmean = r(mean)
@@ -1484,12 +1550,11 @@ foreach n in two three four {
     matrix mu_eta = J(`items',1,0)
     matrix mu_eta[1,1] = `gmean'
 
-    plausexog ltz Ey `ESH' (Ex = Ez), distribution(special, gamma) seed(19)
+    plausexog ltz Ey `ESH' (Ex = Ez), distribution(special, gamma) seed(2702)
     local c3 = e(lb_Ex)
     local c4 = e(ub_Ex)
     dis "lower bound = `c3', upper bound=`c4'"
 
-    
     *------  GRAPHING   -----------------------------------------------------
     foreach num of numlist 0(1)10 {
         matrix om`num'=J(`items', `items', 0)
