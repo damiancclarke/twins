@@ -219,7 +219,7 @@ def plustable(ffile,n1,n2,searchterm,alt,n3,mult):
 
     return TB, TS, TN, TR, FSF, FSp
 
-def olstable(ffile,n1,n2,n3):
+def olstable(ffile,n1,n2,n3,ofile):
     beta    = []
     se      = []
     N       = []
@@ -228,7 +228,8 @@ def olstable(ffile,n1,n2,n3):
     Oster   = []
     
     f = open(ffile, 'r').readlines()
-    #o = open(ofile, 'r').readlines()
+    if ofile!="N":
+        o = open(ofile, 'r').readlines()
     
     for i, line in enumerate(f):
         if re.match("fert", line):
@@ -236,7 +237,11 @@ def olstable(ffile,n1,n2,n3):
             se.append(i+1)
         if re.match("N", line):
             N.append(i)
+        if re.match("Observations", line):
+            N.append(i)
         if re.match("r2", line):
+            R.append(i)
+        if re.match("R-squared", line):
             R.append(i)
         if re.match("Oster", line):
             Oster.append(i)
@@ -261,16 +266,17 @@ def olstable(ffile,n1,n2,n3):
         TN.append(f[n].split()[n1:n2])
     for n in R:
         TR.append(f[n].split()[n1:n2])
-    for n in Oster:
-        TO.append(f[n].split('\t')[n1:n2])
+    if ofile=="N":
+        for n in Oster:
+            TO.append(f[n].split('\t')[n1:n2])
+        ost   = '&'.join(TO[0])
+    else:
+        ost   = o[n3-1].replace(",","&")
 
-    print TO
     betas = '&'.join(TB[0])
     ses   = '&'.join(TS[0])
     Ns    = '&'.join(TN[0])
-    Rs    = '&'.join(TR[0])
-    ost   = '&'.join(TO[0])
-    #ost   = o[n3-1].replace(",","&")
+    Rs    = '&'.join(TR[0])    
     
     A1 = float(re.search("-\d*\.\d*", TB[0][0]).group(0))
     A2 = float(re.search("-\d*\.\d*", TB[0][1]).group(0))
@@ -286,14 +292,14 @@ def olstable(ffile,n1,n2,n3):
 #== (3) OLS only table
 #==============================================================================
 os.chdir(Results+'OLS/')
-"""
-TBa, TSa, TNa, TRa, A1a, A2a = olstable(ols, 1, 4, 1)
-TBl, TSl, TNl, TRl, A1l, A2l = olstable(ols, 5, 8, 2)
-TBm, TSm, TNm, TRm, A1m, A2m = olstable(ols, 9, 12, 3)
+
+TBa, TSa, TNa, TRa, A1a, A2a = olstable(ols, 1, 4, 1, ost)
+TBl, TSl, TNl, TRl, A1l, A2l = olstable(ols, 5, 8, 2, ost)
+TBm, TSm, TNm, TRm, A1m, A2m = olstable(ols, 9, 12,3, ost)
 
 OLSf = open(Tables+'OLS_bounds.'+end, 'w')
 OLSf.write("\\begin{table}[!htbp] \\centering \n"
-           "\\caption{OLS Estimates of the Q-Q Trade-off (Developing Countries)} \n "
+           "\\caption{Pooled OLS Estimates of the Q-Q Trade-off (Developing Countries)} \n "
            "\\label{TWINtab:OLS} \n"
            "\\begin{tabular}{lccc} \\toprule \n"
            "& (1) & (2) & (3) \\\\  \n "
@@ -306,7 +312,7 @@ OLSf.write("\\textbf{Panel A: All Countries}&&& \\\\ \n"
            "Observations &"+TNa+"\\\\ \n"
            "R-squared &"+TRa+"\\\\ \n"           
            "Altonji et al.\ Ratio"+A1a+"\\\\ \n"
-           "Oster Ratio"+A2a+"\\\\ \\midrule \n")
+           "Oster Ratio&&"+A2a+"\\\\ \\midrule \n")
 OLSf.write("\\textbf{Panel B: Low Income}&&& \\\\ \n"
            "Fertility&"+TBl+"\\\\ \n"
            "&"+TSl+"\\\\ \n"
@@ -314,7 +320,7 @@ OLSf.write("\\textbf{Panel B: Low Income}&&& \\\\ \n"
            "Observations &"+TNl+"\\\\ \n"
            "R-squared &"+TRl+"\\\\ \n"           
            "Altonji et al.\ Ratio"+A1l+"\\\\ \n"
-           "Oster Ratio"+A2l+"\\\\ \\midrule \n")
+           "Oster Ratio&&"+A2l+"\\\\ \\midrule \n")
 OLSf.write("\\textbf{Panel C: Middle Income}&&& \\\\ \n"
            "Fertility&"+TBm+"\\\\ \n"
            "&"+TSm+"\\\\ \n"
@@ -322,7 +328,7 @@ OLSf.write("\\textbf{Panel C: Middle Income}&&& \\\\ \n"
            "Observations &"+TNm+"\\\\ \n"
            "R-squared &"+TRm+"\\\\ \n"           
            "Altonji et al.\ Ratio"+A1m+"\\\\ \n"
-           "Oster Ratio"+A2m+"\\\\ \n")
+           "Oster Ratio&&"+A2m+"\\\\ \n")
 OLSf.write("\\midrule \\multicolumn{4}{p{11cm}}{{\\footnotesize         "
            "Base controls consist of child gender, mother's age and age "
            "squared, mother's age at first birth, child age, country,   "
@@ -344,7 +350,7 @@ OLSf.write("\\bottomrule \\end{tabular}\\end{table} \n")
 OLSf.close()
 
 
-"""
+
 #==============================================================================
 #== (5b) DHS IV, bounds, and OLS
 #==============================================================================
@@ -360,9 +366,9 @@ for t in ['All','Girls','Boys','MidIncome','LowIncome']:
     if t=="MidIncome": tn=' (Middle Income Countries)'
     if t=="LowIncome": tn=' (Low Income Countries)'
     
-    TB2, TS2, TN2, TR2, Al2, Os2 = olstable(fn, 1, 4, 1)
-    TB3, TS3, TN3, TR3, Al3, Os3 = olstable(fn, 5, 8, 2)
-    TB4, TS4, TN4, TR4, Al4, Os4 = olstable(fn, 9, 12, 3)
+    TB2, TS2, TN2, TR2, Al2, Os2 = olstable(fn, 1, 4, 1,"N")
+    TB3, TS3, TN3, TR3, Al3, Os3 = olstable(fn, 5, 8, 2,"N")
+    TB4, TS4, TN4, TR4, Al4, Os4 = olstable(fn, 9, 12, 3, "N")
     print Os2
     DHSa.write('\\begin{landscape}\\begin{table}[htpb!] \n'
                '\\caption{Developing Country Estimates: OLS, Bounds, and IV'+tn+'}'

@@ -17,7 +17,6 @@ set matsize 5000
 *** (1) globals and locals
 ********************************************************************************
 global DAT "~/investigacion/Activa/Twins/Data/Nigeria"
-global DHS "~/database/DHS/DHS_Data/Nigeria/"
 global OUT "~/investigacion/Activa/Twins/Results/gamma"
 global LOG "~/investigacion/Activa/Twins/Log"
 
@@ -27,11 +26,11 @@ local gen = 0
 local est = 1
 
 
-
+/*
 ********************************************************************************
 *** (2a) Prep DHS files to merge in children education
 ********************************************************************************
-use "$DHS/2003/NGPR4CDT"
+use "$DAT/NGPR4CDT"
 keep hhid hv001 hv002 hvidx hv106 hv107 hv108 hv109
 gen DHSyear = 2003
 rename hv001 v001
@@ -40,7 +39,7 @@ rename hvidx b16
 tempfile person2003
 save `person2003'
 
-use "$DHS/2008/NGPR52DT"
+use "$DAT/NGPR52DT"
 keep hhid hv001 hv002 hvidx hv106 hv107 hv108 hv109
 gen DHSyear = 2008
 rename hv001 v001
@@ -52,13 +51,13 @@ tempfile person
 save `person'
 
 
-use "$DHS/2003/NGBR4BDT"
+use "$DAT/NGBR4BDT"
 gen DHSyear = 2003
 keep DHSyear caseid bidx v001 v002 b16
 tempfile birth2003
 save `birth2003'
 
-use "$DHS/2008/NGBR52DT"
+use "$DAT/NGBR52DT"
 gen DHSyear = 2008
 keep DHSyear caseid bidx v001 v002 b16
 append using `birth2003'
@@ -79,14 +78,16 @@ generate DHSyear = 2003 if dhs03==1
 replace  DHSyear = 2008 if dhs08==1
 replace  DHSyear = 1999 if dhs99==1
 replace  DHSyear = 1990 if dhs90==1 
+
 merge 1:1 DHSyear caseid bidx using `person'
 
 gen educYears = hv108 if hv108!=99
 
-bys DHSyear agec: egen meanEd = mean(educYears)
-bys DHSyear agec: egen sdEd   = sd(educYears)
+bys DHSyear agec stcode1970: egen meanEd = mean(educYears)
+bys DHSyear agec stcode1970: egen sdEd   = sd(educYears)
 gen educZscore = (educYears-meanEd)/sdEd
 replace educZscore = . if agec<6
+gen mexpt = mexp0+mexp1+mexp2+mexp3+mexp4
 
 gen agediffmothch=ybc -yrbirth
 label var agediffmothch "Age difference mother-child"
@@ -112,16 +113,15 @@ label var femalec "Child is female"
 
 gen twin = b0==1|b0==2
 bys DHSyear caseid: egen twinM = max(twin)
+gen twinW = twin*war_region
 drop if b0>2
 
 
-*Under-5 mortality, Under 12-months mortality, under-1 month
 keep if ((yrbirth>=1954 & yrbirth<=1974) & dhs03==1)| /*
 */      ((yrbirth>=1958 & yrbirth<=1974) & dhs08==1)| /*
 */      ((yrbirth>=1954 & yrbirth<=1974) & dhs99==1)
 keep if bidx!=.  // keep only women that had at least one child
 keep if ybc>=1971  // drop children born during or before the war
-keep if agec<=18
 
 local lvars mort1m educZscore
 local lvars educZscore
@@ -132,24 +132,37 @@ local cont  dhs03 dhs99 i.stcode1970 i.ethn i.ybc i.yrbirth i.stcode1970#c.ybc f
 local wt    [pw=sweight]
 local se    robust cluster(yearstate)
 
+reg educZscore `cont' `X' `X2' if agec<=18 `wt', `se'
+local phiQ = _b[ethn_mexp0]
+outreg2 using "$OUT/gammaEstNigeria.xls", excel keep(ethn_mexp0) replace
+reg mexpt twinW i.fert `cont' if e(sample)==1
+local phiT = _b[twinW]
+outreg2 using "$OUT/gammaEstNigeria.xls", excel keep(twinW)
+
+
+dis "Q is `phiQ' and T is `phiT'"
+dis "gamma is `=`phiQ'*`phiT''"
+
 
 ********************************************************************************
 *** (3) Resampling
 ********************************************************************************
+keep if agec<=18
+set seed 09247
 gen twinEst = .
 gen qualEst = .
-local N = 1000
+local N = 100
 foreach i of numlist 1(1)`N' {
-    set seed `i'
     dis "Cycle `i': qual"
     preserve
     bsample
 
-    reg educZscore `cont' `X' `X2' `wt', `se'
+    reg educZscore `cont' `X' `X2' if agec<=18 `wt', `se'
     local phiQ = _b[ethn_mexp0]
-    reg mexp0 twinM i.fert `cont' if e(sample)==1&ethnwarexp==1, `se'
-    local phiT = _b[twinM]
-
+    
+    reg mexpt twinW i.fert `cont' if e(sample)==1, `se'
+    local phiT = _b[twinW]
+    
     restore
 
     replace qualEst = `phiQ' in `i'
@@ -158,23 +171,23 @@ foreach i of numlist 1(1)`N' {
     sum qualEst twinEst
 }
 
+********************************************************************************
+*** (4) Examine distribution: Kolmogorov-Smirnov
+********************************************************************************
 gen gamma = twinEst*qualEst
 sum gamma
-
 
 local Gmean = `r(mean)'
 local Gsdev = `r(sd)'
 local Gmax  = `r(max)'
 
-********************************************************************************
-*** (4) Examine distribution: Kolmogorov-Smirnov
-********************************************************************************
-tw hist gamma, bin(12) yaxis(2) frac || function normalden(x,`Gmean',`Gsdev'), /*
-*/ lc(black) scheme(lean1) range(`=`Gmean'-3*`Gsdev'' `=`Gmean'+3.2*`Gsdev'')    /*
-*/ yaxis(1) yscale(range(0 11)) ylabel(none) ytitle(" ") xtitle(" ")           /*
-*/ legend(label(1 "Empirical Distribution") label(2 "Analytical Distribution"))
-graph export "$OUT/gammaResampNigeria.eps", as(eps) replace
-
+#delimit ;
+tw hist gamma, bin(12) yaxis(2) frac || function normalden(x,`Gmean',`Gsdev'),
+  lc(black) scheme(lean1) range(`=`Gmean'-3*`Gsdev'' `=`Gmean'+3.1*`Gsdev'')    
+  yaxis(1) ylabel(0 0.05 0.1 0.15, axis(2)) ylabel(none) ytitle(" ") xtitle(" ")
+  legend(label(1 "Empirical Distribution") label(2 "Analytical Distribution"));
+graph export "$OUT/gammaResampNigeria.eps", as(eps) replace;
+#delimit cr
 
 sort gamma
 gen lgamma = log(gamma)
@@ -196,7 +209,7 @@ swilk gamma lgamma
 ********************************************************************************
 *** (9) Clean and clear
 ********************************************************************************
-keep in 1/1000
+keep in 1/`N'
 gen j=_n
 keep qualEst twinEst gamma j
 save "$OUT/gammasNigeria.dta", replace
