@@ -1,0 +1,404 @@
+\documentclass[12pt]{article}
+\usepackage{scicite}
+\usepackage{times}
+
+
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[capposition=bottom]{floatrow}
+\usepackage{subfloat}
+\usepackage{subcaption}
+\usepackage{lineno}
+\usepackage{longtable}
+\usepackage{lscape}
+\usepackage{colortbl}
+\usepackage{setspace}
+
+\definecolor{LightCyan}{rgb}{0.7,0.9,1}
+
+
+\topmargin -1.0cm
+\oddsidemargin 0cm
+\textwidth 16.4cm
+\textheight 22cm
+\footskip 1.0cm
+
+               
+% Include your paper's title here
+\title{Supplementary Information}
+
+%\author{Sonia Bhalotra$^{1\ast}$ \& Damian Clarke$^2$      \\
+%  \normalsize{$^{1}$Department of Economics and Institute for Social and Economic Research,} \\
+%  \normalsize{University of Essex, Essex, United Kingdom.}\\
+%      \normalsize{$^{2}$ Department of Economics, University of Santiago de Chile, Chile.}\\
+%      \\
+%      \normalsize{$^\ast$To whom correspondence should be addressed; E-mail:  srbhal@essex.ac.uk}
+%    }
+%    
+\author{}
+\date{}
+
+
+\renewcommand\thetable{S\arabic{table}}  
+\renewcommand\thefigure{S\arabic{figure}}  
+\renewcommand{\thepage}{S\arabic{page}}
+
+
+\begin{document}
+\baselineskip24pt
+
+\begin{center}
+  {\Large \textbf{Supplementary Information}}  \\
+  Twin Births and Maternal Condition \\
+  Sonia Bhalotra and Damian Clarke
+\end{center}
+
+
+
+\section{Extended Materials}
+\paragraph{United States National Vital Statistics System (NVSS)}
+The NVSS is maintained by the Center for Disease Control and Prevention (CDC). %and collects a range of vital statistics with complete coverage nationwide in the United States.
+For each registered birth it makes available the information recorded on the U.S. Standard Certificate of Live Birth. This includes the child's sex, birth type, and indicators of maternal health and health-related behaviors before and during pregnancy. These data have been collected with 100\% coverage from 1972 onwards. We use singleton and twin births from 2009-2013 \cite{Martinetal2013} occurring to all mothers aged 18-49 at the time of birth, since 2009 was the first year in which the data record whether or not the mother engaged in artificial reproductive technologies (ART).% an important indicator which may confound our reported results.  Our final estimation sample thus consists of all singleton and twin births occurring in the United States between 2009-2013 
+We restrict the sample to births for which ART was not used and drop multiple births involving more than two children (0.09\% of all births). The final estimation sample consists of 13,962,330 births, of which 399,777 (or 2.86\%) are twins.
+%2,114,467 (62,340) 2.86
+%2,395,397 (70,111) 2.84  
+%2,881,080 (84,911) 2.86 
+%3,050,474 (89,239) 2.84 
+%3,121,135 (93,176) 2.90
+  
+%did we use all of these below?
+
+%The variables of interest are the child's twin status, and all available measures of maternal health preceding the birth of the child for health behaviours, and preceding the conception of the child for health conditions.  %This includes maternal health behaviours such as smoking during pregnancy, and maternal health stocks such as diabetes and hypertension prior to pregnancy.  All of these variables are directly reported on birth certificates, and available in data. 
+%Relevant health measures available from the long form birth certificates are:\ whether the mother smokes in each trimester of pregnancy and in the three months leading up to the pregnancy, whether she suffered from diabetes and hypertension before pregnancy, as well as her height in centimetres, her pre-pregnancy BMI, and total years of education. 
+%% I removed above because it is clear in main paper
+ %Damian: Can we be precise below ----In certain...do you mean in teh US and Sweden samples?
+ %%%%% Sonia: Have updated to say that ``certain'' just refers to all the conditional regressions.
+The available indicators are displayed in Figure 1. In all conditional regression specifications we also use the reported mother's age, total number of prior births, and the gestational length of the birth as control variables \cite{Hall2003}.  Summary statistics for these variables (and all datasets) are presented in Table S1.
+  
+
+\paragraph{Swedish Medical Birth Register}
+The Swedish Medical Birth Register contains data on nearly the entire universe of births occurring in Sweden starting in 1973 \cite{EPC2003}.  Approximately 1.4\% of births are not included where completed records are not sent by the delivery hospitals \cite{EPC2003}. The registers record live and still births, the health of the mother and child and birth type (singleton or twin).  Our estimation sample consists of all live singleton or twin births for which full information is available occurring between 1993 and 2012 (a period during which a number of key variables such as smoking are recorded) to all mothers aged 18-49 at the time of birth.  The estimation sample consists of 1,233,546 births, of which 29,482 are twins (2.39\%). 
+
+The maternal health indicators are displayed in Figure 1. Smoking is recorded at gestation weeks 10-12 and 30-32, weight is pre-pregnancy weight (from which BMI and indicators of underweight and obesity are calculated) and medical diagnoses are for chronic pre-pregnancy conditions (diabetes, asthma, hypertension, and kidney disease). We observe maternal age, total number of prior births, and gestational length, and include these as control variables in all conditional regression specifications.
+
+\paragraph{Avon Longitudinal Study of Parents and Children (ALSPAC)}
+ALSPAC is a longitudinal survey that has tracked families since 1990. Our sample consists of the 10,463 ALSPAC children whose mothers responded to health surveys during pregnancy, among whom are 248 twins (2.37\%). The pre-pregnancy maternal health surveys ask a series of questions regarding the mother's diet, physical health and health behaviours. ALSPAC is available to researchers but requires application. The variables we use are in Figure 1 where healthy diet refers to the reported frequency of consuming fresh fruit and ``healthy'' foods, alcohol consumption is during pregnancy and the medical conditions are pre-pregnancy. In conditional regression models we control for fixed effects for mother's age and total fertility.
+
+\paragraph{Chilean Survey of Early Infancy}
+The Longitudinal Survey of Early Infancy is an ongoing nationally representative survey in Chile that started in 2009.  We retain 14,050 of the 15,175 cases which consist of biological mothers with complete records for children. In total, 358 twin births (2.55\%) are observed. Maternal health indicators are as in Figure 1, where pre-pregnancy weight is used to construct indicators of  `normal', `underweight' and `obese', smoking, alcohol and drug consumption are during pregnancy and the survey asks if these behaviours were never, sporadic, or regular. The omitted categoy is ``never consumed''. We also have mother's age, region of residence, and total completed fertility as conditioning variables. 
+
+\paragraph{Demographic and Health Surveys}
+The Demographic and Health Surveys (DHS), funded by USAID, are nationally representative and have a module focusing on fertile aged women, which records measures of health, fertility, and birth type (twin/singleton).  We collect all publicly available surveys conducted between 1990 and 2013, resulting in data from 68 countries on 2,058,324 singleton or twin births, of which 43,020 (2.09\%) are twins.  Births with multiplicity of greater than 2 (which constitute less than 0.008\% of the sample) are removed.  A full list of the surveys included in our sample is available in Table S4.
+
+In the DHS, BMI is recorded at the time of the survey rather than pre-pregnancy and births to women who are 18 to 49 years old at the survey date occur anywhere between the survey date and some 30 years before the survey date, but as long as distance from survey is balanced between twin and non-twin mothers, it seems valid to use BMI at survey as a proxy for long-term BMI. The DHS contains indicators of medical facilities in the woman's survey cluster. Clusters  are the primary sampling units and, in our sample, the average number of children in a cluster is 87. In order to determine the availability of medical care (rather than actual usage which would contain selection), we calculate the proportion of all pregnancies in a cluster which were attended by doctors, attended by nurses, attended by village health workers, and unattended by any medical professionals during the prenatal period. These variables are constant at the level of the cluster, and in regressions, prenatal care from a village health workers is used as the omitted base category. Since we pool DHS data across countries and survey years, we consistently include country and year fixed effects. %Summary statistics for all variables are presented in panel E of extended data table 1.
+
+\paragraph{Foetal Death Data}
+In order to compare the likelihood of foetal death for twins and singletons, we combine foetal death and birth data from the National Vital Statistics Data. States are required to report foetal deaths to the National Vital Statistics System when they occur at greater than 20 weeks of gestation, or weighing more than 350 g. A number of states report deaths occurring at less than 20 weeks, however for comparability we restrict our sample to foetal deaths occurring at or after 20 weeks of gestation.  We focus on foetal deaths occurring in the years prior to 2003.  In recent years (2008 onwards) foetal death data do not contain information on maternal health, and between 2003 and 2008 fewer measures of health were included.  Prior to the 2003 revision of the birth certificate however, identical maternal health questions were recorded in the foetal death and live birth records.
+%Damian What about 2003-2008?
+%%%%% Sonia: Added this message above.  Basically, pre 2003 is the best year for full coverage of all health variables in both foetal death and live birth data.  While it would be possible to do *something* between 2003-2008 it would require some cautious coding, and various states would drop out, as from 2003 onwards states changed over to the new birth certificate format in different years.
+
+Our sample consists of all singleton or twin live births and foetal deaths (occurring at 20 weeks of gestation or later) recorded in the NVSS during 1999-2002, which results in a sample of 13,411,182 pregnancies, 66,251 of which resulted in foetal deaths. Comparable maternal health variables in both birth and death data files are those displayed in Figure 4 and Figures S5-S6. %(%%DC: xx is the table with the regression results for miscarriage which i feel should be in extended data but i dont feel v strongly if you want to leave it in Supplem for now). 
+Summary statistics are in Table S3.
+
+
+\clearpage
+\section{Supplementary Figures and Tables}
+\begin{spacing}{1}
+
+\begin{figure}[htpb!]
+\includegraphics[width=0.9\textwidth]{coverage.eps}
+\caption{\textbf{Coverage of data containing indicators of twin births and maternal health by country and data type}. {\footnotesize  Different colours represent different types of data (surveys, national vital statistics, or no data collected).  Each data type is described in the figure legend.}}
+\label{fig:twincoverage}
+\end{figure}
+
+
+\clearpage
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.9]{./forest/forestCrop_Cond}
+  \end{center}
+  \caption{\textbf{Effects of mother's health on twinning (conditional results)} {\footnotesize Specifications are identical to those in Figure 1 in the paper, however now all independent variables are included together as one regression for each country. Further details regarding estimation samples and variable construction are available in notes to Figure 1 and Materials and Methods.}}
+  \label{fig:fullEstsCond}
+\end{figure}
+\thispagestyle{empty}
+\clearpage
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.9]{./forest/forestCrop_ART}
+  \end{center}
+  \caption{\textbf{Effects of mother's health on twinning (ART only)} {\footnotesize Effects of maternal health on twin births (ART only) Results are reported following the specifications in Figure 1, for USA only (where ART usage is observed for all births). The sample period and specification is identical to those in Figure 1, however now only Artificial Reproductive Technology users are included in the regression.}}
+  \label{fig:fullEstsART}
+\end{figure}
+
+
+  
+\begin{figure}[htpb!]
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./EducDif.eps}
+\end{subfigure}%
+%\begin{subfigure}{.5\textwidth}
+%  \includegraphics[scale=0.59]{./EducStdDif.eps}
+%\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.45]{./educGDP.png}
+\end{subfigure}%
+%\begin{subfigure}{.5\textwidth}
+%  \includegraphics[scale=0.45]{./educGDPsd.png}
+%\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{Twin mothers are more educated than non-twin mothers}: {\footnotesize The left-hand plot replicates Figure 2, however comparing the education of twin mothers with the education of non-twin mothers.  Each plot displays the difference in completed education between twin and non-twin mothers along with their 95\% confidence intervals for each country in which this microdata is available.  All estimates are conditional on total fertility, mother's age and child year of birth.  The right-hand panel plots this differences against log GDP per capita, where log GDP per capita data comes from the World Bank Data Bank (indicator NY.GDP.PCAP.PP.KD), and is expressed at Purchasing Power Parity.  Each circle represents a particular country. The global correlation between the education difference and GDP conditional on continent fixed effects is 0.198 (t-statistic 1.47). Figures 2 and 3 in the text document these findings with maternal health as proxied by mother's height. As in Figure 2, the estimates for most countries lie above the zero line and, overall, there is a slight positive association of the education difference with country income, consistent with studies showing that education is most likely to benefit health when medical technology is changing quickly \cite{LlerasMuneyGlied2008}.}}
+\label{fig:educAll}
+\end{figure}
+
+\begin{figure}[htpb!]
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./Deathssmokes_Uncond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./Deathsdrinks_Uncond.eps}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsnoCollege_Uncond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./Deathsanemic_Uncond.eps}
+\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{Rates of miscarriage are higher for twins with unhealthy mothers (Unstandardised Estimates)}: {\footnotesize Unstandardised estimates in each column presents the difference in rates of miscarriage based on whether the mother engages in a particular health behaviour, or has a particular health stock.  All coefficients are unstandardised, so are interpreted as the effect of moving from not engaging in the particular behaviour to engaging in the behaviour in question. Figure 4 presents the baseline (standardised) results, along with further notes.}}
+\label{fig:miscarriageUnstand}
+\end{figure}
+
+\begin{figure}[htpb!]
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_smokes_cond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_drinks_cond.eps}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_noCollege_cond.eps}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \includegraphics[scale=0.59]{./DeathsZ_anemic_cond.eps}
+\end{subfigure}
+%\captionsetup{labelformat=empty}
+\vspace{5mm}
+\caption{\textbf{Rates of miscarriage are higher for twins with unhealthy mothers (conditional estimates)}: {\footnotesize Conditional estimates in each column present the difference in rates of miscarriage based on whether the mother engages in a particular health behaviour, or has a particular health stock.  Each value is conditional on mother age fixed effects, total fertility fixed effects, and year of birth fixed effects. Coefficients are standardised as in Figure 4. For the unconditional results and further notes, refer to Figure 4 of the paper.}}
+\label{fig:miscarriageCond}
+\end{figure}
+
+  \clearpage
+
+  \thispagestyle{empty}
+\input{summaryStatsWorld.tex}
+\addtocounter{table}{-1}
+\input{summaryStatsWorld_DE.tex}
+%Damian is this same as additional results?
+%%%%% Sonia: I will reply about the sections and Nature definitions on email.
+%Damian the legend on census survey etc is v hard to read.
+%%%%% Sonia: Updated (also next comment).
+%Damian legend hard to read
+\clearpage
+%%%%\input{twinEffectsUncondUnstand.tex}
+%%%%\input{twinEffectsCond.tex} 
+\begin{table}
+  \begin{center}
+    \begin{tabular}{lccc}
+      \toprule
+      \textbf{Dependent Variable:}      & All & Non-Twin & Twin \\
+      Birthweight      & Births & Births & Births \\
+      \midrule
+      Smokes 3 Months Prior to Pregnancy & -98.36*** & -100.8*** & -57.41*** \\
+      & (1.172) & (1.189) &  (5.591) \\
+      Smokes Trimester 1 & -140.3*** & -144.1*** & -92.67*** \\
+      & (1.316) & (1.333) & (6.440) \\
+      Smokes Trimester 2 & -163.0*** & -167.8*** & -106.9*** \\
+      & (1.390) & (1.407) & (6.940) \\
+      Smokes Trimester 3 & -168.3*** & -173.2*** & -109.8*** \\
+      & (1.417) & (1.434) & (7.137) \\
+      \midrule
+      Average Birthweight & 3,283.5   & 3,311.5   & 2,369.7 \\
+      Observations        & 1,411,556 & 1,370,368 & 40,151  \\
+      \bottomrule
+      \caption{\textbf{Smoking and birthweight} {\footnotesize Each cell represents a multivariate OLS regression of smoking behaviour on birthweight using the sample of USA birth data used in Figure 1.  All specifications follow those reported in equation 1 and Figure 1.  Smoking in each period is a binary measure, and birthweight is measured in grams.}}
+    \end{tabular}
+  \end{center}
+\end{table}
+%%%\input{twinEffectsIVF.tex}
+
+%%%%Damian: discuss dropping Ext Data Fig 2 i am not sure what it adds
+%%%%% Sonia: Yes, fair point.  I have removed now.  We actually weren't even referring to it in the text, and we need to refer to all things that are included, so good to remove.
+
+%%%\begin{figure}[htpb!]
+%%%\begin{subfigure}{.5\textwidth}
+%%%  \includegraphics[scale=0.6]{./TwinsSSA_AllIncome_smooth.eps}
+%%%   \caption{Sub-Saharan Africa}
+%%%\end{subfigure}%
+%%%\begin{subfigure}{.5\textwidth}
+%%%  \includegraphics[scale=0.6]{./USTwinFLE.eps}
+%%%  \caption{United States of America}
+%%%\end{subfigure}
+%%%%\captionsetup{labelformat=empty}
+%%%\caption{\textbf{Descriptive Trends of Twinning over Time}: {\footnotesize Each plot presents the proprtion of
+%%%twins of all births in a given year, and the average life expectancy of women in that year. In
+%%%both cases, life expectancy data comes from the World Bank Data Bank (indiciator SP.DYN.LE00.FE.IN) and refers to the life expectancy at birth for a female infant born in that year if the prevailing mortality rates remained unchanged throughout her life.  For Sub-Saharan Africa, twin proportions ar calculated based on all births in these countries from DHS data (see Supplementary Information for more information).  The plot begins in 1975 and ends in 2010, in line with the range of availaibility of birth information from the sample of DHS countries.  A 3 year moving average is plotted.  In the United States, twin proportions are determined from full birth certficate data in each year.  The graph begins at 1971 as before this year the birth type variable was not recorded.  The vertical dotted line represents the first successful case of IVF in the country.}}
+%%%\end{figure}
+
+
+%Damian the Summary stats table ext data table 1 should come here, i cannot see it. In the Notes to this table i wanted to make this edit: replace "`context examined"' with "`sample analysed in table 1 of the paper"'
+%%%%% Sonia: Updated.
+%\input{twinEffectsCond.tex}
+%\begin{landscape}
+%\input{FDeath_Uncond.tex}
+%\end{landscape}
+%\begin{landscape}
+%\input{FDeath_Cond.tex}
+%\end{landscape}
+\input{USADeathSumTab.tex}
+
+%%Damian - edits to put in to Notes to the CHile and LDC Summ Stats table- replace "`each context examined"' with "`samples analysed in Table 1 in the paper"' Drop "` All Samples Panels D and E from title of table
+%%%%% Sonia: Updated.
+%%Damian - edits to notes to Ext Data Table 3. Replace existing sentence with this one: Specifications are identical to those in Table 1 in the paper, however now all independent variables are included together. Asterisks.."'    In title replace Effect with Effects
+%%%%% Sonia: Updated.
+%%Damian - edits to notes to Ext Data Table 4. After "` a 1 unit increase in the independent variable"' could you add "`For indicators like smoking this is a switch from not smoking to smoking. In title replace Effect with Effects
+%%%%% Sonia: Updated.
+%%Damian - Ext Data Table 5: In this table and in main analysis Fig 3, is it worth replacing numbers conditional upon non-zero, so we capture the intensive margin, otherwise probably dominated by zero mass.
+%%%%% Sonia: I may be misunderstanding, but at least in figure 3 of the text we need the 0s, as it is a simple comparison between 0 and 1, twin and non-twin (eg there are four cells, twin non-smokers, twin smokers, singleton non-smokers and singleton smokers, and this is who the four bars correspond to).
+%%Damian - Ext Data Fig 4- Make title consistently lower case or consistently upper case and in title add "`Standardized Estimates"'? I wonder if we should drop this Fig?
+%%%%% Sonia: Have checked Nature requirements, and all titles are now starting with capital and then lower case.  Have dropped extended data figure 4 and 5 as suggested.
+%%Damian - Ext Data Fig 5 -similar';' and most important the reader should see at a glance how this figure differs so indicate `Standardized Estimates" or Unstandardized
+%%Damian - Ext Data Fig 6_ title should incldue "`Conditional Estimates"'
+%%%%% Sonia: Done.
+
+%NOTE FOR SUM TALBE: FOETAL DEATHS & BIRTHS FROM NVSS:
+%%\\textbf{Summary Statistics: Births and Foetal Deaths 1999-2002 (USA)}
+%% {\\footnotesize Descriptive statistics are presented for all births
+%% and foetal deaths recorded in USA National Vital Statistics Data prior
+%% to the birth and death certificate reorganisation in 2003. Full data
+%% collection details are avilable in supplementary methods. All variables
+%% are either binary measures, or with units indicated in the variable
+%% name.}
+
+%%%\begin{figure}[htpb!]
+%%%\begin{subfigure}{.5\textwidth}
+%%%  \includegraphics[scale=0.59]{./HeightStdDif.eps}
+%%%\end{subfigure}%
+%%%%\begin{subfigure}{.5\textwidth}
+%%%%  \includegraphics[scale=0.59]{./EducStdDif.eps}
+%%%%\end{subfigure}
+%%%\begin{subfigure}{.5\textwidth}
+%%%  \includegraphics[scale=0.45]{./heightGDPsd.png}
+%%%\end{subfigure}%
+%%%%\begin{subfigure}{.5\textwidth}
+%%%%  \includegraphics[scale=0.45]{./educGDPsd.png}
+%%%%\end{subfigure}
+%%%%\captionsetup{labelformat=empty}
+%%%\vspace{5mm}
+%%%\caption{\textbf{Twin Effects exist at all income levels}: {\footnotesize Each plot displays the difference in standardised Z-scores of height between twin and non-twin mothers. Z-scores compare each mother's outcome to the mean and standard deviation in her country.  The left-hand panel present multivariate regression estimates of the difference between twin and non-twin mothers along with their 95\% confidence intervals for each country in which this microdata is available (replicating the unstandardised figure 1).  All estimates are conditional on total fertility and mother's age.  The right-hand panel plot these differences against log GDP per capita, where log GDP per capita data comes from the World Bank Data Bank (indicator NY.GDP.PCAP.PP.KD), and is expressed at Purchasing Power Parity.  Each circle represents a particular country.  Circles above the horizontal dotted line imply that twin mothers are taller than non-twin mothers. The size of the circle indicates the proportion of all births in the country which are twins, with larger points implying a larger proportion of twins. The global correlation between standardized height difference and GDP conditional on continent fixed effects is 0.265 (t-statistic 1.83). Figures 1 and 2 in the text replicate these figures using unstandardized values for mother's height.}}
+%%%\end{figure}
+
+%Damian: Discuss dropping the figire abora 
+%%%%% Sonia: Has been dropped.
+
+
+\begin{spacing}{1}
+\input{Countries.tex}
+
+
+
+\end{spacing}
+
+%%%\begin{table}
+%%%  \begin{center}
+%%%    \caption{Total Factor Analysis of Health and Twinning}
+%%%    \begin{tabular}{lcccc}
+%%%      \toprule
+%%%\textbf{Dependent Variable:}       &Developed & United & Chile & United \\
+%%% Predicted Factor (Z-score)        &Countries & States &       & Kingdom \\ \midrule
+%%%      Twin Mother&0.163***&0.0250***&0.111***&0.110*\\
+%%%      &(0.0048)&(0.0051)&(0.0343)&(0.0645)\\
+%%%      Constant&-0.0008&-0.0822&-0.368&-0.262 \\
+%%%  &(0.0007)&(0.0008)&(0.624)&(0.994) \\
+%%%      &&&&\\
+%%%  Observations&2,053,144&1,363,558&26,581&10,365 \\ \bottomrule
+%%%    \end{tabular}
+%%%  \end{center}
+%%%\end{table}
+%%%
+%%%
+%%%\begin{table}
+%%%  \begin{center}
+%%%    \caption{Underlying Factor Loadings}
+%%%    \begin{tabular}{lcccc}
+%%%      \toprule
+%%%      &     Factor 1&     Factor 2&     Factor 3&  Uniqueness\\
+%%%      \midrule
+%%%      \textsc{Developed Countries (DHS)} &&&\\
+%%%      Mother's Height (cm)&    .0253809&   -.1675533&    -.111682&    .9588088\\
+%%%      Not Obese             &   -.0721951&   -.1984215&     .362284&    .8241671\\
+%%%      Not Underweight           &    .0700409&    .0340981&   -.3224643&    .8899483\\
+%%%      Attended Births in Area (\% Doctor)&    .3952073&    .8354851&    .0165493&    .1454991\\
+%%%      Attended Births in Area (\% Nurse)&     .388454&    -.661938&    .0089997&    .4108599\\
+%%%      Attended Births in Area (\% Any)&    .9768874&   -.0694478&    .0002767&    .0408901\\
+%%%      \midrule
+%%%      \textsc{United States} &&&\\
+%%%      Mother's height (cm)&   -.0340336&   -.0315658&    .0309955&    .9968846\\
+%%%      Mother Didn't Smoke Before Pregnancy&    .8416049&    .5059564&   -.0007798&     .035777\\
+%%%      Mother Didn't Smoke in Trimester 1&    .9270037&    .1197551&    .0004798&    .1263201\\
+%%%      Mother Didn't Smoke in Trimester 2&     .988942&   -.1122964&    .0001707&    .0093789\\
+%%%      Mother Didn't Smoke in Trimester 3&    .9479534&    -.092264&   -.0009937&    .0928711\\
+%%%      Mother Didn't have pre-pregnancy diabetes&    .0057924&    .0038151&    .1580478&    .9749741\\
+%%%      Mother Didn't have pre-pregnancy hypertension&     .007462&      .00469&    .2115058&    .9551902\\
+%%%      Mother was not obese (pre-pregnancy)&    .0244563&    .0189005&    .4860942&     .762738\\
+%%%      Mother was not underweight (pre-pregnancy)&     .041326&    .0044408&   -.2319785&    .9444594\\
+%%%      \midrule
+%%%      \textsc{Chile} &&&\\
+%%%      Did Not Smoke During Pregnancy      &    .2628755&    .1703617&    .0241949&     .901288\\
+%%%      Did Not Take Drugs (Moderate) &    .0705569&    .2199089&   -.0217474&    .9461889\\
+%%%      Did Not Take Drugs (High)  &    .3689988&   -.1262455&    .0026437&     .847895\\
+%%%      Did Not Drink Alcohol (Moderate) &    .1393594&    .2894535&    .0099134&    .8966973\\
+%%%      Did Not Drink Alcohol (High) &    .3651861&   -.1491415&    .0184134&    .8440569\\
+%%%      Not Low Weight Before Pregnancy    &    .1082982&    .0038736&    -.127083&    .9721064\\
+%%%      Not Obese Before Pregnancy        &   -.0009626&    .0090933&    .1499253&    .9774388\\
+%%%      \midrule
+%%%      \textsc{United Kingdom} &&&\\
+%%%      Not Low Weight Before Pregnancy     &    .0086639&    .0639742&    .1024191&    .9853426\\
+%%%      Not Obese Before Pregnancy           &   -.0153507&    .0390087&    -.059867&    .9946586\\
+%%%      No Hypertension Before Pregnancy    &    .0035539&   -.0110148&   -.0003171&    .9998659\\
+%%%      No Diabetes Before Pregnancy    &   -.0174173&   -.0014923&    .0264027&    .9989973\\
+%%%      Did Not Drink Alcohol (Moderate)  &    .6167461&   -.1001744&   -.0474115&    .6073414\\
+%%%      Did Not Drink Alcohol (High) &     .624899&   -.0191377&   -.0316698&     .608132\\
+%%%      No Passive Smoke &    .0733315&    .5084012&     -.04006&    .7345459\\
+%%%      Did Not Smoke  &    .0634334&    .5291988&    .0053393&    .7158963\\
+%%%      Height              &   -.0567498&    .1121194&   -.0612136&    .9804616\\
+%%%      Frequently Consumed Health Food  &   -.0032402&    .1282038&     -.13291&    .9658882\\
+%%%      Frequently Consumed Fresh Fruit  &   -.0160699&    .2642819&   -.1342545&    .9118725\\
+%%%      
+%%%
+%%%      \bottomrule
+%%%      
+%%%
+%%%    \end{tabular}
+%%%  \end{center}
+%%%\end{table}
+
+
+
+
+\end{spacing}
+
+
+
+%\end{linenumbers}
+\bibliographystyle{Science}
+\bibliography{refs}
+
+\end{document}
+
+
+\clearpage
+
