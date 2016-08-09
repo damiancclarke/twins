@@ -74,10 +74,7 @@ local samp5         0
 local resave        0
 local samples       0
 local matchrate     0
-local sumstats      0
   local graphs      0
-local sumstats2     0
-  local graphs2     0
 local trends        0
 local graphsMB      0
 local graphsSW      0
@@ -103,9 +100,9 @@ local pool          0
 
 * VARIABLES
 global outcomes school_zscore
-global sumstatsM fert idealnumkids agemay educf height bmi underweight exceedfam
-global sumstatsC educ school_zscore noeduc
-global sumstatsF infantmortality childmortality
+global sumM fert agemay educf height bmi underweight
+global sumC age educ school_zscore noeduc
+global sumF infantmortality
 global twinpred motherage motheragesq agefirstbirth educf educfyrs_sq
 global twinpredict $twinpred height bmi i.child_yob i._cou 
 global twinout motherage motheragesq agefirstbirth educf educfyrs_sq height bmi
@@ -128,10 +125,6 @@ local MAGE 0
 
 
 * FILE NAMES
-local Sum      Summary
-local SumC     SummaryChild
-local SumF     SummaryMortality
-local SumBord  Summary_Birthorder
 local TwinPred Twin_Predict
 local IVt      Base_IV_twins
 local IVt1     Base_IV_twins_firststage
@@ -317,166 +310,63 @@ if `samples'==1 {
 *******************************************************************************
 *** (2) Summary Stats
 *******************************************************************************
-if `sumstats'==1 {
-	
-	if c(os)=="Unix" local format eps
-	else if c(os)!="Unix" local format png
-	
-	***************************************************************************
-	*** (2a) Tables
-	***************************************************************************
-	* (A) By twins
-	local opts cells("count mean sd min max")
-	local sep &		
-	local numkids "Number of Children (Education)"
-	local numkidsF "Number of Children (Ever Born)"
-	local nummothers "Number of Mothers"
-	local ncou "Number of Countries &"
+local opts nostar unstack noobs nonote nomtitle nonumber
+local s twindfamily
+preserve
+keep `cond'&nonmiss==0
+collapse $sumM, by(id `s')
+count
+sum `s'
+tab `s'
 
-	foreach num of numlist 1(1)4 {
-		cap drop count 
-		gen count = 1 `cond' & nonmiss==0
-		replace count=. if catnum!=`num'
-		foreach var of local sumstatsC {
-			replace count=. if `var'==.
-		}
-		count if count==1 
-		local kk = "`: display %9.0fc r(N)'"
+estpost tabstat $sumM, by(`s') statistics(mean sd) listwise columns(statistics)
+esttab using "$TAB/Summary/MotherSum.txt", replace main(mean) aux(sd) `opts'
+restore
 
-		local numkids "`numkids' `sep'" "`kk'"
+count
+tab `s'
+estpost tabstat $sumC, by(`s') statistics(mean sd) listwise columns(statistics)
+esttab using "$TAB/Summary/ChildSum.txt", replace main(mean) aux(sd) `opts'
 
-		bys id: gen n=_n
-		count if count==1&n==1
-		local mm = "`: display %9.0fc r(N)'"
-		local nummothers "`nummothers' `sep'" "`mm'"
-		drop n
+preserve
+use "$Data/DHS_twins_mortality.dta", clear
+keep `cond'
+estpost tabstat $sumF, by(`s') statistics(mean sd) listwise columns(statistics)
+esttab using "$TAB/Summary/MortSum.txt", replace main(mean) aux(sd) `opts'
 
-	}
-
-	levelsof _cou if income=="low"
-	local lincc: word count `r(levels)'
-	levelsof _cou if income=="mid"
-	local mincc: word count `r(levels)'
-	levelsof _cou
-	local aincc: word count `r(levels)'	
-	local numcountry "`ncou' `lincc'`sep'`lincc'`sep'`mincc'`sep'`mincc'`sep'`aincc'"
-
-	count `cond' & nonmiss==0
-	local kidcount = "`: display %9.0fc r(N)'"
-	sum twind
-	scalar at = "`: display %7.4f r(mean)'"
-	scalar as = "`: display %7.4f r(sd)'"	
-	sum twind if inc_status=="L"
-	scalar lt = "`: display %7.4f r(mean)'"
-	scalar ls = "`: display %7.4f r(sd)'"
-	sum twind if inc_status!="L"
-	scalar mt = "`: display %7.4f r(mean)'"
-	scalar ms = "`: display %7.4f r(sd)'"
-
-	sum bord if twind==1
-	scalar abm = "`: display %7.3f r(mean)'"
-	scalar abs = "`: display %7.3f r(sd)'"
-	sum bord if twind==1 & inc_status=="L"
-	scalar lbm = "`: display %7.3f r(mean)'"
-	scalar lbs = "`: display %7.3f r(sd)'"
-	sum bord if twind==1 &  inc_status!="L"
-	scalar mbm = "`: display %7.3f r(mean)'"
-	scalar mbs = "`: display %7.3f r(sd)'"
+restore
+exit
 
 
-	preserve
-	gen exceedfam=idealfam==1
-	keep `cond'&nonmiss==0
-	collapse $sumstatsM, by(id cat)
-	count
-	local mothercount = "`: display %9.0fc r(N)'"
-	
-	estpost tabstat $sumstatsM, by(cat) statistics(mean sd) listwise ///
-	 columns(statistics)
-	esttab using "$Tables/Summary/`Sum'.txt", replace main(mean) aux(sd) /*
-	*/ nostar unstack noobs nonote nomtitle nonumber
-	restore
-
-	estpost tabstat $sumstatsC, by(cat) statistics(mean sd) listwise ///
-	 columns(statistics)
-	esttab using "$Tables/Summary/`SumC'.txt", replace main(mean) aux(sd) /*
-	*/ nostar unstack noobs nonote nomtitle nonumber
-	
-	preserve
-	use "$Data/DHS_twins_mortality.dta", clear
-	keep `cond'
-	estpost tabstat $sumstatsF, by(cate) statistics(mean sd) listwise ///
-	 columns(statistics)
-	esttab using "$Tables/Summary/`SumF'.txt", replace main(mean) aux(sd) /*
-	*/ nostar unstack noobs nonote nomtitle nonumber
-
-	foreach num of numlist 1(1)4 {
-		cap drop count
-		gen count = 1 `cond' & nonmiss==0
-
-		replace count=. if catnum!=`num'
-		foreach var of local sumstatsF {
-			replace count=. if `var'==.
-		}
-		count if count==1
-		local kk = "`: display %9.0fc r(N)'"
-
-		local numkidsF "`numkidsF' `sep'" "`kk'"
-	}
-	count `cond' & nonmiss==0
-	local kidcountF = "`: display %9.0fc r(N)'"
-	
-	clear
-	restore
-
-
-	file open resfile using "$Tables/Summary/Count.txt", write replace
-	file write resfile "`numcountry' \\" _n
-	file write resfile "`nummothers' & `mothercount' \\" _n
-	file write resfile "`numkids' & `kidcount' \\" _n
-	file write resfile "`numkidsF' & `kidcountF' \\" _n
-	
-	file write resfile "Fraction Twin & \multicolumn{2}{c}{ `=scalar(lt)'" ///
-	  "}& \multicolumn{2}{c}{ `=scalar(mt)' } & `=scalar(at)'\\" _n
-	file write resfile "& \multicolumn{2}{c}{(`=scalar(ls)')" ///
-	  "}& \multicolumn{2}{c}{(`=scalar(ms)')} & (`=scalar(as)')\\" _n
-	file write resfile "Birth Order Twin & \multicolumn{2}{c}{ `=scalar(lbm)'" ///
-	  "}& \multicolumn{2}{c}{ `=scalar(mbm)' }& `=scalar(abm)'\\" _n
-	file write resfile "& \multicolumn{2}{c}{(`=scalar(lbs)')" ///
-	  "}& \multicolumn{2}{c}{(`=scalar(mbs)')}& (`=scalar(abs)')\\" _n
-	file write resfile "`mothercount'"
-	file close resfile
-
-	/*
-	preserve
-	cap decode _cou, gen(WBcountry)
-	gen colvar=inc_status=="L"
-	collapse colvar, by(WBcountry _year)
-	gen income="Low" if colvar==1
-	replace income="Middle" if colvar==0
-	drop colvar
-	order WBcountry income _year
-	sort WBc _year
-	outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
-	restore
-	*/
-   ***************************************************************************
-	*** (2b) Graphical
-	*** graph 1: total births by family type (twins vs non-twins)
-	*** graph 2: total births by family type for families who exceed desired
-	*** graph 3: Proportion of twins by birth order
-	*** graph 4: Desired family size
-	*** graphs 5-7: Desired family size by mother's characteristics
-	***************************************************************************
-	if `graphs'==1 {
-
-  #delimit ;
-	twoway kdensity fert if twinfamily>0&twinfamily!=., lpattern(dash) bw(2) ||
-	  kdensity fert if twinfamily==0, bw(2) scheme(s1color) ytitle("Density")   
-	  legend(label(1 "Twin Family") label(2 "Singleton Family"))               
-	  xtitle("total children ever born"); 
-	graph save "$Graphs/`famsize'", replace;
-	graph export "$Graphs/`famsize'.`format'", as(`format') replace;
+/*
+preserve
+cap decode _cou, gen(WBcountry)
+gen colvar=inc_status=="L"
+collapse colvar, by(WBcountry _year)
+gen income="Low" if colvar==1
+replace income="Middle" if colvar==0
+drop colvar
+order WBcountry income _year
+sort WBc _year
+outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
+restore
+*/
+    
+***************************************************************************
+*** (2b) Graphical
+*** graph 1: total births by family type (twins vs non-twins)
+*** graph 2: total births by family type for families who exceed desired
+*** graph 3: Proportion of twins by birth order
+*** graph 4: Desired family size
+*** graphs 5-7: Desired family size by mother's characteristics
+***************************************************************************
+if `graphs'==1 {
+    #delimit ;
+    twoway kdensity fert if twinfamily>0&twinfamily!=., lpattern(dash) bw(2) ||
+        kdensity fert if twinfamily==0, bw(2) scheme(s1color) ytitle("Density")   
+        legend(label(1 "Twin Family") label(2 "Singleton Family"))               
+    xtitle("total children ever born");
+    graph export "$Graphs/`famsize'.eps", as(eps) replace;
 
 	twoway kdensity fert if twinfamily>0&twinfamily!=. & fert > idealnumkids, 
 	  bw(2) lpattern(dash) || kdensity fert if twinfamily==0 & 
@@ -486,8 +376,7 @@ if `sumstats'==1 {
 	  xtitle("total children ever born") 
 	  subtitle("For families who exceed desired family size");
     #delimit cr
-	graph save "$Graphs/`famsize_e'", replace
-	graph export "$Graphs/`famsize_e'.`format'", as(`format') replace
+	graph export "$Graphs/`famsize_e'.eps", as(eps) replace
 
 	
 	local note1 "Single births are 1-frac(twins). "
@@ -502,13 +391,12 @@ if `sumstats'==1 {
 	  ytitle("Fraction twins") xtitle("Birth Order") yline(0.0189) ///
 	  scheme(s1color)
 	graph save "$Graphs/`twinbord'", replace
-	graph export "$Graphs/`twinbord'.`format'", as(`format') replace
+	graph export "$Graphs/`twinbord'.eps", as(eps) replace
 
 	twoway bar twind bord if bord<11 ||                     ///
 	line twinave bord if bord<11, ytitle("Fraction twins")  ///
 	  scheme(s1color) xtitle("Birth Order")
-	graph save "$Graphs/`twinbord'_hist", replace
-	graph export "$Graphs/`twinbord'_hist.`format'", as(`format') replace
+	graph export "$Graphs/`twinbord'_hist.eps", as(eps) replace
 	restore
 
 	
@@ -524,8 +412,7 @@ if `sumstats'==1 {
 	hist idealnum,  note("`n1' `n2'" "`n3'") frac scheme(s1color) ///
 	  xtitle("Ideal Family Size") title("Self Reported Ideal Family Size") ///
 	  xla(0/9, valuelabel) bcolor(navy)
-	graph save "$Graphs/`idealfam'", replace
-	graph export "$Graphs/`idealfam'.`format'", as(`format') replace
+	graph export "$Graphs/`idealfam'.eps", as(eps) replace
 	restore
 
 	foreach c of varlist agemay agefirstbirth fert {
@@ -559,7 +446,7 @@ if `sumstats'==1 {
 			scheme(s1color) xtitle("`char'") ytitle("Average Desired Family Size")
 		}
 	   graph save "$Graphs/idealfam_`c'", replace
-			graph export "$Graphs/idealfam_`c'.`format'", as(`format') replace
+			graph export "$Graphs/idealfam_`c'.eps", as(eps) replace
 		restore
 	}
 
@@ -598,82 +485,6 @@ if `sumstats'==1 {
 	}
 }
 
-if `sumstats2'==1 {
-
-	*****************************************************************************
-	*** (2d) Descriptive of desired
-	*****************************************************************************
-	estpost tab idealfam `cond'
-	esttab using "$Tables/Summary/Ideal.xls", cells("b pct") replace
-	estpost tab idealfam `cond'&twinfam==0
-	esttab using "$Tables/Summary/Ideal.xls", cells("b pct") append
-	estpost tab idealfam `cond'&twinfam>=1
-	esttab using "$Tables/Summary/Ideal.xls", cells("b pct") append
-	foreach num in `gplus' {
-		estpost tab idealnumkids `cond'&`num'_plus==1&twin_`num'_fam==0
-		esttab using "$Tables/Summary/Ideal.xls", cells("b pct") append
-
-		estpost tab idealnumkids `cond'&`num'_plus==1&twin_`num'_fam==1
-		esttab using "$Tables/Summary/Ideal.xls", cells("b pct") append
-	}
-
-	local t=2	
-	foreach n in `gplus' {
-		gen threshold`n'=(twin_`n'_fam==1 & idealnumkids==`t')
-		replace threshold`n'=. if twin_`n'_fam==0
-		local ++t
-	}
-	gen threshold2_5=1 if thresholdtwo==1|thresholdthree==1|thresholdfour==1|/*
-	*/thresholdfive==1
-	replace threshold2_5=0 if thresholdtwo==0|thresholdthree==0|/*
-	*/thresholdfour==0|thresholdfive==0
-
-	preserve
-
-	gen inclevel="L" if inc_status=="L"
-	replace inclevel="M" if inc_status=="LM"|inc_status=="UM"
-	keep threshold* id inclevel
-	collapse threshold*, by(id inclevel)
-	
-	estpost tabstat threshold2_5 thresholdt* thresholdfour thresholdfive, /*
-	*/ by(inclevel) statistics(mean sd count) columns(statistics)
-	mat counts = e(count)
-
-	esttab using "$Tables/Summary/Threshold.txt", replace main(mean) aux(sd) /*
-	*/ nostar unstack nonote nomtitle nonumber
-	esttab matrix(counts) using "$Tables/Summary/Threshold.txt", append
-	
-	restore
-	
-   *****************************************************************************
-	*** (2e) Descriptive of maternal health
-	*****************************************************************************	
-	if `graphs2'==1 {
-		preserve
-		collapse height weightk bmi [pw=sweight] `cond', by(id)
-		hist weightk if weightk>30&weightk<200, frac scheme(s1color) ///
-		  xtitle("Weight in kg") title("Mother's Weight at time of Survey")
-		graph export "$Graphs/MotherWeight.eps", as(eps) replace
-		hist height, frac scheme(s1color) ///
-		  xtitle("Height in cm") title("Mother's Height at time of Survey")
-		graph export "$Graphs/MotherHeight.eps", as(eps) replace
-		hist bmi, frac scheme(s1color) ///
-		  xtitle("BMI") title("Mother's BMI at time of Survey") ///
-		  note("BMI is experessed as weight in kg squared/height in km")
-		graph export "$Graphs/MotherBMI.eps", as(eps) replace
-		restore
-	}	
-
-	gen lowheight=height<157.48
-	replace lowheight=. if height==.
-	gen lowweight=bmi<18.5
-	replace lowweight=. if bmi==.
-	
-	estpost tab lowheight `cond'
-	esttab using "$Tables/Summary/Health.xls", cells("b pct") replace
-	estpost tab lowweight `cond'
-	esttab using "$Tables/Summary/Health.xls", cells("b pct") append
-}
 
 if `trends'==1 {
 	foreach inc in all low mid {
