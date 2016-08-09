@@ -49,7 +49,7 @@ local estopt cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) /*
 local sum     0
 local balance 0
 local twin    0
-local ols     1
+local ols     0
 local ivs     1
 local conley  0
 local gend    0
@@ -343,14 +343,14 @@ if `ivs'==1 {
             eststo: ivreg2 `y' `base' `H' (fert=twin_`f'_fam) [`wt'],
             `se' first ffirst savefirst savefp(`f'h) partial(`base');
             mat first=e(first);
-            estadd scalar KPF=first[8,1]: `f'sfert;
-            estadd scalar KPp=first[7,1]: `f'sfert;
+            estadd scalar KPF=first[8,1]: `f'hfert;
+            estadd scalar KPp=first[7,1]: `f'hfert;
             
             eststo: ivreg2 `y' `base' (fert=twin_`f'_fam) [`wt'],
             `se' first ffirst savefirst savefp(`f'b) partial(`base');
             mat first=e(first);
-            estadd scalar KPF=first[8,1]: `f'sfert;
-            estadd scalar KPp=first[7,1]: `f'sfert;
+            estadd scalar KPF=first[8,1]: `f'bfert;
+            estadd scalar KPp=first[7,1]: `f'bfert;
             restore;
             #delimit cr
         }
