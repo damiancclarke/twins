@@ -50,9 +50,9 @@ local sum     0
 local balance 0
 local twin    0
 local ols     0
-local ivs     1
+local ivs     0
 local conley  0
-local gend    0
+local gend    1
 local trend   0
 
 ********************************************************************************
@@ -284,13 +284,13 @@ exit
 if `ols'==1 {
     foreach y of varlist `yvars' {
 
-*        eststo: reg `y' `base' `SH'  fert [`wt']             , `se'
-*        eststo: reg `y' `base' `H'   fert [`wt'] if e(sample), `se'
-*        eststo: reg `y' `base'       fert [`wt'] if e(sample), `se'
+        eststo: reg `y' `base' `SH'  fert [`wt']             , `se'
+        eststo: reg `y' `base' `H'   fert [`wt'] if e(sample), `se'
+        eststo: reg `y' `base'       fert [`wt'] if e(sample), `se'
         
-*        estout est3 est2 est1 using "$OUT/OLSAll`y'.xls", replace `estopt' /*
-*        */ keep(fert `SH')
-*        estimates clear
+        estout est3 est2 est1 using "$OUT/OLSAll`y'.xls", replace `estopt' /*
+        */ keep(fert `SH')
+        estimates clear
 
         local j = 1
         foreach f in two three four {
@@ -367,7 +367,7 @@ if `ivs'==1 {
         estimates clear
     }
 }
-exit
+
 ********************************************************************************
 *** (6b) Plausibly exogenous bounds
 ********************************************************************************
@@ -398,18 +398,16 @@ if `conley'==1 {
             */ vce(robust) gmin(0) gmax(0.0124) grid(2) level(0.90)
             mat ConleyBounds[`i',1]=e(lb_fert)
             mat ConleyBounds[`i',2]=e(ub_fert)
+            
+            plausexog ltz Ey `ESH' (Ex=Ez), distribution(special, gamma) seed(5641)
+            cap mat ConleyBounds[`i',3]=_b[Ex]-1.65*_se[Ex]
+            cap mat ConleyBounds[`i',4]=_b[Ex]+1.65*_se[Ex]
 
-            local items 17
+            local items 28
             matrix omega_eta = J(`items',`items',0)
             matrix omega_eta[1,1] = 0.0016456^2
             matrix mu_eta = J(`items',1,0)
             matrix mu_eta[1,1] = 0.0062792
-
-            
-            plausexog ltz Ey `ESH' (Ex=Ez), distribution(special, gamma) seed(45)
-            cap mat ConleyBounds[`i',3]=_b[Ex]-1.65*_se[Ex]
-            cap mat ConleyBounds[`i',4]=_b[Ex]+1.65*_se[Ex]
-
             foreach num of numlist 0(1)5 {
                 matrix om`num' = J(`items',`items',0)
                 matrix om`num'[1,1] = ((`num'/5)*0.06/sqrt(12))^2
@@ -444,49 +442,77 @@ if `gend'==1 {
     foreach gend of numlist 1 2 {
 	foreach y of varlist  `yvars' {
             foreach f in two three four {
+                local F`f'
                 preserve
                 keep if childSex==`gend'&`f'_plus==1
                 #delimit ;
-                eststo: ivreg29 `y' `base' `age' smoke* heightMiss HH_* S_*
-                (fert=twin_`f'_fam) [`wt'], `se' first ffirst savefirst
-                savefp(`f'a) partial(`base');
-
-                eststo: ivreg29 `y' `base' `SH' (fert=twin_`f'_fam) [`wt'],
+                eststo: ivreg2 `y' `base' `SH' (fert=twin_`f'_fam) [`wt'],
                 `se' first ffirst savefirst savefp(`f's) partial(`base');
-                
-                dis "`f' base";
-                dis _b[fert];
-                dis _b[fert]/_se[fert];
-                
-                eststo: ivreg29 `y' `base' `H' (fert=twin_`f'_fam) if e(sample)
-                [`wt'], `se' first ffirst savefirst savefp(`f'h) partial(`base');
-                dis "`f' H";
-                dis _b[fert];
-                dis _b[fert]/_se[fert];
-
-                eststo: ivreg29 `y' `base' (fert=twin_`f'_fam) if e(sample)
-                [`wt'], `se' first ffirst savefirst savefp(`f'b) partial(`base');
-                dis "`f' SH";
-                dis _b[fert];
-                dis _b[fert]/_se[fert];
+                keep if e(sample);
+                mat first=e(first);
+                estadd scalar KPF=first[8,1]: `f'sfert;
+                estadd scalar KPp=first[7,1]: `f'sfert;
+            
+                eststo: ivreg2 `y' `base' `H' (fert=twin_`f'_fam) [`wt'],
+                `se' first ffirst savefirst savefp(`f'h) partial(`base');
+                mat first=e(first);
+                estadd scalar KPF=first[8,1]: `f'hfert;
+                estadd scalar KPp=first[7,1]: `f'hfert;
+            
+                eststo: ivreg2 `y' `base' (fert=twin_`f'_fam) [`wt'],
+                `se' first ffirst savefirst savefp(`f'b) partial(`base');
+                mat first=e(first);
+                estadd scalar KPF=first[8,1]: `f'bfert;
+                estadd scalar KPp=first[7,1]: `f'bfert;
                 restore;
                 #delimit cr
             }
+            local ests est3 est2 est1 est6 est5 est4 est9 est8 est7
+            local fs  twobfert twohfert twosfert threebfert threehfert  /*
+            */ threesfert fourbfert fourhfert foursfert
             #delimit ;
-            local estimates est4 est3 est2 est1 est8 est7 est6 est5 est12 est11 est10 est9;
-            local fstage twobfert twohfert twosfert twoafert threebfert threehfert
-            threesfert threeafert fourbfert fourhfert foursfert fourafert;
-            estout `estimates' using "$OUT/Gender/IVFert`y'G`gend'.xls", replace
+            estout `ests' using "$OUT/Gender/IVFert`y'_`gend'.txt", replace
             `estopt' keep(fert `SH');
-            estout `fstage'    using "$OUT/Gender/IVFert`y'1G`gend'.xls", replace
-            `estopt' keep(twin* `SH');
-            estimates clear;
+            estout `fs' using "$OUT/Gender/IVFert`y'_`gend'_first.txt", replace
+            keep(twin* `SH') cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par))
+            stats (N KPF KPp, fmt(%9.0g %9.2f %9.3f))
+            starlevel ("*" 0.10 "**" 0.05 "***" 0.01);
             #delimit cr
-	}
+            estimates clear
+
+            local j = 1
+            foreach f in two three four {
+                preserve
+                keep if childSex==`gend'&`f'_plus==1
+                eststo: reg `y' fert `base' `SH' [`wt']
+                keep if e(sample)==1
+                local maxR = e(r2)*1.5
+                psacalc fert delta, mcontrol(`base') rmax(`maxR')
+                estadd scalar Ost = `r(output)': est`j'
+                local ++j
+            
+                eststo: reg `y' fert `base' `H'  [`wt'] 
+                local maxR = e(r2)*1.5
+                psacalc fert delta, mcontrol(`base') rmax(`maxR')
+                estadd scalar Ost = `r(output)': est`j'
+                local ++j
+                eststo: reg `y' fert `base'      [`wt']
+                local ++j
+                restore
+            }
+            local estimates est3 est2 est1 est6 est5 est4 est9 est8 est7
+            #delimit ;
+            estout `estimates' using "$OUT/Gender/OLSFert`y'`gend'.txt", replace
+            cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par)) stats
+            (r2 N Ost, fmt(%9.2f %9.0g %9.3f)) keep(fert `SH') 
+            starlevel ("*" 0.10 "**" 0.05 "***" 0.01);
+            #delimit cr
+            estimates clear
+        }
     }
 }
 
-
+exit
 ********************************************************************************
 *** (8) Global trends from various data sources (USA)
 ********************************************************************************
