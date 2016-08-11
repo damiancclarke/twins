@@ -116,6 +116,13 @@ gen BMI185=bmi<18.5
 replace BMI185=. if bmi>99
 gen motherExcellentHealth=motherHealthStatus==1
 
+#delimit ;
+twoway kdensity fert if twinfamily==1, bw(1.4) lpattern(dash) 
+|| kdensity fert if twinfamily==0, bw(1.4) scheme(s1color) ytitle("Density")
+xtitle("Total Fertility") legend(lab(1 "Twin Family") lab(2 "Singleton Family"));
+graph export "$GRA/famsizeUS.eps", as(eps) replace;
+#delimit cr
+exit
 ********************************************************************************
 *** (3) Summary
 ********************************************************************************
