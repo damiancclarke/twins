@@ -13,7 +13,7 @@
 \and Damian Clarke\thanks{Deparment of Economics, Universidad de Santiago de Chile.
 Contact: \href{mailto:damian.clarke@usach.cl}
 {damian.clarke@economics.ox.ac.uk}}}
-\date{August 2015}
+\date{August 11, 2016}
 
 %at CMPO Bristol, ESPE, NEUDC, CSAE, The University of Essex, The University of 
 %Oxford, the Barcelona GSE summer forum, PacDev, and the RES conference
@@ -285,16 +285,16 @@ interaction between quality and quantity.  As well as the occurrence of twins
 pushing at least some families above their desired total fertility, this requires 
 that twin births are random.  Empirically, \citet{RosenzweigWolpin1980} 
 estimate the Q--Q trade-off, accounting for the increase in rates of twinning by 
-parity (a biological relationship)\footnote{Such a relationship is an empirical 
-regularity in all data examined. \citet{RosenzweigWolpin1980} report rates which 
-increase by parity in USA (see also appendix figure XX).  In DHS data a similar
-pattern is observed, as presented in appendix figure \ref{TWINtab:Lit}.}, and by
-total number of births (a mechanical relationship).  Beyond any observed variables,
-twinning must be conditionally random to produce consistent estimates.\footnote{It
-  is important to note that in their original paper this \emph{is} tested formally.
-  The authors report that a joint test of the effect of farm size, non-farm earnings
-  and parental education on the rate of twins per births did \emph{not} allow for
-  the rejection of no significant effect.}
+parity (a biological relationship)\footnote{Such a relationship is an empirical
+  regularity in all data examined. \citet{RosenzweigWolpin1980} report rates which
+  increase by parity in USA (see also appendix figure \ref{TWINfig:bordUS}).  In
+  DHS data a similar pattern is observed, as presented in appendix figure
+  \ref{TWINfig:bord}.}, and by total number of births (a mechanical relationship).
+Beyond any observed variables, twinning must be conditionally random to produce
+consistent estimates. In their original paper this \emph{is} tested formally by
+\citet{RosenzweigWolpin1980}.  They report that a joint test of the effect of
+farm size, non-farm earnings and parental education on the rate of twins per
+births did \emph{not} allow for the rejection of no significant effect.
 
 The twin instrument has been widely used since \citeauthor{RosenzweigWolpin1980}'s
 (\citeyear{RosenzweigWolpin1980}) initial work. As well as its use in the 
@@ -327,7 +327,7 @@ others.
 The validity of estimates the Q--Q parameter of interest in each case rely on
 twins being as good as random conditional on observable controls.  As is well
 documented in medical literature \citep{Hall2003} and acknowledged in the
-original twin estimation strategies in economics \citep{RosenweigWolpin1980},
+original twin estimation strategies in economics \citep{RosenzweigWolpin1980},
 older mothers and higher parity mothers are more likely to twin.  At a minimum,
 2SLS estimates based on twins always control for these variables, asuming that
 twins are as good as random conditional on age, and number of prior births.%
@@ -381,7 +381,8 @@ higher use of assisted ventilation at birth and lower gestion period than
 singletons. In our data samples similar endowment differences are observed. For
 example, appendix figure \ref{TWINfig:Size} documents the much larger average 
 reported birth size of twins versus singletons in DHS data. Birth weight figures 
-show similar patterns.}---has on investments in pre-twin siblings. They 
+show similar patterns from United States administrative data (appendix figure
+\ref{TWINfig:SizeUS}).}---has on investments in pre-twin siblings. They 
 demonstrate that if parents behave in such a manner, bounds for the Q--Q 
 trade-off can be calculated. This hypothesis is tested in 
 \citet{Angristetal2010}, and further examined in \citet{FitzsimonsMalde2014}. 
@@ -521,7 +522,7 @@ exogenous shock to family size, implying the following two stages:
   \end{eqnarray}
 \end{subequations}
 where $twins_j$ is an indicator for whether the $n^{th}$ birth in a family is a
-twin birth. As described further in section XX, the sample
+twin birth. As described further in section \ref{TWINsscn:samples}, the sample
 in each case is the so-called $n+$ group, consisting of children born before
 birth $n$ in families with at least $n$ births. As such the twins themselves are
 excluded from the estimation sample.\footnote{Typically, the argument is made
@@ -724,7 +725,6 @@ health differences between twin and non-twin mothers on child health.  As in
 the IV and OLS cases, observing the full set of relevant maternal health and
 behaviour variables which predict twinning is unlikely to be possible.
 
-%Damian in the sentence below i replaced child health with child quality
 In order to calculate a consistent estimate of $\gamma$ we proceed in two
 stage.  Firstly, we \emph{can} observe any exogenous shock to maternal health,
 $health_j$ and examine the full effect of the maternal health shock on child
@@ -938,158 +938,91 @@ United States National Health Interview Surveys (NHIS), which has been applied
 in an identical way from 2004-2014.  In what follows, we describe the 
 characteristics of these datasets.  A comprehensive description of all data, 
 including that which is used only to illustrate twinning and its relation to 
-maternal characteristics, is provided in the online data appendix.
+maternal characteristics, is provided in the online data appendix C.  Additional
+summary details and discussion of estimation samples is provided below.
 
 %*******************************************************************************
-\subsection{Data}                                  \label{TWINsscn:data}
-\subsubsection{The DHS}
-The DHS are a set of nationally representative surveys which have been 
-administered in low- and middle-income countries between 1985 and the present. 
-Women aged between 15--49 in surveyed households respond to an in-depth series 
-of questions reporting their full fertility history (listing all surviving and 
-non-surviving children), their actual and desired contraceptive use and number 
-of births, education level, marital status, plus the measurement of a number of 
-health endowments such as height and body mass index. For all other members 
-living in the household, a shorter series of responses are recorded, including 
-the individual's educational attainment.
-
-This results in two distinct sets of data to be merged. One database contains 
-one line for each birth reported by every 15--49 year-old woman surveyed with a 
-limited number of child-level covariates such as the child's date of birth, type 
-of birth (single or multiple), and the child's survival status. The other 
-database contains one line for each member currently living in the survey
-household. This database includes each member's educational status. We merge
-these two databases where all children who live in the same household as their 
-mother merge without loss.  We are thus able to generate data for the educational 
-attainment of each of a woman's children currently residing in the household as 
-well as their mother's health and educational status. This database is selected in 
-two ways: firstly it only contains children who have survived up until the survey 
-date, and secondly it only contains children who have remained living in the same 
-household as their mother. We drop from our sample children aged 18 and over, due
-to concerns that these will \emph{not} be representative of the general 
-population.
-
-We pool all publicly available DHS data resulting in microdata on 3,297,318 
-children ever-born to women who responded fully to any DHS survey. A full list of 
-the DHS countries and years of surveys which make up this sample is provided in
-the online appendix (table \ref{TWINtab:countries}).  Of the 3,297,318 offspring 
-reported in survey data, 2,033,510 remain living in the same household as their 
-mother.  The majority of these 2,033,510 children are aged 18 and under (92.96\%) 
-and hence make up our principal estimation sample (in future we will refer to this 
-as the `household sample'). The remaining 1,263,808 offspring were not recorded as 
-living in the same household as their mother.  Of these children not in the 
-household, and hence for whom education is not recorded, the majority (53.9\%) 
-were aged over 18 or had died prior to the date of survey.\footnote{Children aged 
-under 18 who are alive but not living in the same household as their mother are 
-statistically quite different to those children who do remain in the household. 
-In our data sample, they are on average 2.7 years older, born to less educated 
-and younger mothers, and are slightly more likely to be males.}
-
-\subsubsection{The NHIS}
-The National Health Interview Survey (NHIS) is a yearly survey, conducted from 
-1957 and ongoing as at 2015, with participants drawn from each of the 50 US 
-States as well as the District of Columbia each year.\footnote{The NHIS has a
-survey design to oversample Hispanic and African American people.  We use NHIS-%
-specific probability weights in all analyses.}  We pool all survey data from 
-2004 until 2014, resulting in data on 119,111 mothers and 227,213 children. We 
-focus on this period given that prior to 2004, changes in a number of key 
-variables make it difficult to compare between years, and post-1996 the survey 
-was considerably revised.
-
-Each set of surveys is collected at the level of the household.  For our 
-analysis we use all households which consist of a biological mother and her 
-children, whether or not any father is present.  For all children who remain in
-the household, the survey records total fertility.  We infer twin status by
-assuming that all children who share a birth month, birth year and biological
-mother must be twins.  For each child and mother, we have a number of measures
-of usage of health care along with a self-reported measure for health status, 
-whether or not the mother smokes, and the level of completed education (at the 
-time of the survey) of mothers and children.  Once again, we subset to children
-aged below 18, and for education measures, children who are aged above 6 years
-old, and hence who are able to be enrolled in school.  Descriptive statistics of
-this and DHS data are provided in section \ref{TWINsscn:descriptives}.
-
 \subsection{Estimation Samples}                    \label{TWINsscn:samples}
 The quasi-experimental variation exploited in twin studies is to leverage the 
 effect of an unexpected additional child on siblings who were born before the 
-extra birth.  Thus, all first-born children in families of at least two births
-are split into two groups: the treatment group, which consists of first-born
-children in a family whose second birth results in two children (twins), and a
-control group consisting of first-born children in families where the second
-birth results in just one child.
+additional birth.  Thus, all first-born children in families of at least two
+births are split into two groups: the treatment group, which consists of
+first-born children in a family whose second birth results in two children
+(twins), and a control group consisting of first-born children in families where
+the second birth results in just one child.  This quasi-experiment can be
+applied for twins at each birth order, and we follow the existing literature
+starting with \citet{Blacketal2005} in defining these estimation samples. These
+are referred to as the 2+, 3+, and 4+ samples, and are defined $\forall\ n \in
+\{2, 3, 4\}$ to include first-born to $n-1$ born children in families with at
+least $n$ births. Existing studies such as \citet{Angristetal2010} focus mainly
+on the 2+ and 3+ samples. Given the higher fertility in the DHS data, we also
+include a higher birth-order group, 4+.
 
-For our main IV specification, we follow the existing literature in defining
-birth-order specific estimation samples, as laid out in the preceding 
-paragraph. These samples are referred to as the 2+, 3+, and 4+ samples. These 
-samples are defined $\forall\ n \in \{2, 3, 4\}$ such that they include 
-first-born to $n-1$ born children in families with at least $n$ births.\footnote{
-Existing studies such as \citet{Angristetal2010} focus mainly on the 2+ and 3+ 
-samples. Given the higher fertility in the DHS data, we also include higher a
-birth-order group, 4+.} As an example, the 2+ sample (described in the previous
-paragraph) consists of first-borns in families with at least two births, and the 
-3+ sample consists of first- and second-borns in families with at least 3 births.
 Such a sample decision is important when estimating the Q--Q trade--off using 
-twinning as an instrument. Given that family size is endogenously chosen by 
+twins as an instrument. Given that family size is endogenously chosen by 
 parents and rates of twin birth are not constant by birth-order, twin-births will 
 occur more frequently in families that have a higher fertility preference (see
-figure \ref{TWINfig:bord}). This point is addressed by (among others) 
-\citet{RosenzweigWolpin1980} and \citet{Blacketal2005} who first suggested 
-combining $n+$ groups with twinning at birth order $n$ as a way to ensure that 
-twin and non-twin families in the sample would have similar fertility 
+figures \ref{TWINfig:bordUS} and \ref{TWINfig:bord}). This point is addressed by
+(among others) \citet{RosenzweigWolpin1980} and \citet{Blacketal2005} who first
+suggested combining $n+$ groups with twinning at birth order $n$ as a way to
+ensure that twin and non-twin families in the sample would have similar fertility 
 preferences.
 
 %*******************************************************************************
 \subsection{Descriptive Statistics}                \label{TWINsscn:descriptives}
-Table \ref{TWINtab:sumstats} provides summary statistics for DHS data, and table
-\ref{TWINtab:NHISstats} describes NHIS data.  Fertility and maternal 
-characteristics are described at the level of the mother, while child education 
-and survival are described at the level of the child. The number of observations 
-at each level is provided at the bottom of the table.
+Table \ref{TWINtab:sumstats} provides summary statistics for DHS and NHIS data.
+For each source of data, fertility and maternal characteristics are described at
+the level of the mother, while child education, and health outcomes are
+described at the level of the child. 
 
-For DHS data, survey countries are classified according to country income level 
-in order to allow for a disaggregation of Q--Q results by income group.\footnote{
-This classification is obtained from the World Bank, with DHS surveyed countries 
-falling into two broad groups based on their GNI per capita at the moment of the 
-DHS survey. These groups consist of countries classed as low-income economies, 
-and countries classed as middle-income economies (either lower-middle or upper-%
-middle). Details regarding this classification can be found in Appendix Table 
-\ref{TWINtab:countries}.} We present summary statistics by birth type (singleton 
-or twin), and by country income status. Twin births make up 1.85\% of all births.
-A simple comparison of means suggests that healthy mothers (as proxied by height, 
-BMI and probability of being underweight) are more likely to give birth to twins, 
-and that twin births are more likely to occur in low-income countries. This 
-apparent contradiction can be explained given that twins are (both mechanically 
-and biologically) a positive function of fertility, and fertility is higher in 
-the low-income sample. Figure \ref{TWINfig:bord} describes this positive 
-relationship: while twins account for less than 1\% of all first-borns, they 
-account for greater than 4\% of all tenth-born children. As expected, twin 
-families are larger than non-twin families. Figure \ref{TWINfig:births} 
-describes total fertility in twin and non-twin families. The distribution of 
-family size in families where at least one twin birth has occurred dominates the 
-corresponding distribution for all-singleton families.  This is expected given 
-imperfect fertility control and---even were fertility perfectly controlled by 
-families---given that some twins will occur on a family's final desired birth. 
-Such a result is required for instrumental relevance when using twining to 
-estimate a Q--Q trade-off.
-
-Similar patterns are observed when turning to NHIS data.  Twin mothers have
-(unconditionally) higher education, and greater health stocks as measured by
-BMI, percent underweight (BMI$<$18.5) and self-reported health.  This is 
-despite having higher total fertility, and being somewhat older.  The 
-proportion of twins in the USA sample is slightly higher (at 2.57\%). This
-value is very similar to the value reported in the universe of all births in
-the United States from birth certificate data (see for example figure 
-\ref{TWINfig:USTwin}).
+We present summary statistics by birth type (singleton or twin) in the two
+datasets.  Twin births make up 1.98\% of all births in the DHS sample, and
+2.57\% in the NHIS sample.  This value is very similar to the value reported in
+the universe of all births in the United States from birth certificate data (see
+for example figure \ref{TWINfig:USTwin}). From table \ref{TWINtab:sumstats}, a
+simple comparison of means of maternal characteristics suggests that healthy
+mothers (as proxied by height, BMI and probability of being underweight) are
+more likely to give birth to twins in both the DHS and NHIS samples.\footnote{We
+  test formally for the equality of means in appendix table
+  \ref{TWINtab:balanceAll}, though these tests do not account for the well-known
+  facts that twin mothers are generally older and have higher parities} As
+expected, twin families are larger than non-twin families. Figure
+\ref{TWINfig:births} describes total fertility in twin and non-twin families.
+The distribution of family size in families where at least one twin birth has
+occurred dominates the corresponding distribution for all-singleton families in
+both the DHS sample (figure \ref{TWINfig:birthsDHS}) and the US sample (figure
+\ref{TWINfig:birthsUS}). This is expected given imperfect fertility control and%
+---even were fertility perfectly controlled by families---given that some twins
+will occur on a family's final desired birth.  Such a result is required for
+instrumental relevance when using twining to estimate a Q--Q trade-off.
 
 Child `quality' is measured using each child's educational attainment. Our 
 principal outcome variable in each case is a standarised score for schooling 
 (Z-Score). This Z-Score is calculated by comparing each child's total years of 
-completed education to his or her cohort or reference.  In the case of DHS data,
+completed education to his or her cohort of reference.  In the case of DHS data,
 this cohort is made up of all children in the same country and birth cohort, 
 while in NHIS data, it is made up of children with the same month and year of 
-birth. The use of a standardised score rather than just total years of education
-allows us to express all effect-sizes in terms of a one standard deviation 
-increase in total educational attainment.
+birth. The use of a standardised score rather than total years of education
+allows us to express all effect-sizes in terms of a one standard deviation
+increase in total educational attainment, and compare across birth cohorts
+even though children are still in school at the time of the survey.
+
+This education is not the final education of the child, but rather a marker of
+their current attainment at the time of survey.  In both datasets, children are
+included in the sample if aged between 6 and 18 years when surveyed.  While
+ideally we would observe completed education, to our knowledge no large datasets
+are available measuring child's completed education, mother's total fertility,
+\emph{and} a wide range of maternal health measures before each child was born.
+These last measures are absent in all datasets currently used to estimate the
+Q--Q trade-off with twins, and are required to determine the relevance of this
+paper's critique.  While in the developing country setting relative school
+progress is an appropriate measure of child human capital given high rates of
+dropout and/or overage school entry, this is less clearly the case in the USA.
+Current estimates suggest that between 2 and 6\% of children are held back at
+least one grade in primary school \citep{Warrenetal2014}.  As such, as well
+as the child's school Z-score in the US, we also examine the parent's report of
+whether the child is in ``excellent health'' (a question which is a constant in
+all of the post-2004 NHIS waves).
 
 %*******************************************************************************
 \section{Results}                                  \label{TWINscn:results}
@@ -1208,7 +1141,7 @@ This effect is particulary large and significant during the second and third
 trimesters, lining up with the effects of smoking by trimester documented in
 table \ref{tab:twinsMain}.  The results suggest that being exposed to one
 additional bomb casualty in the province of residence decreases the likelihood
-of observing a twin birth by 0.01\% and 0.012\% ($p$<0.01 and 0.05 respectively).
+of observing a twin birth by 0.01\% and 0.012\% ($p<$0.01 and 0.05 respectively).
 For reference, \citet{QuintanaRodenas2014} find that the same exposure reduces
 average birth weight by approximately 0.3 grams (trimester 1), and increases
 the likelihood of low birth weight by 0.14\%.
@@ -1254,7 +1187,7 @@ in childbirth and that this explains the entirety of the results in table
 sample and assuming that they were carrying twins should mean that no
 correlation remains between maternal health and twin births.
 
-Using DHS data described in section \ref{TWINsscn:data}, we observe a woman's
+Using DHS data described in section \ref{TWINscn:data}, we observe a woman's
 height, BMI, pregnancy outcomes, and the maternal mortality status of all her
 sisters.  As we do not observe health stocks of women who died in childbirth,
 we assume that her sister's health (height and BMI) is a reasonable proxy for
@@ -1407,9 +1340,8 @@ school Z-score for comparison with the DHS results, and the second a variable
 recording whether parents consider their children to be in excellent health
 (measured in the NHIS data).  We focus on both variables given that grade
 retention in the US is a less relevant measure of child quality than in the
-developed country sample, however note that recent estimates suggest that
-between 2 and 6\% of children are held back at least one grade in primary
-school \citep{Warrenetal2014}.
+developed country sample, however note that as discussed earlier, between 2 and
+6\% of children are held back at least one grade in primary school in the US.
 
 When considering school Z-score (comparing each child to other children in their
 birth quarter cohort) we observe that an additional child within the family is
@@ -1526,45 +1458,50 @@ this is the case, the coefficient $\beta_1$ may vary by children in the family.
 More generally, $\beta_1$ may be context specific, depending upon the returns to 
 human capital in a given time-period or economy.
 
-\texttt{Section 5.3 has been re-drafted up to this point. Pick it up here.}
-
 Empirically, we find that estimates of the Q--Q trade-off are heterogeneous 
 across birth orders, country income level, and the gender of the child affected 
-by the additional birth. The magnitude and significance of the results is lowest 
-when considering the effect on the first-born child of moving from two to three 
-births (the 2+ group), and higher when considering moving from three to four 
-births or four to five births. However, in lower fertility environments the 
-effect is, as expected, concentrated on lower birth orders. The third row of 
-table \ref{TWINtab:IVAll} suggests that in middle-income countries the effect is 
-largest on first borns, and progressively smaller, but still considerable, at 
-higher birth orders.\footnote{In this paper we focus nearly exclusively on
-the internal validity of twins estimates (IV consistency).  In recent work,
-\citet{Deheijaetal2015} examine the external validity of an alternative 
-fertility natural experiment, when examining various contexts using many
-countries' censuses.  Like them, our results in this section suggest that
-homogeneity between countries and contexts (and even birth orders) is not
-seen when using twins to estimate the Q--Q trade-off.}
+by the additional birth. In the developing country sample, the magnitude and
+significance of the results is lowest when considering the effect on a first-born
+child moving from two to three siblings (the 2+ group), and significantly larger
+at higher parities.  In the lower fertility (US) example the effect is
+concentrated on lower birth orders. The IV results for the US suggest largest
+effects of fertility shocks at parity two (on education), and at parity thee
+(on health).
 
-Estimates of the magnitude of the Q--Q trade-off by country income level suggest 
-that the trade-off is considerably larger in middle- rather than low-income 
-countries. In low-income countries point estimates on fertility suggest 
+Along with the developing country and the United States sample, we additionally
+split the developing country sample by income level of the country.  Results
+estimated separately for low and middle income countries (according to the
+World Bank characterisation at the time of survey) are presented in appendix
+tables \ref{TWINtab:DHSmid} and \ref{TWINtab:DHSlow}. Estimates of the magnitude
+of the Q--Q trade-off by country income level in DHS data suggests that the
+trade-off is considerably larger in middle- rather than low-income countries.%
+\footnote{In this paper we focus nearly exclusively on the internal validity
+  of twins estimates (IV consistency).  In recent work, \citet{Deheijaetal2015}
+  examine the external validity of an alternative fertility natural experiment,
+  when examining various contexts using many countries' censuses.  Like them,
+  our results in this section suggest that homogeneity between countries and
+  contexts (and even birth orders) is not seen when using twins to estimate the
+  Q--Q trade-off.} In low-income countries point estimates on fertility suggest 
 (insignificant) trade-offs centred around 2-3\% of a standard deviation, while 
 in middle-income countries results are significant, and considerably larger,
-reaching as much as 9\% of a standard deviation: only slightly lower than OLS 
+reaching as much as 7\% of a standard deviation: only slightly lower than OLS 
 estimates for this group.
 
-Similarly, effects of the Q--Q trade-off vary considerably depending upon a 
-child's gender. In appendix table \ref{TWINtab:gend} we present regression 
-results estimated separately by the gender of the index child. These results 
-suggest that females may bear the brunt of additional births, with estimates
-being negative and significant for girls, while insignificant for male children. 
-Interestingly, recent empirical of the Q--Q trade-off from other (middle income)
-contexts finds similar gender-biased results \citep{SouzaPonczek2012}, also
-suggesting that girl children pay a steeper price.
-
-%NOTE that in April 2012 draft, there was some different results discussed here
-%that are no longer included.
-
+Finally, we find considerable variation by the gender of the effected child.
+In appendix tables \ref{TWINtab:DHSgirls} and \ref{TWINtab:DHSboys} results are
+presented by gender for the developing country sample, and overwhelmingly the
+trade-off is largest for girl children following an additional birth.  These
+results suggest that females may bear the brunt of additional births, with
+estimates being negative and significant for girls, while insignificant for male
+children. Interestingly, recent empirical of the Q--Q trade-off from other (middle
+income) contexts finds similar gender-biased results \citep{SouzaPonczek2012},
+also suggesting that girl children pay a steeper price of unexpected siblings.
+Similar results for the US sample (tables \ref{TWINtab:NHISfemale} and
+\ref{TWINtab:NHISmale}) however show quite different patterns, with \emph{boy}
+children appearing to considerably more effected. While this is not surprising
+when considering schooling results given that boys are in general much more
+propense to being held back \citet{Warrenetal2014}, similar patterns are also
+observed for the health of male, but not female children.
 
 %*******************************************************************************
 \subsection{Bounding the Q--Q Trade-off}           \label{TWINsscn:resultBounds}
@@ -1665,49 +1602,77 @@ must still take into account this quantity when estimating the trade-off.
 Using an alternative maternal health shock, we estimate the same parameter
 for the developing country sample.  We present these estimates (based on
 the exposure of mother's to the Biafra war) in panel B of table
-\ref{TWINtab:gamma}.
-
-\texttt{Section 5.4 has been re-drafted up to this point. Pick it up here.}
-
+\ref{TWINtab:gamma}.  The first column presents the estimate of $\phi^q_2$
+from equation \ref{TWINeqn:Nigeria}.  This documents that the effects on
+children of mothers who were exposed to the war in utero is a reduction in
+completed education of 1.54\% of a standard deviation with respect to others
+in their birth cohorts.  As in the case of the effect of Sulfa drugs in the
+US, this second-generation effect is smaller than the impact on the first
+generation.  Results from \citet{Akreshetal2012} document that the direct
+effect on women is 0.6 years of education, while the 1.5\% of a standard
+deviation effect on their children is equivalent to 0.052 years
+(approximately 10 times smaller).  In order to quantify the full effect of
+the health differential between twin and non-twin mothers on child quality
+this effect must be scaled by the difference in rates of exposure between
+eventual twin and non-twin mothers, as per equation \ref{TWINeqn:realgamma}.
+In the second column we estimate that on average twin mothers come from,
+areas and cohorts that are 26.7\% less likely to have suffered war.  These
+estimates together imply a relatively small positive estimate of $\gamma$
+of 0.004 (or 0.4\% of a standard deviation in education outcomes), which
+is similar in magnitude to the value estimated in the US.  Once again,
+bootstrapping the distribution allows us to estimate the variance of this
+parameter, and the distribution based on 100 replications is displayed in
+figure \ref{TWINfig:gammaBootsL}.
 
 \subsubsection{Bounds of the Q--Q Trade-off When $\gamma$ is Known}
-In table \ref{TWINtab:Conley} we provide estimates of Conley bounds using 
-our more precisely estimated $\gamma$.  These are our preferred bounds 
-estimates for $\beta_1$.  As described in appendix \ref{TWINscn:gamma}, for 
-the UCI approach this implies an assumption that $\gamma \in [0,2\hat\gamma]$
-(or $\gamma \in [0,2\times 0.0091]$).  For the LTZ approach, we assume that 
-$\gamma\sim N(\mu_{\hat\gamma},\sigma_{\hat\gamma})$.  The assumption of 
-normality is driven by resampling (bootstrap) estimates of $\hat\gamma$,
-which allows us to construct a distribution for $\gamma$.  This is then
-tested for equality against a normal distribution, and the null hypothesis
-of different distributions is not rejected with a $p$-value of 0.1805.%
-\footnote{In all cases tested (uniform, normal, log normal, $\chi^2$),
-the normal distribution provides the best fit of the analytical with the
-empirical distribution. We cannot reject that $\gamma$ is normal with a
-p-value of 0.2184.  Although we can't reject that $\gamma$ is log normal,
-the p-value is much lower, at 0.1019.}  The 
-empirical and analytical distributions for $\gamma$ that are applied in the 
-LTZ method are displayed in appendix figure \ref{TWINfig:gammaBootsL}-%
-\ref{TWINfig:gammaBootsN}.
+With causally estimated values for $\gamma$ in hand for both the
+developing country and US context, we are able to pin down the bounds
+described in figures \ref{TWINfig:ltz3}-\ref{TWINfig:PEx-USA}.  This
+consists of applying \citet{Conleyetal2012}'s methodology, using our
+estimates of $\gamma$ to infer the importance of the violation of the
+exclusion restriction.  These bounds estimates are presented in table
+\ref{TWINtab:Conley}.  In the left-hand columns we present the UCI
+approach in which we assume that $\gamma \in [0,2\hat\gamma]$.  This
+assumption is chosen such that the true $\hat\gamma$ in each case will
+lie precisely in the middle of the confidence interval, following
+\citet{Conleyetal2012}'s empirical example.  For the LTZ approach, we
+use the additional information available from the previous sub-section
+and assume that $\gamma\sim N(\mu_{\hat\gamma},\sigma_{\hat\gamma})$.
 
 In all cases, our preferred bounds estimates are those in the right-hand
 columns of table \ref{TWINtab:Conley}, as these allow us to produce more
 efficient bounds based on the estimated bootstrap distribution.  For DHS
 results, these bounds estimates are informative for the three-plus and 
-four-plus groups, and very close to being informative for the 2+ group also.  
-For these groups, both the upper and lower bound fall entirely below zero. In
-all cases for DHS, the average trade-off for the pooled group (the middle of
-these bounds) falls between 3\% and 5\% of a standard deviation.  An additional
+four-plus groups, and very close to being informative for the 2+ group
+also.  For these groups, both the upper and lower bound fall entirely below
+zero.  Estimates of the Q--Q trade-off for the 3+ and 4+ groups are bounded
+between slightly less than zero and 6\% of a standard deviation when
+considering educational attainment.  The mid-point of these bouds falls
+at 2.6\% and 3.7\% of a standard deviation respectively. An additional
 sibling thus \emph{does} appear to affect a child's educational attainment,
-and this is of the order of magnitude of 3-5\% of a standard deviation compared
-to his or her peers.  Similarly, in the USA, despite having much wider bounds,
-these are informative for 2+ (education) and 3+ and 4+ (health).  Once again,
-we generally find a mid-point average effect of approximately 5\% of a 
-standard deviation from an additional birth, although these values are slightly
-higher (and less precise) when considering education rather than health.
+and this is of the order of magnitude of 3-5\% of a standard deviation
+compared to his or her peers.
 
+In the USA (panel B), the wider standard errors make the construction of tight
+or informative bounds difficult.  As observed in the case of the na\"ive IV,
+while the mid-point of the bounds is always virtually always negative (the
+health of the 2+ group is the only exception), bounds are only informative
+for the 2+ group (education) and 3+ group (health).  These bounds are much
+tighter for child health measures, suggesting that an additional birth
+reduces the likelihood that a sibling is reported as being in excellent health
+by between 0.2 to 7\%.
 
- 
+From table \ref{TWINtab:sumstats}, we can convert these standardised estimates
+into years of education.  The effect on education of first and second borns
+from having a fertility shock at the third birth, or on first to third borns
+from a fertility shock at birth four is estimated to be approximately 3\% of
+a standard deviation in the developing country sample.  Using the standard
+deviation in the sample of 3.8 years, this implies an average effect of 0.12
+years of education per additional sibling by the age of 13 years (the average
+age in the sample).  In the case of the US estimates, for the same 2+ and 3+
+groups the average estimated effect of 6\% of a standard deviation equates to
+a marginal effect of 0.22 years of education by the age of 11 years.
+%0.01705+0.037+0.2555 // 0.08455+0.0341+
 
 
 
