@@ -72,13 +72,13 @@
 \hypersetup{
     colorlinks=true,
     linkcolor=BlueViolet,
-    citecolor=BlueViolet,
+    citecolor=Black,
     filecolor=BlueViolet,
     urlcolor=BlueViolet
 }
 
 
-
+ \renewcommand{\familydefault}{\sfdefault}
 
 \setcounter{page}{0}
 \begin{document}
@@ -117,24 +117,31 @@
 
 \clearpage
 \section{Appendix Tables}
-\input{\twinfolder/Tables/Summary.tex}
-\clearpage
-\input{\twinfolder/Tables/NHISstats.tex}
-\input{\twinfolder/Tables/Stress.tex}
-\input{\twinfolder/Tables/OLS_bounds.tex}
+\input{\twinfolder/Tables/summaryStatsWorld.tex}
+\input{\twinfolder/Tables/twinEffectsCond.tex}
+\input{\twinfolder/Tables/twinEffectsUncondUnstand.tex}
+\input{\twinfolder/Tables/BalanceAll.tex}
+\input{\twinfolder/Tables/TwinReg.tex}
+\input{\twinfolder/Tables/NHIStwin.tex}
+
+%\input{\twinfolder/Tables/OLS_bounds.tex}
 \input{\twinfolder/Tables/literature.tex}
 \input{\twinfolder/Tables/LeeBounds.tex}
+\begin{landscape}
+\input{\twinfolder/Tables/FDeath_Cond.tex}
+\end{landscape}
+
 %\input{\twinfolder/Tables/TwinRegs/SpainLFD.tex}
 %\input{\twinfolder/Tables/IVTogether.tex}
 %\input{\twinfolder/Tables/OLSPlus.tex}
 \clearpage
-\input{\twinfolder/Tables/DHS-togetherGirls.tex}
-\input{\twinfolder/Tables/DHS-togetherBoys.tex}
 \input{\twinfolder/Tables/DHS-togetherMidIncome.tex}
 \input{\twinfolder/Tables/DHS-togetherLowIncome.tex} 
-%\input{\twinfolder/Tables/firstStage.tex}
-\input{\twinfolder/Tables/Gender.tex}
-\input{\twinfolder/Tables/GenderUSA.tex}
+\input{\twinfolder/Tables/DHS-togetherGirls.tex}
+\input{\twinfolder/Tables/DHS-togetherBoys.tex}
+%\input{\twinfolder/Tables/Gender.tex}
+\input{\twinfolder/Tables/AllNHIS-female.tex}
+\input{\twinfolder/Tables/AllNHIS-male.tex}
 \input{\twinfolder/Tables/Countries.tex}
 \clearpage
 %\subsection{Twin Regressions in Other Data}
@@ -151,15 +158,83 @@
 \section{Data Appendix}
 \label{TWINscn:dataApp}
 Main IV and OLS results for this paper are based on DHS and NHIS data described
-in section \ref{TWINscn:data}.  These data are downloaded directly off the web
-and merged to form the estimation samples of interest. For DHS data, we use two
-surveys: the Individual (woman) Recode (IR), and the Household Recode (HR)
-providing education for each household member.  For NHIS data, we merge three
-of the datafiles made available by the CDC: familyxx, household, and person.
-In each case, full generating code for this process is made available on the
-authors' websites.  This code downloads, merges and cleans DHS and NHIS data to
-produce the datasets (one line per child) used in analysis.
+briefly in section \ref{TWINscn:data} and further below.  These data are 
+downloaded directly off the web and merged to form the estimation samples of 
+interest. For DHS data, we use two surveys: the Individual (woman) Recode (IR), 
+and the Household Recode (HR) providing education for each household member.  
+For NHIS data, we merge three of the datafiles made available by the CDC: familyxx, 
+household, and person. In each case, full generating code for this process is 
+made available on the authors' websites.  This code downloads, merges and cleans 
+DHS and NHIS data to produce the datasets (one line per child) used in analysis.
 
+\subsection{The DHS}
+The DHS are a set of nationally representative surveys which have been 
+administered in low- and middle-income countries between 1985 and the present. 
+Women aged between 15--49 in surveyed households respond to an in-depth series 
+of questions reporting their full fertility history (listing all surviving and 
+non-surviving children), their actual and desired contraceptive use and number 
+of births, education level, marital status, plus the measurement of a number of 
+health endowments such as height and body mass index. For all other members 
+living in the household, a shorter series of responses are recorded, including 
+the individual's educational attainment.
+
+This results in two distinct sets of data to be merged. One database contains 
+one line for each birth reported by every 15--49 year-old woman surveyed with a 
+limited number of child-level covariates such as the child's date of birth, type 
+of birth (single or multiple), and the child's survival status. The other 
+database contains one line for each member currently living in the survey
+household. This database includes each member's educational status. We merge
+these two databases where all children who live in the same household as their 
+mother merge without loss.  We are thus able to generate data for the educational 
+attainment of each of a woman's children currently residing in the household as 
+well as their mother's health and educational status. This database is selected in 
+two ways: firstly it only contains children who have survived up until the survey 
+date, and secondly it only contains children who have remained living in the same 
+household as their mother. We drop from our sample children aged 18 and over, due
+to concerns that these will \emph{not} be representative of the general 
+population.
+
+We pool all publicly available DHS data resulting in microdata on 3,297,318 
+children ever-born to women who responded fully to any DHS survey. A full list of 
+the DHS countries and years of surveys which make up this sample is provided in
+the online appendix (table \ref{TWINtab:countries}).  Of the 3,297,318 offspring 
+reported in survey data, 2,033,510 remain living in the same household as their 
+mother.  The majority of these 2,033,510 children are aged 18 and under (92.96\%) 
+and hence make up our principal estimation sample (in future we will refer to this 
+as the `household sample'). The remaining 1,263,808 offspring were not recorded as 
+living in the same household as their mother.  Of these children not in the 
+household, and hence for whom education is not recorded, the majority (53.9\%) 
+were aged over 18 or had died prior to the date of survey.\footnote{Children aged 
+under 18 who are alive but not living in the same household as their mother are 
+statistically quite different to those children who do remain in the household. 
+In our data sample, they are on average 2.7 years older, born to less educated 
+and younger mothers, and are slightly more likely to be males.}
+
+\subsection{The NHIS}
+The National Health Interview Survey (NHIS) is a yearly survey, conducted from 
+1957 and ongoing as at 2015, with participants drawn from each of the 50 US 
+States as well as the District of Columbia each year.\footnote{The NHIS has a
+survey design to oversample Hispanic and African American people.  We use NHIS-%
+specific probability weights in all analyses.}  We pool all survey data from 
+2004 until 2014, resulting in data on 119,111 mothers and 227,213 children. We 
+focus on this period given that prior to 2004, changes in a number of key 
+variables make it difficult to compare between years, and post-1996 the survey 
+was considerably revised.
+
+Each set of surveys is collected at the level of the household.  For our 
+analysis we use all households which consist of a biological mother and her 
+children, whether or not any father is present.  For all children who remain in
+the household, the survey records total fertility.  We infer twin status by
+assuming that all children who share a birth month, birth year and biological
+mother must be twins.  For each child and mother, we have a number of measures
+of usage of health care along with a self-reported measure for health status, 
+whether or not the mother smokes, and the level of completed education (at the 
+time of the survey) of mothers and children.  Once again, we subset to children
+aged below 18, and for education measures, children who are aged above 6 years
+old, and hence who are able to be enrolled in school.  Descriptive statistics of
+this and DHS data are provided in section \ref{TWINsscn:descriptives}.
+
+\subsection{Regressions of Twinning on Maternal Health}
 In auxiliary regressions examining the characterstics of mothers and the
 relationship these characteristics and twin births and miscarriage, we consult
 a large number of other datasets.  These are the following:
@@ -168,20 +243,23 @@ a large number of other datasets.  These are the following:
 \item United States National Vital Statistics Fetal Death Data
 \item Spanish Vital Statistics (INE)
 \item The Swedish Medical Birth Register
-\item Scottish Vital Statistics
 \item Longitudinal Early Life Survey, Chile (ELPI)
+\item The Avon Longitudinal Study of Parents and Children (ALSPAC)
 \end{itemize}
 
-In the case of the first 5 datasets (administrative records of births and/or
-fetal deaths), we use all recorded instances, focusing on twins as our
-outcome variable of interest.  Depending upon the data source, we use all
-available measures of pre-determined maternal health stocks or family
-socioeconomic indicators.  The ELPI survey from Chile focuses on child early
-life, and records mother's behaviours before, during and after pregnancy,
-along with child birth outcomes.  We use all children from the first wave of
-this survey to run the twin regression included in the appendix tables.
-Further notes regarding each dataset and the particular years and number of
-births can be found in the notes to each table.
+In the case of the first 4 datasets (administrative records of births and/or
+fetal deaths), we use all recorded instances for mothers aged 18-49, focusing 
+on twins as our outcome variable of interest.  The only exception is the United
+States Vital Statistics data, in which case we observe Artifical Reproductive
+Technology (ART) use, and remove the 1.6\% of ART users from the estimation sample. 
+Depending upon the data source, we use all available measures of pre-determined 
+maternal health stocks or family socioeconomic indicators.  The ELPI survey from 
+Chile focuses on child early life, and records mother's behaviours before, during 
+and after pregnancy, along with child birth outcomes.  We use all children from the 
+first wave of this survey to run the twin regression included in table 
+\ref{tab:twinsMain}. Finally, for the ALSPAC survey follows mothers and their
+children who were born in the early 1990's in the county of Avon, UK.  We use all
+mothers from the principal wave of enrolled children.
 
 \section{Resampling and Simulation Based Estimation of $\gamma$}
 \label{ATWINscn:gammaSim}

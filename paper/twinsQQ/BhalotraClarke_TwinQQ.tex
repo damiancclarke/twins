@@ -16,7 +16,8 @@ Contact: \href{mailto:damian.clarke@usach.cl}
 \date{August 11, 2016}
 
 %at CMPO Bristol, ESPE, NEUDC, CSAE, The University of Essex, The University of 
-%Oxford, the Barcelona GSE summer forum, PacDev, and the RES conference
+%Oxford, the Barcelona GSE summer forum, PacDev, the RES conference, Germany,
+%Essen, Other Sweden, University of Chile, University of Santiago de Chile
 
 %*******************************************************************************
 \usepackage{amsmath}
@@ -60,7 +61,7 @@ Contact: \href{mailto:damian.clarke@usach.cl}
 \hypersetup{
     colorlinks=true,   
     linkcolor=BlueViolet,
-    citecolor=BlueViolet,
+    citecolor=Black,
     filecolor=BlueViolet,
     urlcolor=BlueViolet
 }
@@ -262,15 +263,15 @@ and \citet{RosenzweigWolpin1980} documented significant effects of additional
 births within a family on average child educational outcomes.  More recent work
 suggests mixed results.  Estimates from large representative data samples using
 IV and difference-in-differences has lead to significant positive effects
-\citep{Qian2009}, significant negative effects \citep{AslundGronqvist2010,
-  PonczekSouza2012,Lee2008,Beckeretal2010,Bougmaetal2015} and estimates
-suggestive of no significant effect \citep{Blacketal2005,Angristetal2010,
-  FitzsimonsMalde2010}.\footnote{A fuller description of these empirical results,
-  their magnitude and their context is provided in \citet{Clarke2016}.}  More
-recently, non-linear and non-monotonic effects of family fertility on children's
-education have been documented \citep{Brinchetal2016,MogstadWiswall2016}.
+\citep{Qian2009}, significant negative effects \citep{Grawe2008,
+  AslundGronqvist2010,PonczekSouza2012,Lee2008,Beckeretal2010,Bougmaetal2015}
+and estimates suggestive of no significant effect
+\citep{Blacketal2005,Angristetal2010,FitzsimonsMalde2010}.\footnote{A fuller
+  description of these empirical results, their magnitude and their context is
+  provided in \citet{Clarke2016}.}  More recently, non-linear and non-monotonic
+effects of family fertility on children's education have been documented
+\citep{Brinchetal2016,MogstadWiswall2016}.
 
-\subsection*{The Quantity--Quality Trade-off and Twins}
 An important subset of the recent empirical literature on the Q--Q trade-off
 bases estimates on the occurence of twins births.  While the use of twins within
 the social science dates to the early twentieth century \citep{Thorndike1905}, the
@@ -279,22 +280,21 @@ literature came much later, in \citet{RosenzweigWolpin1980}. There,
 \citet{RosenzweigWolpin1980} proposed to incorporate twins into an estimation
 strategy in order to circumnavigate problems of the joint determination of child 
 quantity and quality first raised in the original Q--Q models \citep{BeckerLewis1973,
-Willis1973,DeTray1973,BeckerTomes1976}.  Under a number of assumptions, they show 
-that twins as a shock to family size will be sufficient to directly identify the 
-interaction between quality and quantity.  As well as the occurrence of twins 
-pushing at least some families above their desired total fertility, this requires 
-that twin births are random.  Empirically, \citet{RosenzweigWolpin1980} 
-estimate the Q--Q trade-off, accounting for the increase in rates of twinning by 
-parity (a biological relationship)\footnote{Such a relationship is an empirical
-  regularity in all data examined. \citet{RosenzweigWolpin1980} report rates which
-  increase by parity in USA (see also appendix figure \ref{TWINfig:bordUS}).  In
-  DHS data a similar pattern is observed, as presented in appendix figure
-  \ref{TWINfig:bord}.}, and by total number of births (a mechanical relationship).
-Beyond any observed variables, twinning must be conditionally random to produce
-consistent estimates. In their original paper this \emph{is} tested formally by
-\citet{RosenzweigWolpin1980}.  They report that a joint test of the effect of
-farm size, non-farm earnings and parental education on the rate of twins per
-births did \emph{not} allow for the rejection of no significant effect.
+  Willis1973,DeTray1973,BeckerTomes1976}.  Under a number of assumptions (twins
+pushing at least some families over their desired fertility, and twins being as good
+as random), they show that twins as a shock to family size will be sufficient to
+directly identify the interaction between quality and quantity.  Empirically,
+\citet{RosenzweigWolpin1980} estimate the Q--Q trade-off, accounting for the
+increase in rates of twinning by parity (a biological relationship)\footnote{Such
+  a relationship is an empirical regularity in all data examined.
+  \citet{RosenzweigWolpin1980} report rates which increase by parity in USA (see
+  also appendix figure \ref{TWINfig:bordUS}).  In DHS data a similar pattern is
+  observed, as presented in appendix figure \ref{TWINfig:bord}.}, and by total
+number of births (a mechanical relationship). In their original paper
+\citeauthor{RosenzweigWolpin1980} examine the conditional randomness assumption
+formally, and report that a joint test of the effect of farm size, non-farm
+earnings and parental education on the rate of twins per births did \emph{not}
+allow for the rejection of no significant effect.
 
 The twin instrument has been widely used since \citeauthor{RosenzweigWolpin1980}'s
 (\citeyear{RosenzweigWolpin1980}) initial work. As well as its use in the 
@@ -310,19 +310,18 @@ we focus only on the use of twin births as an instrument for total fertility,
 and not on the so called `twin studies', which base inference on between-twin 
 comparisons using maternal fixed effects.}
 
-The most widespread use of twins in an instrumental variable setting
-is in estimates of the Q--Q trade-off.  These have been applied in a range low-
-and high-income country settings including Brazil \citep{PonczekSouza2012},
-Britain \citep{Grawe2008}, China \citep{Lietal2008}, Chile \citep{Sanhueza2009},
-Israel \citep{Angristetal2010}, Mexico \citep{FitzsimonsMalde2010}, Norway
-\citep{Blacketal2005,Blacketal2010,MogstadWiswall2016}, and Sweden
-\citep{AslundGronqvist2010}. Depending on the setting and outcome under study,
-these results have lead to a wide range of empirical findings, from a clear
-rejection of the existence of a Q--Q trade-off in some settings (eg
-\citet{Angristetal2010}), to significant effects on schooling and IQ in
-others.
+%The most widespread use of twins in an instrumental variable setting
+%is in estimates of the Q--Q trade-off.  These have been applied in a range low-
+%and high-income country settings including Brazil \citep{PonczekSouza2012},
+%Britain \citep{Grawe2008}, China \citep{Lietal2008}, Chile \citep{Sanhueza2009},
+%Israel \citep{Angristetal2010}, Mexico \citep{FitzsimonsMalde2010}, Norway
+%\citep{Blacketal2005,Blacketal2010,MogstadWiswall2016}, and Sweden
+%\citep{AslundGronqvist2010}. Depending on the setting and outcome under study,
+%these results have lead to a wide range of empirical findings, from a clear
+%rejection of the existence of a Q--Q trade-off in some settings (eg
+%\citet{Angristetal2010}), to significant effects on schooling and IQ in
+%others.
 
-\subsection*{Twins as an Instrument}
 The validity of estimates the Q--Q parameter of interest in each case rely on
 twins being as good as random conditional on observable controls.  As is well
 documented in medical literature \citep{Hall2003} and acknowledged in the
@@ -386,7 +385,377 @@ demonstrate that if parents behave in such a manner, bounds for the Q--Q
 trade-off can be calculated. This hypothesis is tested in 
 \citet{Angristetal2010}, and further examined in \citet{FitzsimonsMalde2014}. 
 
-\part*{Part I -- Twinning}
+
+%*******************************************************************************
+%\renewcommand{\thesection}{\arabic{section} - I}
+%*******************************************************************************
+\part*{Part I -- Twinning and Maternal Behaviour}
+\section{Methodology}
+\label{TWINscn:method}
+In order to examine the ``as good as random'' assumption regarding twin births,
+we begin by estimating a series of conditional regressions of the form:
+\begin{equation}
+  \label{TWINeqn:twinreg}
+  twin_{bjt}=\gamma_0 + \gamma_1 Health_{bjt-1} + \mu_b + \lambda_t
+            + \varepsilon_{bjt}.
+\end{equation}
+Here, $twin$ is a binary measure for each of mother $j$'s $b$ births (where $b$
+indexes birth order), at age $t$.  As is maintained in the social science
+literature, we control for birth order and mother's age at birth fixed effects.
+If, as is commonly assumed, twin birth is an event which is as conditionally as
+good as random, the coefficients on each maternal health variable
+$Health_{jt-1}$ should not be statistically distinguishable from zero.
+
+In our principal specification, we estimate equation \ref{TWINeqn:twinreg}
+separately for all observable health measures, where $Health$ refers to
+conditions entirely before conception, or behaviours entirely before birth to
+avoid concerns that maternal health following twins may have been scarred by the
+twin birth.  As well as estimating regressions where health variables enter
+each specification separately, we estimate a version of equation
+\ref{TWINeqn:twinreg} in which all variables are entered together allowing for
+a conditional interpretation.  Standard errors are always clustered at the
+level of the mother, and where births are observed over multiple years, races,
+or geographic area, relevant fixed effects are included.  Given the well known
+result that the incidence of twins following ART is much higher than among non-%
+ART births \citep{Vitthalaetal2009}, where possible we estimate these
+regressions using \emph{only} a non-ART sample.  We discuss the data in which
+this is possible in the following section.
+
+An alternative test of whether twins appear to be as good as random consists of
+comparing women who give birth to twins with those who give birth to singletons
+\emph{before} these children are born.  If twin births occur randomly in the
+population, the two groups of mothers should appear identical before giving
+birth to twins or singletons at a particular birth order. To compare health
+stocks before twins, we run tests comparing the rate of infant mortality---a
+completely predetermined variable---of children born each of birth parity. For
+each $n=\{2,3,4\}$ we thus estimate:
+\begin{equation}
+  \label{TWINeqn:twinIMR}
+  InfantDeath_{ij,b<n,t}=\alpha_0 + \alpha_1 Twin_{j,b=n,t} + \mu_b + \lambda_t
+                        +\nu_{ijbt},
+\end{equation}
+where we restrict our sample to children $i$ of mother $j$ who are born before
+birth order $b<n$.  Thus, for $n=2$, the independent variable $Twin$ takes the
+value of one if the mother gives birth to twins on her second birth, and zero if
+she gives birth to singletons on this birth.  We then regress a binary variable
+for infant mortality of children born at birth order 1 on the mother's twin
+status at birth order 2. If twinning is as good as random, we should observe
+that no completely pre-determined variables predict twinning, and so we cannot
+reject the hypothesis $H_0: \alpha_1=0$, while if healthier mothers are more
+likely to give birth to twins, this should be captured in lower infant mortality
+rates (IMR) among twin mothers in early births, and hence an $\alpha_1<0$. Once
+again, standard errors are clustered at the level of the mother, and age and
+birth order fixed effects are included.
+
+
+%*******************************************************************************
+\section{Data and Descriptive Statistics}              \label{TWINscn:data}
+In order to estimate specification \ref{TWINeqn:twinreg}, we collected a range
+of microdata in which both measures of birth type (twin or singleton) and
+mother's pre-birth health or health behaviours are measured.  Datasets
+fulfilling this criteria that we used to estimate \ref{TWINeqn:twinreg} consist
+of administrative birth data from United States, Spain and Sweden, and household
+survey data from Chile, the United Kingdom, and 68 developing countries (the
+Demographic Health Surveys, or DHS).  Alternative administrative data for
+births considered including India, Mexico and Argentina do not contain suitable
+measures of maternal health to estimate equation \ref{TWINeqn:twinreg}.  When
+working with full birth data, we exclude the small portion of births in which
+greater than two children are born, and restrict our sample to women aged 18-%
+49 years old. The United States Vital Statistics Data has, since 2009,
+recorded the ART status of pregnancies.  As such, for all regressions
+involving US data, we restrict our sample to \emph{only} non-ART users, removing
+approximately 1.6\% of births from the sample.  A description of each dataset
+and its coverage is provided in the online data appendix C and full summary
+statistics are available in appendix table \ref{TWINtab:sumStatsTwins}.
+Additional summary details are provided below.
+
+We estimate equation \ref{TWINscn:dataApp} using data from the 68 developing
+countries contained in DHS data.  This is because we require the complete
+fertility history including the survival status of all children preceding each
+twin or singleton birth, which is available in the DHS.  In the left-hand panel
+of table \ref{TWINtab:sumstats} we present summary statistics by birth type
+from the DHS data (we turn to data in the right-hand panel in part II of this
+paper). Twin births make up 1.98\% of all births
+in the DHS sample, which is similar to values in all other samples decribed in
+table \ref{TWINtab:sumStatsTwins}. From table \ref{TWINtab:sumstats}, a
+simple comparison of means of maternal characteristics suggests that healthy
+mothers (as proxied by height, BMI and probability of being underweight) are
+more likely to give birth to twins in both the DHS sample. We test formally for
+the equality of means in appendix table \ref{TWINtab:balanceAll}, though these
+tests do not account for the well-known facts that twin mothers are generally
+older and have higher parities.  We turn to conditional tests in the results
+below.
+
+%*******************************************************************************
+\section{Results}                                  \label{TWINscn:results}
+\subsection{Twinning}                              \label{TWINsscn:twinning}
+In table \ref{tab:twinsMain} we present results of regressions of a child's
+twin status on their mother's health behaviours prior to birth and health
+stocks and conditions prior to pregnancy.  In this table we present regressions
+from each available dataset containing measures of twin births, and maternal
+health and socioeconomic outcomes laid out above.
+
+In each cell we present the results of a separate regression using each health
+indicator, conditioning on mother's age at birth, child birth year and birth
+order fixed effects, to capture the well-documented age and fertility effects
+of twins (see for example \citet{Hall2003} or \citet{RosenzweigWolpin1980}). In
+online appendix table \ref{tab:twinsCond} we present the same results, however
+in this case estimate one regression for each sample including all variables at
+once. All indepdendent variables are standardised as Z-scores, so results can
+be cast as the effect of incresing by 1 standard deviation the variable of
+interest, or the rate of incidence of a condition of the population of interest.
+Unstandardised results are presented in appendix table \ref{tab:twinsUnstand}.
+
+In each case, there exists considerable evidence to suggest that mothers who
+are healthier are more likely to give live birth to twins.  In panel A, using
+the full sample of non-ART births from the US between 2009 and 2013 we observe
+that women who smoked in each trimester are less likely to give live birth to
+twins, and the effect size increases by trimester.  Third trimester smoking is
+associated with a 0.25 percentage point (pp) reduction in the likelihood of
+twinning, which is nearly 10\% of the baseline rate of twinning in the
+population (2.84\% of births were twins in this period).  Similarly, we observe
+that morbidities \emph{prior} to conception are associated with a decreased
+likelihood of twinning.  We do not include measures of morbidities during
+gestation such as pre-eclampsia given that these may depend on the higher
+biological demands of a twin conception.  Both pre-conception conditions of
+diabetes and chronic hypertension significantly reduce the likelihood of
+twinning, by 0.288 and 0.217pp respectively. 
+
+The results from other contexts suggest similar results, and a wider set of
+maternal health or socioeconomic variables can be included.  In Sweden similar
+effects are observed with smoking during pregnancy (reducing the likelhood of
+twinning by 0.266 and 0.285pp at 12 and 30 weeks of gestation respectively,
+which is equivalent to a 10.4 and 11.2\% reduction), pre-pregnancy morbidities,
+and health stocks as measured by height and pre-pregnancy BMI.  In survey data
+based on smaller samples in Chile and the UK we observe that a wider range of
+health seeking or risk avoiding behaviours during pregnancy affect the
+likelihood of twinning.  In the UK healthy diet is associated with an increase
+in rates of twinning, and alcohol consumption significantly reduces the
+likelihood of giving live births to twins. Similarly, in Chile self-reported
+alcohol and drug consumption considerably reduces the twinning, by
+approximately 0.16-0.17pp.
+
+Finally, in the developing country sample (panel E) we observe some measures of
+health stocks including height, weight and body mass index, and we also observe
+the availability of prenatal care.  In this case we observe that taller and
+heavier women are more likely to twin (mirroring the findings from other
+contexts), and also observe that having greater access to pre-natal care is
+associated with greater rates of twinning.  These variables are all measured
+as the leave-one-out rate of healthcare access in the mother's cluster of
+residence, where in each case we are interested in availability rather than
+use to avoid endogeneity concerns where mothers conceiving twins may be more
+likely to actively seek out birth attendance.  In each case (availability
+of attending doctors, availability of attending nurses, or no availability or
+pre-natal care), we observe that greater public health availability increases
+the likelihood of twin births.  The estimated coefficients and signs in this
+table support the idea discussed in section \ref{TWINscn:method} that higher
+investments in maternal health required to maintain multiple healthy fetuses
+\emph{in utero} may result in non-random twin births. We return to the
+mechanism by which twin selection may occur in the following section.
+
+It is noteworthy that in all samples where maternal education is recorded that
+this is significantly related to the likelihood of twinning, even among the
+non-ART sample in the US.  Further, the effect of education is \emph{increasing}
+in the income status of the country.  We interpret this result as capturing the
+effect of education on health care access and use, and as support for the series
+of findings that the effect of education on health are most substantial in
+environments of faster change of health-care technologies \citep{LlerasMuney2005,
+  CutlerLlerasMuney2010}.  In the online appendix we present plots of the the
+difference in height and in education between twin and non-twin mothers in all
+countries in the sample, providing separate estimates also for each of the 68
+DHS countries (figures \ref{twinHeight} and \ref{twinEduc}).  In each case, we
+see that in the overwhelming majority of countries, twin mothers have greater
+human capital measures than non-twin mothers.  When we plot these estimates
+against GDP per capita in figures \ref{twinHeightGDP} and \ref{twinEducGDP}, we
+find little evidence to suggest that twin selection decreases as countries become
+more developed, conversely observing weakly positive correlations between country
+income and the human capital differentials between twin and non-twin mothers.
+
+Finally, using the methodology and data described in \citet{QuintanaRodenas2014},
+we are able to run a similar regression, however using a plausibly exogenous
+shock to maternal stress \emph{in utero} as a measure of $Health$.
+\citet{QuintanaRodenas2014} demonstrate that the effect of maternal stress during
+pregnancy from exposure to ETA bombings in Spain have significant effects on
+child birthweight, the likelihood of being born at low birth weight ($<$ 2,500g)
+and the likelihood of being born prematurely ($<$ 37 weeks of gestation).  The
+findings presented in table \ref{TWINtab:stress} mimic these results, however
+now documenting that an exogenous increase in stress \emph{in utero} reduces the
+probability of twin births. This effect is particulary large and significant
+during the second and third trimesters, lining up with the effects of smoking by
+trimester documented in table \ref{tab:twinsMain}.  This points to twins being
+particularly sensitive (in terms of survival) during trimesters two and three.
+The results suggest that mother's being exposed (indirectly) to one additional
+bomb casualty in the province of residence decreases the likelihood of observing
+a twin birth by 0.01\% and 0.012\% ($p<$0.01 and 0.05 respectively). For
+comparison, \citet{QuintanaRodenas2014} find that the same exposure reduces
+average birth weight by approximately 0.3 grams (trimester 1), and increases
+the likelihood of low birth weight by 0.14\%.
+
+An alternative test of the quasi-randomness of twin births consists of examining
+health stocks of mothers and their children entirely \emph{before} twin births.
+Results for the infant mortality test described in equation \ref{TWINeqn:twinIMR}
+are presented in table \ref{TWINtab:IMR}. In row 1, we regress an infant mortality
+indicator for first-borns on the twin status of second-borns.\footnote{Infant
+  mortality is defined as the death of a child before their first birthday. We
+  remove from the sample any children who were still alive but not yet 1 at the
+  time of the following birth, as these children have not yet been entirely
+  exposed to the risk of infant mortality.}  We see that mothers who went on to
+have second-born twins had much lower rates of infant mortality \emph{before} the
+twins than women who had second-born singletons.  Interestingly, we observe that
+introducing health (height and weight) and socioeconomic controls (completed
+education) reduce the size of the estimated infant mortality differential between
+twin and non-twin mothers, suggesting that these controls are able to partially,
+but not fully, address the positive selection into twinning.  In the first row
+these controls explain approximately 15\% of the selection into twinning, however
+even conditional on education and anthropometrics, twin mothers have 1.7 fewer fetal
+deaths than non-twin mothers per 100 live births.  We estimate similar regressions
+for other parity groups: namely first and second borns by the twin status of the
+third born, and first-to-third borns by the twin status of the fourth born.  In
+both cases similar effects are found, whereby twin mothers are observed to be
+\emph{less} likely to have had previous children who have not survived to age 1,
+and that controlling for a limited set of maternal variables reduces the importance
+of this effect.
+
+%Sonia: No mention of Trivers-Willard here.  Is this right do you think, or
+% should we mention/show?
+
+%*******************************************************************************
+\subsection{Selection Into Twinning: Mechanisms}   \label{TWINsscn:selection}
+Table \ref{tab:twinsMain} documents that in a wide variety of contexts,
+healthier women are more likely to give birth to twins.  In table
+\ref{TWINtab:stress} we observe that the scope of twin-selection variables is
+broad, including even maternal stress in utero.  There are a number of competing
+hypotheses which may explain why this is the case.  Firstly, it may simply be
+the case that healthier mothers are more likely to conceive twins.  This may
+reflect some underlying genetic or biological process, 
+such as that mediated by follicle stimulating hormone as discussed in 
+\citet{Hall2003}.  Secondly, conditional on conceiving twins, healthier mothers 
+may be more likely to take both fetuses to term.  Finally, it may be the case 
+that (conditional on conceiving twins and taking them to term), healthier mothers 
+may be more likely to survive the birth, and hence appear in survey or vital 
+statistics data.  In broad terms we will refer to these as the conception 
+mechanism, the gestation mechanism and the birth (survival) mechanism.
+
+When considering the ``as good as random'' assumption maintained for twins, any
+of these processes is sufficient to violate the assumption insofar as observing
+twins depends upon hard-to-measure maternal behaviours and characteristics.
+Nonetheless, we may be interested in determing which of these are the relevant
+channels in explaining the results from the previous section.  Particularly, the
+mechanism may be relevant when considering the use of the twins as an
+identification strategy.  For example, if twins are less likely \emph{only} due
+to selective maternal death, then as mothers become more likely to survive
+childbirth (ie moving from high maternal mortality countries to low maternal
+mortality countries), threats to validity become considerably less relevant.
+We examine these mechanisms below.
+
+Firstly, in order to determine whether twin selection could be entirely
+explained by selective maternal survival, we follow \citet{Aldermanetal2011} in
+simulating estimates under the counterfactual scenario that unhealthy women---%
+who are more likely to die in childbirth---were all carrying twins.  If it is
+the case that less healthy women who are carrying twins are more likely to die
+in childbirth and that this explains the entirety of the results in table
+\ref{tab:twinsMain}, we should see that adding these mothers back into the
+sample and assuming that they were carrying twins should mean that no
+correlation remains between maternal health and twin births.
+
+Using DHS data described in section \ref{TWINscn:data}, we observe a woman's
+height, BMI, pregnancy outcomes, and the maternal mortality status of all her
+sisters.  As we do not observe health stocks of women who died in childbirth,
+we assume that her sister's health (height and BMI) is a reasonable proxy for
+the health of the woman who died.  Figure \ref{TWINfig:survival} shows that
+maternal mortality is much higher among sisters of more unhealthy women.
+Women shorter than the mean height of 155.5cm are considerably more likely to
+suffer maternal death, with this being particularly so below heights of 145cm.
+
+To test the potential importance of maternal survival in explaining twin 
+selection, we inflate the sample by the number of women who, according to 
+DHS data, would exist in the sample if it were not for the fact that they died
+in childbirth.  We then examine the coefficients of interest in our twin 
+regression (\ref{TWINeqn:twinreg}), if all unhealthy women who died were 
+pregnant with twins, while all healthy women who died were not.  As this relies 
+on a binary `healthy vs unhealthy' distinction, we define this in various ways, 
+based on height and BMI.  These results are presented in table 
+\ref{TWINtab:Alderman}.  The first column shows the estimated coefficients on 
+height and BMI in the unaltered sample of women from DHS countries where 
+maternal mortality data is available.  In this sample, a 1 point increase in BMI
+is associated with a 0.046\% increase in the probability of twinning. The 
+remaining columns add in observations based on maternal mortality rates among 
+sisters of surveyed women.  For example, in the second column, we examine the 
+effect of adding to the sample unhealthy and healthy women based on the
+maternal mortality rate in each group, and then assuming that all unhealthy
+women would give birth to twins, and all healthy mothers would not. As
+expected, this reduces the importance of positive maternal health in predicting
+twinning, with the coefficient on BMI falling from 0.0460 to 0.0437. Additional
+columns continue in this manner, however using continually less conservative
+assumptions in assigning members to the unhealthy group who are defined as
+giving birth to twins. Even in the final column, where the entire bottom half
+of the anthropometric distribution is assumed as being unhealthy, the
+coefficient on both height and BMI remains positive and significant under the
+counterfactual simulation that all unhealthy women who died in childbirth were
+carrying twins.\footnote{Examining selection in this way (as per
+  \citet{Aldermanetal2011}) is only one way to examine the effect of selection
+  on estimated coefficients.  An alternative measure as proposed by
+  \citet{Lee2009} involves trimming the control and treatment group (in our
+  case unhealthy and healthy mothers), to account for differential selection
+  by treatment status.  This results in bounds estimates of the effect of
+  treatment (good health) on the outcome variable (twinning). We report Lee
+  bounds in appendix table \ref{TWINtab:Lee}, however note that these bounds
+  are based on the assumption that treatment is random, which here it is not.
+  Nonetheless, \citet{Lee2009} bounds agree with the simulated estimates in
+  table \ref{TWINtab:Alderman}, providing further evidence that selective
+  maternal survival is not enough to explain the correlation between maternal
+  health and twinning.}
+
+These results suggest that selective maternal death alone is not enough to 
+explain why healthier mothers are more likely to have twins. Turning to the 
+gestation mechanism, we are able to test whether less healthy women who are 
+pregnant with twins are more likely to miscarry than healthier women who are 
+also pregnant with twins.  In order to do so, we require data which records
+births, miscarriages, mother's health, as well as the type of fetus (single
+or multiple) which the mother was pregnant with.  Such data is frequently not
+available in birth registers, but fortunately, is available in the US Vital
+Statistics System.  We thus pool all births and fetal deaths recorded in US
+administrative data between 1998 and 2002.  This time period is used given
+that in 2003, a considerable re-definition of birth certificate data meant
+that fetal death and birth data did not share similar controls and the coverage
+varied by state.  Prior to 2002 however we are able to observe for all states
+whether a mother smokes or drinks during pregnancy, whether she suffered from
+anemia prior to pregnancy, and her educational level.
+
+Using US Vital Statistics on births and fetal deaths we thus run a series of
+regressions where fetal death is regressed on a mother's health behaviours or
+stocks, whether the mother was carrying twins, and the interaction between
+carrying twins and the same health behaviour.  We expect that both poor
+maternal health and a twin pregnancy increase the likelihood of miscarriage,
+however we are interested in determing if there is a steeper gradient in the
+health-fetal death relationship for twin births than for singleton births, or
+if conditional on engaging in the same negative health behaviour twin mothers
+are more likely to miscarry than non-twin mothers.
+
+These regression results are reported in table \ref{tab:FDucond}.  This table
+displays four estimates, which correspond to the rate of fetal deaths of twin
+and singleton mothers who do and do not engage in a particular health behaviour
+or have a particular health stock.  Separate columns are estimated for different
+health variables, and the dependent variable (fetal deaths) is multiplied by 1000
+so coefficients are expressed as fetal deaths per 1,000 live births. As expected,
+less healthy mothers and mothers exhibiting risky behaviour such as smoking are
+more likely to miscarry.  For example, in column 1, mothers who smoke prior to
+birth have 1.39 more fetal deaths per 1,000 births.  Similarly, mothers pregnant
+with twins have 9.9 more fetal deaths per 1,000 births, in line with the
+literature on miscarriage by birth type \citep{Garciaetal2002}.  In order to
+test the gestation mechanism, the coefficients of interest are the interaction
+terms between twin pregnancies and maternal health.  For all health variables 
+examined (smoking, alcohol consumption, anemia and education), less healthy women
+pregnant with twins are observed to be \emph{additionally} more likley to
+miscarry. These results provide evidence in favour of the gestation mechanism,
+as conditional on conceiving twins, it is found that unhealthy women are more 
+likely to miscarry these fetuses, and hence less likely to be subject to the
+fertility shock than mothers who engage in healthier behaviours or have greater
+health stocks.
+
+%*******************************************************************************
+\setcounter{section}{0}
+\part*{Part II -- Reassessing the Q--Q Trade-off}
 \section{Methodology}
 \label{TWINscn:method}
 \subsection{The Quantity--Quality Trade-off and OLS}
@@ -407,7 +776,7 @@ child quality and quantity are jointly determined \citep{BeckerLewis1973,
 influence both fertility decisions, and investments in children's education
 \citep{Qian2009}.
 
-This well-known omitted variable bias formula implies that OLS estimates of
+This well-known omitted variable bias implies that OLS estimates of
 the quantity-quality trade-off will fail to recover the underlying parameter
 $\alpha$ unless all relevant variables are included in $\bm{X}$. The direction
 of the resulting bias is determined by the sign on the conditional correlation
@@ -486,7 +855,7 @@ socioeconomic variables $\bm{S}$.
 The logic of these movements is that as additional relevant controls
 are included in the OLS regression, the remaining bias will become
 less severe, eroding the initial bias.  However, unless \emph{all} relevant
-fertility selection variables are controlled for, bias will still remain in
+fertility-selection variables are controlled for, bias will still remain in
 the parameter $\hat\alpha_1^{S+H}$.  This is summarised in the following two
 (testable) hypotheses:
 
@@ -494,8 +863,8 @@ the parameter $\hat\alpha_1^{S+H}$.  This is summarised in the following two
 \textbf{Hypothesis 1a}: If higher fertility is negatively selected, OLS will over-estimate the magnitude of the true trade-off. Addition of variables predicting negative selection as controls will make the estimate approach the population value from below.\\
 \textbf{Hypothesis 1b}: If higher fertility is positively selected, OLS will under-estimate the magnitude of the true trade-off. Addition of variables predicting negative selection as controls will make the estimate approach the population value from above.
 
-\subsection{The Twin Instrument}
-\subsubsection{Validity of the Twin Instrument}
+
+\subsection{The Twin Instrument and the Q--Q Trade-off}
 \label{sscn:validIV}
 The imposiblity of observing all relevant fertility-selection variables
 implies that OLS estimates controlling for observables will not result
@@ -505,7 +874,7 @@ assumption about the degree of selection on unobservables.
 
 This has lead to the widespread use of instrumental variables in empirical
 estimates of the Q--Q model.  One proposed and frequently employed solution has
-been to employ 2SLS estimation, where fertility is is instrumented using twin
+been to estimate by 2SLS, where fertility is is instrumented using twin
 births \citep{RosenzweigWolpin1980}.\footnote{Other instruments and methodologies
   are also used including gender mix of children \citep{ConleyGlauber2006}, policy
   experiments such as the arrival and loosening of the one child policy in China
@@ -530,71 +899,20 @@ excluded from the estimation sample.\footnote{Typically, the argument is made
 (the subjects) are randomly assigned either one (control group) or two
 (treatment group) siblings at the $n^{th}$ birth.  In this series of equations,
 if twins are a valid instrument, the parameter $\beta_1$ is consistent and hence
-equal to the parameter $\alpha_1$ from the population equation
-(\ref{TWINeqn:RF}).
+equal to the parameter $\alpha_1$ from the population equation \ref{TWINeqn:RF}.
 
 Validity of the instrumental variables estimates requires that the likelihood
 of twinning does not depend upon omitted variables which predict child quality
-in \ref{TWINeqn:IV2}, and hence form part of $\eta_{ij}$.  The premise of this
-paper is that twin births are not
-random. Given the biological demands placed on a mother pregnant with twins,
-we may expect that healthier mothers, or mothers with more resources to invest
-in their pregnancy, are more likely to take twin conceptions to term.  If
-this is the case, and if mothers who invest more during pregnancy similarly
-invest more in children later in life, IV estimates will be inconsistent.
-
-While documenting invalidity of an instrumental variable is impossible
-given that many of the relevant elements of the stochastic error term
-$\eta_{ij}$ are either completely or partially unobservable, some of these
-variables, such as maternal education and incomplete measures of health
-stocks and behaviours, can be observed.  Thus a partial test of the twin
-methodology consists of estimating the following regression:
-\begin{equation}
-  \label{TWINeqn:twinreg}
-  twin_{j}=\gamma_0 + \bm{H}\bm{\gamma}_1 + \bm{S}\bm{\gamma}_2 + \upsilon_{j}.
-\end{equation}
-As before, $\bm{H}$ refers to a vector of maternal health controls, and
-$\bm{S}$ refers to additional family socioeconomic variables such as income
-and parental education.
-
-If twin birth is indeed an event which is as good as random, the coefficients
-on maternal health and family socieoeconomic variables in the above regression
-should not be significantly different to zero.  This leads to the following
-testable hypothesis:
-
-\noindent %Damian i slightly changed the grammar for clarity, and broke the next sentence into 2.
-\textbf{Hypothesis 2}: If twins are as good as random, twin mothers should be no more
-healthy than non-twin mothers, conditional on well-known genetic predictors of twinning
-like age and parity and conditional on IVF use in recent cohorts.
-$H_0: \bm{\gamma}_1 = \bm{\gamma}_2 = 0$. \\
-Rejection of the null would raise difficulties in proceeding with IV estimation
-using the twin instrument. Of course, if the rejection of the null were only due
-to one or a number of \emph{observable} element(s) which predicted twinning,
-these variables could simply be included in the first and second stages
-(\ref{TWINeqn:IV1}) and (\ref{TWINeqn:IV2}),
-much like occurs with maternal age and race in the existing literature.  However,
-more generally it would be difficult to be argue for instrumental validity if
-twinning is shown to depend upon (a limited set of) measurable family
-characteristic or choice variables, while many similar variables are not observed.
-
-An alternative test of whether twins appear to be as good as random consists of
-comparing women who give birth to twins with those who give birth to singletons
-\emph{before} these children are born.  If twin births occur randomly in the
-population, the two groups of mothers should appear identical before these births
-occur. In order to compare health stocks before twins, we run tests comparing the
-rate of infant mortality---a completely predetermined variable---of children born
-each of the $n+$ groups described above.  If, as we contend, healthier mothers
-are more likely to give birth to twins, this should be captured in lower infant
-mortality rates (IMR) among twin mothers in early births.
-
-\subsubsection{Inconsistency in IV Estimates}
-\label{sscn:inconsistentIV}
-If, following the tests described above, twins are found to be positively selected
-among healthy mothers, traditional IV estimates of $\beta_1$ from (\ref{TWINeqn:IV2})
-will be inconsistent.  The inconsistency of the IV estimate depends in part on the
-degree of the correlation between the likelihood of twinning and the stochastic error
-term $\eta_{ij}$ from (\ref{TWINeqn:IV1}).  Positively selected twinning---where
-mothers who invest more in their children are more likely to twin---implies:
+in equation \ref{TWINeqn:IV2}, and hence form part of $\eta_{ij}$.  The premise
+of part I of this paper is that twin births are not random. As documented, the
+higher biological demands placed on a mother pregnant with twins, results in a
+greater likelihood of that healthy or health-seeking mothers take twin
+conceptions to term.  If these mothers who invest more during pregnancy similarly
+invest more in children later in life, IV estimates will be inconsistent. The
+inconsistency of the IV estimate depends in part on the degree of the correlation
+between the likelihood of twinning and the stochastic error term $\eta_{ij}$ from
+equation \ref{TWINeqn:IV1}.  Positively selected twinning---where mothers who
+invest more in their children are more likely to twin---implies:
 \begin{equation}
   \text{Positively Selected Twinning:\ \ \ }  \plim_{N\rightarrow\infty} \frac{1}{N}\sum_{i=1}^Ntwin_j\cdot \eta_j > 0 \Leftrightarrow \plim_{N\rightarrow\infty}\hat\beta_1 > \beta_1, \nonumber
 \end{equation}
@@ -612,13 +930,12 @@ coefficients:
 \begin{equation}
   \text{Positively Selected Twinning:\ \ \ } \plim \hat\beta_1 > \plim\hat\beta_1^{S} > \plim\hat\beta_1^{S+H} > \beta_1. \nonumber
 \end{equation}
-When we include additional controls in the case that twinning is positively
-selected, the estimated value for the Q--Q trade-off will approach the population
-parameter from above.  Unless all positive selectors of twins are
-accounted for, we will under-estimate the true magnitude of the Q--Q trade-off.
-This leads to the third hypothesis:
+When we include additional controls in the, the estimated value for the Q--Q
+trade-off will approach the population parameter from above.  Unless all
+positive selectors of twins are accounted for, we will under-estimate the
+true magnitude of the Q--Q trade-off. This leads to the second hypothesis:
 
-\noindent \textbf{Hypothesis 3}: If women with higher rates of twinning are
+\noindent \textbf{Hypothesis 2}: If women with higher rates of twinning are
 positively selected, IV will under-estimate the true magnitude trade-off, but
 addition of positive selection variables as controls will make the estimate
 approach the population value from above.
@@ -646,7 +963,7 @@ push the OLS estimate towards a tighter and tighter lower bound, and controlling
 for the (positive) selection variables in IV will result in a tighter upper bound.
 This gives the following hypothesis.
 
-\noindent \textbf{Hypothesis 4a}: If higher fertility is negatively selected and twinning is positively selected, we can achieve bounds using the OLS result and the IV result, and tighten these bounds by adding the variables which explain (respectively) the positive and negative selection.
+\noindent \textbf{Hypothesis 3a}: If higher fertility is negatively selected and twinning is positively selected, we can achieve bounds using the OLS result and the IV result, and tighten these bounds by adding the variables which explain (respectively) the positive and negative selection.
 \\
 However, if higher fertility (like twinning) is positively selected then both
 sets of estimates will approach the population parameter from above, and so
@@ -655,7 +972,7 @@ no lower bound estimate will exist:
   E[\hat\beta_1] < E[\hat\beta_1^{S}] < E[\hat\beta_1^{S+H}] < \beta_1  \nonumber \\
   E[\hat\alpha_1] < E[\hat\alpha_1^{S}] < E[\hat\alpha_1^{S+H}] < \alpha_1. \nonumber
 \end{eqnarray}
-\noindent \textbf{Hypothesis 4b}: If higher fertility \emph{and} twinning are positively selected, we cannot estimate bounds from OLS result and IV, and without further restrictions we do not know theoretically which will be closer to the population parameter $\alpha_1=\beta_1$.
+\noindent \textbf{Hypothesis 3b}: If higher fertility \emph{and} twinning are positively selected, we cannot estimate bounds from OLS result and IV, and without further restrictions we do not know theoretically which will be closer to the population parameter $\alpha_1=\beta_1$.
 
 \subsection{Estimating Consistent Q--Q Bounds}
 \label{TWINscn:gamma}
@@ -667,17 +984,16 @@ equation, or that the sign of $\gamma$ in the following is equal to zero:
   \label{TWINeqn:Conley}
   quality_{ij}=\delta_0 + \delta_1 quantity_j + \gamma twin_j + \bm{X}\bm{\delta_x} + \vartheta_{ij}.
 \end{equation}
-As we discuss above, this will not be the case if maternal health controls
-omitted from (\ref{TWINeqn:RF}) are correlated with both the likelihood of
-taking twin conceptions to term, and with eventual measures of child quality.
+As we document extensively in part I of this paper, positive selection into
+twinning leads to serious concerns that the exclusion restriction will be met.
 Specifically, $\gamma$ will reflect the effect of unobserved maternal health
 on child quality, interacted with the degree to which twin mothers are healthier
-than non-twin mothers.\footnote{This is a useful way to think about the IV bias.
-  If one or other of these conditional correlations is equal to zero, IV estimates
-  will not be biased.  If twin mothers are not more healthy than non-twin mothers,
-  then our instrumental invalidity concerns (due to health) can be dismissed.
-  Similarly, if twin mothers \emph{are} healthier than non-twin mothers, but
-  maternal health has no effect on child quality, the exclusion restriction will
+than non-twin mothers.\footnote{This is a useful way to think about the IV
+  inconsistency. If one or other of these conditional correlations is equal to zero,
+  IV estimates will not be inconsitent.  If twin mothers are not more healthy than
+  non-twin mothers, then our instrumental invalidity concerns (due to health) can be
+  dismissed. Similarly, if twin mothers \emph{are} healthier than non-twin mothers,
+  but maternal health has no effect on child quality, the exclusion restriction will
   still hold, leading to consistent instrumental estimates.}
 
 However, even in cases such as this where we are not confident that $\gamma=0$,
@@ -698,34 +1014,34 @@ children post-pregnancy.
 %Thus, $\gamma$, the coefficient on twin
 
 As \citet{Conleyetal2012} show, bounds estimates for the IV parameter $\beta_1$
-from (\ref{TWINeqn:IV2}) can be generated under a series of assumptions regarding
-$\gamma$.  These include a simple assumption regarding the support of $\gamma$
-(their ``Union of Confidence Intervals'' approach), or a fully specified prior
-for the distribution of $\gamma$ (their Local to Zero approach).  In the latter
-case, a correctly specified prior often leads to a tighter bounds estimate for
-the parameter of interest $\beta_1$.  The results from \citet{Conleyetal2012}
-leads to hypothesis 5.\footnote{\citeauthor{Conleyetal2012}'s results are ideally
-  suited to the empirical application of this paper.  The bounding method is most
-  informative with instruments that are strong (as is the case with twins), but
-  where the exclusion restriction may be violated.}
+from equation \ref{TWINeqn:IV2} can be generated under a series of assumptions
+regarding $\gamma$.  These include a simple assumption regarding the support of
+$\gamma$ (their ``Union of Confidence Intervals'' approach), or a fully specified
+prior for the distribution of $\gamma$ (their Local to Zero approach).  In the
+latter case, a correctly specified prior often leads to a tighter bounds estimate
+for the parameter of interest $\beta_1$.  \citeauthor{Conleyetal2012}'s methods
+are ideally suited to the empirical application of this paper.  Their bounds
+are most informative with instruments that are strong (as is the case with
+twins), but where the exclusion restriction may be violated. The results from
+\citet{Conleyetal2012} leads to hypothesis 4.
 
-\noindent \textbf{Hypothesis 5}: If we have an unbiased estimate of $\gamma$, the size of the invalidity in the exclusion restriction, we can consistently estimate bounds on the Q--Q trade-off.
+\noindent \textbf{Hypothesis 4}: If we have an unbiased estimate of $\gamma$, the size of the invalidity in the exclusion restriction, we can consistently estimate bounds on the Q--Q trade-off.
 
-From (\ref{TWINeqn:Conley}), $\gamma$ represents the conditional effect of
-begin born from a twin mother on child quality:
+From equation \ref{TWINeqn:Conley}, $\gamma$ represents the conditional effect
+of being born from a twin mother on child quality:
 \[
 \gamma=\frac{\partial quality_{ij}}{\partial twin_j}\bigg|_{X}
 \]
 In practice, bounds identification based on $\gamma$ only pushes our
 identification problem back by one step, as consistent bounds rely on having
 an unbiased estimate of $\gamma$, which is not trivial.  In order to generate
-an estimate of $\gamma$, we must know the direct effect of the full vector of
-health differences between twin and non-twin mothers on child health.  As in
-the IV and OLS cases, observing the full set of relevant maternal health and
-behaviour variables which predict twinning is unlikely to be possible.
+an estimate of $\gamma$, we must know the direct effect of health differences
+between twin and non-twin mothers on child health.  As in the IV and OLS cases,
+observing the full set of relevant maternal health and behaviour variables
+which predict twinning is unlikely to be possible.
 
 In order to calculate a consistent estimate of $\gamma$ we proceed in two
-stage.  Firstly, we \emph{can} observe any exogenous shock to maternal health,
+stages. Firstly, we \emph{can} observe any exogenous shock to maternal health,
 $health_j$ and examine the full effect of the maternal health shock on child
 quality:
 \[
@@ -764,14 +1080,12 @@ bounds estimate of $\beta_1$.\footnote{\citet{Conleyetal2012} discuss a
   simulation-based algorithm (p.\ 265) for estimation, which can be used given
   any prior, including non-normal priors, for the distribution of $\gamma$.}
 We provide a full description of this resampling process in online appendix
-D. In the subsections which follow, we describe two
-empirical applications in which we can estimate $\gamma$ and its distribution:
+\ref{ATWINscn:gammaSim}. In the subsections which follow, we describe two
+empirical applications in which we can estimate $\gamma$ and its distribution:\
 one in the context of the United States, and another in Nigeria.
 
 \subsubsection{Estimating $\gamma$ in the United States}
 \label{sscn:USgamma}
-%Damian when you update this sulfa-gamma discussion i suggest adding a generation subscript or else just being explicit that there is a health shock to the mother at her birth and educ is measured
-%for her children when they grow up. Similarly that the prob of twinning (as a func of baseline levels of health before the health shock) refer to the prob that individuals born around the same time as the mothers are twins. I think otherwise it is a bit confusing since there is the mother at birth, the mother as an adult (and in our paper we show results for adult height, smoking etc of the adult mother) and her children as adults. We can note that this sort of data are rare because they need to be historical for us to have outcomes for 2 adult-generations
 As the discussion above suggests, valid estimation of $\gamma$ requires an
 exogenous health shock to the mother, which can then be linked to the eventual
 quality of her children.  The data requirements in this circumstance are quite
@@ -806,8 +1120,8 @@ $s$, and hence the differential effect of being exposed to sulfa after its arriv
 ($Post_t$).  We follow \citet{BhalotraVenkataramani2014} in including controls
 for census year $t$, mother's birth cohort $c$, and mother's race $r$.
 
-From (\ref{TWINeqn:BV}) we isolate the effect of a positive maternal health
-shock (the reduction in rates of pneumonia in the post sulfa era) on child
+From equation \ref{TWINeqn:BV} we isolate the effect of a positive maternal
+health shock (the reduction in rates of pneumonia in the post sulfa era) on child
 quality as $\phi^q_1$.  As described above, in order to estimate $\gamma$---the
 violation of the exclusion restriction---we need to estimate the twin-mediated
 effect of this maternal health shock on child quality.  We thus need to estimate
@@ -839,39 +1153,6 @@ their product:
 This is our estimand of interest, and we can plug it into our estimates of
 the bounds on $\beta_1$ using the methods described above, and in
 \citet{Conleyetal2012}.
-
-%*******************************************************************************
-
-%Estimates of $\phi^q$, $\phi^t$ and $\gamma$ are presented in table
-%\ref{TWINtab:gamma}.  The first column suggests that the effect of improved
-%maternal health from sulfa drugs on the next generation is an increase
-%in 0.0497 (or 4\% of a standard deviation) in school z-score.  This is the
-%quantity $\phi^q$.
-
-%Damian is this education of the children when they are adults? i was concerned that in case it is measured for young children still at home it wouldn't vary much in the USA.
-%Damian how many years of education is this 0.05 s.d.? It is useful to have some perspective on the size of this relative to our estimates of how education in DHS responds to fertility.
-
-%In the second column (conditional on health and fertility
-%controls, we see that twin mothers come from, on average, areas with 18.4\%
-%\emph{lower} rates of pneumonia (or in other words, lower rates of pneumonia
-%mortality are associated with higher rates of twinning, in line with the
-%findings in the body of this paper).
-
-%Damian i can find the # in our sulfa-paper1 but just a flag that we should compare the 18.5% difference in base_pneumonia rates across states with the interquartile range of base_pneumonia in the data, or something like this.
-
-%We interact $\hat\phi^q$ and the inverse
-%of $\hat\phi^t$ (given that twin mothers have lower rates of pneumonia and
-%hence are \emph{more} healthy) to form $\gamma$.  From the third column, this
-%results in an estimate for $\gamma$ of 0.0091 s.d.\ (0.91\% of a standard
-%deviation).  This our estimate of the direct effect of coming from a twin
-%family (having a healthier mother) on school Z-scores, and the value we use
-%to estimate \citet{Conleyetal2012}'s bounds in section
-%\ref{TWINsscn:resultBounds}.
-
-%Damian How does a gamma of 0.0091 s.d. compare with pi(1) the parameter of interest (see the Conley eq, pi-1 is just the qq tradeoff estimate).
-
-
-%Damian do you have an intuition for gamma being normal. is there a reason this seems right? Or is it just that most vars are normal, that's why we call this distribution ```normal'''>
 
 \subsubsection{Estimating $\gamma$ in Nigeria}
 \label{sscn:Nigeriagamma}
@@ -925,75 +1206,17 @@ bounds.
 
 %*******************************************************************************
 \section{Data and Estimation Samples}              \label{TWINscn:data}
-We consult two data sets for our main IV and OLS analysis, and a large number of
-auxiliary datasets when only considering the link between twinning and maternal
-health.  In order to estimate the (health augmented) specification 
-\ref{TWINeqn:RF}, we require information on each child's siblings, his or her
-mother's characteristics, as well as the child's eventual `quality' measure. 
-We focus our empirical tests on two principal datasets which contain all of 
-these variables.  Firstly, the Demographic and Health Surveys (DHS), which have 
-been applied over 20 years in a range of developing countries, and secondly, the 
-United States National Health Interview Surveys (NHIS), which has been applied 
-in an identical way from 2004-2014.  In what follows, we describe the 
-characteristics of these datasets.  A comprehensive description of all data, 
-including that which is used only to illustrate twinning and its relation to 
-maternal characteristics, is provided in the online data appendix C.  Additional
-summary details and discussion of estimation samples is provided below.
-
-%*******************************************************************************
-\subsection{Estimation Samples}                    \label{TWINsscn:samples}
-The quasi-experimental variation exploited in twin studies is to leverage the 
-effect of an unexpected additional child on siblings who were born before the 
-additional birth.  Thus, all first-born children in families of at least two
-births are split into two groups: the treatment group, which consists of
-first-born children in a family whose second birth results in two children
-(twins), and a control group consisting of first-born children in families where
-the second birth results in just one child.  This quasi-experiment can be
-applied for twins at each birth order, and we follow the existing literature
-starting with \citet{Blacketal2005} in defining these estimation samples. These
-are referred to as the 2+, 3+, and 4+ samples, and are defined $\forall\ n \in
-\{2, 3, 4\}$ to include first-born to $n-1$ born children in families with at
-least $n$ births. Existing studies such as \citet{Angristetal2010} focus mainly
-on the 2+ and 3+ samples. Given the higher fertility in the DHS data, we also
-include a higher birth-order group, 4+.
-
-Such a sample decision is important when estimating the Q--Q trade--off using 
-twins as an instrument. Given that family size is endogenously chosen by 
-parents and rates of twin birth are not constant by birth-order, twin-births will 
-occur more frequently in families that have a higher fertility preference (see
-figures \ref{TWINfig:bordUS} and \ref{TWINfig:bord}). This point is addressed by
-(among others) \citet{RosenzweigWolpin1980} and \citet{Blacketal2005} who first
-suggested combining $n+$ groups with twinning at birth order $n$ as a way to
-ensure that twin and non-twin families in the sample would have similar fertility 
-preferences.
-
-%*******************************************************************************
-\subsection{Descriptive Statistics}                \label{TWINsscn:descriptives}
-Table \ref{TWINtab:sumstats} provides summary statistics for DHS and NHIS data.
-For each source of data, fertility and maternal characteristics are described at
-the level of the mother, while child education, and health outcomes are
-described at the level of the child. 
-
-We present summary statistics by birth type (singleton or twin) in the two
-datasets.  Twin births make up 1.98\% of all births in the DHS sample, and
-2.57\% in the NHIS sample.  This value is very similar to the value reported in
-the universe of all births in the United States from birth certificate data (see
-for example figure \ref{TWINfig:USTwin}). From table \ref{TWINtab:sumstats}, a
-simple comparison of means of maternal characteristics suggests that healthy
-mothers (as proxied by height, BMI and probability of being underweight) are
-more likely to give birth to twins in both the DHS and NHIS samples.\footnote{We
-  test formally for the equality of means in appendix table
-  \ref{TWINtab:balanceAll}, though these tests do not account for the well-known
-  facts that twin mothers are generally older and have higher parities} As
-expected, twin families are larger than non-twin families. Figure
-\ref{TWINfig:births} describes total fertility in twin and non-twin families.
-The distribution of family size in families where at least one twin birth has
-occurred dominates the corresponding distribution for all-singleton families in
-both the DHS sample (figure \ref{TWINfig:birthsDHS}) and the US sample (figure
-\ref{TWINfig:birthsUS}). This is expected given imperfect fertility control and%
----even were fertility perfectly controlled by families---given that some twins
-will occur on a family's final desired birth.  Such a result is required for
-instrumental relevance when using twining to estimate a Q--Q trade-off.
+\subsection{Data}                                  \label{TWINsscn:data}
+We consult two data sets for our main IV and OLS analysis. In order to estimate
+the (health augmented) specification \ref{TWINeqn:RF}, we require information on
+each child's siblings, his or her mother's characteristics, as well as the
+child's eventual `quality' measure. We focus our empirical tests on two
+principal datasets which contain all of these variables.  Firstly, the DHS,
+discussed in part I of the paper, which have been applied over 20 years in a
+range of developing countries, and secondly, the United States National Health
+Interview Surveys (NHIS), which has been applied in an identical way from
+2004-2014.  Further details on each of these datasets are provided in online
+appendix \ref{TWINscn:dataApp}.
 
 Child `quality' is measured using each child's educational attainment. Our 
 principal outcome variable in each case is a standarised score for schooling 
@@ -1023,269 +1246,54 @@ as the child's school Z-score in the US, we also examine the parent's report of
 whether the child is in ``excellent health'' (a question which is a constant in
 all of the post-2004 NHIS waves).
 
-%*******************************************************************************
-\section{Results}                                  \label{TWINscn:results}
-\subsection{Twinning}                              \label{TWINsscn:twinning}
-In table \ref{tab:twinsMain} we present results of regressions of a child's
-twin status on their mother's health behaviours prior to birth and health
-stocks and conditions prior to pregnancy.  In this table we present regressions
-from each available dataset containing measures of twin births, and maternal
-health and socioeconomic outcomes.  This includes two sources of vital
-statistics data (USA and Sweden), and three separate household surveys (United
-Kingdom, Chile, and the pooled DHS sample).  In the case of the United States
-Vital Statistics data where we observe each women's fertility treatment status,
-our estimation sample consists \emph{only} of women who did not undergo ART to
-achieve the birth (98.4\% of the universe of births between 2009-2013).
+Table \ref{TWINtab:sumstats} provides summary statistics for DHS and NHIS data.
+For each source of data, fertility and maternal characteristics are described at
+the level of the mother, while child education, and health outcomes are
+described at the level of the child.  Twin births make up 1.98\% of all births
+in the DHS sample, and 2.57\% in the NHIS sample (a similar value to that in full
+birth certificate data described in  figure \ref{TWINfig:USTwin}).  As expected,
+twin families are larger than non-twin families. Figure \ref{TWINfig:births}
+describes total fertility in twin and non-twin families. The distribution of
+family size in families where at least one twin birth has occurred dominates the
+corresponding distribution for all-singleton families in both the DHS sample
+(figure \ref{TWINfig:birthsDHS}) and the US sample (figure \ref{TWINfig:birthsUS}).
+This is expected given imperfect fertility control and---even were fertility
+perfectly controlled by families---given that some twins will occur on a family's
+final desired birth.  Such a result is required for instrumental relevance when
+using twining to estimate a Q--Q trade-off.
 
-In each cell we present the results of a separate regression using each health
-indicator, conditioning on mother's age at birth, child birth year and birth
-order fixed effects, to capture the well-documented age and fertility effects
-of twins (see for example \citet{Hall2003} or \citet{RosenzweigWolpin1980}). In
-online appendix table \ref{tab:twinsCond} we present the same results, however
-in this case estimate one regression for each sample including all variables at
-once. All indepdendent variables are standardised as Z-scores, so results can
-be cast as the effect of incresing by 1 standard deviation the variable of
-interest, or the rate of incidence of a condition of the population of interest.
+\subsection{Estimation Samples}                    \label{TWINsscn:samples}
+The quasi-experimental variation exploited in twin studies is to leverage the 
+effect of an unexpected additional child on siblings who were born before the 
+additional birth.  Thus, all first-born children in families of at least two
+births are split into two groups: the treatment group, which consists of
+first-born children in a family whose second birth results in two children
+(twins), and a control group consisting of first-born children in families where
+the second birth results in just one child.  This quasi-experiment can be
+applied for twins at each birth order, and we follow the existing literature
+starting with \citet{Blacketal2005} in defining these estimation samples. These
+are referred to as the 2+, 3+, and 4+ samples, and are defined $\forall\ n \in
+\{2, 3, 4\}$ to include first-born to $n-1$ born children in families with at
+least $n$ births. Existing studies such as \citet{Angristetal2010} focus mainly
+on the 2+ and 3+ samples. Given the higher fertility in the DHS data, we also
+include a higher birth-order group, 4+.
 
-In each case, there exists considerable evidence to suggest that mothers who
-are healthier are more likely to give live birth to twins.  In panel A, using
-the full sample of non-ART births from the US between 2009 and 2013 we observe
-that women who smoked in each trimester are less likely to give live birth to
-twins, and the effect increases by trimester.  Third trimester smoking is
-associated with a 0.25 percentage point (pp) reduction in the likelihood of
-twinning, which is nearly 10\% of the baseline rate of twinning in the
-population (2.84\% of births were twins in this period).  Similarly, we observe
-that morbidities \emph{prior} to conception are associated with a decreased
-likelihood of twinning.  We do not include measures of morbidities during
-gestation such as pre-eclampsia given that these may depend on the higher
-biological demands of a twin conception.  Both pre-conception conditions of
-diabetes and chronic hypertension significantly reduce the likelihood of
-twinning, by 0.288 and 0.217pp respectively. 
+Such a sample decision is important when estimating the Q--Q trade--off using 
+twins as an instrument. Given that family size is endogenously chosen by 
+parents and rates of twin birth are not constant by birth-order, twin-births will 
+occur more frequently in families that have a higher fertility preference (see
+figures \ref{TWINfig:bordUS} and \ref{TWINfig:bord}). This point is addressed by
+(among others) \citet{RosenzweigWolpin1980} and \citet{Blacketal2005} who first
+suggested combining $n+$ groups with twinning at birth order $n$ as a way to
+ensure that twin and non-twin families in the sample would have similar fertility 
+preferences.
 
-The results from other contexts suggest similar results, and a wider set of
-maternal health or socioeconomic variables can be included.  In Sweden similar
-effects are observed with smoking during pregnancy (reducing the likelhood of
-twinning by 0.266 and 0.285pp at 12 and 30 weeks of gestation respectively),
-pre-pregnancy morbidities, and health stocks as measured by height and pre-%
-pregnancy BMI.  In survey data based on smaller samples in Chile and the UK
-we observe that a wider range of health seeking or risk avoiding behaviours
-during pregnancy affect the likelihood of twinning.  In the UK healthy diet
-is associated with an increase in rates of twinning, and alcohol consumption
-significantly reduces the likelihood of giving live births to twins. Similarly,
-in Chile self-reported alcohol and drug consumption considerably reduces the
-twinning, by approximately 0.16-0.17pp.
-
-Finally, in the developing country sample (panel E) we observe some measures of
-health stocks including height, weight and body mass index, and we also observe
-the availability of prenatal care.  In this case we observe that taller and
-heavier women are more likely to twin (mirroring the findings from other
-contexts), and also observe that having greater access to pre-natal care is
-associated with greater rates of twinning.  These variables are all measured
-as the leave-one-out rate of healthcare access in the mother's cluster of
-residence, where in each case we are interested in availability rather than
-use to avoid endogeneity concerns where mothers conceiving twins may be more
-likely to actively seek out birth attendance.  In each case (availability
-of attending doctors, availability of attending nurses, or no availability or
-pre-natal care), we observe that greater public health availability increases
-the likelihood of twin births.  The estimated coefficients and signs in this
-table support the idea discussed in section \ref{TWINscn:method} that higher
-investments in maternal health required to maintain multiple healthy fetuses
-\emph{in utero} may result in non-random twin births. We return to the
-mechanism by which twin selection may occur in the following section.
-
-It is noteworthy that in all samples where maternal education is recorded that
-this is significantly related to the likelihood of twinning, even among the
-non-ART sample in the US.  Further, the effect of education is \emph{increasing}
-in the income status of the country.  We interpret this result as capturing the
-effect of education on health care access and use, and as support for the series
-of findings that the effect of education on health are most substantial in
-environments of faster change of health-care technologies \citep{LlerasMuney2005,
-CutlerLlerasMuney2010}.
-
-An alternative test of the quasi-randomness of twin births consists of examining
-health stocks of mothers and their children entirely \emph{before} twin births.
-Results for the infant mortality rate (IMR) test described in section
-\ref{sscn:validIV} are presented in table \ref{TWINtab:IMR}. In row 1, we regress
-IMR for first-borns on the twin status of second-borns.\footnote{Infant mortality
-  is defined as the death of a child before their first birthday. We remove from
-  the sample any children who were not yet 1 at the time of the following birth,
-  as these children have not yet been entirely exposed to the risk of infant
-  mortality.}  We see that mothers who went on to have second-born twins had much
-lower rates of infant mortality \emph{before} the twins than women who had
-second-born singletons.  Interestingly, we observe that introducing health (height
-and weight) and socioeconomic controls (completed education) reduce the size of
-the estimated IMR differential between twin and non-twin mothers, suggesting that
-these controls are able to partially, but not fully, address the positive
-selection into twinning.  In the first row these controls explain approximately
-15\% of the selection into twinning, however even conditional on education and
-anthropometrics, twin mothers have 1.7 fewer fetal deaths than non-twin mothers
-per 100 live births.  We estimate similar regressions for other parity groups:
-namely first and second borns by the twin status of the third born (3+), and
-first-to-third borns by the twin status of the fourth born.  In both cases
-similar effects are found, whereby twin mothers are observed to be \emph{less}
-likely to have had previous children who have not survived to age 1, and that
-controlling for a limited set of maternal variables reduces the importance of
-this effect.
-
-Finally, using the methodology and data described in \citet{QuintanaRodenas2014},
-we find that there is a direct effect of exposure to adverse conditions
-\emph{in utero} on the likelihood of twinning.  \citet{QuintanaRodenas2014}
-demonstrate that the effect of maternal stress during pregnancy from exposure to
-ETA bombings in Spain have significant effects on child birthweight, the
-likelihood of being born at low birth weight ($<$ 2,500g) and the likelihood of
-being born prematurely ($<$ 37 weeks of gestation).  The findings presented
-in table \ref{TWINtab:stress} mimic these results, however now documenting
-that an exogenous increase in stress reduces the probability of twin births.
-This effect is particulary large and significant during the second and third
-trimesters, lining up with the effects of smoking by trimester documented in
-table \ref{tab:twinsMain}.  The results suggest that being exposed to one
-additional bomb casualty in the province of residence decreases the likelihood
-of observing a twin birth by 0.01\% and 0.012\% ($p<$0.01 and 0.05 respectively).
-For reference, \citet{QuintanaRodenas2014} find that the same exposure reduces
-average birth weight by approximately 0.3 grams (trimester 1), and increases
-the likelihood of low birth weight by 0.14\%.
-
-%Sonia: No mention of Trivers-Willard here.  Is this right do you think, or
-% should we mention/show?
-
-%*******************************************************************************
-\subsection{Selection Into Twinning: Mechanisms}   \label{TWINsscn:selection}
-Table \ref{tab:twinsMain} documents that in a wide variety of contexts,
-healthier women are more likely to give birth to twins.  In table
-\ref{TWINtab:stress} we observe that the scope of twin-selection variables is
-broad, including even maternal stress in utero.  There are a number of competing
-hypotheses which may explain why this is the case.  Firstly, it may simply be
-the case that healthier mothers are more likely to conceive twins.  This may
-reflect some underlying genetic or biological process, 
-such as that mediated by follicle stimulating hormone as discussed in 
-\citet{Hall2003}.  Secondly, conditional on conceiving twins, healthier mothers 
-may be more likely to take both fetuses to term.  Finally, it may be the case 
-that (conditional on conceiving twins and taking them to term), healthier mothers 
-may be more likely to survive the birth, and hence appear in survey or vital 
-statistics data.  In broad terms we will refer to these as the conception 
-mechanism, the gestation mechanism and the birth (survival) mechanism.
-
-When considering IV estimates with twins, any of these processes is sufficient 
-to invalidate causal inference insofar as observing twins depends upon hard-%
-to-measure maternal behaviours and characteristics.  Nonetheless, we may be 
-interested in determing which of these are the relevant channels in explaining 
-the results from the previous section.  Particularly, the mechanism may be 
-relevant when considering the use of the twin instrument.  For example, if twins
-are less likely \emph{only} due to selective maternal death, then as mothers
-become more likely to survive childbirth (ie moving from high maternal mortality 
-countries to low maternal mortality countries), threats to instrumental validity 
-become considerably less relevant.  We examine these mechanisms below.
-
-Firstly, in order to determine whether twin selection could be entirely
-explained by selective maternal survival, we follow \citet{Aldermanetal2011} in
-simulating estimates under the counterfactual scenario that unhealthy women---%
-who are more likely to die in childbirth---were all carrying twins.  If it is
-the case that less healthy women who are carrying twins are more likely to die
-in childbirth and that this explains the entirety of the results in table
-\ref{tab:twinsMain}, we should see that adding these mothers back into the
-sample and assuming that they were carrying twins should mean that no
-correlation remains between maternal health and twin births.
-
-Using DHS data described in section \ref{TWINscn:data}, we observe a woman's
-height, BMI, pregnancy outcomes, and the maternal mortality status of all her
-sisters.  As we do not observe health stocks of women who died in childbirth,
-we assume that her sister's health (height and BMI) is a reasonable proxy for
-the health of the woman who died.  Figure \ref{TWINfig:survival} shows that
-maternal mortality is much higher among sisters of more unhealthy women.
-Women shorter than the mean height of 155.5cm are considerably more likely to
-suffer maternal death, with this being particularly so below heights of 145cm.
-
-To test the potential importance of maternal survival in explaining twin 
-selection, we inflate the sample by the number of women who, according to 
-DHS data, would exist in the sample if it were not for the fact that they died
-in childbirth.  We then examine the coefficients of interest in our twin 
-regression (\ref{TWINeqn:twinreg}), if all unhealthy women who died were 
-pregnant with twins, while all healthy women who died were not.  As this relies 
-on a binary `healthy vs unhealthy' distinction, we define this in various ways, 
-based on height and BMI.  These results are presented in table 
-\ref{TWINtab:Alderman}.  The first column shows the estimated coefficients on 
-height and BMI in the unaltered sample of women from DHS countries where 
-maternal mortality data is available.  In this sample, a BMI increase of 1 
-point is associated with a 0.046\% increase in the probability of twinning. The 
-remaining columns add in observations based on maternal mortality rates among 
-sisters of surveyed women.  For example, in the second column, we examine the 
-effect of adding to the sample unhealthy and healthy women based on the
-maternal mortality rate in each group, and then assuming that all unhealthy
-women would give birth to twins, and all healthy mothers would not. As
-expected, this reduces the importance of positive maternal health in predicting
-twinning, with the coefficient on BMI falling from 0.0460 to 0.0437. Additional
-columns continue in this manner, however using continually less conservative
-assumptions in assigning members to the unhealthy group who are defined as
-giving birth to twins. Even in the final column, where the entire bottom half
-of the anthropometric distribution is assumed as being unhealthy, the
-coefficient on both height and BMI remains positive and significant under the
-counterfactual simulation that all unhealthy women who died in childbirth were
-carrying twins.\footnote{Examining selection in this way (as per
-  \citet{Aldermanetal2011}) is only one way to examine the effect of selection
-  on estimated coefficients.  An alternative measure as proposed by
-  \citet{Lee2009} involves trimming the control and treatment group (in our
-  case unhealthy and healthy mothers), to account for differential selection
-  by treatment status.  This results in bounds estimates of the effect of
-  treatment (good health) on the outcome variable (twinning). We report Lee
-  bounds in appendix table \ref{TWINtab:Lee}, however note that these bounds
-  are based on the assumption that treatment is random, which here it is not.
-  Nonetheless, \citet{Lee2009} bounds agree with the simulated estimates in
-  table \ref{TWINtab:Alderman}, providing further evidence that selective
-  maternal survival is not enough to explain the correlation between maternal
-  health and twinning.}
-
-These results suggest that selective maternal death alone is not enough to 
-explain why healthier mothers are more likely to have twins. Turning to the 
-gestation mechanism, we are able to test whether less healthy women who are 
-pregnant with twins are more likely to miscarry than healthier women who are 
-also pregnant with twins.  In order to do so, we require data which records
-births, miscarriages, mother's health, as well as the type of fetus (single
-or multiple) which the mother was pregnant with.  Such data is frequently not
-available in birth registers, but fortunately, is available in the US Vital
-Statistics System.  We thus pool all births and fetal deaths recorded in US
-administrative data between 1998 and 2002.  This time period is used given
-that in 2003, a considerable re-definition of birth certificate data meant
-that fetal death and birth data did not share similar controls and the coverage
-varied by state.  Prior to 2002 however we are able to observe for all states
-whether a mother smokes or drinks during pregnancy, whether she suffered from
-anemia prior to pregnancy, and her educational level.
-
-Using US Vital Statistics on births and fetal deaths we thus run a series of
-regressions where fetal death is regressed on a mother's health behaviours or
-stocks, whether the mother was carrying twins, and the interaction between
-carrying twins and the same health behaviour.  We expect that both poor
-maternal health and a twin pregnancy increase the likelihood of miscarriage,
-however we are interested in determing if there is a steeper gradient in the
-health-fetal death relationship for twin births than for singleton births, or
-if conditional on engaging in the same negative health behaviour twin mothers
-are more likely to miscarry than non-twin mothers.
-
-These regression results are reported in table \ref{tab:FDucond}.  This table
-displays four estimates, which correspond to the rate of fetal deaths of twin
-and singleton mothers who do and do not engage in a particular health behaviour
-or have a particular health stock.  Separate columns are estimated for different
-health variables, and the dependent variable (fetal deaths) is multiplied by 1000
-so coefficients are expressed as fetal deaths per 1,000 live births. As expected,
-less healthy mothers and mothers exhibiting risky behaviour such as smoking are
-more likely to miscarry.  For example, in column 1, mothers who smoke prior to
-birth have 1.39 more fetal deaths per 1,000 births.  Similarly, mothers pregnant
-with twins have 9.9 more fetal deaths per 1,000 births, in line with the
-literature on miscarriage by birth type \citep{Garciaetal2002}.  In order to
-test the gestation mechanism, the coefficients of interest are the interaction
-terms between twin pregnancies and maternal health.  For all health variables 
-examined (smoking, alcohol consumption, anemia and education), less healthy women
-pregnant with twins are observed to be \emph{additionally} more likley to
-miscarry. These results provide evidence in favour of the gestation mechanism,
-as conditional on conceiving twins, it is found that unhealthy women are more 
-likely to miscarry these fetuses, and hence less likely to be subject to the
-fertility shock than mothers who engage in healthier behaviours or have greater
-health stocks.
-
-%*******************************************************************************
+%-------------------------------------------------------------------------------
+\section{Results}
 \subsection{The Q--Q Trade-off} \label{TWINsscn:QQtwins}
 \subsubsection{OLS Estimates} \label{TWINsscn:QQtwinsOLS}
 Although OLS estimates of the Q-Q trade-off are biased, under assumptions about
-the selection into fertility discussed in section \ref{sscn:OLS}, these can
+the selection into fertility discussed in psection \ref{sscn:OLS}, these can
 act as upper bounds on the true parameter.  We present estimates of $\alpha_1$
 from equation \ref{TWINeqn:RF} in table \ref{TWINtab:DHSall} (developing
 countries) and table \ref{TWINtab:NHISAll} (US). In each table we display point
@@ -1295,7 +1303,7 @@ we control for birth order fixed effects, given the importance of birth order
 on child outcomes above and beyond total fertility \citep{Blacketal2005}.
 
 OLS results for the developing country sample are presented in panel A of table
-\ref{TWINtab:DHSall}.  Results are displayed by birth-order specific groups
+\ref{TWINtab:OLS}.  Results are displayed by birth-order specific groups
 laid out in section \ref{TWINsscn:samples}.  In each case baseline models with
 no controls for maternal characteristics suggest than an additional child
 within a family is associated with a reduction of 12.3 to 15.2\% of a standard
@@ -1311,7 +1319,7 @@ One way to partially bound the true effect is to ask how important additional
 unobservable controls must be compared to observable controls for the true
 effect $\alpha_1$ to be zero \citep{Altonjietal2005,Oster2013}.  We present the
 \citeauthor{Altonjietal2005} and more recent \citeauthor{Oster2013} statistic
-below OLS results in table \ref{TWINtab:DHSall}.  The third column of each of
+below OLS results in table \ref{TWINtab:OLS}.  The third column of each of
 the 2+, 3+ and 4+ groups uses the full set of observable controls to calculate
 these statistics.  The \citeauthor{Altonjietal2005} statistic generally
 suggests that unobservable characteristics of the mother would need to be about
@@ -1322,19 +1330,17 @@ can relax this assumption if we are willing to impose a maximum R-squared on the
 theoretical reduced form regression from (\ref{TWINeqn:RF}) when including all 
 observable and unobservable elements.  We follow \citet{Oster2013} in assuming
 a maximum R-squared of 2 times the observable R-squared, leading to the Oster
-ratio in table \ref{TWINtab:DHSall}.  This statistic suggests that under the
+ratio in table \ref{TWINtab:OLS}.  This statistic suggests that under the
 demanding maximum R-squared assumption, unobservables would need to be
 approximately 0.55-0.65 times as important as observables to drive the OLS
 result to zero. This is lower than \citeauthor{Oster2013}'s suggestion of equal
-selection as an informative criterion.  One major drawback of these partial
-bounding methods is that we have no way of knowing how important unobservables
-are compared to observables in this particular empirical setting. We return to
-this, and to a more complete bounds estimate of the Q--Q trade-off in section
+selection as an informative criterion.  We return to these estimates, and to a
+more complete bounds exercise for the Q--Q trade-off in section
 \ref{TWINsscn:resultBounds}.
 
 We observe a largely similar pattern, though smaller estimated magnitude, of
-the OLS parameters for the NHIS data from the US in panel A of table
-\ref{TWINtab:NHISAll}.  Here we examine two outcome variables:\ the first a
+the OLS parameters for the NHIS data from the US in panel B of table
+\ref{TWINtab:OLS}.  Here we examine two outcome variables:\ the first a
 school Z-score for comparison with the DHS results, and the second a variable
 recording whether parents consider their children to be in excellent health
 (measured in the NHIS data).  We focus on both variables given that grade
@@ -1361,18 +1367,17 @@ bounds using the (flawed) twin instrument.
 
 %*******************************************************************************
 \subsubsection{The Twin Instrument: Estimates of the Q--Q Trade-off} \label{TWINsscn:QQtwinsIV}
-Results from section \ref{TWINsscn:twinning} show that twinning is not as good
-as random, even when conditioning on race, maternal age, and parental education. 
-It is demonstrated in a large range of countries, that healthier mothers are 
-more likely to give birth to twins where health is measured over many
-dimensions. If these mothers also invest more after birth, the Q--Q trade-off
-will be under-estimated, and hence \emph{less} negative than the true trade-off,
-as laid out in hypothesis 3.  However, progressively including additional
-health controls in our first and second stage equations should drive IV
-estimates in the direction of identifying the true Q--Q trade-off, as we
-partially correct for the bias introduced by the positive correlation between
-twinning and maternal health.
-
+%Results from Part I show that twinning is not as good
+%as random, even when conditioning on race, maternal age, and parental education. 
+%It is demonstrated in a large range of countries, that healthier mothers are 
+%more likely to give birth to twins where health is measured over many
+%dimensions. If these mothers also invest more after birth, the Q--Q trade-off
+%will be under-estimated, and hence \emph{less} negative than the true trade-off,
+%as laid out in hypothesis 2.  However, progressively including additional
+%health controls in our first and second stage equations should drive IV
+%estimates in the direction of identifying the true Q--Q trade-off, as we
+%partially correct for the bias introduced by the positive correlation between
+%twinning and maternal health.
 We present IV estimates using the twin instrument in panel B of tables
 \ref{TWINtab:DHSall} (DHS) and \ref{TWINtab:NHISAll} (US).  The first (``Base'')
 column for each parity group presents estimates of $\hat\beta_1$ from equation
@@ -1384,12 +1389,12 @@ with no controls for maternal health or socioeconomic variables range from
 -0.5\% to -3\% of a standard deviation, all statistically insignificant.
 Similarly, as is common in the literature we find a statistically significant
 first stage of twin births on total fertility of less than one birth (panel
-C).  This estimate, which increases slightly by parity and is always less than
-one is in line with other estimates in the twin literature and is evidence of
+A).  This estimate, which increases slightly by parity and is always less than
+one, is in line with other estimates in the twin literature and is evidence of
 partial reduction of future fertility following twin births so that the impact
 of twins is not precisely one.  Given the large impact of a twin birth on
 fertility the twin instrument always passes weak instrument tests (the
-Kleibergen-Paap $rk$ statistic and its $p$-value is presented in panel C).
+Kleibergen-Paap $rk$ statistic and its $p$-value is presented in panel A).
 
 However, conditional on controlling for maternal selectors of twinning we
 observe that a Q--Q trade-off does emerge.  Moving from baseline controls to
@@ -1398,7 +1403,7 @@ full socioeconomic and health controls (``+S\&H'') in table
 in nearly all cases inclusion of additional maternal health predictors
 partially corrects for twin selection and increases the magnitude of the Q--Q
 parameter estimate $\hat\beta_1$.  This is precisely in line with hypothesis
-3, and the IV selection inequality in section \ref{sscn:inconsistentIV}. For
+2, and the IV selection inequality in section \ref{sscn:validIV}. For
 example, for the 3+ group, an initial estimate of an insignificant 2.8\%
 reduction in schooling Z-score following an additional birth is reduced to a
 4\% reduction when controlling for maternal health, and a 4.6\% reduction when
@@ -1410,7 +1415,7 @@ at each case at the 5\% level.  In the following section we return to this
 estimate and how to fully estimate bounds despite not fully observing all
 maternal health variables.
 
-In panels B and C of table \ref{TWINtab:NHISAll}, we present identical IV and
+In panels A and B of table \ref{TWINtab:NHISAll}, we present identical IV and
 first-stage estimates from the NHIS.  Once again, the twin instrument is
 observed to pass all first-stage instrument tests, and increase fertility by
 approximately 0.7-0.8 births given ex-post fertility control.  Results for both
@@ -1420,7 +1425,7 @@ all cases examined, the inclusion of health and socioeconomic controls results
 in IV \emph{point} estimates which move further away from zero. In nearly all
 cases examined, at all parity levels in both DHS and NHIS, the movements of
 point estimates is precisely as hypothesised in the series of inequalities
-described in hypotheses 1 and 3, suggesting considerable improvements in IV
+described in hypotheses 1 and 2, suggesting considerable improvements in IV
 estimates from accounting for twin endogeneity.  In the case of self reported
 health status, the inclusion of additional twin predictors is sufficient to
 result in statistically significant evidence in favour of the Q--Q trade-off for
@@ -1673,12 +1678,10 @@ groups the average estimated effect of 6\% of a standard deviation equates to
 a marginal effect of 0.22 years of education by the age of 11 years.
 %0.01705+0.037+0.2555 // 0.08455+0.0341+
 
-\setcounter{section}{0}
-\part*{Part II -- Reassessing the Q--Q Trade-off}
 
 
 %*******************************************************************************
-\section{Conclusion and Discussion}                   \label{TWINscn:conclusion}
+\section*{Conclusion and Discussion}                   \label{TWINscn:conclusion}
 Twin births are not random.  Rather, they appear to be far from it, in a wide
 variety of environments, time periods and contexts.  Based on a considerable 
 body of evidence compiled from vital statistics and survey data from low- and 
@@ -1751,16 +1754,18 @@ using an educ intervention
 \input{\twinfolder/Tables/SummaryStatistics.tex}
 \clearpage
 \input{\twinfolder/Tables/twinEffectsUncond.tex}
-\input{\twinfolder/Tables/IMRtest.tex}
+\clearpage
 \input{\twinfolder/Tables/Stress.tex}
+\input{\twinfolder/Tables/IMRtest.tex}
 
 
 \input{\twinfolder/Tables/Alderman.tex}
 \begin{landscape}
 \input{\twinfolder/Tables/FDeath_Uncond.tex}
 \end{landscape}
-\input{\twinfolder/Tables/DHS-togetherAll.tex}
-\input{\twinfolder/Tables/AllNHIS.tex}
+\input{\twinfolder/Tables/DHS-NHIS-OLS.tex}
+\input{\twinfolder/Tables/DHS-togetherIV.tex}
+\input{\twinfolder/Tables/NHIS-togetherIV.tex}
 \input{\twinfolder/Tables/gamma.tex}
 \input{\twinfolder/Tables/Conley.tex}
 \clearpage
