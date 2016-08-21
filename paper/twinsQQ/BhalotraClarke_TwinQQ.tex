@@ -394,7 +394,7 @@ trade-off can be calculated. This hypothesis is tested in
 %*******************************************************************************
 %\renewcommand{\thesection}{\arabic{section} - I}
 %*******************************************************************************
-\part*{Part I -- Twinning and Maternal Behaviour}
+\part*{Part I -- Twin Births and Maternal Health}
 \section{Methodology}
 \label{TWINscn:method}
 In order to examine the ``as good as random'' assumption regarding twin births,
@@ -858,7 +858,7 @@ These results relates to a vast literature documenting that a mother's health an
 
 %*******************************************************************************
 \setcounter{section}{0}
-\part*{Part II -- Reassessing the Q--Q Trade-off}
+\part*{Part II --  Q--Q Trade-off}
 \section{Methodology}
 \label{TWINscn:method}
 \subsection{The Quantity--Quality Trade-off and OLS}
@@ -869,20 +869,21 @@ consistent estimates of $\alpha_1$ in the following population equation:
   \label{TWINeqn:RF}
   quality_{ij}=\alpha_0+\alpha_1 quantity_{j} + \bm{X}\bm{\alpha_x}+\varepsilon_{ij}.
 \end{equation}
-Here, $quality$ is a measure of human capital attainment or investment for child
-$i$ in family $j$, and $quantity$ is the measure of total fertility in the
-family. Additional relevant family and child controls are included, denoted $\bm{X}$.
-As has been extensively discussed in prior literature, estimation of $\alpha_1$
-using OLS with cross-sectional data will result in biased coefficients given that
+Here, $quality$ is a measure of human capital attainment of or investment in child
+$i$ in family $j$, and $quantity$ is fertility or the number of siblings of child 
+$i$. %In the discussion that follows we assume without loss of generality that a higher value of $quality_{ij}$ implies a higher ``quality'' child based on the human capital measure of interest, so that
+A significant Q--Q trade-off implies that $\alpha_1<0$. Additional relevant family and child controls are included, denoted $\bm{X}$.
+As has been extensively discussed in a previous literature, estimation of $\alpha_1$
+using OLS %with cross-sectional data 
+%DD It's not just with CS data is it?
+%%S: I guess you have a particular case in mind?  When I thought quickly of the big QQ papers like Roz Wolpin, Black et al, and Angrist et al, they either use survey data or census data at one point in time.  I don't think it matters that we remove the CS mention in any case! 
+will result in biased coefficients given that
 child quality and quantity are jointly determined \citep{BeckerLewis1973,
   BeckerTomes1976}, and given that unobservable parental behaviours and attributes
 influence both fertility decisions, and investments in children's education
-\citep{Qian2009}.
+\citep{Qian2009}. %The is well-known omitted variable bias implies that OLS estimates of the quantity-quality trade-off will fail to recover the underlying parameter $\alpha$ unless all relevant variables are included in $\bm{X}$. 
 
-This well-known omitted variable bias implies that OLS estimates of
-the quantity-quality trade-off will fail to recover the underlying parameter
-$\alpha$ unless all relevant variables are included in $\bm{X}$. The direction
-of the resulting bias is determined by the sign on the conditional correlation
+The direction of the OLS bias is determined by the sign on the conditional correlation
 between $quantity_j$ and the unobserved error term:
 $E[quantity_{j}\cdot\varepsilon_{ij}|\bm{X}]$.\footnote{In the simplest case
   of a single included (endogenous) variable with both $quality_{ij}$ and
@@ -895,9 +896,6 @@ $E[quantity_{j}\cdot\varepsilon_{ij}|\bm{X}]$.\footnote{In the simplest case
   bias $E[\hat\alpha_1]-\alpha_1$ is directly proportional and of the same
   sign as $\sum_{i=1}^N quantity_i\cdot\varepsilon_{ij}$.
 }
-In the discussion that follows we assume without loss of generality that a higher
-value of $quality_{ij}$ implies a higher ``quality'' child based on the human capital
-measure of interest, so that a significant Q--Q trade-off implies that $\alpha_1<0$.
 
 %\[
 %\text{plim}\hat\alpha_1= \alpha_1 + \text{plim}(quantity_{j}^\prime quantity_{j})^{-1}quantity_{j}^\prime\varepsilon_{ij}
@@ -906,27 +904,26 @@ measure of interest, so that a significant Q--Q trade-off implies that $\alpha_1
 %and if all negative selectors of fertility are not observable or measured, a negative
 %correlation will remain between the unobserved error and $quantity_j$.
 
-If mothers with lower levels of human capital choose to have a greater number of
-children and if the variables which define (negative) selection into fertility in turn
-have a negative effect on eventual child quality, an OLS estimated parameters will
-overstate the true Q--Q trade-off.  Conversely, if mothers with \emph{high} levels
-of human capital select into higher fertility, and go on to invest more in their
-children, OLS will understate the actual true Q--Q trade-off.  We refer to these
-cases as negatively selected fertility, and positively selected fertility respectively,
-which we define below:
+%DD strictly i think negative selection will refer to mothers with a lower taste for (or capacity for?) investment in children. if this is correlated with the mother's level of HK then what you say will hold but that is another assumption that we dont need? please check the next sentence where i replace mother capital with mother preferences.do you want me to add after weaker preferences anything about weaker ability to invest? i think no but i havent read the textbook lit for a long time!
+%%SB: This seems like a correct and nice way to state it to me.  When I wrote below I was thinking of the basic omitted variable bias which has that beta_1 hat = beta_1 + delta*beta_2, so the bias is delta (the effect of the omitted variable on the included variable, and beta_2, the effect of the omitted variable on the outcome of interest.  However, your sentence nicely bundles beta_2 and delta into one term!   
+If mothers with weaker preferences for child quality have more children 
+%and if the variables which define (negative) selection into fertility in turn
+%have a negative effect on eventual child quality, 
+OLS estimates will overstate the true Q--Q trade-off, and the converse will hold for positive selection into fertility.
+For the case of negative selection, which is most previous studies suggest:
+%%DD i am not sure if i should drop all of the syntax around Neg Sel Fert so left it
+%%SB: Thanks.  All good.
 \begin{eqnarray}
-  \text{Negatively Selected Fertility:\ \ \ } E[quantity_{j}\cdot\varepsilon_{ij}|\bm{X}] < 0 &\Leftrightarrow& E[\hat\alpha_1] < \alpha_1 \nonumber \\
-  \text{Positively Selected Fertility:\ \ \ }  E[quantity_{j}\cdot\varepsilon_{ij}|\bm{X}] > 0 &\Leftrightarrow& E[\hat\alpha_1] > \alpha_1. \nonumber
+  E[quantity_{j}\cdot\varepsilon_{ij}|\bm{X}] < 0 &\Leftrightarrow& E[\hat\alpha_1] < \alpha_1 \nonumber 
+%  \text{Positively Selected Fertility:\ \ \ }  E[quantity_{j}\cdot\varepsilon_{ij}|\bm{X}] > 0 &\Leftrightarrow& E[\hat\alpha_1] > \alpha_1. \nonumber
 \end{eqnarray}
-Given that a significant Q--Q trade-off implies a negative $\alpha$, negatively
-selected fertility will result in a \emph{more} negative estimate of $\alpha$
-than the true value, and so overstate in magnitude the impact of additional children
-on a sibling's human capital outcomes.
+%DD
+%SB - Updated formatting.
 
-To the degree that all variables which predict selection into fertility choices
-can be observed and controlled for, OLS estimates will converge to the true value
-of $\alpha$ when the full vector of relevant controls is included in a regression
-model.  Define $\varepsilon=\bm{H}+\bm{S}+\varepsilon^*$, where we partition the
+%Given that a significant Q--Q trade-off implies a negative $\alpha$, negatively selected fertility will result in a \emph{more} negative estimate of $\alpha$ than the true value, and so overstate in magnitude the impact of additional children on a sibling's human capital outcomes.
+
+If all variables which predict selection into fertility could be observed and controlled for, OLS estimates would converge to the true value
+of $\alpha$.  Define $\varepsilon=\bm{H}+\bm{S}+\varepsilon^*$, where we partition the
 stochastic error term into a vector of observable measures of mother's health
 capital ($\bm{H}$), socioeconomic variables ($\bm{S}$), and all other unobserved components
 ($\varepsilon^*$).  Assuming no covariance between the three components of the
@@ -941,12 +938,12 @@ error term,\footnote{This assumption can be loosened with little implication on 
   we test empirically later in this paper.  Recent work by \citet{Gelbach2016}
   examines with much more formality how estimated covariates depend on the step-wise
   inclusion of additional variables in a regression.} the step-by-step removal of
-selection variables will result in the estimated coefficient from each regression
-becoming continually closer to the true parameter as a portion of the omitted
-variable bias is removed.  This implies:
+selection variables will result in the estimated coefficient becoming continually closer to the true parameter . For negative selection on fertility this implies:
 \begin{eqnarray}
-  \text{Negatively Selected Fertility:\ \ \ } E[\hat\alpha_1] < E[\hat\alpha_1^{H}] < E[\hat\alpha_1^{S+H}] < \alpha_1 \nonumber \\
-  \text{Positively Selected Fertility:\ \ \ } E[\hat\alpha_1] > E[\hat\alpha_1^{H}] > E[\hat\alpha_1^{S+H}] > \alpha_1. \nonumber
+  %%DD i am dropping display of Pos Sel Fert since our est and prev est suggest neg sel and it is cleaner esp with pos selected twinning below to see the OLS-iV bounds idea. we still do acknowledge that this wil be reversed if fert is pos selected but no need to display that odd case.
+  %SB - great.  This seems cleaner.
+  \text{Negative Selection into Fertility:\ \ \ } E[\hat\alpha_1] < E[\hat\alpha_1^{H}] < E[\hat\alpha_1^{S+H}] < \alpha_1 \nonumber 
+%  \text{Positively Selected Fertility:\ \ \ } E[\hat\alpha_1] > E[\hat\alpha_1^{H}] > E[\hat\alpha_1^{S+H}] > \alpha_1. \nonumber
 \end{eqnarray}
 In the above, $\hat\alpha_1$ refers to the estimated coefficient on
 $quantity$ in (\ref{TWINeqn:RF}) when running a naive regression without
@@ -955,36 +952,31 @@ refer to (respectively) coefficients when the model is augmented to
 control for observable health capital $\bm{H}$, and then also observable
 socioeconomic variables $\bm{S}$.
 
-The logic of these movements is that as additional relevant controls
-are included in the OLS regression, the remaining bias will become
-less severe, eroding the initial bias.  However, unless \emph{all} relevant
-fertility-selection variables are controlled for, bias will still remain in
-the parameter $\hat\alpha_1^{S+H}$.  This is summarised in the following two
-(testable) hypotheses:
+%The logic of these movements is that as additional relevant controls are included in the OLS regression, the remaining bias will become less severe, eroding the initial bias.  However, unless \emph{all} relevant fertility-selection variables are controlled for, bias will still remain in the parameter $\hat\alpha_1^{S+H}$.  This is summarised in the following two (testable) hypotheses:
 
 \noindent %Damian i slightly changed the grammar for clarity, and broke the next sentence into 2.
-\textbf{Hypothesis 1a}: If higher fertility is negatively selected, OLS will over-estimate the magnitude of the true trade-off. Addition of variables predicting negative selection as controls will make the estimate approach the population value from below.\\
-\textbf{Hypothesis 1b}: If higher fertility is positively selected, OLS will under-estimate the magnitude of the true trade-off. Addition of variables predicting negative selection as controls will make the estimate approach the population value from above.
+\textbf{Hypothesis 1}: If there is negative selection into fertility then OLS will over-estimate the magnitude of the true trade-off. Addition of variables predicting selection as controls will lead to the OLS estimate approaching the population value from below.\\
+%%Damian i think it is ok since "`population"' implies no selection but my instinct was to replace population value with true value- what do you think? 
+A natural corollary of this is that if fertility were positively selected \citep{Fortetal2016,Myrskylaetal2009}, then OLS would under-estimate the magnitude of the true trade-off and adding variables predicting fertility selection as controls would lead to the estimate approaching its true value from above. However, unobservable heterogeneity will remain and the size of the residual bias cannot be determined without imposing some additional assumption about the degree of selection on unobservables.
 
 
-\subsection{The Twin Instrument and the Q--Q Trade-off}
+\subsection{The Twin Instrument for Fertility}
 \label{sscn:validIV}
-The imposiblity of observing all relevant fertility-selection variables
-implies that OLS estimates controlling for observables will not result
-in unbiased parameter estimates for $\alpha_1$.  What's more, the size
-of the bias can not be determined without imposing some additional
-assumption about the degree of selection on unobservables.
 
-This has lead to the widespread use of instrumental variables in empirical
-estimates of the Q--Q model.  One proposed and frequently employed solution has
-been to estimate by 2SLS, where fertility is is instrumented using twin
-births \citep{RosenzweigWolpin1980}.\footnote{Other instruments and methodologies
-  are also used including gender mix of children \citep{ConleyGlauber2006}, policy
-  experiments such as the arrival and loosening of the one child policy in China
-  \citep{Qian2009,ArgysAverett2015}, historical time series variation in schooling
-  \citep{BleakleyLange2009}, or fertility transitions during industrialisation
-  \citep{DalgaardStrulik2015}.}  In this specification twins are used as an
-exogenous shock to family size, implying the following two stages:
+%DD i added a sentence at the end of the prev para instead.
+%The impossiblity of observing all relevant fertility-selection variables implies that OLS estimates controlling for observables will not result in unbiased parameter estimates for $\alpha_1$.  What's more, the size of the bias can not be determined without imposing some additional assumption about the degree of selection on unobservables.
+
+%This has lead to the widespread use of instrumental variables in empirical estimates of the Q--Q model.  
+%%DD i have added new ref BTV2016 which is the old sulfa-fertility paper that we are picking up with a new coauthor we invited just to get the final tables in shape so the citation is: Bhalotra, S., S. Telaligac and A Venkataramani. Fertility, Mortality Risk and Returns to Human Capital:Quasi-Experimental Evidence from 20th Century America. Mimeo. U of Essex.
+%%SB: Done
+Since the seminal work of \citep{RosenzweigWolpin1980}, fertility has been instrumented with the incidence of twin 
+births on the premise that they constitute an exogenous shock to family size.\footnote{Other approaches include instrumenting with the gender mix of the first two children \citep{AngristEvans1998,ConleyGlauber2006}, or exploiting policy experiments such as the introduction and subsequent relaxation of the one child policy in China
+  \citep{Qian2009,ArgysAverett2015}, the eradication of hookworm \citep{BleakleyLange2009} and the introduction of antibiotics in the US \citep{Bhalotraetal2016}}.
+	%DD i checked this paper and they do not have an IV for fertility so i think it is not appropriate as a ref here-- damian please can you delete from bibl.
+	%fertility transitions during industrialisation \citep{DalgaardStrulik2015}.}  
+%%DD where we cite conley-glauber should we not also cite Angrist-Evans i thought the same sex iv was theirs?
+%SB: Thanks, added this cite first.
+The 2SLS specification can be written as:
 \begin{subequations}
   \begin{eqnarray}
     \label{TWINeqn:IV1}
@@ -992,186 +984,152 @@ exogenous shock to family size, implying the following two stages:
     quality_{ij}=\beta_0 + \beta_1 \widehat{quantity}_j + \bm{X}\bm{\beta_x}+\eta_{ij}.
   \end{eqnarray}
 \end{subequations}
-where $twins_j$ is an indicator for whether the $n^{th}$ birth in a family is a
-twin birth. As described further in section \ref{TWINsscn:samples}, the sample
-in each case is the so-called $n+$ group, consisting of children born before
-birth $n$ in families with at least $n$ births. As such the twins themselves are
-excluded from the estimation sample.\footnote{Typically, the argument is made
-  that twins are different to single births, and hence should not be compared in
-  analysis.} The logic, in quasi-experimental terms, is that existing children
-(the subjects) are randomly assigned either one (control group) or two
-(treatment group) siblings at the $n^{th}$ birth.  In this series of equations,
-if twins are a valid instrument, the parameter $\beta_1$ is consistent and hence
+where $twin_j$ is an indicator for whether the $n^{th}$ birth in family $j$ is a
+twin birth. As described further in section \ref{TWINsscn:samples}, a series of samples
+are constructed, referred to as the $n+$ groups, and consisting of children born before
+birth $n$ in families with at least $n$ births. The idea is that children born prior to birth $n$ (the subjects) are randomly assigned either one (control group) or two
+(treatment group) siblings at the $n^{th}$ birth, and this allows us to estimate causal impacts of the additional birth on investments in or outcomes of these children. The twins themselves are
+excluded from the estimation sample.\footnote{This takes care of the concern that since twins tend to be born with weaker endowments (e.g. birth weight),
+  they will tend to have systematically different quality outcomes. It does not take care of the additional concern, discussed in \citet{RosenzweigZhang2009} that if parents exhibit reinforcing behaviour and invest less in twins because of their weaker endowments then this will benefit pre-twin births and lead to under-estimation of the Q--Q tradeoff. Similarly, if parents compensate individual endowments, then the twin-IV estimator will over-estimate the Q--Q tradeoff. \citet{RosenzweigZhang2009} illustrate this problem using Chinese data, while \citet{Angristetal2010} find it is not empirically significant in data from Israel. In Part-2 of this paper we explain that this critique of the twin-IV estimator is independent of the critique we present, and we discuss its implications for our estimates.} %%DD i rewrote this footnote, pl check and pl also amend refs to R-Zhang and Angrist.
+%SB: Done
+If twins are a valid instrument, the parameter $\beta_1$ is consistent and hence
 equal to the parameter $\alpha_1$ from the population equation \ref{TWINeqn:RF}.
 
-Validity of the instrumental variables estimates requires that the likelihood
-of twinning does not depend upon omitted variables which predict child quality
-in equation \ref{TWINeqn:IV2}, and hence form part of $\eta_{ij}$.  The premise
-of part I of this paper is that twin births are not random. As documented, the
-higher biological demands placed on a mother pregnant with twins, results in a
-greater likelihood of that healthy or health-seeking mothers take twin
-conceptions to term.  If these mothers who invest more during pregnancy similarly
-invest more in children later in life, IV estimates will be inconsistent. The
-inconsistency of the IV estimate depends in part on the degree of the correlation
-between the likelihood of twinning and the stochastic error term $\eta_{ij}$ from
-equation \ref{TWINeqn:IV1}.  Positively selected twinning---where mothers who
-invest more in their children are more likely to twin---implies:
+In this paper we challenge the validity of the twin instrument by showing that twinning depends upon omitted variables which are plausibly correlated with child quality
+in equation \ref{TWINeqn:IV2}, and hence form part of $\eta_{ij}$.  
+%The premise of part I of this paper is that twin births are not random. As documented, the higher biological demands placed on a mother pregnant with twins, results in a greater likelihood of that healthy or health-seeking mothers take twin conceptions to term.  
+For instance, if mothers who invest more in their pregnancies (for instance by averting smoking) also 
+invest more in their children after birth, then the twin-IV estimates will be inconsistent. 
+% The inconsistency of the IV estimate depends in part on the degree of the correlation between the likelihood of twinning and the stochastic error term $\eta_{ij}$ from equation \ref{TWINeqn:IV1}.  %Positively selected twinning---where mothers who
+We demonstrated in Part 1 of the paper that mothers who give birth to twins are positively selected and the indicators of maternal health (and education) that we identify are likely to be positively correlated with child quality, either through endowments or through preferences. This implies:
 \begin{equation}
-  \text{Positively Selected Twinning:\ \ \ }  \plim_{N\rightarrow\infty} \frac{1}{N}\sum_{i=1}^Ntwin_j\cdot \eta_j > 0 \Leftrightarrow \plim_{N\rightarrow\infty}\hat\beta_1 > \beta_1, \nonumber
+  \text{Positive Selection into Twin Birth:\ \ \ }  \plim_{N\rightarrow\infty} \frac{1}{N}\sum_{i=1}^Ntwin_j\cdot \eta_j > 0 \Leftrightarrow \plim_{N\rightarrow\infty}\hat\beta_1 > \beta_1. \nonumber
 \end{equation}
-given that mothers are positively selected into higher fertility (via twinning),
-and similarly positively selected into investing more in their children.
+%given that mothers are positively selected into higher fertility (via twinning), and similarly positively selected into investing more in their children.
 
-In a similiar nature to the OLS bias discussed above, if all the variables
-which predict positive selection into twinning can be controlled for, the
-IV estimate will converge to the parameter $\beta_1$.  Using the same vectors
-to partition $\eta_{ij}=\bm{H}+\bm{S}+\eta^*_{ij}$, a series of IV regressions
-can be run including additional controls in a step-wise manner.  Once again
-(assuming for simplicity no correlation between error terms), removing sources
-of bias from $\eta_{ij}$ will result in the following series of estimated
-coefficients:
+As for the discussion of OLS, we can partition $\eta_{ij}=\bm{H}+\bm{S}+\eta^*_{ij}$, and a series of twin-IV regressions
+can be run including additional controls in a step-wise manner. Assuming again, for simplicity, no correlation between the error terms, removing sources
+of bias from $\eta_{ij}$ in sequence will result in the following series of estimated coefficients:
 \begin{equation}
   \text{Positively Selected Twinning:\ \ \ } \plim \hat\beta_1 > \plim\hat\beta_1^{S} > \plim\hat\beta_1^{S+H} > \beta_1. \nonumber
 \end{equation}
-When we include additional controls in the, the estimated value for the Q--Q
-trade-off will approach the population parameter from above.  Unless all
-positive selectors of twins are accounted for, we will under-estimate the
-true magnitude of the Q--Q trade-off. This leads to the second hypothesis:
+The estimated parameter will approach the population parameter from above. Since, as discussed in Part 1, all determinants of twin birth are virtually impossible to account for, twin-IV will under-estimate the true magnitude of the Q--Q trade-off. Thus:
 
-\noindent \textbf{Hypothesis 2}: If women with higher rates of twinning are
-positively selected, IV will under-estimate the true magnitude trade-off, but
-addition of positive selection variables as controls will make the estimate
-approach the population value from above.
+%%DD wherever we say IV i have changed to twin-IV
+%DD -- everywhere- please check if we want to say population value or true value.
+%SB: I would have used these two terms interchangably.  Am I wrong in using population value to mean true value?  I always meant true value.
+\noindent \textbf{Hypothesis 2}: If women who produce (live) twin births are
+positively selected, the twin-IV estimator will under-estimate the true Q--Q trade-off, although addition of predictors of twins as controls will lead to the estimate approaching the true value from above.
 
+%%DD pl check changed title below. we already discussed adding observables will move parameter towards true value so just taking stock below.
+\subsection{Bounds Derived by Bias Adjustment}
+%Thus, if all relevant fertility- or twin-selection variables could be observed, an unbiased or consistent parameter could be estimated by OLS or IV.  However, given the difficulty in fully controlling for observables, both sets of estimates will unlikely converge on the population parameter of interest. 
+%As we document in the following sections of this paper, mothers with twins are positively selected over a wide range of health behaviours and socioeconomic measures.
 
-\subsection{Controlling for Observables}
-Thus, if all relevant fertility- or twin-selection variables could be observed,
-an unbiased or consistent parameter could be estimated by OLS or IV.  However,
-given the difficulty in fully controlling for observables, both sets of estimates
-will unlikely converge on the population parameter of interest. As we document
-in the following sections of this paper, mothers with twins are positively
-selected over a wide range of health behaviours and socioeconomic measures.
-However, it is not clear that higher fertility is always necessarily negatively
-selected \citep{Fortetal2016,Myrskylaetal2009}.
-
-If, as is frequently posited, fertility is negatively selected, this will lead
-to an elegant empirical result:
+If, as is frequently posited, fertility is negatively selected, then the true parameter will lie between the OLS and twin-IV estimates, and bias adjustment will tighten these bounds. In particular:
 %Damian i understand each side of the equality but was puzzled that below you also set delta equal to alpha? the gap narrows with controls but does not go to zero?
 %%%Sonia, delta and alpha in the middle are the true population parameters, so are equal.  The problem is that with IV and OLS we can only get as far as the term one away from the equal sign (which is alpha hat and delta hat with the S+H).  So you're right that I'm trying to make the point that alpha hat and delta hat never converge to the true population parameters.  Should I re-write to make it clearer?  I have emphasised in text...
 \[
 E[\hat\alpha_1] < E[\hat\alpha_1^{H}] < E[\hat\alpha_1^{S+H}] < \alpha_1 =  \beta_1 < \plim\hat\beta_1^{S+H} < \plim\hat\beta_1^{H}<\plim\hat\beta.
 \]
-In this case, controlling for the (negative) selection variables in OLS will
-push the OLS estimate towards a tighter and tighter lower bound, and controlling
-for the (positive) selection variables in IV will result in a tighter upper bound.
-This gives the following hypothesis.
+%In this case, controlling for the (negative) selection variables in OLS will push the OLS estimate towards a tighter and tighter lower bound, and controlling for the (positive) selection variables in IV will result in a tighter upper bound. This gives the following hypothesis.
 
-\noindent \textbf{Hypothesis 3a}: If higher fertility is negatively selected and twinning is positively selected, we can achieve bounds using the OLS result and the IV result, and tighten these bounds by adding the variables which explain (respectively) the positive and negative selection.
+\noindent \textbf{Hypothesis 3a}: If there is negative selection of women into (higher) fertility and positive selection of women into twin births, then the OLS and twin-IV estimators will provide bounds on the true parameter and we can tighten these bounds by adjusting for the influence of variables which predict selection.
 \\
-However, if higher fertility (like twinning) is positively selected then both
-sets of estimates will approach the population parameter from above, and so
+However, if women exhibiting high fertility are positively selected then both sets of estimates will approach the population parameter from above, and so
 no lower bound estimate will exist:
 \begin{eqnarray}
   E[\hat\beta_1] < E[\hat\beta_1^{S}] < E[\hat\beta_1^{S+H}] < \beta_1  \nonumber \\
   E[\hat\alpha_1] < E[\hat\alpha_1^{S}] < E[\hat\alpha_1^{S+H}] < \alpha_1. \nonumber
 \end{eqnarray}
-\noindent \textbf{Hypothesis 3b}: If higher fertility \emph{and} twinning are positively selected, we cannot estimate bounds from OLS result and IV, and without further restrictions we do not know theoretically which will be closer to the population parameter $\alpha_1=\beta_1$.
+%\noindent \textbf{Hypothesis 3b}: If higher fertility \emph{and} twinning are positively selected, we cannot estimate bounds from OLS result and IV, and without further restrictions we do not know theoretically which will be closer to the population parameter $\alpha_1=\beta_1$.
 
-\subsection{Estimating Consistent Q--Q Bounds}
+%%DD I think this may be the place to briefly introduce Altonji, Oster bounds-- we can refer to them- our main point will to state what the assumptions of this bounding are and to link it into the disucssion above. We have already explained that introducing controls like H and S will reduce the OLS trade off. If unobservables act "`proportionally to"' observables then if we could adjust for unobservables, we would further reduce the tradeoff. We want an estimte of how much. Similarly Oster. we should be poised at end of results section to be able to state the 3 sorts of bounds (a-c below) and how they overlap/compare and what our inference is from these diff approaches.
+
+%%DD please check change of title below - i put IV in the title on purpose to distinguish from OLS-bounds and from the OLS-IV bounding. i thought one way to organize thoughts on the different bounding exercises is a)) OLS-IV provide bounds;  b)) Bounds on OLS provided by Altonji, Oster ; c)) Bounds on IV provided by Conley. It would be good to formalize this at least partially. For eg one natural Q is how the OLS-bounds and the IV-bounds are expected to locate themselves in the range suggested by the OLS-IV bounds. Do they push these bounds inwards or outwards? or can we not say // i suppose we can say once we specify the direction in which controls influence the estimates.
+%SB:xxxx
+\subsection{Estimating IV Bounds under Plausible Exogeneity}
 \label{TWINscn:gamma}
-In the previous subsection, Q--Q estimation using twins is motivated in equations
-(\ref{TWINeqn:IV1}) and (\ref{TWINeqn:IV2}).  Consistent IV estimation imposes
-the (strong) prior belief that twin births can be excluded from the second stage
-equation, or that the sign of $\gamma$ in the following is equal to zero:
+%In the previous subsection, Q--Q estimation using twins is motivated in equations (\ref{TWINeqn:IV1}) and (\ref{TWINeqn:IV2}).  
+
+%%DD i rewrote this section more than the above.
+In this section we describe an alternative approach to inference for IV models developed by \citet{Conleyetal2012} for cases when the instrument is plausible but fails the exclusion restriction.\footnote{\citet{NevoRosen2012} propose a bounds
+  estimate for IV of a broadly similar nature.  Inference in this case depends on
+  assumptions about the direction of correlation between the instrument and the
+  error term. They denote this as $\rho_{z_{j}u}$, which is analogous to the sign
+  of $\gamma$ in \citeauthor{Conleyetal2012}'s framework which we apply here.} 
+They provide an operational definition of plausibly (or approximately) exogenous instruments, defining a parameter $\gamma$ that reflects how close the exclusion restriction is to
+being satisfied in the following model (adapted to the Q--Q model for this paper):
+
 \begin{equation}
   \label{TWINeqn:Conley}
   quality_{ij}=\delta_0 + \delta_1 quantity_j + \gamma twin_j + \bm{X}\bm{\delta_x} + \vartheta_{ij}.
 \end{equation}
-As we document extensively in part I of this paper, positive selection into
-twinning leads to serious concerns that the exclusion restriction will be met.
+%%SB: Was the below meant to be in here as a comment but not in the paper?  I think at least a bit of one sentence comes directly from the Conley et al paper (the dogmatic prior belief bit). I guess we took this for reference but need to re-write?
+Since the parameters $\delta_1$ and $\gamma$ are not jointly identified,
+prior information or assumptions about $\gamma$ are used
+to obtain estimates of the parameters of interest, $\delta_1$. The IV
+exclusion restriction is equivalent to the dogmatic prior belief
+that $\gamma$ is identically 0. Instead, plausible exogeneity
+corresponds to having prior information that implies $\gamma$ is near
+0 but perhaps not exactly 0. This relaxes the IV
+exclusion assumption but still provides sufficient structure to
+allow inference to proceed. \citeauthor{Conleyetal2012}'s methods
+are ideally suited to the empirical application of this paper. They
+show that their bounds are most informative when the instruments are
+strong, and the twin instrument is strong (evidence below).
+
+As we document in Part I of this paper, we provide evidence that leads us to
+suspect that $\gamma$ will not equal zero. 
 Specifically, $\gamma$ will reflect the effect of unobserved maternal health
 on child quality, interacted with the degree to which twin mothers are healthier
-than non-twin mothers.\footnote{This is a useful way to think about the IV
-  inconsistency. If one or other of these conditional correlations is equal to zero,
-  IV estimates will not be inconsitent.  If twin mothers are not more healthy than
-  non-twin mothers, then our instrumental invalidity concerns (due to health) can be
-  dismissed. Similarly, if twin mothers \emph{are} healthier than non-twin mothers,
-  but maternal health has no effect on child quality, the exclusion restriction will
-  still hold, leading to consistent instrumental estimates.}
+than non-twin mothers.\footnote{If one or other of these conditional correlations is equal to zero,
+  IV estimates will not be inconsistent. We have shown that twin mothers are healthier but for this to challenge the exclusion restriction, we would also have to have that maternal health has a direct impact on child quality. Below we discuss how this can be estimated.}
 
-However, even in cases such as this where we are not confident that $\gamma=0$,
-we can still estimate bounds on the Q--Q tradeoff if we are confident in making
-some statement of prior belief about the distribution from which $\gamma$ is
-drawn.  \citet{Conleyetal2012} describe such a process, which they refer to as
-\emph{plausible exogeneity}.\footnote{\citet{NevoRosen2012} propose a bounds
-  estimate for IV of a broadly similar nature.  Inference in this case depends on
-  assumptions about the direction of correlation between the instrument and the
-  error term. They denote this as $\rho_{z_{j}u}$, which is analogous to the sign
-  of $\gamma$ in \citeauthor{Conleyetal2012}'s framework which we apply here.} We
-invoke this terminology here, and refer to twins as a plausibly exogenous event,
-implying that we have reason to believe that $\gamma$ may be close to, but not
-necessarily precisely equal to, zero. Specifically, we are concerned that
-healthier mothers are more likely to give birth to twins, and, all else
-constant, healthier mothers are more likely to be able to invest more in their
-children post-pregnancy.
+%However, even in cases such as this where we are not confident that $\gamma=0$, we can still estimate bounds on the Q--Q tradeoff if we are confident in making some statement of prior belief about the distribution from which $\gamma$ is drawn.  We invoke this terminology here, and refer to twins as a plausibly exogenous event, implying that we have reason to believe that $\gamma$ may be close to, but not necessarily precisely equal to, zero. Specifically, we are concerned that healthier mothers are more likely to give birth to twins, and, all else constant, healthier mothers are more likely to be able to invest more in their children post-pregnancy.
 %Thus, $\gamma$, the coefficient on twin
 
-As \citet{Conleyetal2012} show, bounds estimates for the IV parameter $\beta_1$
+\citet{Conleyetal2012} show that bounds for the IV parameter $\beta_1$
 from equation \ref{TWINeqn:IV2} can be generated under a series of assumptions
 regarding $\gamma$.  These include a simple assumption regarding the support of
 $\gamma$ (their ``Union of Confidence Intervals'' approach), or a fully specified
-prior for the distribution of $\gamma$ (their Local to Zero approach).  In the
-latter case, a correctly specified prior often leads to a tighter bounds estimate
-for the parameter of interest $\beta_1$.  \citeauthor{Conleyetal2012}'s methods
-are ideally suited to the empirical application of this paper.  Their bounds
-are most informative with instruments that are strong (as is the case with
-twins), but where the exclusion restriction may be violated. The results from
-\citet{Conleyetal2012} leads to hypothesis 4.
+prior for the distribution of $\gamma$ (their ``Local to Zero approach'').  In the
+latter case, a correctly specified prior often leads to tighter bounds. This suggests the following:
 
-\noindent \textbf{Hypothesis 4}: If we have an unbiased estimate of $\gamma$, the size of the invalidity in the exclusion restriction, we can consistently estimate bounds on the Q--Q trade-off.
+%%DD I just want to be sure that we can claim that our estimate of gamma is unbiased. i am not sure. shall we drop the word unbiased below?
+%%SB: I would probably be slightly happier to say unbiased, though feel free to remove if it raises flags for you.  I prefer to state  unbiased, as if we use a biased estimate of gamma then the bounds won't be necessarily correct.  Note that here all we are stating is that *if* we do have an unbiased estimate, this lets us proceed.  We then justify our gammas as unbiased estimates given that we get them from diff-in-diff in different places.
+%%DD I also want to check on use of the word consistent below: is it accurate? Are estimates of bounds consistent? If yes shall we say consistently estimate bounds or shall we say estimate consistent bounds? I think both are ok ie use of unbaised gamma and consistent bounds but want to be sure as it is important.
+%SB: Good point on consistent bounds!  I just went through Conley et al again and found no mention of consistent bounds, so perhaps this is incorrect terminology.  I have removed consistent, though left unbiased when referring to estimates of gamma.
+\noindent \textbf{Hypothesis 4}: If we have an unbiased estimate of $\gamma$, a measure of the extent of the invalidity of the exclusion restriction, we can estimate bounds on the Q--Q trade-off.
 
 From equation \ref{TWINeqn:Conley}, $\gamma$ represents the conditional effect
-of being born from a twin mother on child quality:
+of being born of a twin mother on child quality:
 \[
 \gamma=\frac{\partial quality_{ij}}{\partial twin_j}\bigg|_{X}
 \]
-In practice, bounds identification based on $\gamma$ only pushes our
+In practice, bounds identification based on $\gamma$ only pushes the
 identification problem back by one step, as consistent bounds rely on having
-an unbiased estimate of $\gamma$, which is not trivial.  In order to generate
-an estimate of $\gamma$, we must know the direct effect of health differences
-between twin and non-twin mothers on child health.  As in the IV and OLS cases,
-observing the full set of relevant maternal health and behaviour variables
-which predict twinning is unlikely to be possible.
+an unbiased estimate of $\gamma$, which is not trivial because of the original problem, illustrated in Part 1 of the paper, that twin births are not randomly allocated across mothers.
 
-In order to calculate a consistent estimate of $\gamma$ we proceed in two
-stages. Firstly, we \emph{can} observe any exogenous shock to maternal health,
-$health_j$ and examine the full effect of the maternal health shock on child
-quality:
+So as to obtain a consistent estimate of $\gamma$, albeit from different samples, we exploit quasi-experimental changes in maternal health ($health_j$) and use these to obtain consistent estimates of the impact of maternal health on (a) child quality and (b) the probability of a twin birth. We then `scale' the first by the second. First, we estimate
 \[
 \frac{\partial quality_{ij}}{\partial health_j}\bigg|_{X}=\phi_q.
 \]
-This gives us the effect of a 1 unit change in $health_j$ on child quality.
-However, $\gamma$ is the effect of maternal health scaled by the difference
-in health between twin and non-twin mothers.  Using the same health shock
-$health_j$, we then estimate the baseline difference between twin and non-twin
-mothers based on the same variable:
+Under the assumption that the change in health is quasi-experimental, this is a causal estiamte of a 1 unit change in $health_j$ on child quality. Since $\gamma$ is the effect of maternal health scaled by the difference in health between twin and non-twin mothers we also estimate :
 \[
 \frac{\partial health_j}{\partial twin_j}\bigg|_{X}=\phi_t.\]
-With these two parameters in hand, we can thus appropriately scale $\phi_q$,
-leading to causal estimate of $\gamma$ as:
+With these two parameters in hand, we obtain a causal estimate of $\gamma$ as:
 \begin{equation}
   \gamma=\frac{\partial quality_{ij}}{\partial twin_j}\bigg|_{X} = \frac{\partial quality_{ij}}{\partial health_j}\bigg|_{X} \times \frac{\partial health_j}{\partial twin_j}\bigg|_{X} =\phi_q\times\phi_t.
 \end{equation}
 
-Given that the above parameter will be based on estimated quantities $\hat\phi_q$
-and $\hat\phi_q$, $\gamma$ itself will be subject to sampling uncertainty:
+As it involves the estimated quantities $\hat\phi_q$ and $\hat\phi_q$, $\gamma$ will be subject to sampling uncertainty:
 $\hat\gamma = \hat\phi_q\times \hat\phi_t$.  Thus, the estimate $\hat\gamma$ will
 have a distribution.  If we can estimates both $\hat\gamma$ and its distribution,
 this gives us the consistent prior for the full distribution of $\gamma$ required
-in \citeauthor{Conleyetal2012}'s LTZ approach.  In order to estimate this
-distribution, we can use resampling methods.  Based on these resampling (bootstrap)
-methods we can compare the analytical distribution with a series of known
-distributions\footnote{If, for exammple, we determine that $\gamma$ is normally
+in \citeauthor{Conleyetal2012}'s LTZ approach. We estimate the distribution using resampling (bootstrap)
+methods, using which we can compare the analytical distribution with a series of known
+distributions\footnote{If, for example, we determine that $\gamma$ is normally
   distributed, estimation then proceeds by imposing the prior distribution for
   $\gamma$ as:
   \begin{equation}
@@ -1183,290 +1141,222 @@ bounds estimate of $\beta_1$.\footnote{\citet{Conleyetal2012} discuss a
   simulation-based algorithm (p.\ 265) for estimation, which can be used given
   any prior, including non-normal priors, for the distribution of $\gamma$.}
 We provide a full description of this resampling process in online appendix
-\ref{ATWINscn:gammaSim}. In the subsections which follow, we describe two
-empirical applications in which we can estimate $\gamma$ and its distribution:\
-one in the context of the United States, and another in Nigeria.
+\ref{ATWINscn:gammaSim}. 
 
-\subsubsection{Estimating $\gamma$ in the United States}
+Implementing this approach imposes fairly strong data requirements. We require data that capture differential exposure of women to a quasi-experimental change in their pre-pregnancy health, together with measures of the quality of their children. In addition, we need information on the prevalence of twin births in this sample of women. In the follow subsections, we describe two studies, one set in the United States, and the other in Nigeria, which offer a large and representative sample of women with birth data and intergenerational linkage (i.e. the capacity to identify their births, and some outcomes for their births), and in which we observe the incidence of a quasi-experimental shock to maternal health. In the United States the shock is the introduction of antibiotics in 1937 and in Nigeria it is the Biafra war that raged through 1967-1970. We show how we exploit these cases to estimate $\gamma$ and its distribution:\
+
+\subsubsection{Estimating $\gamma$ : A case from the United States}
 \label{sscn:USgamma}
-As the discussion above suggests, valid estimation of $\gamma$ requires an
-exogenous health shock to the mother, which can then be linked to the eventual
-quality of her children.  The data requirements in this circumstance are quite
-demanding, as we must observe mothers differentially affected by a health shock,
-and the eventual effect on their child quality.
 
-Fortunately in the US, a valid candidate exists using historic exposure to
-antibiotics, and following mothers over time using publicly released census
-data.  We focus on the arrival of sulfonamide drugs to the United States 1937.
-These sulfonamide drugs are antibiotics, and have been shown to have radical
-effects on rates of pneumonia, especially early in life \citep{Jayachandranetal2010,
-  BhalotraVenkataramani2014}.
+%As the discussion above suggests, valid estimation of $\gamma$ requires an exogenous health shock to the mother, which can then be linked to the eventual quality of her children.  The data requirements in this circumstance are quite demanding, as we must observe mothers differentially affected by a health shock, and the eventual effect on their child quality.
 
-Here we follow the literature (see for example \citet{BhalotraVenkataramani2014})
-in estimating the effect of this health shock in a difference-in-differences model.
-We are interested in the effect of a mother being exposed to sulfa drugs early
-in her life (when these were shown to have large effects on morbidity and mortality)
-on the eventual quality of her children.  In the following, we use $m$ to signify
-the mother, and $m+1$ to signify her children.  We thus estimate:
+% Fortunately in the US, a valid candidate exists using historic exposure to antibiotics, and following mothers over time using publicly released census data.  
+
+%%DD i have added ref to Lesch cited in our sulfa1 paper.
+%%DD I realized a potential problem- in our BV sulfa paper we find no impacts of sulfa at birth on women! only on men. however in unpublished results we found that sulfa women have higher fertility. this could be fecundity (since they are not more educated it seems not to be the result of an increased opportunity cost of their time!). if fecundity is a func of health i suppose we could push this..but we have no direct measure of health. (also note that we found higher fert of these women and you find higher educ so something is shifting the QQ indifference curve out. interesting. see what i have done below.
+%%DD the refs for adult health improvements are in my JEEA paper 
+%%DD just for later if not now- is it possible to estimate effects on 2g health ie do we have infant mortality or anything in the census for the births of the sulfa-exposed women? i dont think so.
+%%SB: I am up to here...
+The first antibiotics, sulfonamide drugs, were introduced across the United States in 1937, following clinical trials in London and New York and there was nothing else on the stage until penicillin was introduced during the Second War. There was immediate and widespread uptake and the drugs were hailed as a ``miracle'' \citep{Lesch2006}. Their arrival was associated with a sharp drop in a range of infectious diseases that were treatable by these drugs \citep{Jayachandranetal2010}. In particular, pneumonia, the leading cause of death among children after congenital causes, fell sharply and this decline was largest among infants, and broadly similar for boys and girls- see \citep{BhalotraVenkataramani2014}. Although there are no direct measures of the adult health of individuals exposed to the antibiotics at birth, it is plausible that infant health improvements persist and generate improvements in adult health; some evidence of this is in \citep{Almondetal2011b,ButikoferSalvanes2015,Hjortetal2016,Bhalotraetal2015}. What is pertinent for our purposes is whether any improvements in the adult health of women are such as to influence the quality of their children. We therefore estimate this reduced form using the identification strategy of \citep{BhalotraVenkataramani2014} but with outcomes of the children of exposed women rather than the outcomes of the women themselves as dependent variables.
+Identification exploits the timing of this shock to health at birth together with the fact that the largest drops in pneumonia occurred in states with the highest initial burdens of disease.\footnote{\citet{BhalotraVenkataramani2014} demonstrate that trends in first generation outcomes are parallel between high- and low-treatment intensity states. } 
+%%DD we should really show parallel trends for our 2g outcomes since these tests are outcome specific. 
+ 
+% Here we follow the literature (see for example \citet{BhalotraVenkataramani2014}) in estimating the effect of this health shock in a difference-in-differences model.We are interested in the effect of a mother being exposed to sulfa drugs early in her life (when these were shown to have large effects on morbidity and mortality)on the eventual quality of her children.  
+
+Let $m$ signify the mother, and $m+1$ signify her children. Using the United States micro-census files, we estimate:
 \begin{equation}
   \label{TWINeqn:BV}
   quality^{m+1}_{stc} = \alpha + \phi^q_1 (Post_t\times basePneumonia^m_s) +\theta_{rs} +\eta_{rt}
   +\varphi\mathbf{X}^m_{st}+\lambda_{rc}+\theta_s\times\eta_t+\varepsilon_{stc}
 \end{equation}
-where $\phi^q_1$ is the effect of access to sulfa drugs early in the mother's life
-on the eventual quality of her children, $quality^m_{stc}$.\footnote{This is an
-  unbiased effect of maternal access to sulfa drugs on eventual child quality  if
-  parallel trends are satisfied between high- and low-intensity states. Evidence of
-  this is provided by \citet{BhalotraVenkataramani2014}.}  In the above equation,
-identification relies on differential rates of baseline pneumonia between states
-$s$, and hence the differential effect of being exposed to sulfa after its arrival
-($Post_t$).  We follow \citet{BhalotraVenkataramani2014} in including controls
-for census year $t$, mother's birth cohort $c$, and mother's race $r$.
+where $\phi^q_1$ is an estimate of the change in the child quality associated with the mother's exposure to antibiotics in her infancy. The pre-intervention level mean of pneumonia at the state level, $s$, is denoted basePneumonia^m_s and interacted with ($Post_t$), which indicates birth cohorts 1937 and after. We control for race-specific fixed effects for census year $t$, mother's birth cohort $c$, and mother's birth state $s$ and for XX. 
+%% DD in the displayed eq we show race-specific cohort, state and time effects c s t -- then you also have notation for state and time effects but not cohort. I think with a FE with subscript (rt) i.e. race-specific time effects, you don't also need to display a FE with subscript (t); i hope this is right. if it is, drop the terms that are not race specific. It it is not right then add a fixed effect for cohort.
+%%DD are you using the specification in col. 1 of our main table? We show robustness to controls for control-diseases*post37, state income,infrastructure, state trends, region*year. did you include any of this? if not i thinnk it is ok for now if we are pushed for time, but checking, and flagging for revisions.
+%%DD in any case i have left XX above for you to indicate what is in teh vector X that is in the displayed eq.
 
-From equation \ref{TWINeqn:BV} we isolate the effect of a positive maternal
-health shock (the reduction in rates of pneumonia in the post sulfa era) on child
-quality as $\phi^q_1$.  As described above, in order to estimate $\gamma$---the
-violation of the exclusion restriction---we need to estimate the twin-mediated
-effect of this maternal health shock on child quality.  We thus need to estimate
-a scale parameter capturing the difference in baseline levels of pneumonia
-between twin and non-twin families. %\footnote{As a simple example, if the effect of
+%From equation \ref{TWINeqn:BV} we isolate the effect of a positive maternal health shock (the reduction in rates of pneumonia in the post sulfa era) on child quality as $\phi^q_1$. 
+
+%As described above, in order to estimate $\gamma$---the violation of the exclusion restriction---we need to estimate the twin-mediated effect of this maternal health shock on child quality.  We thus need to estimate a scale parameter capturing the difference in baseline levels of pneumonia between twin and non-twin families. 
+
+%\footnote{As a simple example, if the effect of
 %a maternal health variable is to increase child quality by 0.1 standard
 %deviations, and twin mothers have 20\% higher stocks of that maternal health
 %variable than non-twin mothers, this suggests an estimate of $\gamma$ (the
 %twin-mediated effect of maternal health on child quality) of 0.1*0.2=0.02 s.d.}.
-In order to do so, we calculate the conditional average rate of baseline
-pneumonia in the state of residence for all women who give birth to a twin, and
-the similar conditional rate for non-twin mothers, where we condition on the same
-controls from (\ref{TWINeqn:BV})\footnote{In other words, we calculate
+
+%%DD i think instead we want to estimate (twin birth) = a + b (post-37*base_pneumonia) + all FE + X. In eq 8 and in the above eq the dep var can be individual level even though RHS treatment is state-year level and s.e. will be clustered by state. This is what we did in our sulfa1 paper. i have for now retained below what you wrote but using baseline means we are not utilizing the quasi exper change created by sulfa.
+
+The second step is to estimate the association of the health shock experienced by women at their birth with the probability that they have a twin birth. This is the analogue of the exercises we present in Part 1 of this paper. We take the conditional average rate of baseline pneumonia in the state of residence for all women who give birth to a twin, and
+the similar conditional rate for non-twin mothers, conditioning upon the same
+controls as in (\ref{TWINeqn:BV})\footnote{In other words, we calculate
   \[ \phi_1^t=\overline{bP_s}_{twin_j=1}|_{X}-\overline{bP_s}_{twin_j=0}|_{X}=
   \frac{\partial bP_s}{\partial twin_j}\bigg|_{X}.
   \]
-}.  If on average twin mothers are more healthy in
-this dimension, we would expect that women with lower exposure to pneumonia will
-go on to have more twins, and hence $\phi_1^t<0$.
+}.  In view of our findings in Part 1 our expectation is that women with lower exposure to pneumonia at birth will go on to have more twins, and hence $\phi_1^t<0$.
 
-Finally, with these two quantities in hand, we can estimate $\gamma$ by taking
-their product:
+As discussed, with these two quantities in hand, we can estimate $\gamma$ by taking their product:
 \begin{equation}
   \label{TWINeqn:realgamma}
   \phi_1^q\times\phi_1^t=\frac{\partial quality_{ij}}{\partial bP_s}\times
   \frac{\partial bP_s}{\partial twin_j}\bigg|_{X}=
   \frac{\partial quality_{ij}}{\partial twin_j}\bigg|_{X}=\gamma_{US}.
 \end{equation}
-This is our estimand of interest, and we can plug it into our estimates of
-the bounds on $\beta_1$ using the methods described above, and in
-\citet{Conleyetal2012}.
+We can plug this into our estimates of the bounds on $\beta_1$ using the methods described above, and in \citet{Conleyetal2012}.
 
 \subsubsection{Estimating $\gamma$ in Nigeria}
 \label{sscn:Nigeriagamma}
-The estimate of $\gamma_{US}$ in the previous section is based on a health shock
-occurring in the US.  This estimate is not externally valid for $\gamma$ in other
-situations.  As such, we examine an alternative context to calculate $\gamma$.
-Given that we estimate the Q--Q trade-off in low-income (DHS) countries as well
-as in the US, we are interested in estimating a similar value for $\gamma$
-indicative of the conditions in these DHS countries.
+Since we shall proceed to analyse alternative estimators of the Q--Q trade-off in developing countries as well as in the US, we obtained an estimate of $\gamma$
+from Nigeria. Here, we exploit the exposure of individuals in early life and through their growing years to the Nigerian civil war. This was the first modern war in sub-Saharan Africa after independence and
+one of the bloodiest. It raged in Biafra, the secessionist region in the South-East of Nigeria from
+6 July 1967 to 15 January 1970, killing between 1 to 3 million people and causing widespread malnutrition and devastation. \citep{Akreshetal2012} investigate long run effects of war exposure, exploiting the differential exposure of the Christian Igbo community resident in Biafra, together with the timing of the war. They show that women exposed to the war were shorter as adults and also more likely to be over-weight. As height and obesity are measures of health, they thus establish that the war was a shock to maternal health. We use their identification strategy to estimate impacts on children's education of the mother being exposed to the war XX.
+%%DD need to fill in XX to indicate age of exposure; in our paper we had age specific effects from -1 to 16 in bunches.
 
-An appropriate exogenous shock to maternal health in these countries is provided
-by exposure to civil war.  Using differential exposure to the Biafra civil war
-in Nigeria \citep{Akreshetal2012}, we estimate the effect of maternal exposure to
-war on child health as a manner to calculate $\phi^q$.  In order to do this, we
-follow \citet{Akreshetal2012} in estimating:
+The estimated equation is :
 \begin{equation}
   \label{TWINeqn:Nigeria}
   quality^{m+1}_{ites} = \alpha + \phi_2^q war^m_{te}+\alpha_t+\theta_e+\lambda_s+\mu_e t+u_{ites}
 \end{equation}
-for woman $i$ of ethnicity $e$ born in year $t$ and state $s$.  This flexible
-difference-in-differences specification relies on the fact that the Biafra civil
-occurred in Eastern region of Nigeria, and the groups affected by war were the
-Igbo and other ethnic minorities in this region.  Exposure is thus defined by
-ethnicity and mother's birth cohort (see \citet{Akreshetal2012} for further
-details).  The $quality$ outcome refers to the educational attainment of children
-of the following generation $m+1$.  Here $\hat\phi^q_2$ will estimate the reduced
-for effect of this large exogenous maternal health shock (war exposure) on her
-children's human capital.  
-
-As discussed in the case of US exposure to sulfonamide drugs, this coefficient
-represents the direct effect of this particular maternal health shock on child
-quality.  The underlying parameter of interest for inference ($\gamma$) is the
-twin-mediated effect of a maternal health shock on child outcomes.  In order
-to estimate this parameter we thus scale using the difference in rates of
-exposure to the maternal health shock among twin and non-twin mothers.
+for woman $i$ of ethnicity $e$ born in year $t$ and state $s$.  
+% This flexible difference-in-differences specification relies on the fact that the Biafra civil occurred in Eastern region of Nigeria, and the groups affected by war were the Igbo and other ethnic minorities in this region.  Exposure is thus defined by ethnicity and mother's birth cohort (see \citet{Akreshetal2012} for further details). 
+The indicator of $quality$ is a z-score (standardized by age and gender XX) for the years of education of children in generation $m+1$ and $\hat\phi^q_2$ is the reduced form effect of the maternal health shock on this.  
+% As discussed in the case of US exposure to sulfonamide drugs, this coefficient represents the direct effect of this particular maternal health shock on child quality.  The underlying parameter of interest for inference ($\gamma$) is the twin-mediated effect of a maternal health shock on child outcomes.  In order to estimate this parameter we thus scale using the difference in rates ofexposure to the maternal health shock among twin and non-twin mothers.
 Analogously to the US case, we thus esimate $\phi_2^t=\overline{war}_{twin=1}
--\overline{war}_{twin=0}=\frac{\partial war}{\partial twin}\bigg|_{X},$ allowing
-us once again to form an estimate of $\gamma$, however this time for Nigeria:
+-\overline{war}_{twin=0}=\frac{\partial war}{\partial twin}\bigg|_{X},$ so that we can estimate $\gamma$, the twin-mediated effect of
+maternal health on child-quality thus:
 \begin{equation}
   \label{TWINeqn:realgammaN}
   \phi_2^q\times\phi_2^t=\frac{\partial quality_{ij}}{\partial war_s}\times
   \frac{\partial war_s}{\partial twin_j}\bigg|_{X}=
   \frac{\partial quality_{ij}}{\partial twin_j}\bigg|_{X}=\gamma_{Nigeria}.
 \end{equation}
-As before, $\gamma_{Nigeria}$ represents the twin-mediated effect of
-maternal health on child-quality, however this time in an African country.
-This parameter provides an estimate of the degree of violation of the
-exclusion restriction and can be used to estimate \citet{Conleyetal2012}
-bounds.
+%, however this time in an African country. This parameter provides an estimate of the degree of violation of the exclusion restriction and can be used to estimate \citet{Conleyetal2012} bounds.
 
 
 %*******************************************************************************
 \section{Data and Estimation Samples}              \label{TWINscn:data}
 \subsection{Data}                                  \label{TWINsscn:data}
-We consult two data sets for our main IV and OLS analysis. In order to estimate
-the (health augmented) specification \ref{TWINeqn:RF}, we require information on
-each child's siblings, his or her mother's characteristics, as well as the
-child's eventual `quality' measure. We focus our empirical tests on two
-principal datasets which contain all of these variables.  Firstly, the DHS,
-discussed in part I of the paper, which have been applied over 20 years in a
-range of developing countries, and secondly, the United States National Health
-Interview Surveys (NHIS), which has been applied in an identical way from
-2004-2014.  Further details on each of these datasets are provided in online
-appendix \ref{TWINscn:dataApp}.
+%%DD I need to fill in XX from earlier in teh paper as #DHS countries
+We shall consistently estimate OLS and twin-IV estimates employing microdata from the US and from a sample of 68 developing countries. In order to estimate
+the (health and SES augmented) specification \ref{TWINeqn:RF}, we require information on sibling-linked births, measures of child quality and characteristics of the mother that include indicators of her health in addition to the more commonly available age, race and education. The data we use are chosen as they satisfy these requirements. These are the United States National Health Interview Surveys (NHIS), which have been fielded in an identical way from 2004-2014 and the Demographic and Health Surveys (DHS) for 68 countries, which have been applied over 20 years using broadly a similar design and questionnaires. Further details on the data are provided in online appendix \ref{TWINscn:dataApp}.
 
-Child `quality' is measured using each child's educational attainment. Our 
-principal outcome variable in each case is a standarised score for schooling 
-(Z-Score). This Z-Score is calculated by comparing each child's total years of 
-completed education to his or her cohort of reference.  In the case of DHS data,
-this cohort is made up of all children in the same country and birth cohort, 
-while in NHIS data, it is made up of children with the same month and year of 
-birth. The use of a standardised score rather than total years of education
-allows us to express all effect-sizes in terms of a one standard deviation
-increase in total educational attainment, and compare across birth cohorts
+Child `quality' is measured as educational attainment and to adjust for age, this is standarised as a z-score. In the case of DHS data, the reference group
+consists of all children in the same country and birth cohort, while in the NHIS, it consists of children with the same month and year of birth. This 
+allows us to express all effect-sizes in terms of a one standard deviation increase in total educational attainment, and to compare across birth cohorts
 even though children are still in school at the time of the survey.
-
-This education is not the final education of the child, but rather a marker of
-their current attainment at the time of survey.  In both datasets, children are
-included in the sample if aged between 6 and 18 years when surveyed.  While
+%This education is not the final education of the child, but rather a marker of their current attainment at the time of survey.  
+In both datasets, children are included in the sample if aged between 6 and 18 years when surveyed.  While
 ideally we would observe completed education, to our knowledge no large datasets
 are available measuring child's completed education, mother's total fertility,
 \emph{and} a wide range of maternal health measures before each child was born.
-These last measures are absent in all datasets currently used to estimate the
-Q--Q trade-off with twins, and are required to determine the relevance of this
-paper's critique.  While in the developing country setting relative school
+Indicators of maternal condition or maternal behaviours are absent in most datasets used to estimate the
+Q--Q trade-off with twins, but are required to determine the relevance of this
+paper's critique. While in the developing country setting relative school
 progress is an appropriate measure of child human capital given high rates of
-dropout and/or overage school entry, this is less clearly the case in the USA.
+dropout and/or over-age school entry, this is less clearly the case in the USA. In these data, the relevant variation is driven by grade-retention.
 Current estimates suggest that between 2 and 6\% of children are held back at
-least one grade in primary school \citep{Warrenetal2014}.  As such, as well
-as the child's school Z-score in the US, we also examine the parent's report of
-whether the child is in ``excellent health'' (a question which is a constant in
-all of the post-2004 NHIS waves).
+least one grade in primary school \citep{Warrenetal2014}. We nevertheless use an additional indicator of child quality available in the NHIS which is the parent's report of
+whether the child is in ``excellent health'', with the answers provided on a 0-5 scale.
+%%DD pl check previous sentence- 0 or 1 at bottom of scale?
 
-Table \ref{TWINtab:sumstats} provides summary statistics for DHS and NHIS data.
-For each source of data, fertility and maternal characteristics are described at
+Table \ref{TWINtab:sumstats} provides summary statistics for the DHS and NHIS data.
+Fertility and maternal characteristics are described at
 the level of the mother, while child education, and health outcomes are
-described at the level of the child.  Twin births make up 1.98\% of all births
-in the DHS sample, and 2.57\% in the NHIS sample (a similar value to that in full
-birth certificate data described in  figure \ref{TWINfig:USTwin}).  As expected,
+described at the level of the child. Twin births make up 1.98\% of all births
+in the DHS sample, and 2.57\% in the NHIS sample (a similar share to that in the
+birth certificate data described in  figure \ref{TWINfig:USTwin}). As expected,
 twin families are larger than non-twin families. Figure \ref{TWINfig:births}
 describes total fertility in twin and non-twin families. The distribution of
 family size in families where at least one twin birth has occurred dominates the
 corresponding distribution for all-singleton families in both the DHS sample
 (figure \ref{TWINfig:birthsDHS}) and the US sample (figure \ref{TWINfig:birthsUS}).
-This is expected given imperfect fertility control and---even were fertility
-perfectly controlled by families---given that some twins will occur on a family's
-final desired birth.  Such a result is required for instrumental relevance when
-using twining to estimate a Q--Q trade-off.
+%This is expected given imperfect fertility control and---even were fertility perfectly controlled by families---given that some twins will occur on a family's final desired birth.  
+This establishes the relevance (power) of the twin instrument for fertility. 
 
 \subsection{Estimation Samples}                    \label{TWINsscn:samples}
-The quasi-experimental variation exploited in twin studies is to leverage the 
-effect of an unexpected additional child on siblings who were born before the 
-additional birth.  Thus, all first-born children in families of at least two
-births are split into two groups: the treatment group, which consists of
-first-born children in a family whose second birth results in two children
-(twins), and a control group consisting of first-born children in families where
-the second birth results in just one child.  This quasi-experiment can be
-applied for twins at each birth order, and we follow the existing literature
-starting with \citet{Blacketal2005} in defining these estimation samples. These
-are referred to as the 2+, 3+, and 4+ samples, and are defined $\forall\ n \in
-\{2, 3, 4\}$ to include first-born to $n-1$ born children in families with at
-least $n$ births. Existing studies such as \citet{Angristetal2010} focus mainly
-on the 2+ and 3+ samples. Given the higher fertility in the DHS data, we also
-include a higher birth-order group, 4+.
+Studies that instrument fertility with the occurrence of a twin birth leverage the 
+unexpected additional child to study impacts on outcomes of siblings born before the 
+additional child. Consider families in which twins occur at the second birth event. These families are compared with families that have at least two
+birth events but have a singleton birth at second order. We refer to families with at least two birth events as 2+ families. The subjects, for whom we measure outcomes (indicators of child quality) are the first-born children. It is convenient to think of the treated group as first-born children in families whose second birth event results in two children (twins) and of the control group as consisting of first-born children in families where the second birth results in just one child. Following \citet{Blacketal2005}, we similarly construct a 3+ sample which consists of families with at least three birth events and then we compare outcomes for the first two births across families that have a twin birth at order three (treated) and families that have a single birth at order three (control). Many existing studies, such as \citet{Angristetal2010}, focus upon the 2+ and 3+ samples. Given higher fertility rates in the developing country sample that we analyse, we also include 4+ families in which twins occur at fourth order and outcomes are studied for the first three births.
 
-Such a sample decision is important when estimating the Q--Q trade--off using 
-twins as an instrument. Given that family size is endogenously chosen by 
-parents and rates of twin birth are not constant by birth-order, twin-births will 
-occur more frequently in families that have a higher fertility preference (see
-figures \ref{TWINfig:bordUS} and \ref{TWINfig:bord}). This point is addressed by
-(among others) \citet{RosenzweigWolpin1980} and \citet{Blacketal2005} who first
-suggested combining $n+$ groups with twinning at birth order $n$ as a way to
-ensure that twin and non-twin families in the sample would have similar fertility 
-preferences.
+%DD please see XX in next sentence for syntax of n_th and when compiled we need to check that the fig are in fact the ones showing twins by b order in an appendix
+Restricting the sample to families with at least n births ensures that preferences over family size are the same in the families with twins at the $n^{th}$ birth and those with singleton births. This also addresses the potential problem that, since the likelihood of a twin birth is increasing in birth order (see figures \ref{TWINfig:bordUS} and \ref{TWINfig:bord}), increasing family size raises the chances of having a twin birth. Restricting the sample to children born before birth n avoids selection problems that arise because families who choose to have another child after a twin birth may differ from families who choose to have another child after a singleton birth. This also avoids the problem that a twin birth not only creates an increase in family size but also increases the birth order of children born after the twins.
+
+%Such a sample decision is important when estimating the Q--Q trade--off using twins as an instrument. Given that family size is endogenously chosen by parents and rates of twin birth are not constant by birth-order, twin-births will occur more frequently in families that have a higher fertility preference . This point is addressed by (among others) \citet{RosenzweigWolpin1980} and \citet{Blacketal2005} who first suggested as a way to ensure that twin and non-twin families in the sample would have similar 
 
 %-------------------------------------------------------------------------------
-\section{Results}
+
+\section{Results: Estimates of the Q--Q trade-off}
+%DD i added this intro para here and a ref to Currie Moretti and L-Muney and Gield. When i read a full draft i will seek to avoid repetition and i might move this to the Intro. i'll decide later.
+We initially present the routine OLS estimates and twin-IV estimates since, under the assumptions about selection into fertility discussed in section \ref{sscn:OLS}, these provide bounds on the true parameter. In each case, we show how these estimates are modified upon addition of available controls for the mother's health. So as to ascertain that the indicators of health are not simply proxying for socio-economic status, we then introduce controls for mother's education. As discussed in Part 1, to the extent that educated women exhibit healthier behaviours (XX Currie and Moretti on college openings and reproductive behaviours, Lleras Muney on new drug uptake), education may influence twin births via its impact on health-related behaviours that we do not have data to capture directly. Our expectation is that the introduction of controls will tighten the bounds, diminishing the size of the trade-off estimated by OLS and increasing the size of the trade-off estimated by IV \ref{sscn:OLS}. The latter is of course a direct test of our hypothesis that the twin-IV estimator is biased downward by virtue of twins being born to healthier mothers. Having presented the standard results, illustrated the direction of partial bias-adjustment, and established OLS-IV bounds, we move on to estimate bounds using the plausible exogeneity approach described earlier. In estimating the \citet{Conleyetal2012} bounds we make a substantive contribution by estimating the degree of violation of the twin exclusion restriction by exploiting natural experiments in two quite different settings, in both of which there are exogenous changes to maternal health and we are able to estimate both how this modifies the probability of a twin birth and how it influences measures of child quality.
+
 \subsection{The Q--Q Trade-off} \label{TWINsscn:QQtwins}
 \subsubsection{OLS Estimates} \label{TWINsscn:QQtwinsOLS}
-Although OLS estimates of the Q-Q trade-off are biased, under assumptions about
-the selection into fertility discussed in psection \ref{sscn:OLS}, these can
-act as upper bounds on the true parameter.  We present estimates of $\alpha_1$
-from equation \ref{TWINeqn:RF} in table \ref{TWINtab:DHSall} (developing
-countries) and table \ref{TWINtab:NHISAll} (US). In each table we display point
-estimates and standard errors while including a graduating set of controls for
-observable measures of selection (maternal health and education). In all cases
-we control for birth order fixed effects, given the importance of birth order
-on child outcomes above and beyond total fertility \citep{Blacketal2005}.
 
-OLS results for the developing country sample are presented in panel A of table
-\ref{TWINtab:OLS}.  Results are displayed by birth-order specific groups
-laid out in section \ref{TWINsscn:samples}.  In each case baseline models with
-no controls for maternal characteristics suggest than an additional child
-within a family is associated with a reduction of 12.3 to 15.2\% of a standard
-deviation in a child's educational progress with respects to his or her cohort.
+%%DD Damian i think we need to show results with and without birth order - maybe in an appendix - to see how much birth order changes the coef- and ref Black and Mogstad. Once we have this we should reference that table in para below and state what if anything the order controls do to coef of interest.
+%%DD Tables 7 and 8 do not mention the dep var but in 1st row they contain "`fertility"' ie the RHS var. In T9, the first row contains the dep vars. We should make sure that it is immediately clear what is on the LHS and RHS in Tables 7-9 and the format should be broadly consistent. SO one way to do this is that just under the Table title you have a subtitle. In T7,T8 the subtitle will be "`Dependent variable: Years of education (z-score). In T9, the subtitle will be "`Dependent variable: Years of education (z-score) and Health status (0-5 scale)"'. I prefer years of education z-score to school z-score as school could be a test score or a level of attainment or years.
+%%DD The OLS table notes should contain a list of controls in Base, +H and S. Please check that the list i provide below is correct and that they are incl as FE as i suggest
+%%DD The IV table does list the base controls but it needs to specify what is added in +H and S exactly too. T1 shows BMI and low-BMI -- which of these is in controls
+%%DD Do we not control for race and parity as indicatedin the science paper? if we do this needs to be added to notes to all tables. i have included this below please check. sorry if all this is in earlier parts of the paper i have not checked yet
+%%DD In case challenged by space i think you can remove details of 2+ etc and replace with ref to teh Estimation Samples section of hte paper.
+
+OLS results for the developing country and the US samples are presented in Table \ref{TWINtab:OLS}. To avoid confounding of the estimates by fertility preferences, results are presented for three $n+$ samples in which twinning occurs at birth order $n$, $\forall\ n \in \{2, 3, 4\}$ and the outcomes are studied for all pre-twin births i.e. the first-born to the $n-1$ born child. We consistently control (from the baseline specification onwards) for fixed effects for age and birth order of child, age of mother at survey date, age of mother at birth and race. In the developing country sample we also condition on country and survey year fixed effects. The birth order fixed effects are important given evidence that child outcomes vary by birth order even when conditioning upon total fertility \citep{Blacketal2005}. The available controls for mother's health are height and BMI in the developing country sample, and BMI and a self-reported assessment of own health on a Likert scale in the US sample. In both samples, the control for socioeconomic status is years of education of the mother (XX see Table 1 for summary statistics of these variables).
+%%DD T1 does not include race (US) or ethnicity (DHS) which are predictors of twins.? Do we not include wealth in the DHS i thought at one time we did. are wealth/income available in nhis.?
+
+Consider the estimates for developing countries in Panel A. The baseline specifications show that an additional child
+in the family is associated with a reduction of 12.3 to 15.2\% of a standard
+deviation in a child's educational progress relative to their birth cohort.
 The introduction of observable controls:\ first for mother's health and then for
-mother's health and socioeconomic outcomes, reduces the estimates to nearly half
-of their original size (of between 6.6 and 8.5\% of a standard deviation). The
-evolution of these controls is strongly indicative of positive fertility
-selection and an upper bound on the Q-Q trade-off among first borns, first and
-second borns and first to third borns of 6.6 and 8.5\% of a standard deviation.
+mother's health and education progressively reduces the estimated trade-off to nearly half
+of this (between 6.6 and 8.5\% of a standard deviation). This is strongly indicative of positive fertility
+selection. This suggests an upper bound on the Q-Q trade-off of between 6.6 and 8.5\% of a standard deviation.
 
-One way to partially bound the true effect is to ask how important additional
+%%DD we should ideally formalize the Altonji Oster bounding in relation to the OLS-IV and Conley bounding. i will have a go at this above just flagging now in case i forget later.
+Although the introduction of relevant observables diminishes the trade-off, consistent with a diminishing of the OLS-bias, the adjusted OLS estimates remain potentially biased on account of unobservables. So as to gain some sense of the size of the residual bias, we follow \citep{Altonjietal2005} and estimate how important additional
 unobservable controls must be compared to observable controls for the true
-effect $\alpha_1$ to be zero \citep{Altonjietal2005,Oster2013}.  We present the
-\citeauthor{Altonjietal2005} and more recent \citeauthor{Oster2013} statistic
-below OLS results in table \ref{TWINtab:OLS}.  The third column of each of
-the 2+, 3+ and 4+ groups uses the full set of observable controls to calculate
-these statistics.  The \citeauthor{Altonjietal2005} statistic generally
+effect $\alpha_1$ to be zero. We also present the \citeauthor{Oster2013} statistic (see table \ref{TWINtab:OLS}) and, for both, we rely upon the third column of each group that includes the richest set of observables. The \citeauthor{Altonjietal2005} statistic 
 suggests that unobservable characteristics of the mother would need to be about
-1.2 times as important as observables for the entire Q-Q effect estimated to
-be driven by selection into fertility.  This value is based on the assumption
-that selection on observables is indicative of selection on unobservables.  We
+1.2 times as important as observables for the OLS estimate of the Q-Q trade off to
+be entirely driven by selection into fertility. This assumes
+that selection on unobservables scales with selection on observables. We
 can relax this assumption if we are willing to impose a maximum R-squared on the 
-theoretical reduced form regression from (\ref{TWINeqn:RF}) when including all 
-observable and unobservable elements.  We follow \citet{Oster2013} in assuming
-a maximum R-squared of 2 times the observable R-squared, leading to the Oster
-ratio in table \ref{TWINtab:OLS}.  This statistic suggests that under the
-demanding maximum R-squared assumption, unobservables would need to be
+theoretical reduced form regression (\ref{TWINeqn:RF}) when including all 
+observable and unobservable elements. We follow \citet{Oster2013} in assuming
+a maximum R-squared twice the observable R-squared.  
+%%DD i am not sure what is meant by the observable R2 - do you mean the actual R2 in the eq with all relevant observables included (ie S+H col) ? we should rewrite previous sentence.
+Our estimates suggest that, using a fairly
+demanding maximum R-squared assumption, 
+%%DD it is not obvious what demanding means here. If instead of maxR2=2 (actual R2) we had that it is 1.5 (rather than 2) then would the Oster stat be smaller or bigger than 0.55-0.65? let's clarify
+unobservables would need to be
 approximately 0.55-0.65 times as important as observables to drive the OLS
 result to zero. This is lower than \citeauthor{Oster2013}'s suggestion of equal
-selection as an informative criterion.  We return to these estimates, and to a
-more complete bounds exercise for the Q--Q trade-off in section
-\ref{TWINsscn:resultBounds}.
+selection as an informative criterion.  
+%%DD again i think it is worth being more explicit. does the last sentence above refer to the Oster ratio being 1? I am guessing that's what equal selection is. But i am not sure whether if we find 0.55 instead of 1 --we have a less informative criterion- maybe paraphrase?
+We return to these estimates, and to a more complete bounds exercise for the Q--Q trade-off in section \ref{TWINsscn:resultBounds}.
+%%DD do we return to the Oster Altonji statistics later. we should but i wasnt sure we do.
+%%DD if we wanted to use the Oster Altonji  statistics to create bounds i think we need to go one step further. these stats tell us the ratio of unobs to obs that would drive the coef to zero. So we need to translate this into intervals around beta. if we are into the bounds business- the whole of part 2 is focused on this maybe we should take this additional step?
 
-We observe a largely similar pattern, though smaller estimated magnitude, of
-the OLS parameters for the NHIS data from the US in panel B of table
-\ref{TWINtab:OLS}.  Here we examine two outcome variables:\ the first a
-school Z-score for comparison with the DHS results, and the second a variable
-recording whether parents consider their children to be in excellent health
-(measured in the NHIS data).  We focus on both variables given that grade
-retention in the US is a less relevant measure of child quality than in the
-developed country sample, however note that as discussed earlier, between 2 and
-6\% of children are held back at least one grade in primary school in the US.
+Panel B of table \ref{TWINtab:OLS} presents the OLS estimates with and without controls for maternal characteristics, along with the Altonji and Oster statistics for the US sample. As discussed, we now examine not just the Z-score for educational attainment %%for comparison with the DHS results
+%%DD is it years or grade for age ? if latter it is not really comparable with the dhs which is years?
+but also an indicator of child health.  % and the second a variable recording whether parents consider their children to be in excellent health (measured in the NHIS data).  We focus on both variables given that grade retention in the US is a less relevant measure of child quality than in the developed country sample, however note that as discussed earlier, between 2 and 6\% of children are held back at least one grade in primary school in the US.
+For education, the baseline estimates imply that an additional child within the family is
+associated with a 2.3 to 4.4\% standard deviation reduction.  %(in the case of the smaller 4+ group this is not statistically significant).  
+%%DD you had 1-4.4 which i changed to 2.3-4.4, please check. Also in the 4+ group the baseline coef is signific.
+As for the developing country sample, so for the United States sample, in line with negative selection into fertility, controlling for maternal health and socioeconomic status tends to half the size of this trade-off, to 1.0 to 2.4\% of a s.d. (in the 4+ sample, which is a relatively small sample, the coefficient of 1.0\% of a s.d. is not statistically significant). 
+A similar pattern of results emerges using child health. %is in excellent health, 
+%%DD i can check later as you probably explain in sections i have not carefully read but i think we must explain somewhere if this is really prob(excellent health) or if it is for each child any number in the 0-5 or 1-5 scale, in which case it is as much prob(bad health) and we should probably just call it health. Calling it excellent health implies it is binary: 1 if excellent and otherwise 0. Also how do we interpret these coefs? they are no longer in s.d. so i think we should be explicit on how to interpret a number like 2.8 percent below.
+The unadjusted OLS estimates imply that an additional sibling reduces the health of older siblings by between 1.1 and 2.8\%. %%DD you had 0.3 and 2.8\% but the numbers in T7 are diff so i changed, pl check 
+%%DD i have added discussion of the bias adjustment here and elsewhere as i think this is quite key to our analysis.
+As for education, there is a clear diminishing of the estimated trade off upon adjustment for maternal characteristics. It falls by half or a third, to between 0.3 and 1.7\%.
+%The interpretation of the \citeauthor{Altonjietal2005} and \citeauthor{Oster2013} statistics in panel A are identical to the case of the developing country estimates laid out above.
+For the education equations, the Altonji et al.\ ratio is between 0.7 and 2 and the Oster ratio ranges from 0.2 to 0.8, with reference to the equations that include maternal health and education.
+This suggests that equal selection on unobesrvables could drive the estimate to 0.  
+%%DD i do not understand the prev sentence - would that not be if the statistic was 1? Is the idea that 0.7 and 0.8 are close to 1? I changed the language to use "`could drive"' but pl check
+%We now turn to estimating a more informative set of bounds using the (flawed) twin instrument.
+%%DD i am not sure we can say in a formal way that Conley bounds are more informative?
 
-When considering school Z-score (comparing each child to other children in their
-birth quarter cohort) we observe that an additional child within the family is
-associated with a 1-4.4\% standard deviation reduction (in the case of the
-smaller 4+ group this is not statistically significant).  In each case, adding
-maternal health and socioeconomic controls again reduces the size of the Q--Q
-trade-off, in line with negative selection into fertility.  Similar results are
-observed with the probability of reporting that the child is in excellent
-health, with an OLS estimate of the effect of an additional sibling suggesting
-a reduction between 0.3 to 2.8\%.  The interpretation of the
-\citeauthor{Altonjietal2005} and \citeauthor{Oster2013} statistics in panel A
-are identical to the case of the developing country estimates laid out above.
-In the case of school Z-score, the Oster ratio ranges from 0.2 to 0.8 when full
-controls are included, while the Altonji et al.\ ratio is between 0.7 and 2,
-suggesting that equal selection on unobesrvables would generally drive the
-estimate to around 0.  We now turn to estimating a more informative set of
-bounds using the (flawed) twin instrument.
+In the developing country sample, the estimated education-fertility trade-off is decreasing in the birth order at which twins (implying the additional child) occur, i.e. it is largest in the 2+ sample and smallest in the 4+ sample. This holds weakly in the United States, where the trade-off is similar for the 2+ and 3+ samples and smaller and insignificant in the 4+ sample. However, for health, this "`gradient"' is reversed. The largest child health-fertility trade-off is in the 4+ sample and the smallest in the 2+ sample.
+%%DD I have to read Mogstad Wisall again to see if their point about non linearity informs or links to this, i think not. If not maybe we can think about an interpretation of this? but i will first move on to see whether these patterns hold for iV which is where we pay more attention to the #s
+%%DD minor point but i know i am sometimes using a hyphen inside trade off and sometimes not and i should check at the end for consistency after checking what is conventional (though in life it is good not to be conventional :-))
 
 %*******************************************************************************
 \subsubsection{The Twin Instrument: Estimates of the Q--Q Trade-off} \label{TWINsscn:QQtwinsIV}
@@ -1481,8 +1371,13 @@ bounds using the (flawed) twin instrument.
 %estimates in the direction of identifying the true Q--Q trade-off, as we
 %partially correct for the bias introduced by the positive correlation between
 %twinning and maternal health.
-We present IV estimates using the twin instrument in panel B of tables
-\ref{TWINtab:DHSall} (DHS) and \ref{TWINtab:NHISAll} (US).  The first (``Base'')
+
+IV estimates using the twin instrument are in %panel B 
+tables \ref{TWINtab:DHSall} (DHS) and \ref{TWINtab:NHISAll} (US), the first-stage estimates are in panel A and the second stage estimates in panel B.  
+
+%%SONIA STOPPED EDITING HERE.
+
+The first (``Base'')
 column for each parity group presents estimates of $\hat\beta_1$ from equation
 \ref{TWINeqn:IV1} using the current state of the art twin IV methods.  In all
 cases, echoing \citet{Angristetal2010,Blacketal2005,Caceres2006} and
