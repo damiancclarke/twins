@@ -32,7 +32,7 @@ global statevar      ln_pci ln_nb_sch_imp ln_ed_exp_imp ln_nb_hos_imp /*
                      */ ln_nb_doc_imp /*i.post*health_exp_pc*/
 global cohort        birth_year>=1930&birth_year<=1943
 global basic         i.birth_state*i.race i.birth_year*i.race
-global trends        i.birth_state*i.race i.birth_year*i.race i.birth_state*t
+global trends        i.birth_state#i.race i.birth_year#i.race i.birth_state#c.t
 global trends2       $trends i.birth_state*t_2
 
 ********************************************************************************
@@ -116,6 +116,9 @@ bys datanum serial momloc: gen fert = _N
 bys datanum serial momloc: gen Mrep = _n
 bys year datanum serial momloc: egen twinfam = max(twin)
 tab twin twinfam
+keep if birthyr<1974&birth_year>=1930&birth_year<=1943
+sum educb
+
 
 if `est'==1 {
     ****************************************************************************
@@ -123,11 +126,10 @@ if `est'==1 {
     ****************************************************************************
     global outcomes school_zscore
     local se robust cluster(birth_state)
-    local ctrl i.sex i.race i.birthyr fert
-    local c if birthyr<1974&birth_year>=1930&birth_year<=1943
+    local ctrl i.sex i.race i.birthyr fert 
 
     foreach y of varlist $outcomes {
-        xi: reg `y' $post_base_inf $basic `ctrl' `c', `se'
+        xi: reg `y' $post_base_inf $trends `ctrl', `se'
         outreg2 using "$OUT/gammaEstimates.xls", excel keep(p_b_inf) replace
     }
 
@@ -138,8 +140,46 @@ if `est'==1 {
     sum p_b_inf if twin==0
 
     *CONDITIONAL MEANS:
-    reg p_b_inf twin i.fert i.sex i.race if birthyr < 1974 & Mrep==1
+    reg p_b_inf twin i.fert i.sex i.race i.birthyr 
     outreg2 using "$OUT/gammaEstimates.xls", excel keep(twin)
+
+    ****************************************************************************
+    *** (6c) Event study of 2g results
+    ****************************************************************************
+    foreach yr of numlist 1930(1)1935 1937(1)1943 {
+        gen yearINT = birth_year==`yr'
+        gen INFint`y'=base_inf*1000*yearINT
+        drop yearINT
+    }
+    reg `y' $trends `ctrl' INTint*, `se'
+    gen EST = .
+    gen LB  = .
+    gen UB  = .
+    gen YR  = .
+    local jj=1
+    foreach yr of numlist 1930(1)1943 {
+        if `yr'!=1936 {
+            replace EST = _b[INFint`yr'] in `jj'
+            replace LB  = _b[INFint`yr']-1.96*_se[INFint`yr'] in `jj'
+            replace UB  = _b[INFint`yr']+1.96*_se[INFint`yr'] in `jj'
+            replace YR  = `yr' in `jj'
+        }
+        else {
+            replace EST = 0 in `jj'
+            replace LB  = 0 in `jj'
+            replace UB  = 0 in `jj'
+            replace YR  = `yr' in `jj'
+        }
+        local ++jj
+    }
+    #delimit ;
+    twoway connected EST YR in 1/`jj', msymbol(Th) mcolor(black) ||
+              rcap LB UB YR in 1/`jj', scheme(s1mono)
+    ytitle("Estimated Schooling Effect") xtitle("Year") xline(1937, lcolor(red))
+    yline(0, lcolor(black) lpattern(dash)) xlabel(1930 1935 1940 1943)
+    legend(lab(1 "Point Estimate") lab(2 "95 % CI"));
+    graph export "$OUT/eventEducSulfa.eps", as(eps) replace
+    #delimit cr
 }
 
 ********************************************************************************
@@ -162,7 +202,7 @@ foreach i of numlist 1(1)100 {
     local qualEst = _b[p_b_inf]
 
     dis "Cycle `i':twin"
-    qui reg p_b_inf twin i.fert i.sex i.race if birthyr < 1974 & Mrep==1
+    qui reg p_b_inf twin i.fert i.sex i.race i.birthyr
     local twinEst = _b[twin]
 
     restore
