@@ -113,7 +113,7 @@ cells("L[Factor1](t) L[Factor2](t) L[Factor3](t) Psi[Uniqueness]") nogap replace
 
 regress healthMomZ twind
 outreg2 using "$OUT/../Sum/factorResults.xls", append 
-exit
+
 
 ********************************************************************************
 *** (3) Sum stats
@@ -121,7 +121,7 @@ exit
 gen a=1
 estpost sum `health' twin100 motherAge a, casewise
 estout using "$OUT/UKASum.tex", replace label style(tex) `statform'
-
+*/
 ********************************************************************************
 *** (4) Regressions using four iterations: uncond/cond, Z-score/unstand
 ********************************************************************************
@@ -130,38 +130,39 @@ local Zvar
 foreach var of varlist `health' {
     egen mean_`var' = mean(`var')
     egen sd_`var'   = sd(`var')
-	gen Z_`var' = (`var' - mean_`var')/sd_`var'
-	drop mean_`var' sd_`var'
-
+    gen Z_`var' = (`var' - mean_`var')/sd_`var'
+    drop mean_`var' sd_`var'
+    
     local Zvar `Zvar' Z_`var'
 }
 
 gen varname = ""
 foreach estimand in beta se uCI lCI obs {
     gen `estimand'_std_cond  = .
-	gen `estimand'_non_cond  = .
-	gen `estimand'_std_ucond = .
-	gen `estimand'_non_ucond = .
+    gen `estimand'_non_cond  = .
+    gen `estimand'_std_ucond = .
+    gen `estimand'_non_ucond = .
+    gen `estimand'_probit    = .
 }
 
-
+/*
 reg twin100 `health' `FEs'
 keep if e(sample)
 local counter = 1
-3Dforeach var of varlist `health' {
+foreach var of varlist `health' {
     qui replace varname     = "`var'" in `counter'
 
     local nobs = e(N)
-	local beta = round( _b[`var']*1000)/1000
-	local se   = round(_se[`var']*1000)/1000
-	local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
-	local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
 
     qui replace  obs_non_cond = `nobs' in `counter'
-	qui replace beta_non_cond = `beta' in `counter'
-	qui replace   se_non_cond = `se'   in `counter'
-	qui replace  uCI_non_cond = `uCI'  in `counter'
-	qui replace  lCI_non_cond = `lCI'  in `counter'
+    qui replace beta_non_cond = `beta' in `counter'
+    qui replace   se_non_cond = `se'   in `counter'
+    qui replace  uCI_non_cond = `uCI'  in `counter'
+    qui replace  lCI_non_cond = `lCI'  in `counter'
 
     local ++counter
 }
@@ -173,17 +174,17 @@ reg twin100 `Zvar' `FEs'
 local counter = 1
 foreach var of varlist `Zvar' {
     local nobs = e(N)
-	local beta = round( _b[`var']*1000)/1000
-	local se   = round(_se[`var']*1000)/1000
-	local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
-	local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
-
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+    
     qui replace  obs_std_cond = `nobs' in `counter'
     qui replace beta_std_cond = `beta' in `counter'
-	qui replace   se_std_cond = `se'   in `counter'
-	qui replace  uCI_std_cond = `uCI'  in `counter'
-	qui replace  lCI_std_cond = `lCI'  in `counter'
-
+    qui replace   se_std_cond = `se'   in `counter'
+    qui replace  uCI_std_cond = `uCI'  in `counter'
+    qui replace  lCI_std_cond = `lCI'  in `counter'
+    
     local ++counter
 }
 outsheet varname beta_std_cond se_std_cond uCI_std_cond lCI_std_cond /*
@@ -196,20 +197,20 @@ dis "Unstandardised Unconditional"
 dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `health' {
     qui reg twin100 `var' `FEs'
-	local nobs = e(N)
-	local beta = round( _b[`var']*1000)/1000
-	local se   = round(_se[`var']*1000)/1000
-	local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
-	local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
-
-	qui replace  obs_non_ucond = `nobs' in `counter'
-	qui replace beta_non_ucond = `beta' in `counter'
-	qui replace   se_non_ucond = `se'   in `counter'
-	qui replace  uCI_non_ucond = `uCI'  in `counter'
-	qui replace  lCI_non_ucond = `lCI'  in `counter'
-
-	dis "`var';`beta';`se';`lCI';`uCI';`nobs'"
-	local ++counter
+    local nobs = e(N)
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+    
+    qui replace  obs_non_ucond = `nobs' in `counter'
+    qui replace beta_non_ucond = `beta' in `counter'
+    qui replace   se_non_ucond = `se'   in `counter'
+    qui replace  uCI_non_ucond = `uCI'  in `counter'
+    qui replace  lCI_non_ucond = `lCI'  in `counter'
+    
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"
+    local ++counter
 }
 outsheet varname beta_non_ucond se_non_ucond uCI_non_ucond lCI_non_ucond /*
 */ in 1/`counter' using "$OUT/UKA_est_non_ucond.csv", delimit(";") replace
@@ -221,26 +222,52 @@ dis "varname;beta;sd;lower-bound;upper-bound;N"
 foreach var of varlist `Zvar' {
     qui reg twin100 `var' `FEs'
     local nobs = e(N)
-	local beta = round( _b[`var']*1000)/1000
-	local se   = round(_se[`var']*1000)/1000
-	local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
-	local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
-
-	qui replace  obs_std_ucond = `nobs' in `counter'
-	qui replace beta_std_ucond = `beta' in `counter'
-	qui replace   se_std_ucond = `se'   in `counter'
-	qui replace  uCI_std_ucond = `uCI'  in `counter'
-	qui replace  lCI_std_ucond = `lCI'  in `counter'
-
-	dis "`var';`beta';`se';`lCI';`uCI';`nobs'"
-	local ++counter
+    local beta = round( _b[`var']*1000)/1000
+    local se   = round(_se[`var']*1000)/1000
+    local uCI  = round((`beta'+invttail(`nobs',0.025)*`se')*1000)/1000
+    local lCI  = round((`beta'-invttail(`nobs',0.025)*`se')*1000)/1000
+    
+    qui replace  obs_std_ucond = `nobs' in `counter'
+    qui replace beta_std_ucond = `beta' in `counter'
+    qui replace   se_std_ucond = `se'   in `counter'
+    qui replace  uCI_std_ucond = `uCI'  in `counter'
+    qui replace  lCI_std_ucond = `lCI'  in `counter'
+    
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"
+    local ++counter
 }
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$OUT/UKA_est_std_ucond.csv", delimit(";") replace
+*/
+local counter = 1
+dis "Standardised Unconditional Probit"
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `Zvar' {
+    qui probit twin100 `var' `FEs'
+    margins, dydx(`var') post
+    local nobs = e(N)
+    local beta =  _b[`var']
+    local se   = _se[`var']
+    local uCI  = (`beta'+invttail(`nobs',0.025)*`se')
+    local lCI  = (`beta'-invttail(`nobs',0.025)*`se')
+    
+    qui replace  obs_probit = `nobs' in `counter'
+    qui replace beta_probit = `beta' in `counter'
+    qui replace   se_probit = `se'   in `counter'
+    qui replace  uCI_probit = `uCI'  in `counter'
+    qui replace  lCI_probit = `lCI'  in `counter'
+    
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"
+    local ++counter
+}
+outsheet varname beta_probit se_probit uCI_probit lCI_probit /*
+*/ in 1/`counter' using "$OUT/UKA_est_probit.csv", delimit(";") replace
 
 restore
 
-*/
+
+exit
+
 ********************************************************************************
 *** (4) UK Regressions: Twin Dif
 ********************************************************************************
