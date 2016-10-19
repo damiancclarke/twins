@@ -23,7 +23,7 @@ set maxvar 20000
 *** (1) globals
 ********************************************************************************
 global DAT "~/investigacion/Activa/Twins/Data"
-global USA "/media/damian/Impar/database/NVSS/Births/dta"
+global USA "~/database/NVSS/Births/dta"
 global GRA "~/investigacion/Activa/Twins/Figures"
 global LOG "~/investigacion/Activa/Twins/Log"
 global OUT "~/investigacion/Activa/Twins/Results/Sum"
@@ -33,12 +33,12 @@ log using "$LOG/worldTwins.txt", text replace
 cap mkdir "$REG"
 
 local statform cells("count(fmt(%12.0gc)) mean(fmt(2)) sd(fmt(2)) min(fmt(2)) max(fmt(2))")
-
 /*
 ********************************************************************************
 *** (2a) DHS Setup
 ********************************************************************************
 use "$DAT/DHS_twins"
+
 
 keep if _merge==3
 keep if motherage>17&motherage<50
@@ -87,13 +87,15 @@ egen healthMomZ = std(healthMom)
 
 regress healthMomZ twind
 outreg2 using "$OUT/factorResults.xls", replace
-exit
+
 
 ********************************************************************************
 *** (2b) DHS Sum Stats
 ********************************************************************************
+
 local ovar height bmi educf prenateDoctorC prenateNurseC prenateNoneC
 local ovar height underweight obese educf prenateDoctorC prenateNurseC prenateAnyC
+
 gen a=1
 
 estpost sum `ovar' twind100 agemay a, casewise
@@ -104,7 +106,7 @@ estout using "$OUT/DHSSum.tex", replace label style(tex) `statform'
 ********************************************************************************
 local Zvar Z_heigh Z_underweight Z_obese Z_educf Z_prenateDoctorC  /*
 */         Z_prenateNurseC Z_prenateAnyC
-local cs      i.agemay 
+local cs      i.agemay
 local regopts abs(country) cluster(id)
 
 foreach var of varlist `ovar' {
@@ -121,6 +123,7 @@ foreach estimand in beta se uCI lCI obs {
     gen `estimand'_non_cond  = .
     gen `estimand'_std_ucond = .
     gen `estimand'_non_ucond = .
+    gen `estimand'_probit    = .
 }
 
 areg twind100 `ovar' `cs', `regopts'
@@ -145,7 +148,6 @@ foreach var of varlist `ovar' {
 }
 outsheet varname beta_non_cond se_non_cond uCI_non_cond lCI_non_cond    /*
 */ in 1/`counter' using "$REG/DHS_est_non_cond.csv", delimit(";") replace
-
 
 
 areg twind100 `Zvar' `cs', `regopts'
@@ -216,6 +218,29 @@ foreach var of varlist `Zvar' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/DHS_est_std_ucond.csv", delimit(";") replace
 
+local counter = 1
+dis "Standardised Unconditional Probit"
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `Zvar' {
+    qui probit twind100 `var' `cs' i._cou, cluster(id)
+    margins, dydx(`var') post
+    local nobs = e(N)
+    local beta = _b[`var']
+    local se   = _se[`var']
+    local uCI  = `beta'+invttail(`nobs',0.025)*`se')
+    local lCI  = `beta'-invttail(`nobs',0.025)*`se')
+
+    qui replace  obs_probit = `nobs' in `counter'
+    qui replace beta_probit = `beta' in `counter'
+    qui replace   se_probit = `se'   in `counter'
+    qui replace  uCI_probit = `uCI'  in `counter'
+    qui replace  lCI_probit = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"        
+    local ++counter
+}
+outsheet varname beta_probit se_probit uCI_probit lCI_probit /*
+*/ in 1/`counter' using "$REG/DHS_est_probit.csv", delimit(";") replace
 
 
 ********************************************************************************
@@ -325,7 +350,25 @@ append using `t2009' `t2010' `t2011' `t2012' `t2013'
 
 tab twin
 
+preserve
+sum twin
+local proptwin = r(mean) 
+collapse twin, by(lbo_rec)
+#delimit ;
+line twin lbo_rec if lbo_rec<7, scheme(s1mono) lpattern(dash)
+yline(`proptwin', lcolor(red)) ytitle("Fraction Twins") xtitle("Birth Order");
+graph export "$GRA/twinBordUSA.eps", as(eps) replace;
+#delimit cr
+restore
 
+#delimit ;
+twoway kdensity birthweight if twin==1, lwidth(thick) lcolor(black)
+   ||  kdensity birthweight if twin==0, lpattern(dash) lcolor(black)
+lwidth(thick) legend(lab(1 "Twins") lab(2 "Singletons")) ytitle("Fraction")
+xtitle("Birth Weight") scheme(s1mono);
+graph export "$GRA/birthweightUSA.eps", as(eps) replace;
+#delimit cr
+exit
 
 lab var heightcm "Mother's height (cm)"
 lab var meduc    "Mother's education (years)"
@@ -406,6 +449,7 @@ foreach estimand in beta se uCI lCI obs {
     gen `estimand'_non_cond  = .
     gen `estimand'_std_ucond = .
     gen `estimand'_non_ucond = .
+    gen `estimand'_probit    = .    
 }
 
 egen allsmoke = rownonmiss(smoke0 smoke1 smoke2 smoke3)
@@ -520,6 +564,30 @@ foreach var of varlist `Zusv' {
 }
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/USA_est_std_ucond.csv", delimit(";") replace
+
+local counter = 1
+dis "Standardised Unconditional Probit"
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `Zusv' {
+    qui probit twin100 `var' `FEs' i.mager
+    margins, dydx(`var') post
+    local nobs = e(N)
+    local beta =   _b[`var']
+    local se   =  _se[`var']
+    local uCI  =  (`beta'+invttail(`nobs',0.025)*`se')
+    local lCI  =  (`beta'-invttail(`nobs',0.025)*`se')
+
+    qui replace  obs_probit = `nobs' in `counter'
+    qui replace beta_probit = `beta' in `counter'
+    qui replace   se_probit = `se'   in `counter'
+    qui replace  uCI_probit = `uCI'  in `counter'
+    qui replace  lCI_probit = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"        
+    local ++counter
+}
+outsheet varname beta_probit se_probit uCI_probit lCI_probit /*
+*/ in 1/`counter' using "$REG/USA_est_probit.csv", delimit(";") replace
 
 
 ********************************************************************************
@@ -667,7 +735,7 @@ foreach var of varlist `Zusv' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/USA_est_std_ucond_IVF.csv", delimit(";") replace
 
-
+*/
 ********************************************************************************
 *** (4a) Chile Setup
 ********************************************************************************
@@ -748,6 +816,7 @@ foreach estimand in beta se uCI lCI obs {
     gen `estimand'_non_cond  = .
     gen `estimand'_std_ucond = .
     gen `estimand'_non_ucond = .
+    gen `estimand'_probit    = .
 }
 
 
@@ -843,6 +912,30 @@ foreach var of varlist `Zchi' {
 outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 */ in 1/`counter' using "$REG/CHI_est_std_ucond.csv", delimit(";") replace
 
+local counter = 1
+dis "Standardised Unconditional Probit"
+dis "varname;beta;sd;lower-bound;upper-bound;N"
+foreach var of varlist `Zchi' {
+    qui probit twind `region' `var' `base' `wt' if `cond' 
+    margins, dydx(`var') post
+    local nobs = e(N)
+    local beta =  _b[`var']
+    local se   = _se[`var']
+    local uCI  = `beta'+invttail(`nobs',0.025)*`se'
+    local lCI  = `beta'-invttail(`nobs',0.025)*`se'
+
+    qui replace  obs_probit = `nobs' in `counter'
+    qui replace beta_probit = `beta' in `counter'
+    qui replace   se_probit = `se'   in `counter'
+    qui replace  uCI_probit = `uCI'  in `counter'
+    qui replace  lCI_probit = `lCI'  in `counter'
+
+    dis "`var';`beta';`se';`lCI';`uCI';`nobs'"        
+    local ++counter
+}
+outsheet varname beta_probit se_probit uCI_probit lCI_probit /*
+*/ in 1/`counter' using "$REG/CHI_est_probit.csv", delimit(";") replace
+exit
 
 ********************************************************************************
 *** (5) Figures
