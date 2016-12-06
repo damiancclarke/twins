@@ -55,7 +55,7 @@ gen obese       = bmi > 30 if bmi!=.
 
 tab twind if educf!=.
 levelsof country, local(cc)
-
+exit
 
 replace twind100 = twind*100
 bys v001 _year: egen prenateDoctorC = mean(prenate_doc)
@@ -741,7 +741,7 @@ outsheet varname beta_std_ucond se_std_ucond uCI_std_ucond lCI_std_ucond /*
 ********************************************************************************
 use "$DAT/Chile_twins", clear
 #delimit ;
-local base    indigenous;
+local base    indigenous ypc ypc2;
 local region  i.region i.age rural i.m_age_birth i.birthorder;
 local cond    a16==13&m_age_birth<=49;
 local wt      [pw=fexp_enc];
@@ -767,7 +767,7 @@ lab var lowWeightPre  "Mother Low Weight Prior to Pregnancy"
 lab var twind         "Percent Twin Births"
 lab var m_age_birth   "Mother's Age in Years"
 lab var meduc         "Mother's Education in Years"
-
+/*
 ********************************************************************************
 *** (4b) Chile Sum Stats
 ********************************************************************************
@@ -791,7 +791,7 @@ egen healthMomZ = std(healthMom)
 
 regress healthMomZ twind
 outreg2 using "$OUT/factorResults.xls", append
-
+*/
 
 ********************************************************************************
 *** (4c) Chile Regressions
@@ -819,8 +819,9 @@ foreach estimand in beta se uCI lCI obs {
     gen `estimand'_probit    = .
 }
 
+gen ypc2 = ypc^2
+reg twind `region' `pregS' `prePreg' `base' `wt' if `cond'
 
-reg twind `region' `pregS' `prePreg' `base' `wt' if `cond' 
 keep if e(sample)
 local counter = 1
 foreach var of varlist `pregS' `prePreg' {
@@ -844,7 +845,8 @@ outsheet varname beta_non_cond se_non_cond uCI_non_cond lCI_non_cond    /*
 */ in 1/`counter' using "$REG/CHI_est_non_cond.csv", delimit(";") replace
 
 
-reg twind `region' `Zchi' `base' `wt' if `cond' 
+reg twind `region' `Zchi' `base' `wt' if `cond'
+exit
 local counter = 1
 foreach var of varlist `Zchi' {
     local nobs = e(N)
