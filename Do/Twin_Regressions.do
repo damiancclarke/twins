@@ -160,13 +160,13 @@ local conditions
   child_yob>1984
 ;
 local conditions
-  ALL==1
-;
-local conditions
   gender=="F"
   gender=="M"
   income=="low"
   income=="mid"
+;
+local conditions
+  ALL==1
 ;
 local fnames
   All
@@ -178,13 +178,13 @@ local fnames
   BornPost1984
 ;
 local fnames
-  All
-;
-local fnames
   Girls
   Boys
   LowIncome
   MidIncome
+;
+local fnames
+  All
 ;
 #delimit cr
 
@@ -306,7 +306,7 @@ if `samples'==1 {
 	keep if _merge==3
 	drop allsamp hhsamp twopsamp threepsamp fourpsamp fivepsamp NN
 }
-
+/*
 *******************************************************************************
 *** (2) Summary Stats
 *******************************************************************************
@@ -314,28 +314,53 @@ local opts nostar unstack noobs nonote nomtitle nonumber
 local s twindfamily
 preserve
 keep `cond'&nonmiss==0
-collapse $sumM, by(id `s')
+collapse $sumM educp agefirstbirth, by(id `s')
 count
 sum `s'
 tab `s'
 
 estpost tabstat $sumM, by(`s') statistics(mean sd) listwise columns(statistics)
 esttab using "$TAB/Summary/MotherSum.txt", replace main(mean) aux(sd) `opts'
-restore
 
-count
-tab `s'
-estpost tabstat $sumC, by(`s') statistics(mean sd) listwise columns(statistics)
-esttab using "$TAB/Summary/ChildSum.txt", replace main(mean) aux(sd) `opts'
+dis "VARIABLE, SINGLE FAMILY, TWIN FAMILY, DIFF, SE, t DIFF"
+foreach var of varlist educf educp bmi underweight height agefirstbirth  {
+    qui reg `var' twindfamily 
+    local singleAve = string(_b[_cons]       , "%5.3f")
+    local twinAve   = string(_b[_cons]+_b[twindfamily], "%5.3f")
+    local diff      = string(_b[twindfamily] , "%5.3f")
+    local sediff    = string(_se[twindfamily], "%5.3f")
+    local tdiff     = string(`diff'/`sediff' , "%5.3f")
+    dis "`var'& `singleAve'&`twinAve'& `diff'&`tdiff' \\"
+    dis "&&&(`sediff')&\\"
+}
+restore
 
 preserve
 use "$Data/DHS_twins_mortality.dta", clear
 keep `cond'
-estpost tabstat $sumF, by(`s') statistics(mean sd) listwise columns(statistics)
-esttab using "$TAB/Summary/MortSum.txt", replace main(mean) aux(sd) `opts'
+qui estpost tabstat $sumF, by(`s') statistics(mean sd) listwise columns(statistics)
+qui esttab using "$TAB/Summary/MortSum.txt", replace main(mean) aux(sd) `opts'
+
+qui reg infantmortality twindfamily 
+local singleAve = string(_b[_cons]       , "%5.3f")
+local twinAve   = string(_b[_cons]+_b[twindfamily], "%5.3f")
+local diff      = string(_b[twindfamily] , "%5.3f")
+local sediff    = string(_se[twindfamily], "%5.3f")
+local tdiff     = string(`diff'/`sediff' , "%5.3f")
+dis "Infant Mortality& `singleAve'&`twinAve'& `diff'&`tdiff' \\"
+dis "&&&(`sediff')&\\"
 
 restore
 exit
+
+preserve
+keep if nonmiss==0
+count
+tab `s' 
+estpost tabstat $sumC, by(`s') statistics(mean sd) listwise columns(statistics)
+esttab using "$TAB/Summary/ChildSum.txt", replace main(mean) aux(sd) `opts'
+restore
+*/
 
 
 /*
@@ -351,7 +376,7 @@ sort WBc _year
 outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
 restore
 */
-    
+/*    
 ***************************************************************************
 *** (2b) Graphical
 *** graph 1: total births by family type (twins vs non-twins)
@@ -822,12 +847,12 @@ if `twin'== 1 {
 	  "Education squared" height "Height" bmi "BMI" bmi_sq "BMI squared" ///
 	  height_sq "height squared") `estopt' replace
 	estimates clear
-  */
 }
-/*
+*/
 ********************************************************************************
 **** (4a) OLS Pooled Regressions (plus Altonji and Oster bounds)
 ********************************************************************************
+/*    
 local out "$TAB/OLS/QQ_ols.xls"
 cap rm `out'
 cap rm "$TAB/OLS/QQ_ols.txt"
@@ -836,7 +861,10 @@ local y     school_zscore
 local conds ALL==1 income=="low" income=="mid"
 local names all low mid
 tokenize `names'
-
+foreach num of numlist 2(1)9 {
+    gen _birthOrder`num'= bord==`num'
+}
+gen _birthOrder10 = bord>=10
 
 foreach inc of local conds {
     preserve
@@ -844,32 +872,60 @@ foreach inc of local conds {
     egen keeper = rowmiss(fert `base' $age educf $H)
     keep if keeper == 0
 
-    reg `y' fert `base' $age               `wt' 
+    eststo: reg `y' fert `base' $age               `wt' 
     outreg2 using `out', excel append keep(fert $age)
 
-    reg `y' fert `base' $age $H            `wt' 
+    eststo: reg `y' fert `base' $age $H            `wt' 
     outreg2 using `out', excel append keep(fert $age $H)
-    local maxR = e(r2)*2
-    psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+    local maxR = e(r2)*1.3
+    psacalc fert set, mcontrol(`base' $age) rmax(`maxR')
     local OsterH_`1' = string(`r(output)', "%5.3f")
     
-    reg `y' fert `base' $age $S $H         `wt' 
+    eststo: reg `y' fert `base' $age $S $H         `wt' 
     outreg2 using `out', excel append keep(fert $age $S $H)
-    local maxR = e(r2)*2
-    psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+    local maxR = e(r2)*1.3
+    psacalc fert set, mcontrol(`base' $age) rmax(`maxR')
     local OsterSH_`1' = string(`r(output)', "%5.3f")
+    estadd local Ost = `OsterSH_`1''
 
-    reg `y' fert `base' $age $S $H i.bord `wt'
+    eststo: reg `y'      `base' $age    _birthOrder*     `wt' 
+    eststo: reg `y' fert `base' $age    _birthOrder*     `wt' 
+    eststo: reg `y' fert `base' $age $H _birthOrder*     `wt' 
+    local maxR = e(r2)*1.3
+    psacalc fert set, mcontrol(`base' $age) rmax(`maxR')
+    eststo: reg `y' fert `base' $age $S $H _birthOrder*  `wt' 
     outreg2 using `out', excel append keep(fert $age $S $H)
-    
+    local maxR = e(r2)*1.3
+    psacalc fert set, mcontrol(`base' $age) rmax(`maxR')
+    local OsterSH_`1'b = string(`r(output)', "%5.3f")
+    estadd local Ost = `OsterSH_`1'b'
+
+    local bbs _birthOrder2 _birthOrder3 _birthOrder4 _birthOrder5 _birthOrder6 /*
+    */ _birthOrder7 _birthOrder8 _birthOrder9 _birthOrder10
+    #delimit ;
+    esttab est1 est2 est3 est4 est5 est6 est7 using "$TAB/OLS/OLS-bord`1'.tex", 
+    mgroups("No Birth Order FEs" "Birth Order FEs", pattern(1 0 0 1 0 0 0)
+    prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span})) 
+    replace cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par([ ]) )) stats 
+    (Ost N, fmt(%5.2f %9.0g)
+     label("Oster Lower Bound" Observations))
+    starlevels( * 0.10 ** 0.05 *** 0.01) collabels(,none)
+    mlabels("Base" "+S" "+S+H" "No Fertility" "Base" "+S" "+S+H") booktabs
+    label title("OLS Estimates with and without Birth Order Controls")
+    keep(fert $S $H `bbs' _cons) style(tex);
+    #delimit cr
     restore
     macro shift
+    estimates clear
+
 }
 file open  Oster using "$TAB/OLS/OsterValues.txt", write replace
 file write Oster "`OsterH_all',`OsterSH_all'" _n
 file write Oster "`OsterH_low',`OsterSH_low'" _n
 file write Oster "`OsterH_mid',`OsterSH_mid'" _n
 file close Oster
+
+exit
 
 
 
@@ -882,11 +938,9 @@ local c3 `base' $age $S $H
 local c4 `base' $age $S $H i.bord
 local y  school_zscore
 local x  fert
-
     
 tokenize `fnames'
 foreach condition of local conditions {
-
     local ests
     local ecnt 1
     local OUT "$Tables/OLS/`1'"
@@ -900,9 +954,9 @@ foreach condition of local conditions {
         foreach e of numlist 1(1)4 {
             eststo: reg school_zscore fert `c`e'' `wt'
             local ests `ests' est`ecnt'
-            local maxR = e(r2)*2
+            local maxR = e(r2)*1.3
             if `e'>1 {
-                psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+                psacalc fert set, mcontrol(`base' $age) rmax(`maxR')
                 estadd scalar Oster=r(output): est`ecnt'
             }
             local ++ecnt
@@ -921,8 +975,6 @@ foreach condition of local conditions {
 }
 
 
-
-
 local out "$Tables/OLS/QQ_plusgroups.xls"
 cap rm `out'
 cap rm "$Tables/OLS/QQ_plusgroups.txt"
@@ -937,14 +989,14 @@ foreach n in `gplus' {
 
     reg `y' fert `base' $age $H    `wt' 
     outreg2 fert $age $H     using `out', excel append
-    local maxR = e(r2)*2
-    psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+    local maxR = e(r2)*1.3
+    psacalc fert set, mcontrol(`base' $age) rmax(`maxR')
     local OsterH_`n' = string(`r(output)', "%5.3f")
 
     reg `y' fert `base' $age $S $H `wt'
     outreg2 fert $age $S $H  using `out', excel append
-    local maxR = e(r2)*2
-    psacalc fert delta, mcontrol(`base' $age) rmax(`maxR')
+    local maxR = e(r2)*1.3
+    psacalc fert set, mcontrol(`base' $age) rmax(`maxR')
     local OsterSH_`n' = string(`r(output)', "%5.3f")
 
     reg `y' fert `base' $age $S $H i.bord `wt'
@@ -957,7 +1009,7 @@ file write Oster "`OsterH_three',`OsterSH_three'" _n
 file write Oster "`OsterH_four' ,`OsterSH_four' " _n
 file close Oster
 
-
+exit
 ********************************************************************************
 **** (5) Reduced form using twins at birth order N
 ********************************************************************************
@@ -1049,6 +1101,76 @@ foreach condition of local conditions {
     macro shift
 }
 */
+********************************************************************************
+**** (6b) IV (using twin at order n), only for same sex twins
+********************************************************************************
+local c1 `base'
+local c2 `base' $age
+local c3 `base' $age $H
+local c4 `base' $age $S $H i.bord
+local y  school_zscore
+local x  fert
+
+gen sextest = malec if twind == 1
+bys id child_yob: egen varsex = sd(sextest)
+replace varsex=0 if varsex==.&twind==1
+bys id child_yob: egen twingend = max(sextest)
+
+gen samesextwins = varsex == 0 if varsex!=.
+
+local bb = 2
+foreach n in two three four five {
+    gen sst = 1 if bord==`bb'&samesextwins==1&twin_`n'_fam==1
+    local ++bb
+    replace sst = 1 if bord==`bb'&samesextwins==1&twin_`n'_fam==1
+    bys id: egen twin_`n'_fam_samesex = max(sst)
+    replace twin_`n'_fam_samesex=0 if twin_`n'_fam_samesex==.
+    drop sst
+}
+
+tokenize `fnames'
+foreach condition of local conditions {
+
+    local ests1
+    local ests2
+    local ecnt 1
+    local OUT "$Tables/IV/`1'_samesex"
+
+    foreach n in `gplus' {
+        preserve
+        keep `cond'&`condition'&`n'_plus==1
+        egen keeper = rowmiss(`y' `base' $age $H educf fert)
+        keep if keeper == 0
+        
+        
+        local p partial(`base') savefirst 
+        local z twin_`n'_fam_samesex
+
+        foreach e of numlist 1(1)4{
+            eststo: ivreg2 `y' `c`e'' (`x'=`z') `wt', `se' `p' savefp(fst`ecnt')
+            local ests2 `ests2' est`ecnt'
+            local ests1 `ests1' fst`ecnt'fert
+            mat first=e(first)
+            estadd scalar KPF=first[8,1]: fst`ecnt'fert
+            estadd scalar KPp=first[7,1]: fst`ecnt'fert
+            local ++ecnt
+        }
+        restore
+    }
+
+    local expv $age $H
+    estout `ests2' using "`OUT'.txt", replace `estopt'
+    #delimit ;
+    estout `ests1' using "`OUT'_first.txt", replace
+    cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par))
+    stats (N KPF KPp, fmt(%9.0g %9.2f %9.3f))
+    starlevel ("*" 0.10 "**" 0.05 "***" 0.01);
+    #delimit cr
+    estimates clear
+    macro shift
+}
+exit
+/*
 
 ********************************************************************************
 **** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
