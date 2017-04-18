@@ -70,7 +70,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         0
+local samp5         1
 local resave        0
 local samples       0
 local matchrate     0
@@ -192,6 +192,7 @@ local fnames
 *** (1) Setup (+ discretionary choices)
 *******************************************************************************
 log using "$Log/Twin_Regressions.txt", text replace
+local base malec _country* _yb* _age* _contracep* `add'
 
 if `samp5'!=1 {
     use "$Data/DHS_twins", clear
@@ -208,7 +209,6 @@ if `samp5'!=1 {
     tab age, gen(_age)
     tab contracep_intent, gen(_contracep)
     tab bord, gen(_bord)
-    local base malec _country* _yb* _age* _contracep* `add'
     drop if twinfamily>2
     
     gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
@@ -1100,7 +1100,7 @@ foreach condition of local conditions {
     estimates clear
     macro shift
 }
-*/
+
 ********************************************************************************
 **** (6b) IV (using twin at order n), only for same sex twins
 ********************************************************************************
@@ -1170,6 +1170,196 @@ foreach condition of local conditions {
     macro shift
 }
 exit
+*/
+
+********************************************************************************
+**** (7) Non-linear IV estimates of Mogstad and Wiswall
+********************************************************************************
+egen keeper = rowmiss(`y' `base' $age $H educf fert)
+keep if keeper == 0
+keep if fert<=6
+***SAMPLE OF FIRST-BORN CHILDREN (two_plus==1)
+* (A)
+*Want to use fert 2->3
+*Want to use fert 3->4
+*Want to use fert 4->5
+*Want to use fert 5->6
+* (B)
+*Include up to fertility 6
+*(C)
+* First stage I is twin-predicted or 0 if fert is less than N
+*(D)
+* First stage II is predicted fert of 1 if twinning at N
+
+cap program drop nonlinearIV
+program nonlinearIV, eclass
+  version 11
+  syntax varlist(fv), fnum(string) [efficient]
+  if `"`fnum'"'=="two" {
+      local current two
+      local nlist three four five
+      local jj=3
+      
+      *(A) GENERATE FERT VARIABLES
+      foreach num of numlist 3(1)6 {
+          gen fert`num'=fert>=`num'
+      }
+      *GENERATE EFFICIENT INSTRUMENTS
+      if length(`"`efficient'"')!=0 {
+          qui probit fert3 `varlist'
+          predict p2hat
+          replace p2hat = 1 if twin_two_fam==1
+          local l1 = 3 
+          foreach g in three four five {
+              local l2 = `l1'+1 
+              qui probit fert`l2' `varlist' twin_`g'_fam
+              predict p`l1'hat
+              local ++l1
+          }
+      }      
+      local z  twin_two_fam
+      local XF fert3 fert4 fert5 fert6
+      local Z1 twin_two_fam twinStar_three twinStar_four twinStar_five
+      local Z2 p2hat p3hat p4hat p5hat
+  }
+  else if `"`fnum'"'=="three" {
+      local current three
+      local nlist   four five
+  
+      *(A) GENERATE FERT VARIABLES
+      foreach num of numlist 4(1)6 {
+          gen fert`num'=fert>=`num'
+      }
+      *GENERATE EFFICIENT INSTRUMENTS
+      if length(`"`efficient'"')!=0 {
+          qui probit fert4 `varlist'
+          predict p3hat
+          replace p3hat = 1 if twin_three_fam==1
+          local l1 = 4
+          foreach g in four five {
+              local l2 = `l1'+1  
+              qui probit fert`l2' `varlist' twin_`g'_fam
+              predict p`l1'hat
+              local ++l1
+          }
+      }
+      
+      local z  twin_three_fam
+      local XF fert4 fert5 fert6
+      local Z1 twin_three_fam twinStar_four twinStar_five
+      local Z2 p3hat p4hat p5hat
+  }
+  else if `"`fnum'"'=="four" {
+      local current four
+      local nlist   five
+  
+      *(A) GENERATE FERT VARIABLES
+      foreach num of numlist 5(1)6 {
+          gen fert`num'=fert>=`num'
+      }
+      
+      *GENERATE EFFICIENT INSTRUMENTS
+      if length(`"`efficient'"')!=0 {
+          qui probit fert5 `varlist'
+          predict p4hat
+          replace p4hat = 1 if twin_three_fam==1
+          local l1 = 5
+          foreach g in five {
+              local l2 = `l1'+1  
+              qui probit fert`l2' `varlist' twin_`g'_fam
+              predict p`l1'hat
+              local ++l1
+          }
+      }
+
+      local z  twin_four_fam
+      local XF fert5 fert6
+      local Z1 twin_four_fam twinStar_five
+      local Z2 p4hat p5hat
+  }
+  else {
+      dis "Error"
+      exit
+  }
+
+  *GENERATE TWIN STAR
+  if length(`"`efficient'"')==0 {
+      foreach num in `nlist' {
+          qui reg twin_`num'_fam `varlist' if fert>=`jj'
+          predict twinStar_`num' if fert>=`jj'
+          replace twinStar_`num' = twin_`num'_fam - twinStar_`num'
+          replace twinStar_`num' = 0 if fert<`jj'
+          local ++jj
+      }
+  }
+  local y  school_zscore
+  local wt [pw=sweight]
+  *eststo: ivreg2 `y' `varlist' (fert = `z' ) `wt', savefirst savefp(FM)
+
+  if length(`"`efficient'"')==0 {
+      eststo: ivreg2 `y' `varlist' (`XF' = `Z1') `wt', savefirst savefp(FN)
+  }
+  else {
+      eststo: ivreg2 `y' `varlist' (`XF' = `Z2') `wt', savefirst savefp(FO)
+  }
+  mat beta = e(b)
+  ereturn post beta
+  *clean up
+  cap drop twinSt*
+  foreach var in fert3 fert4 fert5 fert6 p2hat p3hat p4hat p5hat {
+      cap drop `var'
+  }
+end
+
+keep `cond'&two_plus==1
+bootstrap _b, rep(5) cluster(id): nonlinearIV $age `base', fnum(two)
+bootstrap _b, rep(5) cluster(id): nonlinearIV $age `base', fnum(two) efficient
+exit
+
+*(A)
+foreach num of numlist 3(1)6 {
+    gen fert`num'=fert>=`num'
+}
+* (B)
+*preserve
+keep `cond'&two_plus==1
+
+* (C)
+local jj=3
+foreach num in three four five {
+    qui reg twin_`num'_fam $age `base' if fert>=`jj'
+    predict twinStar_`num' if fert>=`jj'
+    replace twinStar_`num' = twin_`num'_fam - twinStar_`num'
+    replace twinStar_`num' = 0 if fert<`jj'
+    local ++jj
+}
+
+* (D)
+qui probit fert3 $age `base'
+predict p2hat
+replace p2hat = 1 if twin_two_fam==1
+qui probit fert4 $age `base' twin_three_fam
+predict p3hat
+qui probit fert5 $age `base' twin_four_fam
+predict p4hat
+qui probit fert6 $age `base' twin_five_fam twin_two_fam
+predict p5hat
+
+local XF fert3 fert4 fert5 fert6
+local Z1 twin_two_fam twinStar_three twinStar_four twinStar_five
+local Z2 p2hat p3hat p4hat p5hat
+
+local s savefirst
+eststo: ivreg2 `y' `c2' (fert = twin_two_fam) `wt', `s' savefp(FM)
+eststo: ivreg2 `y' `c2' (`XF' = `Z1') `wt', `s' savefp(FN)
+eststo: ivreg2 `y' `c2' (`XF' = `Z2') `wt', `s' savefp(FO)
+local fst FMfert FNfert3 FNfert4 FNfert5 FNfert6 FOfert3 FOfert4 FOfert5 FOfert6
+exit
+estout est1 est2 est3 using "$TAB/NonLinear-IV.txt", replace `estopt'
+estout `fst' using "$TAB/NonLinear-IV-first.txt", replace `estopt'
+
+exit
+
 /*
 
 ********************************************************************************
@@ -1428,8 +1618,8 @@ if `twinoccur_iv'==1 {
 	estimates clear
 	restore
 }
-
-
+*/
+    
 ********************************************************************************
 **** (10) Conley et al approach
 ***  Here we are assuming that:
@@ -1489,19 +1679,24 @@ foreach n in two three four {
     dis "lower bound = `c3', upper bound=`c4'"
 
     *------  GRAPHING   -----------------------------------------------------
+    local mval = 0.05
     foreach num of numlist 0(1)10 {
         matrix om`num'=J(`items', `items', 0)
-        matrix om`num'[1,1] = ((`num'/10)*0.1/sqrt(12))^2
+        matrix om`num'[1,1] = ((`num'/10)*`mval'/sqrt(12))^2
         matrix mu`num'=J(`items', 1, 0)
-        matrix mu`num'[1,1]= (`num'/10)*0.1/2
-        local d`num' = (`num'/10)*0.1
+        matrix mu`num'[1,1]= (`num'/10)*`mval'/2
+        local d`num' = (`num'/10)*`mval'
     }
 
     #delimit ;
+    local gopt `" ytitle({&beta}) xtitle({&delta})
+              note(Methodology described in Conley et al. (2012))
+              xline(0.008, lcolor(red) lpattern(longdash)) "';
     plausexog ltz Ey `ESH' (Ex = Ez), omega(omega_eta) mu(mu_eta) level(0.95)
     graph(Ex) graphomega(om0 om1 om2 om3 om4 om5 om6 om7 om8 om9 om10)
     graphmu(mu0 mu1 mu2 mu3 mu4 mu5 mu6 mu7 mu8 mu9 mu10)
-    graphdelta(`d0' `d1' `d2' `d3' `d4' `d5' `d6' `d7' `d8' `d9' `d10');
+    graphdelta(`d0' `d1' `d2' `d3' `d4' `d5' `d6' `d7' `d8' `d9' `d10')
+    graphopts(`gopt');
     graph export "$Graphs/Conley/LTZ_`n'.eps", as(eps) replace;
     #delimit cr
 
