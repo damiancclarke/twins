@@ -70,7 +70,7 @@ foreach dirname in Summary Twin OLS RF IV Conley OverID MMR {
 
 
 *SWITCHES (1 if run, else not run)
-local samp5         1
+local samp5         0
 local resave        0
 local samples       0
 local matchrate     0
@@ -196,34 +196,14 @@ local base malec _country* _yb* _age* _contracep* `add'
 
 if `samp5'!=1 {
     use "$Data/DHS_twins", clear
-    replace bmi=. if bmi>50
-    replace height=. if height>240
-    replace height=. if height<80
-    replace educ=. if age<6
-    replace educ=. if educ>25
-    replace educf=. if educf>25
-    replace birthspacing=. if birthspacing<8|birthspacing==999
     
     tab _cou, gen(_country)
     tab year_birth, gen(_yb)
     tab age, gen(_age)
     tab contracep_intent, gen(_contracep)
     tab bord, gen(_bord)
-    drop if twinfamily>2
     
-    gen cat="Low Inc, Singleton" if twind==0 & inc_status=="L"
-    replace cat="Low Inc, Twin" if twind==1 & inc_status=="L"
-    replace cat="Mid Inc, Single" if twind==0 & inc_status!="L"
-    replace cat="Mid Inc, Twin" if twind==1 & inc_status!="L"
-    encode cat, gen(catnum)
-    egen category=concat(income twindfamily)
-    egen nonmiss = rowmiss(educf height bmi motherage malec)
-    bys _cou v001: egen preClustD = mean(prenate_doc)
-    bys _cou v001: egen preClustN = mean(prenate_nurse)
-    bys _cou v001: egen preClustZ = mean(prenate_none)
-    replace wealth = 6 if wealth == .
-    
-    
+    egen nonmiss = rowmiss(educf height bmi motherage malec)    
     if `resave'==1 save "$Data/DHS_twins_mortality", replace
 }
 
@@ -239,6 +219,221 @@ if `samp5'==1 {
 }
 tab wealth, gen(_wealth)
 tab educf , gen(_educf)
+
+***IV validity test
+gen overtwo   = fert>2
+gen overthree = fert>3
+gen overfour  = fert>4
+tab overtwo if twin_two_fam==1
+
+*egen keeper = rowmiss(fert `base' $age educf $H)
+*keep if keeper == 0
+/*
+
+
+foreach gg in two three four {
+    preserve
+    keep if `gg'_plus==1&age<19
+    keep if motherage>=15&motherage<45
+    keep if school_zscore!=.
+    gen Yvar1=school_zscore if school_zscore>-4&school_zscore<4
+    gen Yvar2=school_zscore 
+
+    gen dec1 = year_birth>=1940&year_birth<1950
+    gen dec2 = year_birth>=1950&year_birth<1960
+    gen dec3 = year_birth>=1960&year_birth<1970
+    gen dec4 = year_birth>=1970&year_birth<1980
+    gen dec5 = year_birth>=1980&year_birth<1990
+    gen age1 = age>=6&age<=7
+    gen age2 = age>=8&age<=9 
+    gen age3 = age>=10&age<=11
+    gen age4 = age>=12&age<=13
+    gen age5 = age>=14&age<=15
+    gen age6 = age>=16&age<=17
+    
+    gen mage1  = motherage>=15&motherage<20
+    gen mage2  = motherage>=20&motherage<25
+    gen mage3  = motherage>=25&motherage<30
+    gen mage4  = motherage>=30&motherage<32
+    gen mage5  = motherage>=32&motherage<34
+    gen mage6  = motherage>=34&motherage<36
+    gen mage7  = motherage>=36&motherage<38
+    gen mage8  = motherage>=38&motherage<40
+    gen mage9  = motherage>=40&motherage<42
+    gen mage10 = motherage>=42&motherage<44 
+    *country?
+    gen meduc1 = educf==0
+    gen meduc2 = educf>0&educf<7
+    gen meduc3 = educf>=7&educf<12    
+    gen meduc4 = educf>=12
+    *global H height bmi preClustD preClustN preClustZ
+    sum preClustD
+    gen doccover=preClustD>r(mean)&preClustD!=.
+    sum preClustN
+    gen nursecover=preClustN>r(mean)&preClustN!=.
+    sum preClustZ
+    gen nocover=preClustZ>r(mean)&preClustZ!=.
+    
+    
+    #delimit ;
+    local vars Yvar1 Yvar2 over`gg' twin_`gg'_fam malec bord dec1-dec5
+    mage1-mage10 meduc1-meduc4 age1-age6 Africa America Asia motherage
+    underweight overweight doccover nursecover nocover educf;
+    outsheet `vars' using "$Data/IVvalidTest_`gg'.raw", names comma replace;
+    #delimit cr
+    restore
+}
+exit
+
+local hh=2
+*foreach gg in two three four {
+foreach gg in two {
+    local ngrid = 50
+    local es if `gg'_plus==1
+    local opts nograph bwidth(0.08) kernel(gaussian) n(`ngrid')
+
+    *ivregress 2sls school_zscore `base' (over`hh'=twin_`gg'_fam) `es' [pw=sweight]
+    gen Yvar=school_zscore if school_zscore>-4&school_zscore<4
+    *gen Yvar=school_zscore 
+    *reg Yvar `base'
+    *predict uvar, resid
+    *foreach uy of varlist uvar Yvar {
+    foreach uy of varlist Yvar {
+        local s1 `es'&twin_`gg'_fam ==1&over`hh'==1
+        kdensity `uy' `s1' [aw=sweight], gen(vt11 vtd11) `opts'
+        sum over`hh' if `gg'_plus==1&twin_`gg'_fam==1
+        replace vtd11=vtd11*r(mean)
+        local m = r(N)
+        
+        local s0 `es'&twin_`gg'_fam ==0&over`hh'==1
+        kdensity `uy' `s0' [aw=sweight], at(vt11) gen(vt01 vtd01) `opts'
+        sum over`hh' if `gg'_plus==1&twin_`gg'_fam==0
+        replace vtd01=vtd01*r(mean)
+        local n = r(N)
+        local N = `m'+`n'
+        local lambda = `m'/`N'
+        
+        #delimit ;
+        twoway line vtd11 vt11, lcolor(black) lwidth(medium) scheme(s1mono) ||
+               line vtd01 vt01, lcolor(black) lwidth(medium) lpattern(dash)
+        xtitle("Educational Attainment Z-Score") ytitle("Probability Density")
+        legend(label(1 "Z=1: Twin at birth `gg'")
+               label(2 "Z=0: Singleton at birth `gg'"));
+        graph export "$Graphs/IVtest_`hh'_`uy'.eps", as(eps) replace;
+        #delimit cr
+
+        local g = `ngrid'-1
+        local mdiff = -1000
+        local tuner = 0.07
+        foreach y of numlist 1(1)`g' {
+            local Qn = 0
+            local Pm = 0
+            local y1 = `y'+1
+            foreach yprime of numlist `y1'(1)`ngrid' {
+                qui sum vtd01 in `yprime'
+                local qn=r(mean)
+                local Qn=`Qn'+`qn'
+                
+                qui sum vtd11 in `yprime'
+                local pm=r(mean)
+                local Pm=`Pm'+`pm'
+                local diff = `Qn'-`Pm'
+                local sig2 = (1-`lambda')*`Pm'*(1-`Pm')+`lambda'*`Qn'*(1-`Qn')
+                local denom = max(`tuner',sqrt(`sig2'))
+                local frac = `diff'/`denom'
+                dis "`y' -> `yprime': `Qn', `Pm' = `diff'"
+                local mdiff=max(`mdiff',`frac')
+            }
+        }
+        dis "Max Diff is `mdiff'"
+        local TN = sqrt((`m'*`n')/`N')*`mdiff'
+        dis "TN is: `TN'"
+
+        **BOOTSTRAP DISTRIBUTION
+        local boots=50
+        foreach bst of numlist 1(1)`boots' {
+            preserve
+            keep if `gg'_plus==1
+            bsample
+            
+            restore
+        }
+        *drop vt11 vt01 vtd11 vtd01 `uy'        
+
+    }
+    local ++hh
+}
+
+exit
+
+*m4 m5 antenatal prenate_none m15 m12
+gen breastfeeding = m4 if m4<60
+*replace breastfeeding = 0 if m4==94 
+gen homebirth = m15==11 if m15!=.
+
+eststo: reg antenatal `base' _educf* _wealth* i.fert bmi height `wt', `se'
+sum antenatal if e(sample)==1
+estadd scalar mean = r(mean)
+eststo: reg antenatal `base' _educf* _wealth* i.fert bmi `wt' if e(sample)==1, `se'
+sum antenatal if e(sample)==1
+estadd scalar mean = r(mean)
+eststo: reg antenatal `base' _educf* _wealth* i.fert height `wt'  if e(sample)==1, `se'
+sum antenatal if e(sample)==1
+estadd scalar mean = r(mean)
+
+eststo: reg homebirth `base' _educf* _wealth* i.fert bmi height `wt', `se'
+sum homebirth if e(sample)==1
+estadd scalar mean = r(mean)
+eststo: reg homebirth `base' _educf* _wealth* i.fert bmi `wt' if e(sample)==1, `se'
+sum homebirth if e(sample)==1
+estadd scalar mean = r(mean)
+eststo: reg homebirth `base' _educf* _wealth* i.fert height `wt' if e(sample)==1, `se'
+sum homebirth if e(sample)==1
+estadd scalar mean = r(mean)
+
+
+#delimit ;
+estout est3 est1 est2 est6 est4 est5 using "$TAB/HealthInvestments.tex", replace
+keep(bmi height)  cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par))
+stats (mean r2 N, fmt(%9.2f %9.2f %9.0g)) 
+starlevel ("*" 0.10 "**" 0.05 "***" 0.01)
+title("Maternal Health and Child Investment Behaviours");
+estimates clear;
+#delimit cr
+exit
+
+
+gen birthSize    = -m18+6 if m18 <=5
+gen smallBirth   = m18==4|m18==5 if m18<=5
+gen largeBirth   = m18==1|m18==2 if m18<=5
+gen birthweight  = m19 if m19>=500&m19<=5000
+
+
+foreach var of varlist birthSize smallBirth largeBirth birthweight {
+    eststo: reg `var' `base' twin_two_fam if two_plus==1, `se'
+    sum `var' if e(sample)==1
+    estadd scalar mean = r(mean)
+    eststo: reg `var' `base' twin_three_fam if three_plus==1, `se'
+    sum `var' if e(sample)==1
+    estadd scalar mean = r(mean)
+    eststo: reg `var' `base' twin_four_fam  if four_plus==1, `se'
+    sum `var' if e(sample)==1
+    estadd scalar mean = r(mean)
+}
+
+#delimit ;
+estout est1 est2 est3 est4 est5 est6 est7 est8 est9 est10 est11 est12
+using "$TAB/pretwin_DHS_birthoutcomes.txt", replace
+keep(twin_two_fam twin_three_fam twin_four_fam) 
+title("Prior Children's Birth Outcomes of Twin and Non-Twin Mothers")                
+cells(b(star fmt(%-9.3f)) se(fmt(%-9.3f) par))
+stats (mean r2 N, fmt(%9.2f %9.2f %9.0g))
+starlevel ("*" 0.10 "**" 0.05 "***" 0.01);
+estimates clear;
+#delimit cr
+
+
+***m18 for size as pre-twin test
 
 *******************************************************************************
 *** (1b) Check match rates
@@ -268,6 +463,76 @@ if `matchrate'==1 {
 }
 
 if `samples'!=1 keep if _merge==3
+
+*******************************************************************************
+*** (xx) Nevo Rosen bounds
+*******************************************************************************
+file open nrfile using "$TAB/NevoRosen/NevoRosen.tex", write replace
+file write nrfile "\begin{table} \begin{center}" _n
+file write nrfile "\caption{Nevo and Rosen (2012) Bounds on QQ Trade-off}" _n
+file write nrfile "\begin{tabular}{lccc} \toprule" _n
+file write nrfile "& 2+ & 3+ & 4+ \\ \midrule" _n 
+file write nrfile "\multicolumn{4}{l}{\textbf{Panel A: DHS}} \\ " _n 
+
+foreach n in `gplus' {
+    preserve
+    keep `cond'&`n'_plus==1
+    cap drop keeper
+    egen keeper = rowmiss(`y' `base' $age $H educf fert bord)
+    keep if keeper == 0
+    
+    local p partial(`base') 
+    local z twin_`n'_fam
+    local y  school_zscore    
+
+    *imperfectiv    `y' `base' $age $S $H (fert=`z') `wt', ncorr
+    ivregress 2sls `y' `base' $age $S $H i.bord (fert=`z') `wt', `se'
+    local UBpoint = string(_b[fert], "%07.4f")
+    local UBconf  = string(_b[fert]+1.96*_se[fert], "%07.4f")
+    
+    replace twin_`n'_fam = -1*twin_`n'_fam
+    
+    sum twin_`n'_fam if e(sample)==1
+    local sigmaz=r(sd)
+    sum fert         if e(sample)==1
+    local sigmax=r(sd)
+    local N`n' = r(N)
+    gen compIV = `sigmax'*twin_`n'_fam-`sigmaz'*fert    
+    sum compIV
+    
+    ivregress 2sls `y' `base' $age $S $H i.bord (fert=compIV) `wt', `se'
+    local LBpoint = string(_b[fert], "%07.4f")
+    local LBconf  = string(_b[fert]-1.96*_se[fert], "%07.4f")
+    *ivregress 2sls `y' (fert=`z')    `wt',
+    *ivregress 2sls `y' (fert=compIV) `wt',
+    *imperfectiv `y' (fert=`z') `wt', ncorr
+
+    *file write nrfile "Sample: `n'-plus&`LBpoint'&`UBpoint'  \\ " _n
+    *file write nrfile "&[`LBconf'&`UBconf']  \\ " _n 
+
+    local point`n' "[`=`LBpoint'', `=`UBpoint'']"
+    local conf`n'  "[`=`LBconf'', `=`UBconf'']"
+    
+    dis "Nevo and Rosen bounds for `n' plus"
+    dis "Point Estimate End points: `point`n''"
+    dis "95% CI End points:         `conf`n''" 
+    
+    restore
+}
+
+file write nrfile "Point Estimates End Points& `pointtwo'&`pointthree'&`pointfour'"
+file write nrfile "\\"_n
+file write nrfile "95\% CI End Points& `conftwo'&`confthree'&`conffour'"
+file write nrfile "\\ &&&\\ " _n
+file write nrfile "Observations & `Ntwo'&`Nthree'&`Nfour'"
+file write nrfile "\\ \bottomrule"_n
+file write nrfile "\end{tabular}\end{center}\end{table}"
+file close nrfile
+
+exit
+
+
+    
 *******************************************************************************
 *** (1c) Sample sizes
 *******************************************************************************
@@ -306,7 +571,7 @@ if `samples'==1 {
 	keep if _merge==3
 	drop allsamp hhsamp twopsamp threepsamp fourpsamp fivepsamp NN
 }
-/*
+
 *******************************************************************************
 *** (2) Summary Stats
 *******************************************************************************
@@ -360,10 +625,10 @@ tab `s'
 estpost tabstat $sumC, by(`s') statistics(mean sd) listwise columns(statistics)
 esttab using "$TAB/Summary/ChildSum.txt", replace main(mean) aux(sd) `opts'
 restore
-*/
 
 
-/*
+
+
 preserve
 cap decode _cou, gen(WBcountry)
 gen colvar=inc_status=="L"
@@ -375,8 +640,7 @@ order WBcountry income _year
 sort WBc _year
 outsheet using "$Tables/Summary/Countries.csv", delimit(;) nonames replace
 restore
-*/
-/*    
+
 ***************************************************************************
 *** (2b) Graphical
 *** graph 1: total births by family type (twins vs non-twins)
@@ -848,11 +1112,11 @@ if `twin'== 1 {
 	  height_sq "height squared") `estopt' replace
 	estimates clear
 }
-*/
+
 ********************************************************************************
 **** (4a) OLS Pooled Regressions (plus Altonji and Oster bounds)
 ********************************************************************************
-/*    
+
 local out "$TAB/OLS/QQ_ols.xls"
 cap rm `out'
 cap rm "$TAB/OLS/QQ_ols.txt"
@@ -1047,7 +1311,7 @@ if `RF'==1 {
 		macro shift
  }
 }
-
+*/
 ********************************************************************************
 **** (6a) IV (using twin at order n), subsequent inclusion of twin predictors
 ********************************************************************************
@@ -1178,6 +1442,7 @@ exit
 egen keeper = rowmiss(`y' `base' $age $H educf fert)
 keep if keeper == 0
 keep if fert<=6
+local nbstrap 10 
 ***SAMPLE OF FIRST-BORN CHILDREN (two_plus==1)
 * (A)
 *Want to use fert 2->3
@@ -1195,6 +1460,8 @@ cap program drop nonlinearIV
 program nonlinearIV, eclass
   version 11
   syntax varlist(fv), fnum(string) [efficient]
+  *GENERATE TWIN STAR
+
   if `"`fnum'"'=="two" {
       local current two
       local nlist three four five
@@ -1204,15 +1471,27 @@ program nonlinearIV, eclass
       foreach num of numlist 3(1)6 {
           gen fert`num'=fert>=`num'
       }
+      *GENERATE TWIN STAR
+      local ints i.educf#c.motherage i.educf#c.motheragesq i.educp#c.motherage i.educp#c.motheragesq
+      foreach num in `nlist' {
+          qui reg twin_`num'_fam `varlist' `ints' i.agemay i.educp if fert>=`jj'
+          predict twinStar_`num' if fert>=`jj'
+          replace twinStar_`num' = twin_`num'_fam - twinStar_`num'
+          replace twinStar_`num' = 0 if fert<`jj'
+          local ++jj
+      }
+      
       *GENERATE EFFICIENT INSTRUMENTS
       if length(`"`efficient'"')!=0 {
-          qui probit fert3 `varlist'
+          qui probit fert3 `varlist' i.educf i.agemay 
           predict p2hat
           replace p2hat = 1 if twin_two_fam==1
           local l1 = 3 
           foreach g in three four five {
+              local fcontrol i.educf i.agemay
+              if `"`g'"'=="five" local fcontrol i.educf twin_two_fam i.agemay
               local l2 = `l1'+1 
-              qui probit fert`l2' `varlist' twin_`g'_fam
+              qui probit fert`l2' `varlist' twinStar_`g' `fcontrol'
               predict p`l1'hat
               local ++l1
           }
@@ -1225,20 +1504,32 @@ program nonlinearIV, eclass
   else if `"`fnum'"'=="three" {
       local current three
       local nlist   four five
-  
+      local jj=4
+      
       *(A) GENERATE FERT VARIABLES
       foreach num of numlist 4(1)6 {
           gen fert`num'=fert>=`num'
       }
+      *GENERATE TWIN STAR
+      local ints i.educf#c.motherage i.educf#c.motheragesq i.educp#c.motherage i.educp#c.motheragesq
+      foreach num in `nlist' {
+          qui reg twin_`num'_fam `varlist' `ints' i.agemay i.educp if fert>=`jj'
+          predict twinStar_`num' if fert>=`jj'
+          replace twinStar_`num' = twin_`num'_fam - twinStar_`num'
+          replace twinStar_`num' = 0 if fert<`jj'
+          local ++jj
+      }
       *GENERATE EFFICIENT INSTRUMENTS
       if length(`"`efficient'"')!=0 {
-          qui probit fert4 `varlist'
+          qui probit fert4 `varlist' i.educf i.agemay
           predict p3hat
           replace p3hat = 1 if twin_three_fam==1
           local l1 = 4
           foreach g in four five {
+              local fcontrol i.educf i.agemay
+              if `"`g'"'=="five" local fcontrol i.educf twin_two_fam i.agemay
               local l2 = `l1'+1  
-              qui probit fert`l2' `varlist' twin_`g'_fam
+              qui probit fert`l2' `varlist' twinStar_`g' `fcontrol'
               predict p`l1'hat
               local ++l1
           }
@@ -1252,21 +1543,33 @@ program nonlinearIV, eclass
   else if `"`fnum'"'=="four" {
       local current four
       local nlist   five
+      local jj=5
   
       *(A) GENERATE FERT VARIABLES
       foreach num of numlist 5(1)6 {
           gen fert`num'=fert>=`num'
       }
-      
+      *GENERATE TWIN STAR
+      local ints i.educf#c.motherage i.educf#c.motheragesq i.educp#c.motherage i.educp#c.motheragesq
+      foreach num in `nlist' {
+          qui reg twin_`num'_fam `varlist' `ints' i.agemay i.educp if fert>=`jj'
+          predict twinStar_`num' if fert>=`jj'
+          replace twinStar_`num' = twin_`num'_fam - twinStar_`num'
+          replace twinStar_`num' = 0 if fert<`jj'
+          local ++jj
+      }
+
       *GENERATE EFFICIENT INSTRUMENTS
       if length(`"`efficient'"')!=0 {
-          qui probit fert5 `varlist'
+          qui probit fert5 `varlist' i.educf i.agemay
           predict p4hat
           replace p4hat = 1 if twin_three_fam==1
           local l1 = 5
           foreach g in five {
+              local fcontrol i.educf i.agemay
+              if `"`g'"'=="five" local fcontrol i.educf twin_two_fam i.agemay
               local l2 = `l1'+1  
-              qui probit fert`l2' `varlist' twin_`g'_fam
+              qui probit fert`l2' `varlist' twinStar_`g' `fcontrol'
               predict p`l1'hat
               local ++l1
           }
@@ -1280,17 +1583,6 @@ program nonlinearIV, eclass
   else {
       dis "Error"
       exit
-  }
-
-  *GENERATE TWIN STAR
-  if length(`"`efficient'"')==0 {
-      foreach num in `nlist' {
-          qui reg twin_`num'_fam `varlist' if fert>=`jj'
-          predict twinStar_`num' if fert>=`jj'
-          replace twinStar_`num' = twin_`num'_fam - twinStar_`num'
-          replace twinStar_`num' = 0 if fert<`jj'
-          local ++jj
-      }
   }
   local y  school_zscore
   local wt [pw=sweight]
@@ -1311,53 +1603,53 @@ program nonlinearIV, eclass
   }
 end
 
-keep `cond'&two_plus==1
-bootstrap _b, rep(5) cluster(id): nonlinearIV $age `base', fnum(two)
-bootstrap _b, rep(5) cluster(id): nonlinearIV $age `base', fnum(two) efficient
-exit
+local c2 `base' $age
+local c3 `base' $age $H
+local c4 `base' $age  i.bord
+local y  school_zscore
 
-*(A)
-foreach num of numlist 3(1)6 {
-    gen fert`num'=fert>=`num'
-}
-* (B)
-*preserve
-keep `cond'&two_plus==1
-
-* (C)
-local jj=3
-foreach num in three four five {
-    qui reg twin_`num'_fam $age `base' if fert>=`jj'
-    predict twinStar_`num' if fert>=`jj'
-    replace twinStar_`num' = twin_`num'_fam - twinStar_`num'
-    replace twinStar_`num' = 0 if fert<`jj'
-    local ++jj
-}
-
-* (D)
-qui probit fert3 $age `base'
-predict p2hat
-replace p2hat = 1 if twin_two_fam==1
-qui probit fert4 $age `base' twin_three_fam
-predict p3hat
-qui probit fert5 $age `base' twin_four_fam
-predict p4hat
-qui probit fert6 $age `base' twin_five_fam twin_two_fam
-predict p5hat
-
-local XF fert3 fert4 fert5 fert6
-local Z1 twin_two_fam twinStar_three twinStar_four twinStar_five
-local Z2 p2hat p3hat p4hat p5hat
-
-local s savefirst
-eststo: ivreg2 `y' `c2' (fert = twin_two_fam) `wt', `s' savefp(FM)
-eststo: ivreg2 `y' `c2' (`XF' = `Z1') `wt', `s' savefp(FN)
-eststo: ivreg2 `y' `c2' (`XF' = `Z2') `wt', `s' savefp(FO)
+local mst est1 estNL estEF
 local fst FMfert FNfert3 FNfert4 FNfert5 FNfert6 FOfert3 FOfert4 FOfert5 FOfert6
-exit
-estout est1 est2 est3 using "$TAB/NonLinear-IV.txt", replace `estopt'
-estout `fst' using "$TAB/NonLinear-IV-first.txt", replace `estopt'
 
+local k=1
+foreach tab in two three four {
+    ****BASELINE
+    set seed 1934
+    preserve
+    keep `cond'&`tab'_plus==1
+    eststo: ivreg2 `y' $age `base' (fert = twin_`tab'_fam) `wt', savefirst savefp(FM)
+    keep if e(sample)==1
+    bstrap _b, rep(`nbstrap') cluster(id): nonlinearIV $age `base', fnum(`tab')
+    estimates store estNL
+    *nonlinearIV $age `base', fnum(`tab')
+    bstrap _b, rep(`nbstrap') cluster(id): nonlinearIV $age `base', fnum(`tab') efficient
+    estimates store estEF
+    *nonlinearIV $age `base', fnum(`tab') efficient
+    
+
+    estout `mst' using "$TAB/NonLinearIV-`tab'-base.txt", replace `estopt'
+    estout `fst' using "$TAB/NonLinearIVfirst-`tab'-base.txt", replace `estopt'
+    estimates clear
+
+    ****WITH HEALTH
+    local cvars $age `base' $S $H
+    eststo: ivreg2 `y' `cvars' (fert = twin_`tab'_fam) `wt', savefirst savefp(FM)
+    keep if e(sample)==1
+    bstrap _b, rep(`nbstrap') cluster(id): nonlinearIV `cvars', fnum(`tab')
+    estimates store estNL
+    *nonlinearIV `cvars', fnum(`tab')
+    bstrap _b, rep(`nbstrap') cluster(id): nonlinearIV `cvars', fnum(`tab') efficient
+    estimates store estEF
+    *nonlinearIV `cvars', fnum(`tab') efficient
+    
+    estout `mst' using "$TAB/NonLinearIV-`tab'-health.txt", replace `estopt'
+    estout `fst' using "$TAB/NonLinearIVfirst-`tab'-health.txt", replace `estopt'
+    estimates clear
+    restore
+    local fst FMfert FNfert4 FNfert5 FNfert6 FOfert4 FOfert5 FOfert6
+    if `k'==2 local fst FMfert FNfert5 FNfert6 FOfert5 FOfert6
+    local ++k    
+}
 exit
 
 /*
